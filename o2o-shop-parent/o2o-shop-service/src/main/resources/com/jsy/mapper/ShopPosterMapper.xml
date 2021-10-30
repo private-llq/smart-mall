@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jsy.mapper.ShopPosterMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jsy.domain.ShopPoster">
+        <id column="id" property="id" />
+        <result column="spUuid" property="uuid" />
+        <result column="term_validity" property="termValidity" />
+        <result column="poster_image" property="posterImage" />
+        <result column="start_time" property="startTime" />
+        <result column="end_time" property="endTime" />
+        <result column="main_title" property="mainTitle" />
+        <result column="sub_title" property="subTitle" />
+        <result column="spShopUuid" property="shopUuid" />
+        <!--<collection property="goodsBasicList" javaType="com.jsy.domain.GoodsBasic">
+            <result column="uuid" property="uuid"/>
+            <result column="price" property="price"/>
+            <result column="sales" property="sales"/>
+            <result column="good_number" property="goodsNumber"/>
+            <result column="title" property="title"/>
+        </collection>-->
+    </resultMap>
+    <!--数据啼加sort 字段 进行拖动排序-->
+    <!--<select id="getPoster" resultMap="BaseResultMap">
+        SELECT
+                sp.uuid spUuid,
+                sp.term_validity ,
+                sp.poster_image ,
+                sp.start_time ,
+                sp.end_time ,
+                sp.main_title ,
+                sp.sub_title ,
+                sp.shop_uuid spShopUuid ,
+                sp.state,
+        gb.* FROM t_shop_poster sp  LEFT JOIN t_goods_basic gb on gb.poster_uuid=sp.uuid  WHERE sp.shop_uuid=#{shopUuid};
+    </select>-->
+    <select id="getPoster" resultType="com.jsy.domain.ShopPoster">
+        SELECT * FROM t_shop_poster WHERE shop_uuid=#{shopUuid};
+    </select>
+
+
+    <update id="setSort">
+        <foreach collection="listParam" item="var">
+            update t_goods_basic  set sort = #{var.sort} where uuid = #{var.uuid} and shop_uuid=#{shopUuid};
+        </foreach>
+    </update>
+
+    <update id="setSort2">
+        <foreach collection="listParam2" item="var">
+            update t_shop_poster  set sort = #{var.sort} where uuid = #{var.uuid} and shop_uuid=#{shopUuid};
+        </foreach>
+    </update>
+
+</mapper>

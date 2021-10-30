@@ -1,0 +1,12 @@
+spring:
+  cloud:
+    config:
+      discovery:
+        enabled: true #开启springcloudconfig服务端的服务发现
+        service-id: CONFIG-SERVER #config-server服务的名称
+      name: application-zuul #拉取的文件名称
+      profile: dev #拉取的配置环境 通过name+profile确定拉取的文件 application-zuul-dev.yml
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8762/eureka/

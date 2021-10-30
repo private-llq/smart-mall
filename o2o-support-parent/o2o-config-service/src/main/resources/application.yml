@@ -1,0 +1,18 @@
+server:
+  port: 7000
+spring:
+  application:
+    name: CONFIG-SERVER
+  cloud:
+    config:
+      server:
+        git:
+          uri: http://47.108.155.57/yu1131520916/smart-mall-config.git
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8762/eureka/
+  instance:
+    instance-id: config-server:7000 #服务集群当前节点的标识
+    prefer-ip-address: true #以ip的形式进行服务的注册

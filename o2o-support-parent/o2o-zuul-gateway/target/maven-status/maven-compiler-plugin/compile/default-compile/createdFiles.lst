@@ -1,0 +1,7 @@
+com\jsy\basic\gen\filter\ExcludeAuth.class
+com\jsy\basic\gen\config\SwaggerConfig.class
+com\jsy\basic\gen\config\DocumentationConfig.class
+com\jsy\basic\gen\filter\AuthFilter.class
+com\jsy\basic\gen\config\CorsConfig.class
+com\jsy\basic\gen\config\WebConfig.class
+com\jsy\basic\gen\ZuulGatewayApplication.class

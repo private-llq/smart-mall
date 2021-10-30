@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jsy.mapper.UserRedpacketMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jsy.domain.UserRedpacket">
+        <result column="uuid" property="userUuid"/>
+        <result column="user_uuid" property="userUuid"/>
+        <result column="redpacket_uuid" property="redpacketUuid"/>
+        <result column="get_time" property="getTime"/>
+        <result column="used_time" property="usedTime"/>
+        <result column="type" property="type"/>
+        <result column="shop_uuid" property="shopUuid"/>
+        <result column="deleted" property="deleted"/>
+    </resultMap>
+
+    <select id="queryUsableRedpacket" resultType="com.jsy.dto.UserRedpacketDTO">
+        SELECT u.uuid as uuid,u.get_time as getTime,u.redpacket_uuid as redpacketUuid,u.type as type,s.shop_uuid as shopUuid,s.money as money,s.begintime as begintime,s.endtime as endtime FROM t_shop_redpacket s LEFT JOIN t_user_redpacket u on u.redpacket_uuid=s.uuid
+        WHERE s.deleted=1 AND u.user_uuid=#{map.userUuid} AND s.shop_uuid=#{map.shopUuid} AND u.deleted=1 AND u.type=2 AND begintime &lt;=#{map.time} AND  #{map.time}&lt;=endtime
+        UNION All
+        SELECT u1.uuid as uuid,u1.get_time as getTime,u1.redpacket_uuid as redpacketUuid,u1.type as type,shop_uuid as shopUuid,c.money as money,c.begintime as begintime,c.endtime  as endtime  FROM t_common_redpacket c LEFT JOIN t_user_redpacket u1 on u1.redpacket_uuid=c.uuid
+        WHERE c.deleted=1 AND u1.user_uuid=#{map.userUuid} AND u1.deleted=1 AND u1.type=1 AND begintime &lt;=#{map.time} AND  #{map.time}&lt;=endtime
+    </select>
+</mapper>

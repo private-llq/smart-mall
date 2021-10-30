@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jsy.mapper.OrderCommodityMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jsy.domain.OrderCommodity">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="num" property="num" />
+        <result column="order_uuid" property="orderUuid" />
+        <result column="price" property="price" />
+        <result column="image" property="image" />
+    </resultMap>
+    <delete id="delCommodityByOid">
+        delete
+        from t_order_commodity
+        where order_id = #{orderId}
+    </delete>
+
+
+    <select id="getCommoditysByOid" resultType="com.jsy.domain.OrderCommodity">
+        select *
+        from t_order_commodity
+        where order_id = #{orderId}
+    </select>
+
+</mapper>

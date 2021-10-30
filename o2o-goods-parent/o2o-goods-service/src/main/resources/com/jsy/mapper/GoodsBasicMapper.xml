@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jsy.mapper.GoodsBasicMapper">
+
+
+<!--    <update id="batchUpdateGoodsDiscount">-->
+<!--        UPDATE  t_goods_basic AS gs-->
+<!--        set-->
+<!--        gs.discount_price=#{entity.discount_price},-->
+<!--        gs.discount=#{entity.discount},-->
+<!--        gs.discount_status=#{entity.discountStatus},-->
+<!--        gs.astrict_number=#{entity.astrictNumber},-->
+<!--        gs.discount_end_time=#{entity.discountEndTimee},-->
+<!--        gs.discount_start_time=#{entity.discountStartTime},-->
+<!--        gs.activity_status=#{entity.activityStatus}-->
+<!--        WHERE  gs.uuid -->
+<!--            <foreach collection="list" item="entity" separator="," open="in (" close=")">-->
+<!--                #{entity.uuid}-->
+<!--            </foreach>-->
+<!--    </update>-->
+
+
+
+
+
+
+
+
+    <!--***********************************************-->
+
+
+
+
+    <insert id="insertProductRecord" parameterType="com.jsy.vo.RecordVo">
+        insert into t_record (uuid,goods_uuid,user_uuid,shop_uuid) values(#{uuid},#{goodsUuid},#{userUuid},#{shopUuid});
+    </insert>
+
+    <update id="updateGoods">
+        UPDATE t_goods_basic SET stock=stock-1 WHERE uuid=#{Uuid};
+    </update>
+
+    <update id="updateGoodsReturn">
+        UPDATE t_goods_basic SET stock=stock+1 WHERE uuid=#{Uuid};
+    </update>
+
+<!--    商品批量放入回收站-->
+    <update id="updateStatus">
+        <if test="list != null and list.size != ''">
+            update t_goods_basic gb
+            LEFT JOIN t_goods_spec gs
+            on gb.uuid = gs.goods_uuid
+            set gb.status = '0',gs.spec_status = '0'
+            WHERE gb.uuid
+            <foreach collection="list" item="entity" separator="," open="in (" close=")">
+                #{entity}
+            </foreach>
+        </if>
+    </update>
+
+<!--    单个商品恢复-->
+    <update id="recoverOne">
+        update t_goods_basic gb
+        LEFT JOIN t_goods_spec gs
+        on gb.uuid = gs.goods_uuid
+        set gb.status = '1',gs.spec_status = '1'
+        WHERE gb.uuid
+        <foreach collection="uuids" item="uuid" separator="," open="in (" close=")">
+            #{uuid}
+        </foreach>
+    </update>
+
+<!--    商品批量上下架-->
+    <update id="onshelf">
+        update t_goods_basic gb
+        set gb.is_marketable = #{type}
+        where gb.uuid in
+        <foreach collection="uuids" item="uuid" separator="," open="(" close=")">
+            #{uuid}
+        </foreach>
+    </update>
+
+    <!--   单个商品放入回收站-->
+    <delete id="deleteOne">
+        update t_goods_basic gb
+        LEFT JOIN t_goods_spec gs
+        on gb.uuid = gs.goods_uuid
+        set gb.status = '0',gs.spec_status = '0'
+        WHERE gb.uuid = #{uuid}
+    </delete>
+
+<!--    批量商品彻底删除-->
+    <delete id="batchActualDel">
+        <if test="list != null and list.size != 0">
+            delete gb,gs
+            from t_goods_basic gb
+            LEFT JOIN t_goods_spec gs
+            on gb.uuid = gs.goods_uuid
+            WHERE gb.uuid
+            <foreach collection="list" item="entity" separator="," open="in (" close=")">
+                #{entity}
+            </foreach>
+        </if>
+    </delete>
+
+<!--    单个商品彻底删除-->
+    <delete id="actualDelOne">
+        delete gb,gs
+        from t_goods_basic gb
+        LEFT JOIN t_goods_spec gs
+        on gb.uuid = gs.goods_uuid
+        WHERE gb.uuid = #{uuid}
+    </delete>
+
+<!--    商品转移分类-->
+    <update id="toOtherType">
+        update t_goods_basic set goods_type_uuid = #{typeUUid}
+        where uuid = #{gUUid}
+    </update>
+
+
+    <select id="commendGoods" resultType="com.jsy.domain.GoodsCommendDTO">
+        SELECT
+        title,
+        shop_uuid,
+        sales,
+        price,
+        discount_price as discountPrice,
+        images_url as images
+        FROM
+        (
+        SELECT
+        title,
+        shop_uuid,
+        sales,
+        price,
+        discount_price,
+        images_url,
+        row_number() over ( PARTITION BY shop_uuid ORDER BY sales DESC ) AS rowindex
+        FROM
+        t_goods_basic
+        <if test="map.shopUuid != null">
+            <foreach collection="map.shopUuid" separator="," item="uuid" open="WHERE shop_uuid IN (" close=")">
+                #{uuid}
+            </foreach>
+        </if>
+        ) a
+        WHERE
+        rowindex &lt;= #{map.num}
+    </select>
+
+</mapper>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jsy.mapper.ShopAssetsMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jsy.domain.ShopAssets">
+        <id column="id" property="id" />
+        <result column="uuid" property="uuid" />
+        <result column="owner_uuid" property="ownerUuid" />
+        <result column="alipay" property="alipay" />
+        <result column="wechatpaty" property="wechatpaty" />
+        <result column="bankcard_uuid" property="bankcardUuid" />
+        <result column="assets" property="assets" />
+    </resultMap>
+
+</mapper>

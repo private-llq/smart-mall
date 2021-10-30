@@ -1,0 +1,62 @@
+package com.jsy.parameter;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.sql.Time;
+import java.time.LocalDateTime;
+
+
+@Data
+@EqualsAndHashCode(callSuper = false)
+@ApiModel("店铺申请参数")
+public class ShopInfoParam implements Serializable {
+    private static final long serialVersionUID = 1L;
+    @ApiModelProperty(name = "city", value = "所在城市")
+    private String city;
+    @ApiModelProperty(name = "addressDetail", value = "店铺详细地址）")
+    private String addressDetail;
+    @ApiModelProperty(name = "shopUsername", value = "店铺法人/经营者姓名")
+    private String shopUsername;
+    @ApiModelProperty(name = "shopPhone", value = "店铺法人/经营者电话")
+    private String shopPhone;
+    @ApiModelProperty(name = "shopCidZimg", value = "身份证正面(file_url)")
+    private String shopCidZimg;
+    @ApiModelProperty(name = "shopCidFimg", value = "身份证反面(file_url)")
+    private String shopCidFimg;
+    @ApiModelProperty(name = "shopName", value = "店铺名称")
+    private String shopName;
+    @ApiModelProperty(name = "shopDescribe", value = "店铺描述")
+    private String shopDescribe;
+    @ApiModelProperty(name = "businessImg", value = "营业执照图片地址(file_url)")
+    private String businessImg;
+    @ApiModelProperty(name = "businessNumber", value = "注册号（工商户注册号，统一信用代码）")
+    private String businessNumber;
+    @ApiModelProperty(name = "shopLogo", value = "店铺logo图片(file_url)")
+    private String shopLogo;
+    @ApiModelProperty(name = "shopFront", value = "店铺门脸图片(file_url)")
+    private String shopFront;
+    @ApiModelProperty(name = "shopImages1", value = "店铺环境图片1(file_url)")
+    private String shopImages1;
+    @ApiModelProperty(name = "shopImages2", value = "店铺环境图片2(file_url)")
+    private String shopImages2;
+    @ApiModelProperty(name = "shopImages3", value = "店铺环境图片3(file_url)")
+    private String shopImages3;
+    @ApiModelProperty(name = "longitude", value = "店铺地址经度")
+    private BigDecimal longitude;
+    @ApiModelProperty(name = "latitude", value = "店铺地址纬度")
+    private BigDecimal latitude;
+
+
+
+
+
+
+}

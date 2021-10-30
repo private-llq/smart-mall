@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jsy.mapper.OrderDistributionMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jsy.domain.OrderDistribution">
+        <id column="id" property="id" />
+        <result column="order_id" property="orderId" />
+        <result column="name" property="name" />
+        <result column="phone" property="phone" />
+        <result column="address" property="address" />
+    </resultMap>
+    <delete id="delByOrderId">
+        delete
+        from t_order_distribution
+        where order_id = #{id}
+    </delete>
+
+
+    <select id="getByOId" resultType="java.lang.Long">
+        select t.id
+        from t_order_distribution t
+        where order_id = #{orderId}
+    </select>
+
+
+</mapper>

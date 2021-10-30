@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jsy.mapper.UserAdressMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jsy.domain.UserAddress">
+        <id column="id" property="id" />
+        <result column="user_uuid" property="userUuid" />
+        <result column="address" property="address" />
+        <result column="isdefult" property="isdefult" />
+    </resultMap>
+    <update id="updateOrtherDefult">
+        update t_user_address
+        set isdefult = 0
+        where user_uuid = #{userUuid} And isdefult = 1
+    </update>
+
+
+</mapper>

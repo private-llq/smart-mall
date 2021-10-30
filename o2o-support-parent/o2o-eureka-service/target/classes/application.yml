@@ -1,0 +1,11 @@
+server:
+  port: 8762
+
+eureka:
+  instance:
+    hostname: localhost #如果是eureka集群，这里不能使用localhost，要使用域名，域名需要在hosts文件配置
+  client:
+    registerWithEureka: false #是否注册到eureka服务列表中
+    fetchRegistry: false #是否注册可以拉取服务
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/ #单机版，集群的话写集群中的其他节点

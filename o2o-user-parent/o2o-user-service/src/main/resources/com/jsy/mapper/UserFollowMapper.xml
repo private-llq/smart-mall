@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jsy.mapper.UserFollowMapper">
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap  id="BaseResultMap" type="com.jsy.dto.UserFollowDTO">
+        <id column="uuid" property="uuid"/>
+        <result column="user_uuid" property="userUuid"/>
+        <result column="shop_uuid" property="shopUuid"/>
+        <result column="shop_name" property="name"/>
+        <result column="shop_logo" property="shopLogo"/>
+        <result column="address_detail" property="addressDetail"/>
+
+        <!--嵌套查询有不能去重bug-->
+        <!--<collection property="shopActivity" column="shop_uuid" select="selectShopActivity" ofType="com.jsy.domain.Activity">
+            <id column="uuid"  property="uuid" />
+            <result column="activity_name"  property="name" />
+        </collection>-->
+
+        <!--嵌套结果有分页bug-->
+        <collection property="shopActivity" ofType="com.jsy.domain.Activity">
+            <result column="activity_name"  property="name" />
+            <result column="activity_name"  property="shopUuid" />
+            <result column="ervery_sum"  property="erverySum" />
+            <result column="reduce_num"  property="reduceNum" />
+            <result column="begin_time" property="beginTime"/>
+            <result column="end_time" property="endTime"/>
+        </collection>
+
+    </resultMap>
+
+    <select id="followList" resultMap="BaseResultMap">
+        SELECT s.*,a.name as activity_name , a.uuid as activity_uuid,a.ervery_sum,a.reduce_num,a.begin_time,a.end_time
+        FROM t_shop_info as s
+        LEFT JOIN t_activity as a
+        ON s.uuid=a.shop_uuid
+        WHERE s.status=1
+        <if test="shopUuids != null and shopUuids.size != 0">
+            and s.uuid in
+            <foreach collection="shopUuids" item="uuid" open="(" close=")" separator=",">
+                #{uuid}
+            </foreach>
+        </if>
+    </select>
+
+
+    <insert id="follow" parameterType="com.jsy.vo.UserFollowVo">
+       insert into t_user_follow (uuid,user_uuid,shop_uuid) values (#{uuid},#{userUuid},#{shopUuid})
+    </insert>
+
+
+
+
+</mapper>

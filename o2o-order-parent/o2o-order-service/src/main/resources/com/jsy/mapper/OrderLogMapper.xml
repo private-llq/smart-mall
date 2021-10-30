@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jsy.mapper.OrderLogMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jsy.domain.OrderLog">
+        <id column="id" property="id" />
+        <result column="description" property="description" />
+        <result column="method" property="method" />
+        <result column="type" property="type" />
+        <result column="request_ip" property="requestIp" />
+        <result column="exception_code" property="exceptionCode" />
+        <result column="exception_detail" property="exceptionDetail" />
+        <result column="finish_description" property="finishDescription"/>
+        <result column="params" property="params" />
+        <result column="state_id" property="stateId"/>
+        <result column="person" property="person"/>
+        <result column="create_time" property="createTime" />
+
+    </resultMap>
+    <select id="pageList" resultType="com.jsy.domain.OrderLog">
+        select
+        t.id,
+        t.description,
+        t.method,
+        t.type,
+        t.request_ip,
+        t.exception_code,
+        t.exception_detail,
+        t.params,
+        t.person,
+        t.finish_description,
+        t.state_id,
+        t.finish_person_uuid,
+        t.create_time,
+        t.update_time
+        from t_order_log t
+        ${ew.customSqlSegment}
+        order by t.id desc
+
+    </select>
+
+</mapper>

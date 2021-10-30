@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jsy.mapper.OrderMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jsy.domain.Order">
+        <id column="id" property="id" />
+        <result column="user_id" property="userUuid" />
+        <result column="shop_id" property="shopUuid" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="order_num" property="orderNum" />
+        <result column="service_time" property="serviceTime" />
+        <result column="state_id" property="stateId" />
+        <result column="redpacket_uuid" property="redpacketUuid" />
+        <result column="delivery_fee" property="deliveryFee" />
+        <result column="order_price" property="orderPrice" />
+    </resultMap>
+
+        <resultMap id="OrderMap" type="com.jsy.domain.Order">
+        <id column="id" property="id" />
+        <result column="username" property="username"/>
+        <result column="phone" property="phone"/>
+        <result column="user_uuid" property="userUuid" />
+        <result column="address" property="address" />
+        <result column="shop_uuid" property="shopUuid" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="delivery_way" property="deliveryWay"/>
+        <result column="order_num" property="orderNum" />
+        <result column="service_time" property="serviceTime" />
+        <result column="state_id" property="stateId" />
+        <result column="redpacket_uuid" property="redpacketUuid" />
+        <result column="subtract_price" property="subtractPrice" />
+        <result column="delivery_fee" property="deliveryFee" />
+        <result column="order_price" property="orderPrice" />
+        <result column="order_original_price" property="orderOriginalPrice" />
+        <result column="evaluation_id" property="evaluationId"/>
+        <result column="order_message" property="orderMessage"/>
+            <collection property="orderCommoditys" ofType="com.jsy.domain.OrderCommodity">
+                <result column="id" property="id"/>
+                <result column="name" property="name"/>
+                <result column="num" property="num"/>
+                <result column="order_uuid" property="orderUuid"/>
+                <result column="price" property="price"/>
+                <result column="image" property="image"/>
+            </collection>
+        </resultMap>
+
+    <resultMap id="OrderInfoMap" type="com.jsy.dto.OrderInfoDto">
+        <id column="id" property="id" />
+        <result column="username" property="username"/>
+        <result column="phone" property="phone"/>
+        <result column="uuid" property="uuid"/>
+        <result column="user_uuid" property="userUuid" />
+        <result column="address" property="address" />
+        <result column="shop_uuid" property="shopUuid" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="delivery_way" property="deliveryWay"/>
+        <result column="order_num" property="orderNum" />
+        <result column="shop_sent" property="shopSent"/>
+        <result column="pay_state" property="payState"/>
+        <result column="state_id" property="stateId"/>
+        <result column="service_code" property="serviceCode"/>
+        <result column="service_time" property="serviceTime" />
+        <result column="state_id" property="stateId" />
+        <result column="used" property="used"/>
+        <result column="redpacket_uuid" property="redpacketUuid" />
+        <result column="subtract_price" property="subtractPrice" />
+        <result column="delivery_fee" property="deliveryFee" />
+        <result column="order_price" property="orderPrice" />
+        <result column="order_original_price" property="orderOriginalPrice" />
+        <result column="evaluation_id" property="evaluationId"/>
+        <result column="shop_goods_ids" property="shopGoodsIds"/>
+        <result column="order_message" property="orderMessage"/>
+        <result column="shopPhone" property="shopPhone"/>
+        <result column="shopName" property="shopName"/>
+        <result column="shopLogo" property="shopLogo"/>
+        <result column="money" property="money"/>
+        <result column="other_money" property="otherMoney"/>
+        <collection property="orderCommodityDtos" ofType="com.jsy.domain.OrderCommodity">
+            <result column="id" property="id"/>
+            <result column="name" property="name"/>
+            <result column="num" property="num"/>
+            <result column="order_uuid" property="orderUuid"/>
+            <result column="price" property="price"/>
+            <result column="image" property="image"/>
+            <result column="goods_uuid" property="goodsUuid"/>
+        </collection>
+    </resultMap>
+
+    <select id="getBillBySid" resultMap="OrderMap">
+        select
+        tr.id,
+        tr.username,
+        tr.phone,
+        tr.user_uuid,
+        tr.address,
+        tr.uuid,
+        tr.shop_uuid,
+        tr.create_time,
+        tr.delivery_way,
+        tr.order_num,
+        tr.service_time,
+        tr.state_id,
+        tr.redpacket_uuid,
+        tr.pay_state,
+        tr.delivery_fee,
+        tr.order_original_price,
+        tr.order_price,
+        tr.evaluation_id,
+        tr.subtract_price,
+        tr.order_message,
+        tr.update_time,
+        tc.*
+        from t_order as tr
+        left join t_order_commodity as tc
+            on tr.uuid = tc.order_uuid
+        where tr.state_id &lt; 4 and tr.shop_uuid = #{uuid}
+    </select>
+
+
+
+    <select id="getByUserUuid" resultMap="OrderInfoMap">
+        select
+        tr.id,
+        tr.username,
+        tr.phone,
+        tr.user_uuid,
+        tr.address,
+        tr.uuid,
+        tr.shop_uuid,
+        tr.create_time,
+        tr.delivery_way,
+        tr.order_num,
+        tr.service_time,
+        tr.state_id,
+        tr.redpacket_uuid,
+        tr.pay_state,
+        tr.delivery_fee,
+        tr.order_original_price,
+        tr.order_price,
+        tr.evaluation_id,
+        tr.subtract_price,
+        tr.order_message,
+        tr.update_time,
+        ts.shop_name as shopName,
+        tt.money,
+        tc.*
+        from t_order as tr
+        left join t_shop_info as ts
+            on tr.shop_uuid = ts.uuid
+        left join t_user_redpacket as tt
+            on	tr.redpacket_uuid = tt.uuid
+        left join t_order_commodity as tc
+            on tr.uuid = tc.order_uuid
+        where tr.state_id &lt;4 and tr.user_uuid = #{userUuid}
+    </select>
+
+    <select id="getRunOrder" resultMap="OrderInfoMap">
+        select
+        tr.id,
+        tr.username,
+        tr.phone,
+        tr.user_uuid,
+        tr.address,
+        tr.uuid,
+        tr.shop_uuid,
+        tr.create_time,
+        tr.delivery_way,
+        tr.order_num,
+        tr.service_time,
+        tr.state_id,
+        tr.redpacket_uuid,
+        tr.pay_state,
+        tr.delivery_fee,
+        tr.order_original_price,
+        tr.order_price,
+        tr.service_code,
+        tr.evaluation_id,
+        tr.subtract_price,
+        tr.order_message,
+        tr.update_time,
+        tr.new_user_uuid,
+        tr.activity_uuid,
+        tr.used,
+        ts.shop_username as shopName,
+        tt.money,
+        tc.*
+        from t_order as tr
+        left join t_shop_info as ts
+            on tr.shop_uuid = ts.uuid
+        left join t_user_redpacket as tt
+            on	tr.redpacket_uuid = tt.uuid
+        left join t_order_commodity as tc
+            on tr.uuid = tc.order_uuid
+        where tr.state_id = 2 and tr.user_uuid = #{uuid}
+    </select>
+
+    <select id="pageUserState" resultMap="OrderInfoMap">
+        select
+        tr.id,
+        tr.username,
+        tr.phone,
+        tr.user_uuid,
+        tr.address,
+        tr.uuid,
+        tr.shop_uuid,
+        tr.create_time,
+        tr.delivery_way,
+        tr.order_num,
+        tr.service_time,
+        tr.state_id,
+        tr.redpacket_uuid,
+        tr.pay_state,
+        tr.delivery_fee,
+        tr.order_original_price,
+        tr.order_price,
+        tr.service_code,
+        tr.evaluation_id,
+        tr.subtract_price,
+        tr.order_message,
+        tr.update_time,
+        tr.new_user_uuid,
+        tr.activity_uuid,
+        tr.used,
+        tr.shop_sent,
+        tr.other_money,
+        ts.shop_name as shopName,
+        ts.shop_logo as shopLogo,
+        ts.mobile as shopPhone,
+        tc.*
+        from t_order as tr
+        left join t_shop_info as ts
+            on tr.shop_uuid = ts.uuid
+        left join t_user_redpacket as tt
+            on	tr.redpacket_uuid = tt.uuid
+        left join t_order_commodity as tc
+            on tr.uuid = tc.order_uuid
+        ${ew.customSqlSegment}
+        ORDER by tr.id desc
+    </select>
+
+</mapper>
