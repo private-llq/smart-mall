@@ -11,7 +11,6 @@ import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Map;
 
@@ -23,8 +22,6 @@ public interface ShopClient {
 
     @RequestMapping(value = "/shopRedpacket/grant/{uuid}",method = RequestMethod.GET)
     CommonResult grant(@PathVariable("uuid")String uuid);
-
-
 
     //获取
     @RequestMapping(value = "/commonRedpacket/{uuid}",method = RequestMethod.GET)

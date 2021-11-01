@@ -30,8 +30,7 @@ public class AuthFilter extends ZuulFilter{
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
-    @Autowired
-    private StringRedisTemplate StringRedisTemplate;
+
 
     /*让网关是否生效 true 生效 false不生效  为放行路径就不生效*/
     @Override
