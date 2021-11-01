@@ -7,7 +7,7 @@ spring:
     config:
       server:
         git:
-          uri: http://47.108.155.57/yu1131520916/smart-mall-config.git
+          uri: http://47.108.155.57/arli/smart-mall2-config.git
 
 eureka:
   client:

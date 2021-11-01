@@ -6,6 +6,7 @@ spring:
         service-id: CONFIG-SERVER
       name: application-file
       profile: dev
+      label: master
 eureka:
   client:
     serviceUrl:
