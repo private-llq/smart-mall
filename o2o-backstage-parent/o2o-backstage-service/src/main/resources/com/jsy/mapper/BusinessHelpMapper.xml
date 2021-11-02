@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jsy.mapper.BusinessHelpMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jsy.domain.BusinessHelp">
+        <id column="uuid" property="uuid" />
+        <result column="help_name" property="helpName" />
+        <result column="help_details" property="helpDetails" />
+        <result column="level" property="level" />
+        <result column="pid" property="pid" />
+        <result column="no_help" property="noHelp" />
+        <result column="yes_help" property="yesHelp" />
+        <result column="has_feedback" property="hasFeedback" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+</mapper>
