@@ -22,7 +22,7 @@ public class BusinessFeedtypeController {
     @GetMapping(value = "/list")
     public CommonResult<List<BusinessFeedtype>> list(){
         List<BusinessFeedtype> businessFeedtypes = userFeedtypeService.list(null);
-        return new CommonResult(200,"操作成功", businessFeedtypes);
+        return new CommonResult(200,"查询成功", businessFeedtypes);
     }
 
 
