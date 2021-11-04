@@ -1,8 +1,11 @@
 package com.jsy.basic.util.config;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import com.baomidou.mybatisplus.core.injector.DefaultSqlInjector;
+import com.baomidou.mybatisplus.core.injector.ISqlInjector;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -30,5 +33,10 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
 	@Override
 	public void updateFill(MetaObject metaObject) {
 		setFieldValByName("updateTime", LocalDateTime.now(), metaObject);
+	}
+	// 逻辑删除组件
+	@Bean
+	public ISqlInjector sqlInjector() {
+		return new DefaultSqlInjector();
 	}
 }
