@@ -4,7 +4,7 @@ spring:
       discovery:
         enabled: true
         service-id: CONFIG-SERVER
-      name: application-customer
+      name: application-backstage
       profile: dev
 eureka:
   client:

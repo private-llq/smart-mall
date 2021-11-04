@@ -16,7 +16,7 @@
         <module>o2o-goods-parent</module>
         <module>o2o-order-parent</module>
         <module>o2o-user-parent</module>
-        <module>o2o-customer-parent</module>
+        <module>o2o-backstage-parent</module>
     </modules>
 
     <properties>
@@ -26,7 +26,9 @@
         <spring-cloud.version>Finchley.SR1</spring-cloud.version>
         <springboot.version>2.0.5.RELEASE</springboot.version>
         <mysql.version>8.0.21</mysql.version>
-        <druid.version>1.1.21</druid.version>
+        <druid.version>1.1.22</druid.version>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
     </properties>
     <!--
         springboot和springcloud的依赖管理

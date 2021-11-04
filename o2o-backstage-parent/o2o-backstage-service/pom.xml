@@ -3,13 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>o2o-customer-parent</artifactId>
+        <artifactId>o2o-backstage-parent</artifactId>
         <groupId>org.example</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>o2o-customer-service</artifactId>
+    <artifactId>o2o-backstage-service</artifactId>
 
     <dependencies>
 
@@ -24,7 +24,7 @@
 
         <dependency>
             <groupId>org.example</groupId>
-            <artifactId>o2o-customer-interface</artifactId>
+            <artifactId>o2o-backstage-interface</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
@@ -81,6 +81,11 @@
             <groupId>org.example</groupId>
             <artifactId>o2o-file-interface</artifactId>
             <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-starter</artifactId>
+            <version>${druid.version}</version>
         </dependency>
     </dependencies>
 
