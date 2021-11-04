@@ -7,12 +7,15 @@ spring:
     config:
       server:
         git:
-          uri: http://47.108.155.57/arli/smart-mall2-config.git
+          uri: http://47.108.155.57/zhsj_base/base_config_center/-/tree/master/dev/shop
+          username: privatearli2018@163.com
+          password: 961128liyue
+
 
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8762/eureka/
+      defaultZone: http://192.168.12.49:36366/eureka/
   instance:
     instance-id: config-server:7000 #服务集群当前节点的标识
     prefer-ip-address: true #以ip的形式进行服务的注册

@@ -13,7 +13,6 @@ public class BusinessHelpController {
     @Autowired
     public IBusinessHelpService businessHelpService;
 
-    //查询帮助中心的分类
     @GetMapping(value="/selectType")
     public  CommonResult<List<BusinessHelp>>  selectType(){
         List<BusinessHelp> businessHelps = businessHelpService.selectType();

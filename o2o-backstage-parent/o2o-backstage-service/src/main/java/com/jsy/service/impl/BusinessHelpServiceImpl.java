@@ -28,6 +28,7 @@ public class BusinessHelpServiceImpl extends ServiceImpl<BusinessHelpMapper, Bus
     @Override
     public List<BusinessHelp> selectType() {
         List<BusinessHelp> selectList = businessHelpMapper.selectList(null);
+
         List<BusinessHelp> collect = selectList.stream().filter(item -> item.getPid().equals("0"))//先查询一级分类（根节点）
                 .map(item -> {  //lamd表达式  遍历
                     item.setChildren(getChrildrens(item,selectList)); //实体类必要要有一个集合   用来装子集的分类

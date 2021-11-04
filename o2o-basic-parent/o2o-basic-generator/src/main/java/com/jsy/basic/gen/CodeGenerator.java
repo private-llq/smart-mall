@@ -13,7 +13,7 @@ import java.util.ResourceBundle;
 
 public class CodeGenerator {
     public static void main(String[] args) {
-            final ResourceBundle resource = ResourceBundle.getBundle("generator-backstage");
+            final ResourceBundle resource = ResourceBundle.getBundle("generator-order");
         // 代码生成器
         AutoGenerator mpg = new AutoGenerator();
         // 全局配置
@@ -90,7 +90,7 @@ public class CodeGenerator {
         strategy.setRestControllerStyle(true);
         //生成的表
         strategy.setInclude(resource.getString("tables").replaceAll(" ","").split(","));
-        strategy.setTablePrefix("w_");
+        strategy.setTablePrefix("t_");
         mpg.setStrategy(strategy);
         mpg.setTemplateEngine(new VelocityTemplateEngine());
         mpg.execute();
