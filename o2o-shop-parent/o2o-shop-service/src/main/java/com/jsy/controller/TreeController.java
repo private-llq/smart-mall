@@ -5,6 +5,7 @@ import com.jsy.domain.Tree;
 import com.jsy.query.MySortQuery;
 import com.jsy.service.ITreeService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,14 +21,16 @@ public class TreeController {
     /**
      * 查询所有一级菜单
      */
+    @ApiOperation("查询所有一级菜单")
     @GetMapping("getOneTree")
     public CommonResult getOneTree() {
         List<Tree> list= treeService.getOneTree();
         return CommonResult.ok(list);
     }
     /**
-     * 查询本级下面的子菜单（不包含本级）
+     * 查询本级下面一级子菜单（不包含本级）
      */
+    @ApiOperation("查询本级下面一级的子菜单（不包含本级）")
     @GetMapping("getSunTree")
     public CommonResult getSunTree(@RequestParam ("id") Integer id) {
         List<Tree> list= treeService.getSunTree(id);

@@ -38,7 +38,7 @@ public class TreeServiceImpl extends ServiceImpl<TreeMapper, Tree> implements IT
     @Override
     public List<Tree> getOneTree() {
 
-        List<Tree> list = treeMapper.selectList(new QueryWrapper<Tree>().eq("parent_id", 0));
+        List<Tree> list = treeMapper.selectList(new QueryWrapper<Tree>().eq("parent_id", 0).eq("deleted",0));
         return list;
     }
 
@@ -48,7 +48,7 @@ public class TreeServiceImpl extends ServiceImpl<TreeMapper, Tree> implements IT
      */
     @Override
     public List<Tree> getSunTree(Integer id) {
-        List<Tree> list = treeMapper.selectList(new QueryWrapper<Tree>().eq("parent_id", id));
+        List<Tree> list = treeMapper.selectList(new QueryWrapper<Tree>().eq("parent_id", id).eq("deleted",0));
         return list;
     }
 
@@ -88,7 +88,7 @@ public class TreeServiceImpl extends ServiceImpl<TreeMapper, Tree> implements IT
      */
     @Override
     public void delTreeOne(Integer id) {
-        List<Tree> list = treeMapper.selectList(new QueryWrapper<Tree>().eq("parent_id", id));
+        List<Tree> list = treeMapper.selectList(new QueryWrapper<Tree>().eq("parent_id", id).eq("deleted",0));
         if (list.size()==0){
             treeMapper.deleteById(id);
         }else {
@@ -123,7 +123,7 @@ public class TreeServiceImpl extends ServiceImpl<TreeMapper, Tree> implements IT
      */
     @Override
     public List<Tree> selectAllTree(Integer id){
-        List<Tree> list = treeMapper.selectList(null);
+        List<Tree> list = treeMapper.selectList(new QueryWrapper<Tree>().eq("deleted",0));
         List<Tree> collect = list.stream().filter(x -> x.getParentId() == id)//过滤出子级父id等于传入的父级id
                 .map(x -> {
                     x.setChildrens(getChildrens(x, list));//从所有数据中找出N条 符合 子级父id等于传入的父级id 的数据 ，然后再把这N条数据当做参数，找到他们的子级
@@ -157,7 +157,7 @@ public class TreeServiceImpl extends ServiceImpl<TreeMapper, Tree> implements IT
         idList.add(id);
 
         //再找出所有子级id放进去
-        List<Tree> list = treeMapper.selectList(new QueryWrapper<Tree>().eq("parent_id", id));
+        List<Tree> list = treeMapper.selectList(new QueryWrapper<Tree>().eq("parent_id", id).eq("deleted",0));
         list.forEach(x->{
             idList.add(x.getId());
         });
@@ -176,7 +176,7 @@ public class TreeServiceImpl extends ServiceImpl<TreeMapper, Tree> implements IT
     //递归方法
     private void getIds(ArrayList<Integer> idList, Integer oneId) {
         //查询二级分类的对象
-        List<Tree> treeList = baseMapper.selectList(new QueryWrapper<Tree>().eq("parent_id",oneId));
+        List<Tree> treeList = baseMapper.selectList(new QueryWrapper<Tree>().eq("parent_id",oneId).eq("deleted",0));
 
         //遍历二级分类的对象，把二级分类的id加入到要删除的集合中
         for (Tree tree : treeList) {

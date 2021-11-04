@@ -9,11 +9,10 @@
         <result column="parent_id" property="parentId" />
         <result column="img_path" property="imgPath" />
         <result column="ranks" property="ranks" />
-        <result column="deleted" property="deleted" />
     </resultMap>
     <update id="sortMenu">
         <foreach collection="query.trees" item="var">
-            update t_shop_tree  set ranks = #{var.ranks} where id = #{var.id} and parent_id= #{query.parentId};
+            update t_shop_tree  set ranks = #{var.ranks} where id = #{var.id} and parent_id= #{query.parentId} and deleted=0;
         </foreach>
     </update>
 </mapper>
