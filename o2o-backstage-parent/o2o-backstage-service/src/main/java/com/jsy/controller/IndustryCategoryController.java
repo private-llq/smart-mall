@@ -46,7 +46,7 @@ public class IndustryCategoryController {
     @DeleteMapping(value="/{id}")
     public CommonResult delete(@PathVariable("id") Long id){
         try {
-            industryCategoryService.removeById(id);
+            industryCategoryService.deleteById(id);
             return CommonResult.ok();
         } catch (Exception e) {
         e.printStackTrace();
@@ -74,7 +74,7 @@ public class IndustryCategoryController {
     @GetMapping(value = "/list")
     public List<IndustryCategory> list(){
 
-        return industryCategoryService.list(null);
+        return industryCategoryService.selectCategory();
     }
 
 
