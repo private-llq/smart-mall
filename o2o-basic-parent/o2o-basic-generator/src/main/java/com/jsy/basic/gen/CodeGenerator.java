@@ -25,7 +25,9 @@ public class CodeGenerator {
         gc.setFileOverride(true);
         gc.setBaseResultMap(true);
         gc.setIdType(IdType.AUTO);
+        gc.setSwagger2(true);//添加swagger2
         mpg.setGlobalConfig(gc);
+
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
         dsc.setUrl(resource.getString("url"));
