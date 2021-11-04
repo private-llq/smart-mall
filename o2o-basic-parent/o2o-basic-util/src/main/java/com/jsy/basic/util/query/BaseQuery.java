@@ -14,6 +14,5 @@ public class BaseQuery<T> implements Serializable {
     //有公共属性-分页
     private Integer page = 1; //当前页
     private Integer rows = 10; //每页显示多少条
-    private T query;
 
 }
