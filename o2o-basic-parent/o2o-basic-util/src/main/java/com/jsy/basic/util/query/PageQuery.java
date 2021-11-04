@@ -2,9 +2,12 @@ package com.jsy.basic.util.query;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.apache.poi.ss.formula.functions.T;
+
+import java.io.Serializable;
 
 @Data
-public class PageQuery {
+public class PageQuery implements Serializable {
     //关键字
     @ApiModelProperty("查询关键字")
     private String keyword;
