@@ -37,7 +37,6 @@ public class Swagger2 {
                 .globalOperationParameters(pars);
     }
 
-
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("帮助中心api")
