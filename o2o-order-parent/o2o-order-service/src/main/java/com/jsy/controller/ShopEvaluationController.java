@@ -9,9 +9,10 @@ import com.jsy.basic.util.exception.JSYError;
 import com.jsy.basic.util.utils.CurrentUserHolder;
 import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.basic.util.vo.UserEntity;
-import com.jsy.domain.ShopEvaluation;
+import com.jsy.domain.ShopEvaluations;
 import com.jsy.dto.ChatForEvaluationDto;
 import com.jsy.dto.ShopEvaluationDto;
+
 import com.jsy.query.ShopEvaluationQuery;
 import com.jsy.service.IChatForEvaluationService;
 import com.jsy.service.IShopEvaluationService;
@@ -92,8 +93,8 @@ public class ShopEvaluationController {
     @ApiParam(value = "分页查询")
     @RequestMapping(value = "/page",method = RequestMethod.POST)
     public CommonResult pageEvaluation(@RequestBody ShopEvaluationQuery query) {
-        Page<ShopEvaluation> page = new Page<ShopEvaluation>(query.getPage(),query.getRows());
-        QueryWrapper<ShopEvaluation> queryWrapper = new QueryWrapper();
+        Page<ShopEvaluations> page = new Page<ShopEvaluations>(query.getPage(),query.getRows());
+        QueryWrapper<ShopEvaluations> queryWrapper = new QueryWrapper();
         queryWrapper.eq(StringUtils.isNotEmpty(query.getShopUuid()),"shop_uuid",query.getShopUuid())
                 .eq(StringUtils.isNotEmpty(query.getUserUuid()),"user_uuid",query.getUserUuid())
                 .eq(query.getEvaluateLevel()>Global.INT_0,"evaluate_level",query.getEvaluateLevel());
@@ -106,7 +107,7 @@ public class ShopEvaluationController {
         if (page.getTotal()>Global.INT_0){
 
         }
-        return CommonResult.ok(new PageList<ShopEvaluation>(page.getTotal(),page.getRecords()));
+        return CommonResult.ok(new PageList<ShopEvaluations>(page.getTotal(),page.getRecords()));
     }
 
     /**

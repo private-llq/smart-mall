@@ -8,11 +8,16 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.zhsj.basecommon.vo.R;
+import com.zhsj.baseweb.support.ContextHolder;
+import com.zhsj.baseweb.support.LoginUser;
+import org.apache.tomcat.util.descriptor.web.ContextHandler;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 import java.time.LocalDate;
@@ -22,6 +27,7 @@ import java.time.format.DateTimeFormatter;
 @SpringBootApplication
 @MapperScan(value = "com.jsy.mapper")
 @EnableFeignClients
+@ComponentScan("com.zhsj")
 public class GoodsApplication {
 
     public static void main(String[] args) {

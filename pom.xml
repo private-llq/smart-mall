@@ -4,7 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.example</groupId>
+    <parent>
+        <groupId>com.zhsj</groupId>
+        <artifactId>base_parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <groupId>com.zhsj</groupId>
     <artifactId>smart-mall2</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
@@ -19,14 +24,23 @@
         <module>o2o-backstage-parent</module>
     </modules>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.zhsj</groupId>
+            <artifactId>base_web</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
-        <spring-cloud.version>Finchley.SR1</spring-cloud.version>
-        <springboot.version>2.0.5.RELEASE</springboot.version>
-        <mysql.version>8.0.21</mysql.version>
-        <druid.version>1.1.21</druid.version>
+        <elasticsearch>2.0.5.RELEASE</elasticsearch>
+<!--        <spring-cloud.version>Finchley.SR1</spring-cloud.version>-->
+<!--        <springboot.version>2.0.5.RELEASE</springboot.version>-->
+<!--        <mysql.version>8.0.21</mysql.version>-->
+<!--        <druid.version>1.1.21</druid.version>-->
     </properties>
 
     <dependencyManagement>
@@ -35,35 +49,35 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
-                <version>${springboot.version}</version>
+                <version>${elasticsearch}</version>
             </dependency>
-            <!-- 数据持久化 -->
-            <dependency>
-                <groupId>mysql</groupId>
-                <artifactId>mysql-connector-java</artifactId>
-                <version>${mysql.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>druid-spring-boot-starter</artifactId>
-                <version>${druid.version}</version>
-            </dependency>
-            <!--springcloud-->
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring-cloud.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <!--springboot-->
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${springboot.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
+<!--            &lt;!&ndash; 数据持久化 &ndash;&gt;-->
+<!--            <dependency>-->
+<!--                <groupId>mysql</groupId>-->
+<!--                <artifactId>mysql-connector-java</artifactId>-->
+<!--                <version>${mysql.version}</version>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>com.alibaba</groupId>-->
+<!--                <artifactId>druid-spring-boot-starter</artifactId>-->
+<!--                <version>${druid.version}</version>-->
+<!--            </dependency>-->
+<!--            &lt;!&ndash;springcloud&ndash;&gt;-->
+<!--            <dependency>-->
+<!--                <groupId>org.springframework.cloud</groupId>-->
+<!--                <artifactId>spring-cloud-dependencies</artifactId>-->
+<!--                <version>${spring-cloud.version}</version>-->
+<!--                <type>pom</type>-->
+<!--                <scope>import</scope>-->
+<!--            </dependency>-->
+<!--            &lt;!&ndash;springboot&ndash;&gt;-->
+<!--            <dependency>-->
+<!--                <groupId>org.springframework.boot</groupId>-->
+<!--                <artifactId>spring-boot-dependencies</artifactId>-->
+<!--                <version>${springboot.version}</version>-->
+<!--                <type>pom</type>-->
+<!--                <scope>import</scope>-->
+<!--            </dependency>-->
         </dependencies>
     </dependencyManagement>
 

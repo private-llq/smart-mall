@@ -3,7 +3,7 @@
 <mapper namespace="com.jsy.mapper.ShopEvaluationMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.jsy.domain.ShopEvaluation">
+    <resultMap id="BaseResultMap" type="com.jsy.domain.ShopEvaluations">
         <id column="id" property="id" />
         <result column="shop_id" property="shopId" />
         <result column="order_message" property="orderMessage" />

@@ -1,12 +1,11 @@
 package com.jsy.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.jsy.domain.ShopEvaluation;
+import com.jsy.domain.ShopEvaluations;
 import com.jsy.dto.ShopEvaluationDto;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -20,7 +19,7 @@ import java.util.List;
  * @since 2020-11-13
  */
 @Component
-public interface ShopEvaluationMapper extends BaseMapper<ShopEvaluation> {
+public interface ShopEvaluationMapper extends BaseMapper<ShopEvaluations> {
 
     /**
      * 查询用户已评价信息
@@ -28,7 +27,7 @@ public interface ShopEvaluationMapper extends BaseMapper<ShopEvaluation> {
      * @return
      */
     @Select("select * from t_shop_evaluation where user_uuid = #{uuid}")
-    List<ShopEvaluation> getEvaluations(String uuid);
+    List<ShopEvaluations> getEvaluations(String uuid);
 
     /**
      * 根据店家id查询店家的评论
@@ -36,7 +35,7 @@ public interface ShopEvaluationMapper extends BaseMapper<ShopEvaluation> {
      * @return
      */
     @Select("select * from t_shop_evaluation where shop_id = #{id}")
-    List<ShopEvaluation> getBysid(Long id);
+    List<ShopEvaluations> getBysid(Long id);
 
     /**
      * 根据店家id删除评论

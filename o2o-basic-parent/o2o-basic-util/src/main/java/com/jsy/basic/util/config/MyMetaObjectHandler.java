@@ -21,15 +21,12 @@ import java.time.LocalDateTime;
 //@ConditionalOnProperty(value = "jsy.service.enable", havingValue = "true")
 public class MyMetaObjectHandler implements MetaObjectHandler {
 
-
-
 	@Override
 	public void insertFill(MetaObject metaObject) {
 		setFieldValByName("createTime", LocalDateTime.now(), metaObject);
 		setFieldValByName("updateTime", LocalDateTime.now(), metaObject);
 		setFieldValByName("deleted", 0, metaObject);
 	}
-
 	@Override
 	public void updateFill(MetaObject metaObject) {
 		setFieldValByName("updateTime", LocalDateTime.now(), metaObject);

@@ -1,7 +1,7 @@
 package com.jsy.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.jsy.domain.ShopEvaluation;
+import com.jsy.domain.ShopEvaluations;
 
 /**
  * <p>
@@ -11,6 +11,6 @@ import com.jsy.domain.ShopEvaluation;
  * @author lijin
  * @since 2020-11-12
  */
-public interface ShopEvaluationMapper extends BaseMapper<ShopEvaluation> {
+public interface ShopEvaluationMapper extends BaseMapper<ShopEvaluations> {
 
 }

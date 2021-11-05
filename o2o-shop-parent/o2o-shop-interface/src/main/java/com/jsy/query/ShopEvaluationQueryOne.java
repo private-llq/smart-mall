@@ -7,5 +7,5 @@ import com.jsy.basic.util.query.BaseQuery;
  * @author lijin
  * @since 2020-11-12
  */
-public class ShopEvaluationQuery extends BaseQuery {
+public class ShopEvaluationQueryOne extends BaseQuery {
 }

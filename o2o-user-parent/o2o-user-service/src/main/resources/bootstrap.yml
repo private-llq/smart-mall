@@ -6,6 +6,8 @@ spring:
         service-id: base-config-server #config-server服务的名称
       name: application-user #拉取的文件名称
       profile: dev #拉取的配置环境 通过name+profile确定拉取的文件 application-zuul-dev.yml
+  main:
+    allow-bean-definition-overriding: true
 #eureka服务端的连接配置
 eureka:
   client:

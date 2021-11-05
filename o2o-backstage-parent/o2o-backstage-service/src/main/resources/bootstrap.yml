@@ -6,6 +6,8 @@ spring:
         service-id: base-config-server
       name: application-backstage
       profile: dev
+  main:
+    allow-bean-definition-overriding: true
 eureka:
   client:
     serviceUrl:
