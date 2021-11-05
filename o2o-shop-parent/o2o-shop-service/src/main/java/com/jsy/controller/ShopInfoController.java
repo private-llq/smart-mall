@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.jsy.basic.util.utils.PagerUtils;
+import com.jsy.basic.util.utils.ValidatorUtils;
 import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.domain.ShopInfo;
 import com.jsy.dto.*;
@@ -12,6 +13,7 @@ import com.jsy.parameter.*;
 import com.jsy.query.AdminShopQuery;
 import com.jsy.query.ShopInfoQuery;
 import com.jsy.service.IShopInfoService;
+import com.jsy.vo.ShopInfoParamVo;
 import com.jsy.vo.ShopInfoVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -34,7 +36,9 @@ public class ShopInfoController {
     public IShopInfoService shopInfoService;
     @ApiOperation("申请添加门店")
     @RequestMapping(value="/applyShop",method= RequestMethod.POST)
-    public CommonResult<Boolean> applyShop(@RequestBody ShopInfoParam shopInfoParam){
+    public CommonResult<Boolean> applyShop(@RequestBody ShopInfoParamVo shopInfoParam){
+        ValidatorUtils.validateEntity(shopInfoParam,ShopInfoParamVo.class);
+        System.out.println("接收到"+shopInfoParam);
         log.info("入参：{}",shopInfoParam);
         Boolean aBoolean = shopInfoService.applyShop(shopInfoParam);
         if(aBoolean){

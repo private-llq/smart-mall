@@ -47,8 +47,8 @@ public class ShopOwner implements Serializable {
     @ApiModelProperty(name ="relationUuid",value = "关联用户uuid")
     private String relationUuid;
 
-    @ApiModelProperty(name ="walletId",value = "电子钱包Id")
-    private String walletId;
+  //  @ApiModelProperty(name ="walletId",value = "电子钱包Id")
+//    private String walletId;
 
     /**
      * 电话号码

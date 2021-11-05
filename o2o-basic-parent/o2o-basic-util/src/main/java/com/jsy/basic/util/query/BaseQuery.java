@@ -15,5 +15,4 @@ public class BaseQuery<T> implements Serializable {
     private Integer page = 1; //当前页
     private Integer rows = 10; //每页显示多少条
 
-
 }
