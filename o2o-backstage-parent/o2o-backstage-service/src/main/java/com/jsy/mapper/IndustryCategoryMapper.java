@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * </p>
  *
  * @author Tian
- * @since 2021-11-04
+ * @since 2021-11-05
  */
 public interface IndustryCategoryMapper extends BaseMapper<IndustryCategory> {
 

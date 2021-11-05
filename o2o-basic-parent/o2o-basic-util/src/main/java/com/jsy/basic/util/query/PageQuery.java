@@ -7,7 +7,7 @@ import org.apache.poi.ss.formula.functions.T;
 import java.io.Serializable;
 
 @Data
-public class PageQuery implements Serializable {
+public class PageQuery<T>  implements Serializable {
     //关键字
     @ApiModelProperty("查询关键字")
     private String keyword;

@@ -24,6 +24,7 @@ import com.jsy.query.AdminShopQuery;
 import com.jsy.query.ShopInfoQuery;
 import com.jsy.service.*;
 import com.jsy.vo.ShopAssetsVO;
+import com.jsy.vo.ShopInfoParamVo;
 import com.jsy.vo.ShopInfoVo;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -87,7 +88,7 @@ public class ShopInfoServiceImpl extends ServiceImpl<ShopInfoMapper, ShopInfo> i
 
     //店铺申请
     @Override
-    public Boolean applyShop(ShopInfoParam shopInfoParam) {
+    public Boolean applyShop(ShopInfoParamVo shopInfoParam) {
         boolean mobile = RegexUtils.isMobile(shopInfoParam.getShopPhone());//验证电话
         if (!mobile) {
             throw new JSYException(-1, "电话格式错误");
@@ -95,11 +96,21 @@ public class ShopInfoServiceImpl extends ServiceImpl<ShopInfoMapper, ShopInfo> i
         if (shopInfoParam.getShopName().length() > 15) {
             throw new JSYException(-1, "店铺名太长");
         }
+        List<String> shopLogo = shopInfoParam.getShopLogo();
+        if (shopLogo.size()>5){
+            throw new JSYException(-1,"照片只能上传5张");
+        }
+
+
+
         ShopInfo shopInfo = new ShopInfo();
         BeanUtils.copyProperties(shopInfoParam, shopInfo);
         shopInfo.setUuid(UUIDUtils.getUUID());
         UserDto currentUser = CurrentUserHolder.getCurrentUser();//获取登录者的uuid
-        shopInfo.setShopLogo(shopInfoParam.getShopFront());//将门脸设置为默认的log
+        ShopInfoParam infoParam = new ShopInfoParam();
+        BeanUtils.copyProperties(shopInfoParam,infoParam);
+
+        shopInfo.setShopLogo(infoParam.getShopFront());//将门脸设置为默认的log
         shopInfo.setOwnerUuid(currentUser.getUuid());//设置店铺拥有者uuid
         shopInfo.setStatus(0);//默认状态没审核
         shopInfo.setBusinessStatus(3);//默认是暂停营业的

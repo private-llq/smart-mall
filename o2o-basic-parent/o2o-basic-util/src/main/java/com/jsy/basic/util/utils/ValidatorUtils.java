@@ -3,6 +3,7 @@ package com.jsy.basic.util.utils;
 import com.jsy.basic.util.exception.JSYError;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.query.BaseQuery;
+import com.jsy.basic.util.query.PageQuery;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.ConstraintViolation;
@@ -17,8 +18,8 @@ import java.util.Set;
 import static java.util.regex.Pattern.compile;
 
 /**
- * @author lilin
- * @since  2020/11/13 18:04
+ * @author Tian
+ * @since  2021/11/05 18:04
  */
 @Slf4j
 public class ValidatorUtils {
@@ -73,7 +74,7 @@ public class ValidatorUtils {
      * @since 2020/12/11 14:55
      * @param baseQo 控制层接收参数的实体类
      */
-    public static void validatePageParam(BaseQuery<?> baseQo) {
+    public static void validatePageParam(PageQuery<?> baseQo) {
         if (!isInteger(baseQo.getPage())) {
             baseQo.setPage(1);
         }

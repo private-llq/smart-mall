@@ -8,6 +8,7 @@ import com.jsy.dto.*;
 import com.jsy.parameter.*;
 import com.jsy.query.AdminShopQuery;
 import com.jsy.query.ShopInfoQuery;
+import com.jsy.vo.ShopInfoParamVo;
 import com.jsy.vo.ShopInfoVo;
 
 import java.math.BigDecimal;
@@ -25,7 +26,7 @@ import java.util.Map;
 public interface IShopInfoService extends IService<ShopInfo> {
 
     //申请店铺
-    public  Boolean applyShop(ShopInfoParam shopInfoParam);
+    public  Boolean applyShop(ShopInfoParamVo shopInfoParam);
     //分页查询待审核的店铺
     public IPage<ShopInfo> selectShopInfoByUnrevised(PageParam pageParam);
     //批量店铺审核
