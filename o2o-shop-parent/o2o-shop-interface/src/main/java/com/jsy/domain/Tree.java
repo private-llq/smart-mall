@@ -1,9 +1,9 @@
 package com.jsy.domain;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.jsy.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -31,6 +31,7 @@ public class Tree implements Serializable {
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
+
 
     /**
      * 菜单名称
@@ -63,6 +64,13 @@ public class Tree implements Serializable {
      */
     @TableField(exist = false)
     private List<Tree> childrens=new ArrayList<>();
+
+    /**
+     * 逻辑删除
+     */
+    @JsonIgnore// 不需要返回给前端
+    @TableLogic
+    private Long deleted;
 
 
 }
