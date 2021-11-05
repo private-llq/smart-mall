@@ -28,6 +28,7 @@ public class CommonResult<T> implements Serializable {
     private T data;
 
     public static <T> CommonResult<T> ok(T data) {
+
         return new CommonResult<>(0, null, data);
     }
 
