@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 @EnableFeignClients
 @ComponentScan("com.zhsj")
 @Component
-//@EnableDistributedTransaction
 public class BackstageApplication {
     public static void main(String[] args) {
         SpringApplication.run(BackstageApplication.class,args);

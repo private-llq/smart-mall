@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.optimize.JsqlParser
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.zhsj.baseweb.support.ContextHolder;
+import com.zhsj.baseweb.support.LoginUser;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -47,4 +49,6 @@ public class UserApplication {
         objectMapper.registerModule(new JavaTimeModule());
         return objectMapper;
     }
+
+
 }
