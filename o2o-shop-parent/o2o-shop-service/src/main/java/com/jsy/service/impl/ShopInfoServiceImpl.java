@@ -26,6 +26,8 @@ import com.jsy.service.*;
 import com.jsy.vo.ShopAssetsVO;
 import com.jsy.vo.ShopInfoParamVo;
 import com.jsy.vo.ShopInfoVo;
+import com.zhsj.baseweb.support.ContextHolder;
+import com.zhsj.baseweb.support.LoginUser;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,12 +108,12 @@ public class ShopInfoServiceImpl extends ServiceImpl<ShopInfoMapper, ShopInfo> i
         ShopInfo shopInfo = new ShopInfo();
         BeanUtils.copyProperties(shopInfoParam, shopInfo);
         shopInfo.setUuid(UUIDUtils.getUUID());
-        UserDto currentUser = CurrentUserHolder.getCurrentUser();//获取登录者的uuid
+        LoginUser loginUser = ContextHolder.getContext().getLoginUser();//解析token ;//获取登录者的uuid
         ShopInfoParam infoParam = new ShopInfoParam();
         BeanUtils.copyProperties(shopInfoParam,infoParam);
 
         shopInfo.setShopLogo(infoParam.getShopFront());//将门脸设置为默认的log
-        shopInfo.setOwnerUuid(currentUser.getUuid());//设置店铺拥有者uuid
+        shopInfo.setOwnerUuid(loginUser.getId().toString());//设置店铺拥有者uuid
         shopInfo.setStatus(0);//默认状态没审核
         shopInfo.setBusinessStatus(3);//默认是暂停营业的
         shopInfo.setDeliveryArea(0L);//默认配送距离为0
