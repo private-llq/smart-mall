@@ -3,8 +3,8 @@ package com.jsy.config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.rabbit.support.CorrelationData;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -41,7 +41,7 @@ public class FlashSaleRabbitConfig {
          * 使用该功能需要开启确认，spring-boot中配置如下：
          * spring.rabbitmq.publisher-confirms = true
          */
-        rabbitTemplate.setConfirmCallback((CorrelationData correlationData,boolean b, String s)->{
+        rabbitTemplate.setConfirmCallback((CorrelationData correlationData, boolean b, String s)->{
                 if (b) {
                     LOGGER.info("消息已确认 cause:{}",correlationData.getId());
                 } else {

@@ -1,7 +1,7 @@
 package com.jsy.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.jsy.domain.ShopEvaluation;
+import com.jsy.domain.ShopEvaluations;
 
 /**
  * <p>
@@ -11,6 +11,6 @@ import com.jsy.domain.ShopEvaluation;
  * @author lijin
  * @since 2020-11-12
  */
-public interface IShopEvaluationService extends IService<ShopEvaluation> {
+public interface IShopEvaluationService extends IService<ShopEvaluations> {
 
 }

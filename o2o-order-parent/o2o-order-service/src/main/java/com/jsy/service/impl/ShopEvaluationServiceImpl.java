@@ -6,11 +6,14 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jsy.basic.util.constant.Global;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.domain.Order;
-import com.jsy.domain.ShopEvaluation;
+
+import com.jsy.domain.ShopEvaluations;
 import com.jsy.dto.ShopEvaluationDto;
 import com.jsy.mapper.ShopEvaluationMapper;
 import com.jsy.service.IOrderService;
 import com.jsy.service.IShopEvaluationService;
+
+
 import com.jsy.vo.ShopEvaluationVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +32,7 @@ import java.util.Objects;
  * @since 2020-11-13
  */
 @Service
-public class ShopEvaluationServiceImpl extends ServiceImpl<ShopEvaluationMapper, ShopEvaluation> implements IShopEvaluationService {
+public class ShopEvaluationServiceImpl extends ServiceImpl<ShopEvaluationMapper, ShopEvaluations> implements IShopEvaluationService {
 
     @Autowired
     private ShopEvaluationMapper shopEvaluationMapper;
@@ -39,7 +42,7 @@ public class ShopEvaluationServiceImpl extends ServiceImpl<ShopEvaluationMapper,
 
     @Override
     public void evaluationOrder(ShopEvaluationVo shopEvaluationVo) {
-        ShopEvaluation shopEvaluation = new ShopEvaluation();
+        ShopEvaluations shopEvaluation = new ShopEvaluations();
         BeanUtils.copyProperties(shopEvaluationVo,shopEvaluation);
         shopEvaluationMapper.insert(shopEvaluation);
     }
@@ -75,7 +78,7 @@ public class ShopEvaluationServiceImpl extends ServiceImpl<ShopEvaluationMapper,
         if (Global.Str1.equals(order.getEvaluationId())){
             throw new JSYException(-1,"您已经评价过了");
         }
-        ShopEvaluation shopEvaluation1 = new ShopEvaluation();
+        ShopEvaluations shopEvaluation1 = new ShopEvaluations();
         BeanUtil.copyProperties(shopEvaluationVo,shopEvaluation1);
 
         return this.save(shopEvaluation1)?1:0;
@@ -83,7 +86,7 @@ public class ShopEvaluationServiceImpl extends ServiceImpl<ShopEvaluationMapper,
 
     @Override
     public int updateById(ShopEvaluationVo shopEvaluationVo) {
-        ShopEvaluation shopEvaluation = this.getOne(new QueryWrapper<ShopEvaluation>().eq("uuid", shopEvaluationVo.getUuid()));
+        ShopEvaluations shopEvaluation = this.getOne(new QueryWrapper<ShopEvaluations>().eq("uuid", shopEvaluationVo.getUuid()));
         if (Objects.isNull(shopEvaluation)){
             throw new JSYException(-1,"当前评论不存在");
         }
@@ -110,8 +113,8 @@ public class ShopEvaluationServiceImpl extends ServiceImpl<ShopEvaluationMapper,
      * @param shopEvaluationVo
      * @return
      */
-    private static ShopEvaluation replaysShopEvaluation(ShopEvaluationVo shopEvaluationVo){
-        ShopEvaluation shopEvaluation = new ShopEvaluation();
+    private static ShopEvaluations replaysShopEvaluation(ShopEvaluationVo shopEvaluationVo){
+        ShopEvaluations shopEvaluation = new ShopEvaluations();
         shopEvaluation.setUserUuid(shopEvaluationVo.getUserUuid());
         shopEvaluation.setShopUuid(shopEvaluationVo.getShopUuid());
         shopEvaluation.setOrderUuid(shopEvaluationVo.getOrderUuid());
@@ -124,7 +127,7 @@ public class ShopEvaluationServiceImpl extends ServiceImpl<ShopEvaluationMapper,
     }
 
     @Override
-    public ShopEvaluationDto toDto(ShopEvaluation entity) {
+    public ShopEvaluationDto toDto(ShopEvaluations entity) {
         if (Objects.isNull(entity)){
             return null;
         }
@@ -141,11 +144,11 @@ public class ShopEvaluationServiceImpl extends ServiceImpl<ShopEvaluationMapper,
 
     }
     @Override
-    public ShopEvaluation toEntity(ShopEvaluationDto dto) {
+    public ShopEvaluations toEntity(ShopEvaluationDto dto) {
         if (Objects.isNull(dto)){
             return null;
         }
-        ShopEvaluation shopEvaluation = new ShopEvaluation();
+        ShopEvaluations shopEvaluation = new ShopEvaluations();
         shopEvaluation.setId(dto.getId());
         shopEvaluation.setShopUuid(dto.getShopUuid());
         shopEvaluation.setUserUuid(dto.getUserUuid());
@@ -157,25 +160,25 @@ public class ShopEvaluationServiceImpl extends ServiceImpl<ShopEvaluationMapper,
 
     }
     @Override
-    public List<ShopEvaluation> toListEntity(List<ShopEvaluationDto> list) {
+    public List<ShopEvaluations> toListEntity(List<ShopEvaluationDto> list) {
         if (list.isEmpty()){
             return null;
         }
-        List<ShopEvaluation> shopEvaluations = new ArrayList<ShopEvaluation>(list.size());
+        List<ShopEvaluations> shopEvaluations = new ArrayList<ShopEvaluations>(list.size());
         for (ShopEvaluationDto shopEvaluationDto : list){
-            ShopEvaluation shopEvaluation = toEntity(shopEvaluationDto);
+            ShopEvaluations shopEvaluation = toEntity(shopEvaluationDto);
             shopEvaluations.add(shopEvaluation);
         }
         return shopEvaluations;
     }
 
     @Override
-    public List<ShopEvaluationDto> toListDto(List<ShopEvaluation> list) {
+    public List<ShopEvaluationDto> toListDto(List<ShopEvaluations> list) {
         if (list.isEmpty()){
             return null;
         }
         List<ShopEvaluationDto> shopEvaluationDtos = new ArrayList<ShopEvaluationDto>(list.size());
-        for (com.jsy.domain.ShopEvaluation ShopEvaluation : list){
+        for (ShopEvaluations ShopEvaluation : list){
             ShopEvaluationDto shopEvaluationDto = toDto(ShopEvaluation);
             shopEvaluationDtos.add(shopEvaluationDto);
         }

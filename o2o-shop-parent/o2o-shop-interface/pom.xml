@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>o2o-shop-parent</artifactId>
-        <groupId>org.example</groupId>
+        <groupId>com.zhsj</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -15,17 +15,12 @@
     <dependencies>
 
         <dependency>
-            <groupId>org.example</groupId>
+            <groupId>com.zhsj</groupId>
             <artifactId>o2o-basic-interface</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-
-<!--        计算半径范围-->
+        <!--        计算半径范围-->
         <dependency>
             <groupId>org.locationtech.spatial4j</groupId>
             <artifactId>spatial4j</artifactId>
@@ -41,23 +36,24 @@
         </dependency>
 
         <dependency>
-            <groupId>org.example</groupId>
+            <groupId>com.zhsj</groupId>
             <artifactId>o2o-basic-util</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.example</groupId>
+            <groupId>com.zhsj</groupId>
             <artifactId>o2o-goods-interface</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.zhsj</groupId>
+            <artifactId>o2o-order-interface</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
             <version>5.0.9.RELEASE</version>
-        </dependency>
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>

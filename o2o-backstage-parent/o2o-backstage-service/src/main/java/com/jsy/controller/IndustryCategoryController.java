@@ -21,7 +21,7 @@ public class IndustryCategoryController {
      * @param industryCategory  传递的实体
      * @return Ajaxresult转换结果
      */
-    @ApiOperation(value = "新增或删除",httpMethod = "Delete",response = CommonResult.class)
+    //@ApiOperation(value = "新增或删除",httpMethod = "Delete",response = CommonResult.class)
     @PostMapping(value="/save")
     public CommonResult save(@RequestBody IndustryCategory industryCategory){
         try {
@@ -42,7 +42,7 @@ public class IndustryCategoryController {
      * @param id
      * @return
      */
-    @ApiOperation(value = "删除对象信息",httpMethod = "Delete",response = CommonResult.class)
+   // @ApiOperation(value = "删除对象信息",httpMethod = "Delete",response = CommonResult.class)
     @DeleteMapping(value="/{id}")
     public CommonResult delete(@PathVariable("id") Long id){
         try {

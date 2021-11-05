@@ -1,10 +1,14 @@
 package com.jsy.basic.util.vo;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.jsy.basic.util.exception.JSYError;
+import com.zhsj.basecommon.enums.ErrorEnum;
+import com.zhsj.basecommon.vo.R;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 
 
@@ -14,34 +18,35 @@ import java.io.Serializable;
 public class CommonResult<T> implements Serializable {
 
     @ApiModelProperty("接口返回状态码，0表示成功")
-	private int code;
-	
-	@ApiModelProperty("接口错误返回提示信息")
-	private String message;
+    private int code;
 
-	@ApiModelProperty("具体数据体")
+    @ApiModelProperty("接口错误返回提示信息")
+    private String message;
+
+    @ApiModelProperty("具体数据体")
     @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-	private T data;
+    private T data;
 
-	public static <T> CommonResult<T> ok(T data) {
-		return new CommonResult<>(0, null, data);
-	}
+    public static <T> CommonResult<T> ok(T data) {
+        return new CommonResult<>(0, null, data);
+    }
 
-	public static CommonResult<Boolean> ok() {
-		return new CommonResult<>(0,"操作成功",true);
-	}
-	
-	public static CommonResult<Boolean> error(int code, String message) {
-		return new CommonResult<>(code, message, false);
-	}
-	
-	public static CommonResult<Boolean> error(JSYError error) {
-		return error(error.getCode(), error.getMessage());
-	}
-	
-	public static CommonResult<Boolean> error(int code) {
-		return error(code, null);
-	}
+    public static CommonResult<Boolean> ok() {
+        return new CommonResult<>(0, "操作成功", true);
+    }
+
+    public static CommonResult<Boolean> error(int code, String message) {
+        return new CommonResult<>(code, message, false);
+    }
+
+    public static CommonResult<Boolean> error(JSYError error) {
+        return error(error.getCode(), error.getMessage());
+    }
+
+    public static CommonResult<Boolean> error(int code) {
+        return error(code, null);
+    }
+
 
     public int getCode() {
         return this.code;

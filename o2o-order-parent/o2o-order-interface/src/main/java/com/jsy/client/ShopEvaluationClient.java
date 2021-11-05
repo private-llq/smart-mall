@@ -5,7 +5,7 @@ import com.jsy.FeignConfiguration;
 import com.jsy.basic.util.AjaxResult;
 import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.client.impl.OrderClientImpl;
-import com.jsy.domain.ShopEvaluation;
+import com.jsy.domain.ShopEvaluations;
 import com.jsy.query.ShopEvaluationQuery;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -23,7 +23,7 @@ public interface ShopEvaluationClient {
     @ApiOperation(value = "店铺评论新增",httpMethod = "POST",response = AjaxResult.class,notes = "当店铺评论的id有的时候就是修改，没有的时候就是新增")
     @ApiParam(required = true,value = "传入店铺评论对象")
     @RequestMapping(value="/saveEvaluation",method= RequestMethod.POST)
-    public CommonResult saveEvaluation(@RequestBody ShopEvaluation shopEvaluation);
+    public CommonResult saveEvaluation(@RequestBody ShopEvaluations shopEvaluation);
 
     /**
      * 删除店铺的评论信息

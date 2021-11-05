@@ -1,7 +1,7 @@
 package com.jsy.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.jsy.domain.ShopEvaluation;
+import com.jsy.domain.ShopEvaluations;
 import com.jsy.dto.ShopEvaluationDto;
 import com.jsy.mapper.BaseMapper;
 import com.jsy.vo.ShopEvaluationVo;
@@ -16,7 +16,7 @@ import java.util.List;
  * @author yu
  * @since 2020-11-13
  */
-public interface IShopEvaluationService extends IService<ShopEvaluation> , BaseMapper<ShopEvaluationDto, ShopEvaluation> {
+public interface IShopEvaluationService extends IService<ShopEvaluations> , BaseMapper<ShopEvaluationDto, ShopEvaluations> {
 
     void evaluationOrder(ShopEvaluationVo shopEvaluationVo);
 

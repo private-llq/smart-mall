@@ -2,8 +2,8 @@ package com.jsy.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsy.basic.util.AjaxResult;
 import com.jsy.basic.util.PageList;
-import com.jsy.domain.ShopEvaluation;
-import com.jsy.query.ShopEvaluationQuery;
+import com.jsy.domain.ShopEvaluations;
+import com.jsy.query.ShopEvaluationQueryOne;
 import com.jsy.service.IShopEvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +20,7 @@ public class ShopEvaluationController {
     * @return Ajaxresult转换结果
     */
     @RequestMapping(value="/save",method= RequestMethod.POST)
-    public AjaxResult save(@RequestBody ShopEvaluation shopEvaluation){
+    public AjaxResult save(@RequestBody ShopEvaluations shopEvaluation){
         try {
             if(shopEvaluation.getId()!=null){
                 shopEvaluationService.updateById(shopEvaluation);
@@ -52,7 +52,7 @@ public class ShopEvaluationController {
 
     //获取
     @RequestMapping(value = "/{id}",method = RequestMethod.GET)
-    public ShopEvaluation get(@PathVariable("id")Long id)
+    public ShopEvaluations get(@PathVariable("id")Long id)
     {
         return shopEvaluationService.getById(id);
     }
@@ -62,7 +62,7 @@ public class ShopEvaluationController {
     * @return
     */
     @RequestMapping(value = "/list",method = RequestMethod.GET)
-    public List<ShopEvaluation> list(){
+    public List<ShopEvaluations> list(){
 
         return shopEvaluationService.list(null);
     }
@@ -74,10 +74,10 @@ public class ShopEvaluationController {
     * @return PageList 分页对象
     */
     @RequestMapping(value = "/pagelist",method = RequestMethod.POST)
-    public PageList<ShopEvaluation> json(@RequestBody ShopEvaluationQuery query)
+    public PageList<ShopEvaluations> json(@RequestBody ShopEvaluationQueryOne query)
     {
-        Page<ShopEvaluation> page = new Page<ShopEvaluation>(query.getPage(),query.getRows());
+        Page<ShopEvaluations> page = new Page<ShopEvaluations>(query.getPage(),query.getRows());
         page = shopEvaluationService.page(page);
-        return new PageList<ShopEvaluation>(page.getTotal(),page.getRecords());
+        return new PageList<ShopEvaluations>(page.getTotal(),page.getRecords());
     }
 }
