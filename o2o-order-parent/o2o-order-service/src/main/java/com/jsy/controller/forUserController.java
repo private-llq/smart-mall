@@ -6,6 +6,8 @@ import com.jsy.basic.util.utils.CurrentUserHolder;
 import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.basic.util.vo.UserDto;
 import com.jsy.basic.util.vo.UserEntity;
+import com.zhsj.baseweb.support.ContextHolder;
+import com.zhsj.baseweb.support.LoginUser;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
