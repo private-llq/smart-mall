@@ -10,7 +10,7 @@ public final   class BeansCopyUtils {
     private BeansCopyUtils() {
     }
 
-    private static <T1, T2> List<T2> listCopy(List<T1> sourceList, Class<T2> clazz) {
+    public static <T1, T2> List<T2> listCopy(List<T1> sourceList, Class<T2> clazz) {
         return (List<T2>) sourceList.stream().map((source)->{
             Object target;
             try {
