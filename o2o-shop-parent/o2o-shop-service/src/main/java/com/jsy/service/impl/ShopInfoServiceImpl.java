@@ -91,10 +91,15 @@ public class ShopInfoServiceImpl extends ServiceImpl<ShopInfoMapper, ShopInfo> i
     //店铺申请
     @Override
     public Boolean applyShop(ShopInfoParamVo shopInfoParam) {
-        boolean mobile = RegexUtils.isMobile(shopInfoParam.getShopPhone());//验证电话
+        boolean mobile = RegexUtils.isLandline(shopInfoParam.getMobile());//验证电话
         if (!mobile) {
-            throw new JSYException(-1, "电话格式错误");
+            throw new JSYException(-1, "座机电话格式错误");
         }
+        boolean phone = RegexUtils.isMobile(shopInfoParam.getShopPhone());
+        if (!phone){
+            throw new JSYException(-1, "经营者/法人电话格式错误");
+        }
+
         if (shopInfoParam.getShopName().length() > 15) {
             throw new JSYException(-1, "店铺名太长");
         }
@@ -102,25 +107,35 @@ public class ShopInfoServiceImpl extends ServiceImpl<ShopInfoMapper, ShopInfo> i
         if (shopLogo.size()>5){
             throw new JSYException(-1,"照片只能上传5张");
         }
-
-
-
         ShopInfo shopInfo = new ShopInfo();
         BeanUtils.copyProperties(shopInfoParam, shopInfo);
-        shopInfo.setUuid(UUIDUtils.getUUID());
         LoginUser loginUser = ContextHolder.getContext().getLoginUser();//解析token ;//获取登录者的uuid
-        ShopInfoParam infoParam = new ShopInfoParam();
-        BeanUtils.copyProperties(shopInfoParam,infoParam);
-
-        shopInfo.setShopLogo(infoParam.getShopFront());//将门脸设置为默认的log
-        shopInfo.setOwnerUuid(loginUser.getId().toString());//设置店铺拥有者uuid
-        shopInfo.setStatus(0);//默认状态没审核
-        shopInfo.setBusinessStatus(3);//默认是暂停营业的
-        shopInfo.setDeliveryArea(0L);//默认配送距离为0
-        int insert = shopInfoMapper.insert(shopInfo);
-        if (insert > 0) {
-            return true;
+        if (loginUser==null){
+            throw  new  JSYException(-1,"请先登录");
         }
+        //登陆者的id
+        shopInfo.setOwnerUuid(loginUser.getId().toString());
+/*        //座机电话
+        shopInfo.setMobile(shopInfoParam.getMobile());*/
+        //门店照片
+        shopInfo.setShopLogo(shopInfoParam.getShopLogo().toString());
+        //门店类型
+        shopInfo.setIndustry_category_id(shopInfoParam.getIndustry_category_id());
+
+        shopInfo.setUuid(UUIDUtils.getUUID());
+
+//        ShopInfoParam infoParam = new ShopInfoParam();
+//        BeanUtils.copyProperties(shopInfoParam,infoParam);
+//
+//        shopInfo.setShopLogo(infoParam.getShopFront());//将门脸设置为默认的log
+//        shopInfo.setOwnerUuid(loginUser.getId().toString());//设置店铺拥有者uuid
+//        shopInfo.setStatus(0);//默认状态没审核
+//        shopInfo.setBusinessStatus(3);//默认是暂停营业的
+//        shopInfo.setDeliveryArea(0L);//默认配送距离为0
+//        int insert = shopInfoMapper.insert(shopInfo);
+//        if (insert > 0) {
+//            return true;
+//        }
         return false;
     }
 

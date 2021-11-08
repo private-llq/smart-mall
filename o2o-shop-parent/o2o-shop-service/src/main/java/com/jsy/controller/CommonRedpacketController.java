@@ -6,6 +6,7 @@ import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.domain.CommonRedpacket;
 import com.jsy.query.CommonRedpacketQuery;
 import com.jsy.service.ICommonRedpacketService;
+import com.zhsj.baseweb.annotation.LoginIgnore;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;

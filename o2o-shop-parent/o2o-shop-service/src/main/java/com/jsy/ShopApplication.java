@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication
 @MapperScan(value = "com.jsy.mapper")
 @EnableFeignClients
-@ComponentScan("com.zhsj")
+//@ComponentScan("com.zhsj")
 @EnableTransactionManagement
 public class ShopApplication {
     public static void main(String[] args) {

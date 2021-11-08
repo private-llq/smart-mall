@@ -11,17 +11,17 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class MybatisPlusConfig {
-  /*  // 注册乐观锁插件
-    @Bean
-    public OptimisticLockerInterceptor optimisticLockerInterceptor() {
-        return new OptimisticLockerInterceptor();
-    }
-
-    // 逻辑删除组件
-    @Bean
-    public ISqlInjector sqlInjector() {
-        return new LogicSqlInjector();
-    }*/
+  // 注册乐观锁插件
+//    @Bean
+//    public OptimisticLockerInterceptor optimisticLockerInterceptor() {
+//        return new OptimisticLockerInterceptor();
+//    }
+//
+//    // 逻辑删除组件
+//    @Bean
+//    public ISqlInjector sqlInjector() {
+//        return new LogicSqlInjector();
+//    }
 
 //    // 分页查询组件
 //    @Bean

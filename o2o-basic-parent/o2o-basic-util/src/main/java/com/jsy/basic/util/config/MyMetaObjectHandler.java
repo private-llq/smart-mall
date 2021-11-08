@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -18,14 +19,15 @@ import java.time.LocalDateTime;
  */
 @Component
 @Slf4j
+@Configuration
 //@ConditionalOnProperty(value = "jsy.service.enable", havingValue = "true")
 public class MyMetaObjectHandler implements MetaObjectHandler {
-
 	@Override
 	public void insertFill(MetaObject metaObject) {
+		System.out.println("自动填充时间");
 		setFieldValByName("createTime", LocalDateTime.now(), metaObject);
 		setFieldValByName("updateTime", LocalDateTime.now(), metaObject);
-		setFieldValByName("deleted", 0, metaObject);
+		setFieldValByName("deleted", 0L, metaObject);
 	}
 	@Override
 	public void updateFill(MetaObject metaObject) {

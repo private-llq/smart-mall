@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Time;
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Data
@@ -59,8 +60,6 @@ public class ShopInfoParam implements Serializable {
 
 
     /**********************************  新周边商家字段 ***************************************************************************/
-    @ApiModelProperty(name = "shopSpecial", value = "店铺电话 座机")
-    private String shopSpecial;
     @ApiModelProperty(name = "businessAddress", value = "营业执照地址")
     private String businessAddress;
     @ApiModelProperty(name = "industry_category_id", value = "门店类型id")
@@ -73,7 +72,7 @@ public class ShopInfoParam implements Serializable {
     private String idNumber;
 
     @ApiModelProperty(name = "bankImages", value = "银行资料/开户许可证(file_url)")
-    private String bankImages;
+    private List<String> bankImages;
     @ApiModelProperty(name = "bankNumber", value = "银行卡号")
     private String bankNumber;
     @ApiModelProperty(name = "depositBank", value = "开户银行")

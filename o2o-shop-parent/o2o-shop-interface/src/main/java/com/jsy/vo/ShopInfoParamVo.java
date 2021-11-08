@@ -24,9 +24,9 @@ public class ShopInfoParamVo implements Serializable {
     @ApiModelProperty(name = "shopName", value = "店铺名称")
     private String shopName;
 
-    @NotBlank(groups = {shopInfoParamVoValidatedGroup.class},message = "店铺座机电话不能为空")
-    @ApiModelProperty(name = "shopSpecial", value = "店铺电话 座机")
-    private String shopSpecial;
+    @NotBlank(groups = {shopInfoParamVoValidatedGroup.class},message = "联系人法人电话")
+    @ApiModelProperty(name = "shopPhone", value = "联系人法人电话")
+    private String shopPhone;
 
     @NotBlank(groups = {shopInfoParamVoValidatedGroup.class},message = "地址不能为空")
     @ApiModelProperty(name = "businessAddress", value = "请填写营业执照上面的地址")
@@ -67,8 +67,8 @@ public class ShopInfoParamVo implements Serializable {
     @ApiModelProperty(name = "idNumber", value = "身份证号码")
     private String idNumber;
     @NotBlank(groups = {shopInfoParamVoValidatedGroup.class},message = "个人电话不能为空")
-    @ApiModelProperty(name = "shopPhone", value = "店铺法人/经营者电话")
-    private String shopPhone;
+    @ApiModelProperty(name = "mobile", value = "座机电话")
+    private String mobile;
     @NotBlank(groups = {shopInfoParamVoValidatedGroup.class},message = "银行资料/开户许可证不能为空")
     @ApiModelProperty(name = "bankImages", value = "银行资料/开户许可证(file_url)")
     private String bankImages;

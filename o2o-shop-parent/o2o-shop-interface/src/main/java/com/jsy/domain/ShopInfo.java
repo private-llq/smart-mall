@@ -32,7 +32,7 @@ public class ShopInfo implements Serializable {
     private String ownerUuid;
     @ApiModelProperty(name = "shopTypeUuid", value = "店铺类型uuid")
     private String shopTypeUuid;
-    @ApiModelProperty(name = "mobile", value = "店铺联系电话")
+    @ApiModelProperty(name = "mobile", value = "店铺座机电话")
     private String mobile;
     @ApiModelProperty(name = "linkman", value = "店铺联系人")
     private String linkman;
@@ -121,5 +121,31 @@ public class ShopInfo implements Serializable {
      */
     @TableField(exist = false)
     private CartDTO cartDTO;
+
+
+    @ApiModelProperty(name = "industry_category_id", value = "门店类型id")
+    private String industry_category_id;
+
+    @ApiModelProperty(name = "businessAddress", value = "营业执照地址")
+    private String businessAddress;
+    @ApiModelProperty(name = "companyName",value = "公司名称  营业执照的名称")
+    private String companyName;
+    @ApiModelProperty(name = "idName", value = "证件姓名")
+    private String idName;
+    @ApiModelProperty(name = "idNumber", value = "身份证号码")
+    private String idNumber;
+    @ApiModelProperty(name = "bankImages", value = "银行资料/开户许可证(file_url)")
+    private List<String> bankImages;
+    @ApiModelProperty(name = "bankNumber", value = "银行卡号")
+    private String bankNumber;
+    @ApiModelProperty(name = "depositBank", value = "开户银行")
+    private String depositBank;
+    @ApiModelProperty(name = "branchBank", value = "开户支行")
+    private String branchBank ;
+
+    @ApiModelProperty(name = "aliPay", value = "支付宝账号")
+    private String aliPay;
+    @ApiModelProperty(name = "weChat", value = "微信账号")
+    private String weChat ;
 
 }
