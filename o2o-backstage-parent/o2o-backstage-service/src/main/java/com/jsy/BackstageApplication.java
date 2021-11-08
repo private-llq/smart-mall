@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @EnableEurekaClient
 @MapperScan("com.jsy.mapper")
 @EnableFeignClients
-@ComponentScan("com.zhsj")
+//@ComponentScan("com.zhsj")
 @Component
 public class BackstageApplication {
     public static void main(String[] args) {

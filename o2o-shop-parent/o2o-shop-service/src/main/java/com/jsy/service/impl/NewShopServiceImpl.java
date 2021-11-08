@@ -1,6 +1,7 @@
 package com.jsy.service.impl;
 
 import com.jsy.basic.util.exception.JSYException;
+import com.jsy.basic.util.utils.GouldUtil;
 import com.jsy.basic.util.utils.RegexUtils;
 import com.jsy.basic.util.utils.UUIDUtils;
 import com.jsy.domain.NewShop;
@@ -61,6 +62,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         //获取登录用户
 //        LoginUser loginUser = ContextHolder.getContext().getLoginUser();
 //        newShop.setOwnerUuid(loginUser.getId().toString());
+        newShop.setLonLat(GouldUtil.getLonLat(shopPacketParam.getAddressDetail()));
         newShop.setUuid(UUIDUtils.getUUID());
         shopMapper.insert(newShop);
     }

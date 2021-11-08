@@ -1,5 +1,7 @@
 package com.jsy.controller;
+import com.jsy.basic.util.utils.BeansCopyUtils;
 import com.jsy.basic.util.utils.ValidatorUtils;
+import com.jsy.dto.NewShopDto;
 import com.jsy.parameter.NewShopParam;
 import com.jsy.service.INewShopService;
 import com.jsy.domain.NewShop;
@@ -12,9 +14,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.jsy.basic.util.vo.CommonResult;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -51,33 +56,12 @@ public class NewShopController {
     }
 
     /**
-    * 保存和修改公用的
-    * @param newShop  传递的实体
-    * @return Ajaxresult转换结果
-    */
-    @PostMapping(value="/save")
-    public CommonResult save(@RequestBody NewShop newShop){
-        try {
-            if(newShop.getId()!=null){
-                newShopService.updateById(newShop);
-            }else{
-                newShopService.save(newShop);
-            }
-            return CommonResult.ok();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return CommonResult.error(-1,"操作失败！");
-        }
-    }
-
-
-
-    /**
     * 删除对象信息
     * @param id
     * @return
     */
     @DeleteMapping(value="/{id}")
+    @ApiOperation("删除店铺")
     public CommonResult delete(@PathVariable("id") Long id){
         try {
             newShopService.removeById(id);
@@ -93,6 +77,7 @@ public class NewShopController {
     * @param id
     */
     @GetMapping(value = "/{id}")
+    @ApiOperation(("查询店铺"))
     public NewShop get(@PathVariable("id")Long id)
     {
         return newShopService.getById(id);
@@ -105,9 +90,17 @@ public class NewShopController {
     */
 //    @LoginIgnore
     @GetMapping(value = "/list")
-    public List<NewShop> list(){
-
-        return newShopService.list(null);
+    public List<NewShopDto> list(){
+        List<NewShop> list = newShopService.list(null);
+        List<NewShopDto> newShopDtos = new ArrayList<>();
+        for (NewShop newShop : list) {
+            NewShopDto newShopDto = new NewShopDto();
+            BeanUtils.copyProperties(newShop,newShopDto);
+            System.out.println("目标"+newShopDto);
+            newShopDtos.add(newShopDto);
+        }
+//        List<NewShopDto> newShopDtos = BeansCopyUtils.listCopy(list, NewShopDto.class);
+        return newShopDtos;
     }
 
 

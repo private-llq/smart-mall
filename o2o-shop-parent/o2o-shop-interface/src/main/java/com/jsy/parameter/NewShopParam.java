@@ -93,6 +93,5 @@ public class NewShopParam implements Serializable {
     private String aliPay;
     @ApiModelProperty(name = "weChat", value = "微信账号")
     private String weChat ;
-
     public interface newShopValidatedGroup{}
 }

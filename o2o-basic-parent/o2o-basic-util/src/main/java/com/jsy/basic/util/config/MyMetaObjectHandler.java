@@ -27,7 +27,7 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
 		System.out.println("自动填充时间");
 		setFieldValByName("createTime", LocalDateTime.now(), metaObject);
 		setFieldValByName("updateTime", LocalDateTime.now(), metaObject);
-		setFieldValByName("deleted", 0L, metaObject);
+		setFieldValByName("deleted", 0, metaObject);
 	}
 	@Override
 	public void updateFill(MetaObject metaObject) {

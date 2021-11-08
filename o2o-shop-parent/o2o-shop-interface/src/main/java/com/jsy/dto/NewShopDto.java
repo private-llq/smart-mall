@@ -1,17 +1,14 @@
-package com.jsy.domain;
+package com.jsy.dto;
 
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableField;
-import java.io.Serializable;
-
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.jsy.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
 
 /**
  * <p>
@@ -23,15 +20,10 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("w_new_shop")
-@ApiModel(value="NewShop对象", description="新——店铺表")
-public class NewShop extends BaseEntity {
+@ApiModel(value="NewShop对象", description="店铺返回参数对象")
+public class NewShopDto implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
-//    @ApiModelProperty(value = "店铺id")
-//    @TableId(value = "id", type = IdType.AUTO)
-//    private Long id;
+    private Long id;
 
     @ApiModelProperty(value = "店铺uuid")
     private String uuid;
@@ -107,4 +99,8 @@ public class NewShop extends BaseEntity {
 
     @ApiModelProperty(value = "经纬度（经度，维度））")
     private String lonLat;
+
+
+
+
 }

@@ -13,6 +13,8 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -53,7 +55,7 @@ public class GouldUtil {
 	 * @param address 地址
 	 * @return 经纬度
 	 */
-	public String getLonLat(String address) {
+	public static String getLonLat(String address) {
 		// 返回输入地址address的经纬度信息, 格式是 经度,纬度
 		String queryUrl =  "https://restapi.amap.com/v3/geocode/geo?address="+address+"&output=JSON&key="+GOULD_KEY;
 		String queryResult = getResponse(queryUrl);
@@ -179,6 +181,12 @@ public class GouldUtil {
 		double distance = R * c * Global.INT_1000;
 		distance = Math.pow(distance, 2);
 		return Math.sqrt(distance);
+	}
+
+	public static void main(String[] args) {
+		String s="重庆市渝北区天宫殿街道泰山大道东段106号";
+		String lonLat = GouldUtil.getLonLat(s);
+		System.out.println(lonLat);
 	}
 
 }
