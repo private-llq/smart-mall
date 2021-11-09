@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jsy.mapper.ShopApplySeckillMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jsy.dto.ShopApplySeckillDTO">
+        <result column="uuid" property="uuid"/>
+        <result column="goods_uuid" property="goodsUuid" />
+        <result column="title" property="goodsName" />
+        <result column="price" property="price"/>
+        <result column="discount_price" property="discountPrice"/>
+        <result column="images_url" property="imagesUrl"/>
+        <result column="shop_uuid" property="shopUuid" />
+        <result column="name" property="shopName" />
+        <result column="num" property="num"/>
+        <result column="start_time" property="startTime" />
+        <result column="end_time" property="endTime"/>
+        <result column="soName" property="shopUserName"/>
+        <result column="phone" property="phone"/>
+        <result column="address_detail" property="addressDetail"/>
+        <result column="purchase_restrictions" property="purchaseRestrictions"/>
+        <result column="seckill_price" property="seckillPrice"/>
+    </resultMap>
+
+    <update id="updateStock">
+        UPDATE t_shop_apply_seckill SET num=num-#{cartNum} WHERE shop_uuid=#{shopUuid} AND goods_uuid=#{goodsUuid};
+    </update>
+
+    <select id="applicationPageList" resultMap="BaseResultMap">
+        SELECT sas.*,s.name,g.title,so.name soName,so.phone FROM t_shop_apply_seckill as sas  LEFT JOIN t_shop_info s ON sas.shop_uuid=s.uuid
+        LEFT JOIN t_shop_owner so ON so.relation_uuid= s.uuid
+        LEFT JOIN t_goods_basic g on sas.goods_uuid=g.uuid
+        <if test="query.state!=null">
+            and state=#{query.state}
+        </if>
+        <if test="query.selectTime!=null">
+            and start_time=#{query.selectTime}
+        </if>
+    </select>
+
+    <select id="userApplicationPageList" resultMap="BaseResultMap">
+    SELECT sas.*,s.shop_name,s.address_detail,g.title,g.price,g.images_url,so.name soName,so.phone FROM t_shop_apply_seckill as sas
+        LEFT JOIN t_shop_info s ON sas.shop_uuid=s.uuid
+        LEFT JOIN t_shop_owner so ON so.relation_uuid= s.uuid
+        LEFT JOIN t_goods_basic g on sas.goods_uuid=g.uuid where state=1
+        <if test="userQuery.selectTime!=null">
+            and start_time=#{userQuery.selectTime}
+        </if>
+    </select>
+
+    <select id="activityList" resultMap="BaseResultMap">
+        SELECT sas.*,s.name,g.title,g.price,g.discount_price,g.images_url,so.name soName,so.phone FROM t_shop_apply_seckill as sas
+        LEFT JOIN t_shop_info s ON sas.shop_uuid=s.uuid
+        LEFT JOIN t_shop_owner so ON so.relation_uuid= s.uuid
+        LEFT JOIN t_goods_basic g on sas.goods_uuid=g.uuid where state=1
+    </select>
+
+
+
+</mapper>
