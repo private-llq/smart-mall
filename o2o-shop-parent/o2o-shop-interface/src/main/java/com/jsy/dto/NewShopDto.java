@@ -40,8 +40,8 @@ public class NewShopDto implements Serializable {
     @ApiModelProperty(value = "店铺联系电话")
     private String mobile;
 
-    @ApiModelProperty(value = "门店类型（与w_industry_category行业关联）")
-    private String industryCategoryId;
+    @ApiModelProperty(name = "shop_tree_id", value = "门店类型id")
+    private String shopTreeId;
 
     @ApiModelProperty(value = "店铺logo(file_url)")
     private String shopLogo;
@@ -99,6 +99,9 @@ public class NewShopDto implements Serializable {
 
     @ApiModelProperty(value = "经纬度（经度，维度））")
     private String lonLat;
+
+    @ApiModelProperty(value = "经营类型（0-服务行业   1-非服务行业）")
+    private Integer type;
 
 
 

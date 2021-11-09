@@ -1,6 +1,6 @@
 package com.jsy.mapper;
 
-import com.jsy.domain.IndustryCategory;
+import com.jsy.domain.GoodsType;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author Tian
  * @since 2021-11-05
  */
-public interface IndustryCategoryMapper extends BaseMapper<IndustryCategory> {
+public interface GoodsTypeMapper extends BaseMapper<GoodsType> {
 
 }

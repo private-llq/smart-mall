@@ -44,8 +44,8 @@ public class NewShopParam implements Serializable {
     private List<String> shopLogo;
 
     @NotBlank(groups = {NewShopParam.newShopValidatedGroup.class},message = "门店类型不能为空")
-    @ApiModelProperty(name = "industry_category_id", value = "门店类型id")
-    private String industry_category_id;
+    @ApiModelProperty(name = "shop_tree_id", value = "门店类型id")
+    private String shopTreeId;
     @NotBlank(groups = {NewShopParam.newShopValidatedGroup.class},message = "店铺详细地址不能为空")
     @ApiModelProperty(name = "addressDetail", value = "店铺详细地址（获取定位）")
     private String addressDetail;
@@ -93,5 +93,9 @@ public class NewShopParam implements Serializable {
     private String aliPay;
     @ApiModelProperty(name = "weChat", value = "微信账号")
     private String weChat ;
+
+    @NotBlank(groups = {NewShopParam.newShopValidatedGroup.class},message = "经营类型不能为空")
+    @ApiModelProperty(value = "经营类型（0-服务行业   1-非服务行业）")
+    private Integer type;
     public interface newShopValidatedGroup{}
 }

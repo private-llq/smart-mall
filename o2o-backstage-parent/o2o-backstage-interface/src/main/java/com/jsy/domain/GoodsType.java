@@ -2,10 +2,7 @@ package com.jsy.domain;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.IdType;
-import java.time.LocalDateTime;
-import com.baomidou.mybatisplus.annotation.TableId;
-import java.io.Serializable;
+
 import java.util.List;
 
 import com.jsy.BaseEntity;
@@ -23,8 +20,8 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("w_industry_category")
-public class IndustryCategory extends BaseEntity {
+@TableName("w_goods_type")
+public class GoodsType extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
@@ -56,6 +53,6 @@ public class IndustryCategory extends BaseEntity {
 
     @TableField(exist = false)
     @ApiModelProperty(value = "子节点列表")
-    private List<IndustryCategory> children;
+    private List<GoodsType> children;
 
 }

@@ -1,6 +1,6 @@
 package com.jsy.service;
 
-import com.jsy.domain.IndustryCategory;
+import com.jsy.domain.GoodsType;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -13,9 +13,9 @@ import java.util.List;
  * @author Tian
  * @since 2021-11-04
  */
-public interface IIndustryCategoryService extends IService<IndustryCategory> {
+public interface IGoodsTypeService extends IService<GoodsType> {
     //查询行业服务分类层级结构
-    List<IndustryCategory> selectCategory();
+    List<GoodsType> selectCategory();
 
 //    //新增服务行业分类
 //    boolean addCategory(IndustryCategoryVo categoryVo);

@@ -48,8 +48,8 @@ public class NewShop extends BaseEntity {
     @ApiModelProperty(value = "店铺联系电话")
     private String mobile;
 
-    @ApiModelProperty(value = "门店类型（与w_industry_category行业关联）")
-    private String industryCategoryId;
+    @ApiModelProperty(value = "门店类型（与w_SHOP_TREE行业关联）")
+    private String shopTreeId;
 
     @ApiModelProperty(value = "店铺logo(file_url)")
     private String shopLogo;
@@ -107,4 +107,7 @@ public class NewShop extends BaseEntity {
 
     @ApiModelProperty(value = "经纬度（经度，维度））")
     private String lonLat;
+
+    @ApiModelProperty(value = "经营类型（0-服务行业   1-非服务行业）")
+    private Integer type;
 }

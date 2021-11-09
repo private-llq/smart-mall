@@ -23,7 +23,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("w_service_characteristics")
-@ApiModel(value="ServiceCharacteristics对象", description="")
+@ApiModel(value="ServiceCharacteristics对象", description="服务特点")
 public class ServiceCharacteristics extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
