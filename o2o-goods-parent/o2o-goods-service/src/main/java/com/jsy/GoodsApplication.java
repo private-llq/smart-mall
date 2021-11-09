@@ -17,7 +17,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 import java.time.LocalDate;
@@ -27,7 +26,6 @@ import java.time.format.DateTimeFormatter;
 @SpringBootApplication
 @MapperScan(value = "com.jsy.mapper")
 @EnableFeignClients
-@ComponentScan("com.zhsj")
 public class GoodsApplication {
 
     public static void main(String[] args) {

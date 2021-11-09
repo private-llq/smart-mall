@@ -1,33 +1,12 @@
-package com.jsy.domain;
+package com.jsy.dto;
 
-import java.math.BigDecimal;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import java.time.LocalDateTime;
-import java.io.Serializable;
-
-import com.jsy.BaseEntity;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
-/**
- * <p>
- *  商品表
- * </p>
- *
- * @author lijin
- * @since 2021-11-09
- */
+import java.math.BigDecimal;
+
 @Data
-@EqualsAndHashCode(callSuper = false)
-@TableName("w_goods")
-@ApiModel(value="Goods对象", description=" 商品表")
-public class Goods extends BaseEntity implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class GoodsServiceDto {
 
     @ApiModelProperty(value = "商家id")
     private Long shopId;
@@ -41,14 +20,11 @@ public class Goods extends BaseEntity implements Serializable {
     @ApiModelProperty(value = "商品名称/服务标题")
     private String title;
 
-    @ApiModelProperty(value = "商品的作用")
-    private String effect;
-
     @ApiModelProperty(value = "商品价格")
     private BigDecimal price;
 
-    @ApiModelProperty(value = "0:普通商品 1：服务类商品")
-    private Integer type;
+    @ApiModelProperty(value = "商品的作用")
+    private String effect;
 
     @ApiModelProperty(value = "服务特点表ids 逗号隔开")
     private String serviceCharacteristicsIds;
@@ -71,5 +47,6 @@ public class Goods extends BaseEntity implements Serializable {
     @ApiModelProperty(value = "电话")
     private String phone;
 
-
+    @ApiModelProperty(value = "0:普通商品 1：服务类商品")
+    private Integer type;
 }

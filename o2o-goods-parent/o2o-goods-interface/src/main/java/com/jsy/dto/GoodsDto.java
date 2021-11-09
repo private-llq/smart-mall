@@ -1,19 +1,12 @@
-package com.jsy.parameter;
+package com.jsy.dto;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
-
-
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class GoodsParam {
-
+public class GoodsDto {
     @ApiModelProperty(value = "商家id")
     private Long shopId;
 
@@ -38,4 +31,6 @@ public class GoodsParam {
     @ApiModelProperty(value = "图片介绍: 0-5张 以逗号分割")
     private String photoDescription;
 
+    @ApiModelProperty(value = "0:普通商品 1：服务类商品")
+    private Integer type;
 }

@@ -2,6 +2,7 @@ package com.jsy.mapper;
 
 import com.jsy.domain.Goods;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.springframework.stereotype.Component;
 
 /**
  * <p>
@@ -11,6 +12,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author lijin
  * @since 2021-11-09
  */
+@Component
 public interface GoodsMapper extends BaseMapper<Goods> {
 
 }
