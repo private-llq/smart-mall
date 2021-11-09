@@ -26,9 +26,6 @@ public class GoodsParam {
     @ApiModelProperty(value = "商品名称/服务标题")
     private String title;
 
-    @ApiModelProperty(value = "商品的作用")
-    private String effect;
-
     @ApiModelProperty(value = "商品价格")
     private BigDecimal price;
 
