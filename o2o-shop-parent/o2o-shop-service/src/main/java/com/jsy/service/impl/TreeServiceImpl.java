@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -195,6 +196,17 @@ public class TreeServiceImpl extends ServiceImpl<TreeMapper, Tree> implements IT
     @Override
     public void sortMenu(MySortQuery mySortQuery) {
         treeMapper.sortMenu(mySortQuery);
+    }
+
+
+    /**
+     * 按级别查询菜单
+     */
+    @Override
+    public Map<Integer, List<Tree>> selectLevel() {
+        List<Tree> treeList = treeMapper.selectList(new QueryWrapper<Tree>().eq("deleted", 0));
+        Map<Integer, List<Tree>> collect = treeList.stream().collect(Collectors.groupingBy(Tree::getLevel));
+        return collect;
     }
 
 }

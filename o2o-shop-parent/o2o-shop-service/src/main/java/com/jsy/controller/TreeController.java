@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/tree")
@@ -93,6 +94,15 @@ public class TreeController {
     @GetMapping("selectAllTree")
     public CommonResult<List<Tree>> selectAllTree(@RequestParam("id") Integer id){
         List<Tree> list = treeService.selectAllTree(id);
+        return CommonResult.ok(list);
+    }
+
+    /**
+     * 按级别查询菜单
+     */
+    @GetMapping("selectLevel")
+    public CommonResult<Map<Integer, List<Tree>>> selectLevel(){
+        Map<Integer, List<Tree>> list = treeService.selectLevel();
         return CommonResult.ok(list);
     }
 }

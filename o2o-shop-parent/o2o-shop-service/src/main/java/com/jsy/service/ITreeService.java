@@ -5,6 +5,7 @@ import com.jsy.domain.Tree;
 import com.jsy.query.MySortQuery;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -71,4 +72,11 @@ public interface ITreeService extends IService<Tree> {
      * @return
      */
     void sortMenu(MySortQuery mySortQuery);
+
+
+    /**
+     * 按级别查询菜单
+     */
+    Map<Integer, List<Tree>> selectLevel();
+
 }

@@ -21,7 +21,7 @@ import java.util.List;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("t_shop_tree")
+@TableName("w_shop_tree")
 public class Tree implements Serializable {
 
     private static final long serialVersionUID = 1L;
