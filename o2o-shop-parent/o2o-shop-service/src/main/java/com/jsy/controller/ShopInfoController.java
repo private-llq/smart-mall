@@ -37,7 +37,7 @@ public class ShopInfoController {
     @ApiOperation("申请添加门店")
     @RequestMapping(value="/applyShop",method= RequestMethod.POST)
     public CommonResult<Boolean> applyShop(@RequestBody ShopInfoParamVo shopInfoParam){
-        ValidatorUtils.validateEntity(shopInfoParam,ShopInfoParamVo.class);
+        ValidatorUtils.validateEntity(shopInfoParam,ShopInfoParamVo.shopInfoParamVoValidatedGroup.class);
         System.out.println("接收到"+shopInfoParam);
         log.info("入参：{}",shopInfoParam);
         Boolean aBoolean = shopInfoService.applyShop(shopInfoParam);

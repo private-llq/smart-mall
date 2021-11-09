@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jsy.mapper.NewShopMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jsy.domain.NewShop">
+        <id column="id" property="id" />
+        <result column="uuid" property="uuid" />
+        <result column="owner_uuid" property="ownerUuid" />
+        <result column="city" property="city" />
+        <result column="shop_name" property="shopName" />
+        <result column="mobile" property="mobile" />
+        <result column="industry_category_id" property="industryCategoryId" />
+        <result column="shop_logo" property="shopLogo" />
+        <result column="business_img" property="businessImg" />
+        <result column="business_number" property="businessNumber" />
+        <result column="company_name" property="companyName" />
+        <result column="shop_username" property="shopUsername" />
+        <result column="shop_phone" property="shopPhone" />
+        <result column="shop_cid_Zimg" property="shopCidZimg" />
+        <result column="shop_cid_Fimg" property="shopCidFimg" />
+        <result column="id_name" property="idName" />
+        <result column="id_number" property="idNumber" />
+        <result column="bank_images" property="bankImages" />
+        <result column="bank_number" property="bankNumber" />
+        <result column="deposit_bank" property="depositBank" />
+        <result column="branch_bank" property="branchBank" />
+        <result column="aliPay" property="aliPay" />
+        <result column="weChat" property="weChat" />
+        <result column="creat_time" property="creatTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="deleted" property="deleted" />
+    </resultMap>
+
+</mapper>

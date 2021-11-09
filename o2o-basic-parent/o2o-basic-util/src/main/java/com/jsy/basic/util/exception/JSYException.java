@@ -7,10 +7,12 @@ import java.io.Serializable;
 @EqualsAndHashCode(callSuper = true)
 public class JSYException extends RuntimeException implements Serializable {
 	private Integer code;
+    private String message;
 	
 	public JSYException(Integer code, String message) {
 		super(message);
 		this.code = code;
+        this.message = message;
 	}
 
     public JSYException() {
@@ -20,6 +22,7 @@ public class JSYException extends RuntimeException implements Serializable {
     public JSYException(JSYError error) {
 		super(error.getMessage());
 		this.code = error.getCode();
+		this.message=error.getMessage();
 	}
 
     public Integer getCode() {
@@ -29,8 +32,17 @@ public class JSYException extends RuntimeException implements Serializable {
     public void setCode(Integer code) {
         this.code = code;
     }
+
+
+    public String getMessage() {
+        return this.message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
     @Override
     public String toString() {
-        return "JSYException(code=" + this.getCode() + ")";
+        return "JSYException(code=" + this.getCode() + ",      message"+this.message+")";
     }
 }

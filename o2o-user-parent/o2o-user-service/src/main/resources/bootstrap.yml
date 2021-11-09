@@ -6,6 +6,7 @@ spring:
         service-id: base-config-server #config-server服务的名称
       name: application-user #拉取的文件名称
       profile: dev #拉取的配置环境 通过name+profile确定拉取的文件 application-zuul-dev.yml
+      label: master
   main:
     allow-bean-definition-overriding: true
 #eureka服务端的连接配置
@@ -13,21 +14,3 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://192.168.12.49:36366/eureka/
-#seata:
-#  enabled: true
-#  application-id: SERVICE-SHOP #服务名
-#  tx-service-group: my_test_tx_group # 自定义的事务分组名称
-#  enable-auto-data-source-proxy: true # 启用自动数据源代理
-#  use-jdk-proxy: false
-#  service:
-#    vgroup-mapping:
-#      my_test_tx_group: default # seata-eureka是tc注册到注册中心的服务名称
-#    enable-degrade: false # 是否启用降级
-#  #   disable-global-transaction: false # 是否禁用全局事务
-#  config:
-#    type: file # 配置中心为file模式
-#  registry:
-#    type: eureka # 注册中心为eureka
-#    eureka:
-#      weight: 1
-#      service-url: http://127.0.0.1:8762/eureka # 注册中心地址
