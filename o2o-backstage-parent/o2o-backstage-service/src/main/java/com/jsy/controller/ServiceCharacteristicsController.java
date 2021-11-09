@@ -8,6 +8,8 @@ import com.jsy.query.ServiceCharacteristicsQuery;
 import com.jsy.basic.util.PageList;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhsj.baseweb.annotation.LoginIgnore;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/serviceCharacteristics")
+@Api(tags = "服务特点")
 public class ServiceCharacteristicsController {
     @Autowired
     public IServiceCharacteristicsService serviceCharacteristicsService;
@@ -26,15 +29,16 @@ public class ServiceCharacteristicsController {
     * @return Ajaxresult转换结果
     */
     @PostMapping(value="/save")
+    @ApiOperation("保存和修改公用的")
     public CommonResult save(@RequestBody ServiceCharacteristicsParam characteristicsParam){
-        ServiceCharacteristics serviceCharacteristics = new ServiceCharacteristics();
-        BeanUtils.copyProperties(characteristicsParam,serviceCharacteristics);
-
         try {
             if(characteristicsParam.getId()!=null){
+                ServiceCharacteristics serviceCharacteristics = new ServiceCharacteristics();
+                BeanUtils.copyProperties(characteristicsParam,serviceCharacteristics);
                 serviceCharacteristicsService.updateById(serviceCharacteristics);
             }else{
-                System.out.println(serviceCharacteristics+"新增");
+                ServiceCharacteristics serviceCharacteristics = new ServiceCharacteristics();
+                BeanUtils.copyProperties(characteristicsParam,serviceCharacteristics);
                 serviceCharacteristicsService.save(serviceCharacteristics);
             }
             return CommonResult.ok();
@@ -49,6 +53,7 @@ public class ServiceCharacteristicsController {
     * @param id
     * @return
     */
+    @ApiOperation("删除对象信息")
     @DeleteMapping(value="/{id}")
     public CommonResult delete(@PathVariable("id") Long id){
         try {
@@ -64,6 +69,7 @@ public class ServiceCharacteristicsController {
     * 根据id查询一条
     * @param id
     */
+    @ApiOperation("根据id查询一条")
     @GetMapping(value = "/{id}")
     public ServiceCharacteristics get(@PathVariable("id")Long id)
     {
@@ -75,6 +81,7 @@ public class ServiceCharacteristicsController {
     * 返回list列表
     * @return
     */
+    @ApiOperation("返回list列表")
     @LoginIgnore
     @GetMapping(value = "/list")
     public List<ServiceCharacteristicsDto> list(){
