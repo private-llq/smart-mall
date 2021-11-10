@@ -24,6 +24,8 @@ public class GoodsController {
     @Autowired
     public IGoodsService goodsService;
 
+
+
     /**
     * 添加 商品
     */
@@ -41,6 +43,42 @@ public class GoodsController {
     @PostMapping(value="/saveService")
     public CommonResult saveService(@RequestBody GoodsServiceParam goodsServiceParam){
         goodsService.saveService(goodsServiceParam);
+        return CommonResult.ok();
+
+    }
+
+    /**
+     * 上架商品/服务
+     * @param id
+     */
+
+    @ApiOperation("上架商品/服务")
+    @GetMapping(value="/putaway")
+    public CommonResult putaway(@RequestParam ("id") Long id){
+        goodsService.putaway(id);
+        return CommonResult.ok();
+
+    }
+
+    /**
+     * 下架商品/服务
+     * @param id
+     */
+    @ApiOperation("下架商品/服务")
+    @GetMapping(value="/outaway")
+    public CommonResult outaway(@RequestParam ("id") Long id){
+        goodsService.outaway(id);
+        return CommonResult.ok();
+
+    }
+
+    /**
+     * 一键上架商品/服务
+     */
+    @ApiOperation("一键上架商品/服务")
+    @GetMapping(value="/putawayAll")
+    public CommonResult putawayAll(@RequestParam("idList") List<Long> idList){
+        goodsService.putawayAll(idList);
         return CommonResult.ok();
 
     }
@@ -87,3 +125,4 @@ public class GoodsController {
     }
 
 }
+

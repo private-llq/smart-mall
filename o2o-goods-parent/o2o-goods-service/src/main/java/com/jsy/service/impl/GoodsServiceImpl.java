@@ -72,9 +72,43 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
      */
     @Override
     public Map<Integer, List<Goods>> getGoodsAll(Long shopId) {
-        List<Goods> list = goodsMapper.selectList(new QueryWrapper<Goods>().eq("shop_id", shopId));
+        List<Goods> list = goodsMapper.selectList(new QueryWrapper<Goods>().eq("shop_id", shopId).eq("is_putaway",1).eq("deleted",0));
         Map<Integer, List<Goods>> collect = list.stream().collect(Collectors.groupingBy(Goods::getType));
         return collect;
+    }
+
+    /**
+     * 上架商品/服务
+     * @param id
+     */
+    @Override
+    public void putaway(Long id) {
+        Goods goods = new Goods();
+        goods.setIsPutaway(1);
+        goodsMapper.update(goods,new QueryWrapper<Goods>().eq("id",id));
+
+    }
+
+    /**
+     * 下架商品/服务
+     * @param id
+     */
+    @Override
+    public void outaway(Long id) {
+        Goods goods = new Goods();
+        goods.setIsPutaway(0);
+        goodsMapper.update(goods,new QueryWrapper<Goods>().eq("id",id));
+    }
+
+
+    /**
+     * 一键上架商品/服务
+     */
+    @Override
+    public void putawayAll(List idList) {
+        Goods goods = new Goods();
+        goods.setIsPutaway(1);
+        goodsMapper.update(goods,new QueryWrapper<Goods>().in("id",idList));
     }
 
 }

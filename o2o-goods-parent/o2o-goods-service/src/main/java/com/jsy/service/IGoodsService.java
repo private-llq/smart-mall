@@ -44,4 +44,22 @@ public interface IGoodsService extends IService<Goods> {
      */
 
     Map<Integer, List<Goods>> getGoodsAll(Long shopId);
+
+
+    /**
+     * 上架商品/服务
+     * @param id
+     */
+    void putaway(Long id);
+
+    /**
+     * 下架商品/服务
+     * @param id
+     */
+    void outaway(Long id);
+
+    /**
+     * 一键上架商品/服务
+     */
+    void putawayAll(List idList);
 }
