@@ -76,8 +76,8 @@ public class GoodsController {
      * 一键上架商品/服务
      */
     @ApiOperation("一键上架商品/服务")
-    @GetMapping(value="/putawayAll")
-    public CommonResult putawayAll(@RequestParam("idList") List<Long> idList){
+    @PostMapping(value="/putawayAll")
+    public CommonResult putawayAll(@RequestBody List<Long> idList){
         goodsService.putawayAll(idList);
         return CommonResult.ok();
 
