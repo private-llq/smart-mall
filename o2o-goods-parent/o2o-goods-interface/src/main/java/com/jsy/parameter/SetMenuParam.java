@@ -1,21 +1,19 @@
-package com.jsy.domain;
-
-import java.math.BigDecimal;
+package com.jsy.parameter;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.IdType;
-import java.time.LocalDateTime;
-import com.baomidou.mybatisplus.annotation.TableId;
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-
 import com.jsy.BaseEntity;
+import com.jsy.domain.SetMenuGoods;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -27,9 +25,8 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("w_set_menu")
-@ApiModel(value="SetMenu对象", description="")
-public class SetMenu  extends BaseEntity {
+@ApiModel(value="SetMenu对象", description="创建套餐接收对象")
+public class SetMenuParam implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -66,13 +63,6 @@ public class SetMenu  extends BaseEntity {
     @ApiModelProperty(value = "套餐详情")
     @TableField(exist = false)
     List<SetMenuGoods> setMenuGoodsList;
-
-    @ApiModelProperty(value = "商品 类型（0商品套餐 1服务套餐）")
-    private Integer type;
-
-    @ApiModelProperty(value = "套餐详情")
-    @TableField(exist = false)
-    Map<String, List<SetMenuGoods>> map;
 
 
 }

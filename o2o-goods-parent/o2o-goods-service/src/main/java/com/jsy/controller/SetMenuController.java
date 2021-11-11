@@ -1,4 +1,6 @@
 package com.jsy.controller;
+import com.jsy.dto.SetMenuDto;
+import com.jsy.dto.SetMenuGoodsDto;
 import com.jsy.service.ISetMenuService;
 import com.jsy.domain.SetMenu;
 import com.jsy.query.SetMenuQuery;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.jsy.basic.util.vo.CommonResult;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/setMenu")
@@ -28,7 +31,6 @@ public class SetMenuController {
             if(setMenu.getId()!=null){
                 setMenuService.updateById(setMenu);
             }else{
-                System.out.println(setMenu);
                 setMenuService.addSetMenu(setMenu);
             }
             return CommonResult.ok();
@@ -69,11 +71,31 @@ public class SetMenuController {
     * 返回list列表
     * @return
     */
-    @GetMapping(value = "/list")
-    public List<SetMenu> list(){
-
-        return setMenuService.list(null);
+    @GetMapping(value = "/getMenuId")
+    public Map<String,List<SetMenuGoodsDto>> getMenuId(@RequestParam("setMenuId")Long setMenuId){
+        return setMenuService.getMenuId(setMenuId);
     }
+    /**
+     * 返回list列表
+     * @return
+     */
+    @GetMapping(value = "/SetMenuList")
+    public List<SetMenuDto> SetMenuList(){
+                Long shopId= 1L;
+        return setMenuService.getSetMenulist(shopId);
+    }
+
+    /**
+     * 返回list列表
+     * @return
+     */
+    @GetMapping(value = "/list")
+    public List<SetMenuDto> list(@RequestParam("shopId") Long shopId, @RequestParam("state") Integer state){
+//        Long shopId= 1L;
+        return setMenuService.getList(shopId,state);
+    }
+
+
 
 
     /**
