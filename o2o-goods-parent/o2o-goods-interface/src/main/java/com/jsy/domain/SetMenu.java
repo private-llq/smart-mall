@@ -74,4 +74,6 @@ public class SetMenu  extends BaseEntity {
     private  Map<String, List<SetMenuGoodsDto>> map;
 
 
+    @ApiModelProperty(value = "套餐说明")
+    private String menuExplain;
 }
