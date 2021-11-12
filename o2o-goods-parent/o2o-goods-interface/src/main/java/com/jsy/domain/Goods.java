@@ -47,6 +47,13 @@ public class Goods extends BaseEntity implements Serializable {
     @ApiModelProperty(value = "商品价格")
     private BigDecimal price;
 
+
+    @ApiModelProperty(value = "是否开启折扣：0未开启 1开启")
+    private Integer discountState;
+
+    @ApiModelProperty(value = "商品折扣价格")
+    private BigDecimal discountPrice;
+
     @ApiModelProperty(value = "0:普通商品 1：服务类商品")
     private Integer type;
 
