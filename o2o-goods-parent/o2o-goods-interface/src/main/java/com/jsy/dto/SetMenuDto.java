@@ -36,7 +36,7 @@ public class SetMenuDto implements Serializable {
     private String name;
 
     @ApiModelProperty(value = "服务特点表ids 逗号隔开")
-    private String serviceCharacteristicsIds;
+    private List<ServiceCharacteristicsDto> serviceCharacteristicsIds;
 
     @ApiModelProperty(value = "真实价格")
     private BigDecimal realPrice;
@@ -58,7 +58,7 @@ public class SetMenuDto implements Serializable {
 
     @ApiModelProperty(value = "套餐详情")
     @TableField(exist = false)
-    Map<String, List<SetMenuGoodsDto>> map;
+    private  Map<String, List<SetMenuGoodsDto>> map;
 
 
 }

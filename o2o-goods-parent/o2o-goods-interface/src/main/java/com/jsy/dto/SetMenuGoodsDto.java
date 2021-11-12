@@ -46,8 +46,5 @@ public class SetMenuGoodsDto implements Serializable {
     @ApiModelProperty(value = "菜品价格")
     private BigDecimal price;
 
-    @TableField(exist = false)
-    private  Map<String, List<SetMenuGoodsDto>> map;
-
 
 }

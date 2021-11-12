@@ -30,7 +30,7 @@ public class ServiceCharacteristicsDto implements Serializable {
     @ApiModelProperty(value = "服务特点说明",name = "introduce")
     private String introduce;
 
-    @ApiModelProperty(value = "是否启用",name = "state")
-    private Integer state;
+//    @ApiModelProperty(value = "是否启用",name = "state")
+//    private Integer state;
 
 }

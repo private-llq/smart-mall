@@ -29,6 +29,7 @@ import java.util.Map;
 public class SetMenuParam implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    private Long id;
 
     @ApiModelProperty(value = "套餐名称")
     private String name;

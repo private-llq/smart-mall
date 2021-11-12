@@ -1,12 +1,15 @@
 package com.jsy.controller;
 import com.jsy.dto.SetMenuDto;
 import com.jsy.dto.SetMenuGoodsDto;
+import com.jsy.parameter.SetMenuParam;
 import com.jsy.service.ISetMenuService;
 import com.jsy.domain.SetMenu;
 import com.jsy.query.SetMenuQuery;
 import com.jsy.basic.util.PageList;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.jsy.basic.util.vo.CommonResult;
@@ -26,10 +29,11 @@ public class SetMenuController {
     * @return Ajaxresult转换结果
     */
     @PostMapping(value="/save")
-    public CommonResult save(@RequestBody SetMenu setMenu){
+    public CommonResult save(@RequestBody SetMenuParam setMenu){
         try {
             if(setMenu.getId()!=null){
-                setMenuService.updateById(setMenu);
+                System.out.println("打印");
+                setMenuService.updateSetMenu(setMenu);
             }else{
                 setMenuService.addSetMenu(setMenu);
             }
@@ -68,35 +72,59 @@ public class SetMenuController {
 
 
     /**
-    * 返回list列表
+    * 根据套餐id套餐详情
     * @return
     */
+    @ApiOperation("根据套餐id套餐详情")
     @GetMapping(value = "/getMenuId")
     public Map<String,List<SetMenuGoodsDto>> getMenuId(@RequestParam("setMenuId")Long setMenuId){
         return setMenuService.getMenuId(setMenuId);
     }
     /**
-     * 返回list列表
+     * 查询所有套餐以及套餐详情
      * @return
      */
     @GetMapping(value = "/SetMenuList")
-    public List<SetMenuDto> SetMenuList(){
-                Long shopId= 1L;
-        return setMenuService.getSetMenulist(shopId);
+    public SetMenuDto SetMenuList(@RequestParam("shopId") Long shopId,Long id){
+        return setMenuService.getSetMenulist(shopId,id);
     }
 
     /**
-     * 返回list列表
+     * 查询商家 上架或下架套餐
      * @return
      */
+    @ApiOperation("查询商家 上架或下架套餐")
     @GetMapping(value = "/list")
     public List<SetMenuDto> list(@RequestParam("shopId") Long shopId, @RequestParam("state") Integer state){
 //        Long shopId= 1L;
         return setMenuService.getList(shopId,state);
     }
 
+    /**
+     * 查询所有套餐列表
+     * @return
+     */
+    @ApiOperation("查询商家所有套餐")
+    @GetMapping(value = "/listAll")
+    public List<SetMenuDto> listAll(@RequestParam("shopId") Long shopId){
+        return setMenuService.listAll(shopId);
+    }
 
-
+    /**
+     * 修改上下架套餐
+     * @return
+     */
+    @ApiOperation("修改上下架套餐")
+    @PostMapping(value = "/setState")
+    public CommonResult setState(@RequestParam("id") Long id, @RequestParam("state") Integer state){
+        try {
+            setMenuService.setState(id,state);
+            return CommonResult.ok();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return  CommonResult.error(-1,"删除失败！");
+        }
+    }
 
     /**
     * 分页查询数据
