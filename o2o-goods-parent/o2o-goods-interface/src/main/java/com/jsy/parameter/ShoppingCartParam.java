@@ -25,4 +25,9 @@ public class ShoppingCartParam implements Serializable {
      */
     private Long goodsId;
 
+    /**
+     * 套餐id
+     */
+    private Long setMenuId;
+
 }

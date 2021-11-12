@@ -30,7 +30,7 @@ public class ShoppingCartController {
     public IShoppingCartService shoppingCartService;
 
     /**
-     * 添加商品进入购物车
+     * 添加商品/服务进入购物车
      * @param shoppingCartParam   userId、shopId、goodsId
      * @return
      */
@@ -38,6 +38,17 @@ public class ShoppingCartController {
     public CommonResult addShoppingCart(@RequestBody ShoppingCartParam shoppingCartParam){
 
         shoppingCartService.addShoppingCart(shoppingCartParam);
+        return CommonResult.ok("success");
+    }
+
+    /**
+     * 添加套餐进入购物车
+     * @param shoppingCartParam userId、shopId、setMenuId
+     * @return
+     */
+    @PostMapping("addSetMenu")
+    public CommonResult addSetMenu(@RequestBody ShoppingCartParam shoppingCartParam){
+        shoppingCartService.addSetMenu(shoppingCartParam);
         return CommonResult.ok("success");
     }
 

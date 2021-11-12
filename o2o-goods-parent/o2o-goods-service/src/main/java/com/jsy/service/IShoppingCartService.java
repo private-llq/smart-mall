@@ -41,4 +41,11 @@ public interface IShoppingCartService extends IService<ShoppingCart> {
      * @return
      */
     ShoppingCartDto queryCart(ShoppingCartParam shoppingCartParam);
+
+    /**
+     * 添加套餐进入购物车
+     * @param shoppingCartParam userId、shopId、setMenuId
+     * @return
+     */
+    void addSetMenu(ShoppingCartParam shoppingCartParam);
 }

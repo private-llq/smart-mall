@@ -4,14 +4,17 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.utils.BeansCopyUtils;
 import com.jsy.domain.Goods;
+import com.jsy.domain.SetMenu;
 import com.jsy.domain.ShoppingCart;
 import com.jsy.dto.ShoppingCartDto;
 import com.jsy.dto.ShoppingCartListDto;
 import com.jsy.mapper.GoodsMapper;
+import com.jsy.mapper.SetMenuMapper;
 import com.jsy.mapper.ShoppingCartMapper;
 import com.jsy.parameter.ShoppingCartParam;
 import com.jsy.service.IShoppingCartService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +39,8 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
     private GoodsMapper goodsMapper;
 
 
+    @Autowired
+    private SetMenuMapper setMenuMapper;
 
     /**
      * 添加商品进入购物车
@@ -49,7 +54,6 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
         String userId = shoppingCartParam.getUserId();//用户id
         Long shopId = shoppingCartParam.getShopId();//商店id
         Long goodsId = shoppingCartParam.getGoodsId();//商品id
-
         //查询购物车
         ShoppingCart userCart = shoppingCartMapper.selectOne(new QueryWrapper<ShoppingCart>()
                 .eq("user_id", userId)
@@ -61,9 +65,6 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
             if (Objects.isNull(goods)){
                 throw new JSYException(-1,"该商品状态异常！");
             }
-
-            //查询套餐信息
-
 
             ShoppingCart cartEntity = new ShoppingCart();
             cartEntity.setUserId(userId);
@@ -83,6 +84,47 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
 
 
     }
+
+    /**
+     * 添加套餐进入购物车
+     * @param shoppingCartParam userId、shopId、setMenuId
+     * @return
+     */
+    @Override
+    public void addSetMenu(ShoppingCartParam shoppingCartParam) {
+        String userId = shoppingCartParam.getUserId();//用户id
+        Long shopId = shoppingCartParam.getShopId();//商店id
+        Long setMenuId = shoppingCartParam.getSetMenuId();//套餐id
+        //查询购物车
+        ShoppingCart userCart = shoppingCartMapper.selectOne(new QueryWrapper<ShoppingCart>()
+                .eq("user_id", userId)
+                .eq("shop_id", shopId)
+                .eq("set_menu_id", setMenuId));
+
+        if (Objects.isNull(userCart)){
+            // 查询该套餐信息
+            SetMenu setMenu = setMenuMapper.selectOne(new QueryWrapper<SetMenu>().eq("id", setMenuId).eq("state", 1));
+            if (Objects.isNull(setMenu)){
+                throw new JSYException(-1,"该套餐状态异常！");
+            }
+
+            ShoppingCart cartEntity = new ShoppingCart();
+            cartEntity.setUserId(userId);
+            cartEntity.setShopId(shopId);
+            cartEntity.setSetMenuId(setMenuId);
+            cartEntity.setNum(1);
+            cartEntity.setTitle(setMenu.getName());
+            cartEntity.setPrice(setMenu.getRealPrice());
+            cartEntity.setDiscountPrice(setMenu.getSellingPrice());
+            cartEntity.setImages(setMenu.getImages());
+            cartEntity.setDiscountState(1);//套餐默认开启折扣
+            shoppingCartMapper.insert(cartEntity);
+        }else {
+            Integer num = userCart.getNum();
+            shoppingCartMapper.update(null,new UpdateWrapper<ShoppingCart>().eq("user_id",userId).eq("set_menu_id",setMenuId).set("num",num+1));
+        }
+    }
+
 
     /**
      * 清空购物车
@@ -165,9 +207,6 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
 
         return shoppingCartDto;
     }
-
-
-
 
 
 

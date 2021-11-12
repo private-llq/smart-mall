@@ -36,6 +36,9 @@ public class ShoppingCart extends BaseEntity implements Serializable {
     @ApiModelProperty(value = "商品id")
     private Long goodsId;
 
+    @ApiModelProperty(value = "套餐id")
+    private Long setMenuId;
+
     @ApiModelProperty(value = "商品图片1-3张/服务宣传图、视频")
     private String images;
 
