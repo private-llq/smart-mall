@@ -35,7 +35,6 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
     @Autowired
     private GoodsMapper goodsMapper;
 
-    @Autowired
 
 
     /**
