@@ -1,6 +1,8 @@
 package com.jsy.domain;
 
 import java.math.BigDecimal;
+
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
@@ -56,6 +58,10 @@ public class ShoppingCart extends BaseEntity implements Serializable {
 
     @ApiModelProperty(value = "购物车数量")
     private Integer num;
+
+
+    @ApiModelProperty(value = "1：是套餐 0：不是套餐")
+    private Integer isSetMenu;
 
 
 

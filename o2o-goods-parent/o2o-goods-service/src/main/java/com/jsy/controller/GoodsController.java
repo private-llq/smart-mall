@@ -101,11 +101,11 @@ public class GoodsController {
     }
 
     /**
-     * 查看一条商品的所有信息
+     * 查看一条商品/服务的详细信息
      * @param id
      *
      */
-    @ApiOperation("查看一条商品/服务的所有信息")
+    @ApiOperation("查看一条商品/服务的详细信息")
     @GetMapping("getGoodsService")
     public CommonResult<Goods> getGoodsService(@RequestParam("id") Long id)
     {

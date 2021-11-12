@@ -1,5 +1,6 @@
 package com.jsy.dto;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -25,4 +26,8 @@ public class ShoppingCartListDto {
 
     @ApiModelProperty(value = "购物车数量")
     private Integer num;
+
+    @ApiModelProperty(value = "1：是套餐 0：不是套餐")
+    @TableField(exist = false)
+    private Integer isSetMenu;
 }

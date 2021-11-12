@@ -18,6 +18,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
@@ -76,6 +78,7 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
             cartEntity.setDiscountPrice(goods.getDiscountPrice());
             cartEntity.setImages(goods.getImages());
             cartEntity.setDiscountState(goods.getDiscountState());
+            cartEntity.setIsSetMenu(0);//商品和服务
             shoppingCartMapper.insert(cartEntity);
         }else {
             Integer num = userCart.getNum();
@@ -118,6 +121,7 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
             cartEntity.setDiscountPrice(setMenu.getSellingPrice());
             cartEntity.setImages(setMenu.getImages());
             cartEntity.setDiscountState(1);//套餐默认开启折扣
+            cartEntity.setIsSetMenu(1);//套餐
             shoppingCartMapper.insert(cartEntity);
         }else {
             Integer num = userCart.getNum();
@@ -207,6 +211,8 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
 
         return shoppingCartDto;
     }
+
+
 
 
 
