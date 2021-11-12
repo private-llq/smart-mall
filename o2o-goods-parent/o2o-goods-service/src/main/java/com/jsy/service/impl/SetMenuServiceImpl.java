@@ -2,9 +2,13 @@ package com.jsy.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jsy.basic.util.utils.BeansCopyUtils;
+import com.jsy.basic.util.vo.CommonResult;
+import com.jsy.client.ServiceCharacteristicsClient;
 import com.jsy.domain.Goods;
+import com.jsy.domain.ServiceCharacteristics;
 import com.jsy.domain.SetMenu;
 import com.jsy.domain.SetMenuGoods;
+import com.jsy.dto.ServiceCharacteristicsDto;
 import com.jsy.dto.SetMenuDto;
 import com.jsy.dto.SetMenuGoodsDto;
 import com.jsy.mapper.GoodsMapper;
@@ -39,6 +43,8 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
     private SetMenuGoodsMapper menuGoodsMapper;
     @Resource
     private GoodsMapper goodsMapper;
+    @Resource
+    private ServiceCharacteristicsClient characteristicsClient;
 
     @Override
     public void addSetMenu(SetMenuParam setMenu) {
@@ -46,9 +52,8 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
         List<SetMenuGoods> setMenuGoodsList = setMenu.getSetMenuGoodsList();
         SetMenu menu = new SetMenu();
         BeanUtils.copyProperties(setMenu,menu);
-
         setMenuMapper.insert(menu);
-        Long id = setMenu.getId();
+        Long id = menu.getId();
         for (SetMenuGoods setMenuGoods : setMenuGoodsList) {
             SetMenuGoods menuGoods = new SetMenuGoods();
             BeanUtils.copyProperties(setMenuGoods,menuGoods);
@@ -66,7 +71,16 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
                     .eq("set_menu_id", setMenu.getId())
             );
         List<SetMenuGoodsDto> menuGoodsDtoList = new ArrayList<>();
-
+        //查询服务特点
+        String characteristicsIds = setMenu.getServiceCharacteristicsIds();
+        String[] strings = characteristicsIds.split(",");
+        List<ServiceCharacteristicsDto> serviceCharacteristicsDtoList = new ArrayList<>();
+        for (String s : strings) {
+            ServiceCharacteristics serviceCharacteristics = characteristicsClient.get(Long.valueOf(s));
+            ServiceCharacteristicsDto serviceCharacteristicsDto = new ServiceCharacteristicsDto();
+            BeanUtils.copyProperties(serviceCharacteristics,serviceCharacteristicsDto);
+            serviceCharacteristicsDtoList.add(serviceCharacteristicsDto);
+        }
 
         for (SetMenuGoods setMenuGoods : setMenuGoodsList) {
                 Goods goods = goodsMapper.selectOne(new QueryWrapper<Goods>().eq("id", setMenuGoods.getGoodsIds()));
@@ -81,6 +95,7 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
         SetMenuDto setMenuDto = new SetMenuDto();
         BeanUtils.copyProperties(setMenu,setMenuDto);
         setMenuDto.setMap(map);
+        setMenuDto.setServiceCharacteristicsIds(serviceCharacteristicsDtoList);
         return setMenuDto;
 
 

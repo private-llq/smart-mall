@@ -60,5 +60,8 @@ public class SetMenuDto implements Serializable {
     @TableField(exist = false)
     private  Map<String, List<SetMenuGoodsDto>> map;
 
+    @ApiModelProperty(value = "套餐说明")
+    private String menuExplain;
+
 
 }

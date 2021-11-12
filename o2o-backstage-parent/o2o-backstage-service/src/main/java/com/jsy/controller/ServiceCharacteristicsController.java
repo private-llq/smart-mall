@@ -70,7 +70,7 @@ public class ServiceCharacteristicsController {
     * @param id
     */
     @ApiOperation("根据id查询一条")
-    @GetMapping(value = "/{id}")
+    @RequestMapping(value = "/{id}",method = RequestMethod.GET)
     public ServiceCharacteristics get(@PathVariable("id")Long id)
     {
         return serviceCharacteristicsService.getById(id);

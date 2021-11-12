@@ -65,5 +65,8 @@ public class SetMenuParam implements Serializable {
     @TableField(exist = false)
     List<SetMenuGoods> setMenuGoodsList;
 
+    @ApiModelProperty(value = "套餐说明")
+    private String menuExplain;
+
 
 }
