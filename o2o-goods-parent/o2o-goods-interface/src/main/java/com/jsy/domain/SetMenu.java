@@ -64,8 +64,6 @@ public class SetMenu  extends BaseEntity {
     @ApiModelProperty(value = "上下架（0下架  1上架）")
     private Integer state;
 
-
-
     @ApiModelProperty(value = "商品 类型（0商品套餐 1服务套餐）")
     private Integer type;
 

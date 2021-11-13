@@ -54,7 +54,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
            list.add(client.get(Long.valueOf(id)));
         }
 
-        list.stream().forEach(x->{
+        list.forEach(x->{
             if (StringUtils.containsAny(x.getName(),"上门服务","上门","到家","到家服务")){
                 goods.setIsVisitingService(1);//支持上门服务
             }
@@ -82,7 +82,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
             list.add(client.get(Long.valueOf(id)));
         }
 
-        list.stream().forEach(x->{
+        list.forEach(x->{
             if (StringUtils.containsAny(x.getName(),"上门服务","上门","到家","到家服务")){
                 goods.setIsVisitingService(1);//支持上门服务
             }
