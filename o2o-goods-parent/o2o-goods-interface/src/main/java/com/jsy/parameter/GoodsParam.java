@@ -33,11 +33,8 @@ public class GoodsParam {
     @ApiModelProperty(value = "商品折扣价格")
     private BigDecimal discountPrice;
 
-    @ApiModelProperty(value = "文字介绍")
+    @ApiModelProperty(value = "商品的说明/服务的备注")
     private String textDescription;
-
-    @ApiModelProperty(value = "图片介绍: 0-5张 以逗号分割")
-    private String photoDescription;
 
     @ApiModelProperty(value = "服务特点表ids 逗号隔开")
     private String serviceCharacteristicsIds;

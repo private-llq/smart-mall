@@ -16,7 +16,7 @@ public class GoodsServiceParam {
     @ApiModelProperty(value = "商家id")
     private Long shopId;
 
-    @ApiModelProperty(value = "商品图片1-5张/服务宣传图、视频")
+    @ApiModelProperty(value = "商品/服务 - 图片1-3张")
     private String images;
 
     @ApiModelProperty(value = "商品分类id(服务分类)")
@@ -34,21 +34,18 @@ public class GoodsServiceParam {
     @ApiModelProperty(value = "服务特点表ids 逗号隔开")
     private String serviceCharacteristicsIds;
 
-    @ApiModelProperty(value = "服务时间1  星期+时间段")
-    private String serviceTime1;
+    @ApiModelProperty(value = "有效期")
+    private String validUntilTime;
 
-    @ApiModelProperty(value = "服务时间2  星期+时间段")
-    private String serviceTime2;
-
-    @ApiModelProperty(value = "服务的价格策略  0:输入价格，展示价格  1：不对价格作展示")
+    @ApiModelProperty(value = "服务的价格策略  0:平台销售  1：宣传服务")
     private Integer priceStrategy;
 
-    @ApiModelProperty(value = "文字介绍")
+    @ApiModelProperty(value = "商品的说明/服务的备注")
     private String textDescription;
 
-    @ApiModelProperty(value = "图片介绍: 0-5张 以逗号分割")
-    private String photoDescription;
+    @ApiModelProperty(value = "服务的使用规则")
+    private String serviceRegulations;
 
     @ApiModelProperty(value = "电话")
-    private String phone;
+    private String serviceCall;
 }
