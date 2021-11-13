@@ -4,7 +4,10 @@ import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.utils.GouldUtil;
 import com.jsy.basic.util.utils.RegexUtils;
 import com.jsy.basic.util.utils.UUIDUtils;
+import com.jsy.basic.util.vo.CommonResult;
+import com.jsy.client.TreeClient;
 import com.jsy.domain.NewShop;
+import com.jsy.domain.Tree;
 import com.jsy.mapper.NewShopMapper;
 import com.jsy.parameter.NewShopParam;
 import com.jsy.service.INewShopService;
@@ -28,6 +31,8 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
 
     @Resource
     private NewShopMapper shopMapper;
+    @Resource
+    private TreeClient treeClient;
 
 
     /**
@@ -53,17 +58,31 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
             throw new JSYException(-1, "店铺名太长");
         }
         List<String> shopLogo = shopPacketParam.getShopLogo();
-        if (shopLogo.size()>5){
-            throw new JSYException(-1,"照片只能上传5张");
+        if (shopLogo.size()>1){
+            throw new JSYException(-1,"照片只能上传1张");
         }
 
         NewShop newShop = new NewShop();
         BeanUtils.copyProperties(shopPacketParam,newShop);
+        //行业分类的  二级三级标题  逗号分隔
+        String treeId = shopPacketParam.getShopTreeId();
+        //数组
+        String[] split = treeId.split(",");
+        Long aLong = Long.valueOf(split[0]);
+        System.out.println(aLong);
+        Tree tree = treeClient.getTree(aLong);
+
+        //1是服务行业  0 套餐行业
+        if (tree.getParentId()==1){
+            newShop.setType(1);
+        }else {
+            newShop.setType(0);
+        }
         //获取登录用户
 //        LoginUser loginUser = ContextHolder.getContext().getLoginUser();
 //        newShop.setOwnerUuid(loginUser.getId().toString());
         newShop.setLonLat(GouldUtil.getLonLat(shopPacketParam.getAddressDetail()));
-        newShop.setUuid(UUIDUtils.getUUID());
+//        newShop.setUuid(UUIDUtils.getUUID());
         shopMapper.insert(newShop);
     }
 
