@@ -104,4 +104,13 @@ public class TreeController {
         Map<Integer, List<Tree>> list = treeService.selectLevel();
         return CommonResult.ok(list);
     }
+
+    /**
+     * 新增菜单
+     */
+    @RequestMapping(value = "/{id}",method = RequestMethod.GET)
+    public Tree getTree(@PathVariable("id")Long id) {
+        Tree tree = treeService.getById(id);
+        return tree;
+    }
 }

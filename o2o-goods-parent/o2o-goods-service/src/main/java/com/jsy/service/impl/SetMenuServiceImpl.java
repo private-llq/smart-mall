@@ -1,6 +1,7 @@
 package com.jsy.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.utils.BeansCopyUtils;
 import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.client.ServiceCharacteristicsClient;
@@ -17,6 +18,7 @@ import com.jsy.mapper.SetMenuMapper;
 import com.jsy.parameter.SetMenuParam;
 import com.jsy.service.ISetMenuService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -52,6 +54,19 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
         List<SetMenuGoods> setMenuGoodsList = setMenu.getSetMenuGoodsList();
         SetMenu menu = new SetMenu();
         BeanUtils.copyProperties(setMenu,menu);
+        String[] ids = setMenu.getServiceCharacteristicsIds().split(",");//服务特点ids
+
+        ArrayList<ServiceCharacteristics> list = new ArrayList<>();
+        for (String id : ids) {
+            list.add(characteristicsClient.get(Long.valueOf(id)));
+        }
+
+        list.stream().forEach(x->{
+            if (StringUtils.containsAny(x.getName(),"上门服务","上门","到家","到家服务")){
+                menu.setIsVisitingService(1);//支持上门服务
+            }
+        });
+
         setMenuMapper.insert(menu);
         Long id = menu.getId();
         for (SetMenuGoods setMenuGoods : setMenuGoodsList) {
@@ -84,6 +99,9 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
 
         for (SetMenuGoods setMenuGoods : setMenuGoodsList) {
                 Goods goods = goodsMapper.selectOne(new QueryWrapper<Goods>().eq("id", setMenuGoods.getGoodsIds()));
+                if (goods==null){
+                    throw new JSYException(-1,"商品为空");
+                }
                 setMenuGoods.setName(goods.getTitle());
                 setMenuGoods.setPrice(goods.getPrice());
 

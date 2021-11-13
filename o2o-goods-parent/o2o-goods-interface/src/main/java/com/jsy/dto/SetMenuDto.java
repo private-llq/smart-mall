@@ -64,4 +64,7 @@ public class SetMenuDto implements Serializable {
     private String menuExplain;
 
 
+    @ApiModelProperty(value = "是否支持上门服务 0 不支持 1 支持")
+    private Integer isVisitingService;
+
 }

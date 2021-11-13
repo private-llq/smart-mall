@@ -93,9 +93,9 @@ public class NewShopParam implements Serializable {
     private String aliPay;
     @ApiModelProperty(name = "weChat", value = "微信账号")
     private String weChat ;
-
-    @NotBlank(groups = {NewShopParam.newShopValidatedGroup.class},message = "经营类型不能为空")
-    @ApiModelProperty(value = "经营类型（0-服务行业   1-非服务行业）")
-    private Integer type;
+//
+//    @NotBlank(groups = {NewShopParam.newShopValidatedGroup.class},message = "经营类型不能为空")
+//    @ApiModelProperty(value = "经营类型（0-服务行业   1-非服务行业）")
+//    private Integer type;
     public interface newShopValidatedGroup{}
 }

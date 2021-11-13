@@ -33,8 +33,6 @@ public class NewShop extends BaseEntity {
 //    @TableId(value = "id", type = IdType.AUTO)
 //    private Long id;
 
-    @ApiModelProperty(value = "店铺uuid")
-    private String uuid;
 
     @ApiModelProperty(value = "店铺拥有者uuid")
     private String ownerUuid;
@@ -48,7 +46,7 @@ public class NewShop extends BaseEntity {
     @ApiModelProperty(value = "店铺联系电话")
     private String mobile;
 
-    @ApiModelProperty(value = "门店类型（与w_SHOP_TREE行业关联）")
+    @ApiModelProperty(value = "门店类型（与w_SHOP_TREE行业关联），用逗号分隔")
     private String shopTreeId;
 
     @ApiModelProperty(value = "店铺logo(file_url)")
@@ -108,6 +106,6 @@ public class NewShop extends BaseEntity {
     @ApiModelProperty(value = "经纬度（经度，维度））")
     private String lonLat;
 
-    @ApiModelProperty(value = "经营类型（0-服务行业   1-非服务行业）")
+    @ApiModelProperty(value = "经营类型（1-服务行业   0-套餐行业）")
     private Integer type;
 }
