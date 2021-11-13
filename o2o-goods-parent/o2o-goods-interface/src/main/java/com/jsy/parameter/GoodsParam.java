@@ -30,6 +30,9 @@ public class GoodsParam {
     @ApiModelProperty(value = "商品价格")
     private BigDecimal price;
 
+    @ApiModelProperty(value = "商品折扣价格")
+    private BigDecimal discountPrice;
+
     @ApiModelProperty(value = "文字介绍")
     private String textDescription;
 

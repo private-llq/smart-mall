@@ -28,6 +28,9 @@ public class GoodsServiceParam {
     @ApiModelProperty(value = "商品价格")
     private BigDecimal price;
 
+    @ApiModelProperty(value = "商品折扣价格")
+    private BigDecimal discountPrice;
+
     @ApiModelProperty(value = "服务特点表ids 逗号隔开")
     private String serviceCharacteristicsIds;
 
