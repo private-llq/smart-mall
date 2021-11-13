@@ -2,15 +2,20 @@ package com.jsy.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.jsy.client.ServiceCharacteristicsClient;
 import com.jsy.domain.Goods;
+import com.jsy.domain.ServiceCharacteristics;
 import com.jsy.mapper.GoodsMapper;
 import com.jsy.parameter.GoodsParam;
 import com.jsy.parameter.GoodsServiceParam;
 import com.jsy.service.IGoodsService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -29,6 +34,9 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     @Autowired
     private GoodsMapper goodsMapper;
 
+    @Autowired
+    private ServiceCharacteristicsClient client;
+
 
 
     /**
@@ -38,6 +46,20 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     @Transactional
     public void saveGoods(GoodsParam goodsParam) {
         Goods goods = new Goods();
+
+        String[] ids = goodsParam.getServiceCharacteristicsIds().split(",");//服务特点ids
+
+        ArrayList<ServiceCharacteristics> list = new ArrayList<>();
+        for (String id : ids) {
+           list.add(client.get(Long.valueOf(id)));
+        }
+
+        list.stream().forEach(x->{
+            if (StringUtils.containsAny(x.getName(),"上门服务","上门","到家","到家服务")){
+                goods.setIsVisitingService(1);//支持上门服务
+            }
+        });
+
         goods.setType(0);//商品类
         BeanUtil.copyProperties(goodsParam,goods);
         goodsMapper.insert(goods);
@@ -52,6 +74,20 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     public void saveService(GoodsServiceParam goodsServiceParam) {
 
         Goods goods = new Goods();
+
+        String[] ids = goodsServiceParam.getServiceCharacteristicsIds().split(",");//服务特点ids
+
+        ArrayList<ServiceCharacteristics> list = new ArrayList<>();
+        for (String id : ids) {
+            list.add(client.get(Long.valueOf(id)));
+        }
+
+        list.stream().forEach(x->{
+            if (StringUtils.containsAny(x.getName(),"上门服务","上门","到家","到家服务")){
+                goods.setIsVisitingService(1);//支持上门服务
+            }
+        });
+
         goods.setType(1);//服务类
         BeanUtil.copyProperties(goodsServiceParam,goods);
         goodsMapper.insert(goods);

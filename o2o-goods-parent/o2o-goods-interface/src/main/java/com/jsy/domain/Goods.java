@@ -78,5 +78,8 @@ public class Goods extends BaseEntity implements Serializable {
     @ApiModelProperty(value = "电话")
     private String phone;
 
+    @ApiModelProperty(value = "是否支持上门服务 0 不支持 1 支持")
+    private Integer isVisitingService;
+
 
 }

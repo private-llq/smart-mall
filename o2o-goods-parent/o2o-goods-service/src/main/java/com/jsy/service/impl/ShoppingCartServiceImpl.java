@@ -79,6 +79,7 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
             cartEntity.setImages(goods.getImages());
             cartEntity.setDiscountState(goods.getDiscountState());
             cartEntity.setIsSetMenu(0);//商品和服务
+            cartEntity.setIsVisitingService(goods.getIsVisitingService());//是否支持上门服务
             shoppingCartMapper.insert(cartEntity);
         }else {
             Integer num = userCart.getNum();
@@ -122,6 +123,7 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
             cartEntity.setImages(setMenu.getImages());
             cartEntity.setDiscountState(1);//套餐默认开启折扣
             cartEntity.setIsSetMenu(1);//套餐
+            cartEntity.setIsVisitingService(setMenu.getIsVisitingService());//是否支持上门服务
             shoppingCartMapper.insert(cartEntity);
         }else {
             Integer num = userCart.getNum();

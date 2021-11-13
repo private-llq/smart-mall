@@ -64,6 +64,10 @@ public class ShoppingCart extends BaseEntity implements Serializable {
     private Integer isSetMenu;
 
 
+    @ApiModelProperty(value = "1：支持上门 0：不支持上门")
+    private Integer isVisitingService;
+
+
 
 
 

@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 
@@ -35,4 +36,6 @@ public class GoodsParam {
     @ApiModelProperty(value = "图片介绍: 0-5张 以逗号分割")
     private String photoDescription;
 
+    @ApiModelProperty(value = "服务特点表ids 逗号隔开")
+    private String serviceCharacteristicsIds;
 }
