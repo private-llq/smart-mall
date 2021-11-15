@@ -69,7 +69,7 @@ public class GoodsTypeController {
      */
     @ApiOperation("根据id查询")
     @GetMapping(value = "/{id}")
-    public CommonResult get(@PathVariable("id")Long id)
+    public CommonResult<GoodsTypeDto> get(@PathVariable("id")Long id)
     {
         GoodsType goodsType = null;
         try {
@@ -79,7 +79,7 @@ public class GoodsTypeController {
             return   CommonResult.ok(goodsTypeDto);
         } catch (Exception e) {
             e.printStackTrace();
-            return  CommonResult.error(-1,"查询失败！");
+            return  new CommonResult<>(-1,"查询失败！",null);
         }
 
 
@@ -92,7 +92,7 @@ public class GoodsTypeController {
      */
     @ApiOperation(value = "查询分类结果",httpMethod = "GET",response = CommonResult.class)
     @GetMapping(value = "/list")
-    public List<GoodsTypeDto> list(){
+    public CommonResult<List<GoodsTypeDto>> list(){
         List<GoodsType> list = goodsTypeService.selectCategory();
         List<GoodsTypeDto> dtoList = new ArrayList<>();
         for (GoodsType goodsType : list) {
@@ -100,7 +100,7 @@ public class GoodsTypeController {
             BeanUtils.copyProperties(goodsType,goodsTypeDto);
             dtoList.add(goodsTypeDto);
         }
-        return dtoList;
+        return CommonResult.ok(dtoList);
     }
 
 

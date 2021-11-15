@@ -53,7 +53,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
 
         ArrayList<ServiceCharacteristics> list = new ArrayList<>();
         for (String id : ids) {
-           list.add(client.get(Long.valueOf(id)));
+           list.add(client.get(Long.valueOf(id)).getData());
         }
 
         list.forEach(x->{
@@ -88,7 +88,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
 
         ArrayList<ServiceCharacteristics> list = new ArrayList<>();
         for (String id : ids) {
-            list.add(client.get(Long.valueOf(id)));
+            list.add(client.get(Long.valueOf(id)).getData());
         }
 
         list.forEach(x->{

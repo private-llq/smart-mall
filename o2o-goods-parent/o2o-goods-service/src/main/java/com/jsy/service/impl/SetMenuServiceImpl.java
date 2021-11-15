@@ -58,7 +58,7 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
 
         ArrayList<ServiceCharacteristics> list = new ArrayList<>();
         for (String id : ids) {
-            list.add(characteristicsClient.get(Long.valueOf(id)));
+            list.add(characteristicsClient.get(Long.valueOf(id)).getData());
         }
 
         list.stream().forEach(x->{
@@ -91,7 +91,7 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
         String[] strings = characteristicsIds.split(",");
         List<ServiceCharacteristicsDto> serviceCharacteristicsDtoList = new ArrayList<>();
         for (String s : strings) {
-            ServiceCharacteristics serviceCharacteristics = characteristicsClient.get(Long.valueOf(s));
+            ServiceCharacteristics serviceCharacteristics = characteristicsClient.get(Long.valueOf(s)).getData();
             ServiceCharacteristicsDto serviceCharacteristicsDto = new ServiceCharacteristicsDto();
             BeanUtils.copyProperties(serviceCharacteristics,serviceCharacteristicsDto);
             serviceCharacteristicsDtoList.add(serviceCharacteristicsDto);

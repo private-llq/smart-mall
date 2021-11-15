@@ -9,6 +9,7 @@ import com.jsy.client.TreeClient;
 import com.jsy.domain.NewShop;
 import com.jsy.domain.Tree;
 import com.jsy.dto.NewShopPreviewDto;
+import com.jsy.dto.NewShopRecommendDto;
 import com.jsy.mapper.NewShopMapper;
 import com.jsy.parameter.NewShopParam;
 import com.jsy.parameter.NewShopSetParam;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -72,8 +74,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         String[] split = treeId.split(",");
         Long aLong = Long.valueOf(split[0]);
         System.out.println(aLong);
-        Tree tree = treeClient.getTree(aLong);
-
+        Tree tree = treeClient.getTree(aLong).getData();
         //1是服务行业  0 套餐行业
         if (tree.getParentId()==1){
             newShop.setType(1);
@@ -96,7 +97,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         String[] split = treeId.split(",");
         String shopTreeIdName="";
         for (String s : split) {
-            Tree tree = treeClient.getTree(Long.valueOf(s));
+            Tree tree = treeClient.getTree(Long.valueOf(s)).getData();
             shopTreeIdName = shopTreeIdName+"-"+tree.getName();
         }
         newShopPreviewDto.setShopTreeIdName(shopTreeIdName.substring(1));
@@ -130,7 +131,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         //数组
         String[] split = treeId.split(",");
         Long aLong = Long.valueOf(split[0]);
-        Tree tree = treeClient.getTree(aLong);
+        Tree tree = treeClient.getTree(aLong).getData();
 
         //1是服务行业  0 套餐行业
         if (tree.getParentId()==1){
@@ -152,6 +153,15 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         BeanUtils.copyProperties(shopSetParam,newShop);
         System.out.println(newShop);
         shopMapper.updateById(newShop);
+    }
+
+    //C端查询店铺
+    @Override
+    public List<NewShopRecommendDto> getShopAllList(Long treeId, String location) {
+        List<NewShop> newShopList = shopMapper.selectList(null);
+//      newShopList.stream().filter(s->{})
+
+        return null;
     }
 
 

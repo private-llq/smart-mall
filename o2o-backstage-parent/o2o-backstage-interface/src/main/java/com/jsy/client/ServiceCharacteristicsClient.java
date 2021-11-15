@@ -1,6 +1,7 @@
 package com.jsy.client;
 
 import com.jsy.FeignConfiguration;
+import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.client.impl.ServiceCharacteristicsClientImpl;
 import com.jsy.domain.ServiceCharacteristics;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -12,5 +13,5 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @FeignClient(value = "SHOP-SERVICE-BACKSTAGE",fallback = ServiceCharacteristicsClientImpl.class,configuration = FeignConfiguration.class)
 public interface ServiceCharacteristicsClient {
     @RequestMapping(value = "/serviceCharacteristics/{id}",method = RequestMethod.GET)
-    public ServiceCharacteristics get(@PathVariable("id")Long id);
+     CommonResult<ServiceCharacteristics> get(@PathVariable("id")Long id);
 }

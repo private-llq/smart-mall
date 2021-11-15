@@ -78,5 +78,6 @@ public interface ITreeService extends IService<Tree> {
      * 按级别查询菜单
      */
     Map<Integer, List<Tree>> selectLevel();
-
+//通过id查询所有上级
+    List<Tree> getParentList(Long id);
 }

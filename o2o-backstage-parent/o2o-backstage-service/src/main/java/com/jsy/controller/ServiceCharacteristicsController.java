@@ -1,4 +1,5 @@
 package com.jsy.controller;
+import com.alibaba.druid.sql.visitor.functions.If;
 import com.jsy.basic.util.utils.BeansCopyUtils;
 import com.jsy.dto.ServiceCharacteristicsDto;
 import com.jsy.param.ServiceCharacteristicsParam;
@@ -71,9 +72,14 @@ public class ServiceCharacteristicsController {
     */
     @ApiOperation("根据id查询一条")
     @RequestMapping(value = "/{id}",method = RequestMethod.GET)
-    public ServiceCharacteristics get(@PathVariable("id")Long id)
+    public CommonResult<ServiceCharacteristics> get(@PathVariable("id")Long id)
     {
-        return serviceCharacteristicsService.getById(id);
+        ServiceCharacteristics service = serviceCharacteristicsService.getById(id);
+        if (service!=null){
+            return CommonResult.ok(service);
+        }else {
+            return new  CommonResult(-1,"失败",null);
+        }
     }
 
 
@@ -84,10 +90,14 @@ public class ServiceCharacteristicsController {
     @ApiOperation("返回list列表")
     @LoginIgnore
     @GetMapping(value = "/list")
-    public List<ServiceCharacteristicsDto> list(){
+    public CommonResult<List<ServiceCharacteristicsDto>> list(){
         List<ServiceCharacteristics> list = serviceCharacteristicsService.list(null);
         List<ServiceCharacteristicsDto> serviceCharacteristicsDtos = BeansCopyUtils.listCopy(list, ServiceCharacteristicsDto.class);
-        return serviceCharacteristicsDtos;
+        if(serviceCharacteristicsDtos!=null){
+            return CommonResult.ok(serviceCharacteristicsDtos);
+        }else {
+            return new  CommonResult(-1,"失败",null);
+        }
     }
 
 

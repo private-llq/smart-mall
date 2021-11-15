@@ -209,4 +209,22 @@ public class TreeServiceImpl extends ServiceImpl<TreeMapper, Tree> implements IT
         return collect;
     }
 
+    @Override
+    public List<Tree> getParentList(Long id) {
+        List<Tree> trees = treeMapper.selectList(null);
+        List<Tree> treeList = new ArrayList<>();
+        Tree tree1 = treeMapper.selectById(id);
+        treeList.add(tree1);
+        return getParentId(treeList,tree1.getParentId(),trees);
+    }
+    public List<Tree> getParentId(List<Tree> treeList,Long pid,List<Tree> trees) {
+        Tree tree = trees.stream().filter(s -> s.getId() == pid).findFirst().get();
+        treeList.add(tree);
+        if (tree.getLevel() != 2) {
+            getParentId(treeList, tree.getParentId(), trees);
+        }
+        return treeList;
+    }
+
+
 }
