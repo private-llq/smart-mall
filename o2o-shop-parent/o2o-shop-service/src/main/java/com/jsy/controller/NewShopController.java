@@ -88,6 +88,8 @@ public class NewShopController {
     @ApiOperation(("根据店铺id 查询店铺详情"))
     public CommonResult<NewShop> get(@PathVariable("id")Long id)
     {
+
+
         return CommonResult.ok(newShopService.getById(id));
     }
 
