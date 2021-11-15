@@ -39,18 +39,18 @@ public interface ITreeService extends IService<Tree> {
      * 查询本级下面的子菜单（不包含本级）
      * @return
      */
-    List<Tree> getSunTree(Integer id);
+    List<Tree> getSunTree(Long id);
 
     /**
      * 删除一条菜单
      */
-    void delTreeOne(Integer id);
+    void delTreeOne(Long id);
 
 
     /**
      * 递归删除子节点
      */
-    boolean removeAllTree(Integer id);
+    boolean removeAllTree(Long id);
 
     /**
      * 修改菜单信息
@@ -64,7 +64,7 @@ public interface ITreeService extends IService<Tree> {
      * @param id
      * @return
      */
-    List<Tree> selectAllTree(Integer id);
+    List<Tree> selectAllTree(Long id);
 
     /**
      * 菜单排序

@@ -48,7 +48,7 @@ public class TreeServiceImpl extends ServiceImpl<TreeMapper, Tree> implements IT
      * @return
      */
     @Override
-    public List<Tree> getSunTree(Integer id) {
+    public List<Tree> getSunTree(Long id) {
         List<Tree> list = treeMapper.selectList(new QueryWrapper<Tree>().eq("parent_id", id).eq("deleted",0));
         return list;
     }
@@ -88,7 +88,7 @@ public class TreeServiceImpl extends ServiceImpl<TreeMapper, Tree> implements IT
      * @param id
      */
     @Override
-    public void delTreeOne(Integer id) {
+    public void delTreeOne(Long id) {
         List<Tree> list = treeMapper.selectList(new QueryWrapper<Tree>().eq("parent_id", id).eq("deleted",0));
         if (list.size()==0){
             treeMapper.deleteById(id);
@@ -123,7 +123,7 @@ public class TreeServiceImpl extends ServiceImpl<TreeMapper, Tree> implements IT
      * @return
      */
     @Override
-    public List<Tree> selectAllTree(Integer id){
+    public List<Tree> selectAllTree(Long id){
         List<Tree> list = treeMapper.selectList(new QueryWrapper<Tree>().eq("deleted",0));
         List<Tree> collect = list.stream().filter(x -> x.getParentId() == id)//过滤出子级父id等于传入的父级id
                 .map(x -> {
@@ -151,8 +151,8 @@ public class TreeServiceImpl extends ServiceImpl<TreeMapper, Tree> implements IT
     /**
      * 递归删除子节点
      */
-    public boolean removeAllTree(Integer id){
-        ArrayList<Integer> idList = new ArrayList<>();
+    public boolean removeAllTree(Long id){
+        ArrayList<Long> idList = new ArrayList<>();
 
         //先把父级id放进去
         idList.add(id);
@@ -175,13 +175,13 @@ public class TreeServiceImpl extends ServiceImpl<TreeMapper, Tree> implements IT
 
 
     //递归方法
-    private void getIds(ArrayList<Integer> idList, Integer oneId) {
+    private void getIds(ArrayList<Long> idList, Long oneId) {
         //查询二级分类的对象
         List<Tree> treeList = baseMapper.selectList(new QueryWrapper<Tree>().eq("parent_id",oneId).eq("deleted",0));
 
         //遍历二级分类的对象，把二级分类的id加入到要删除的集合中
         for (Tree tree : treeList) {
-            Integer id = tree.getId();
+            Long id = tree.getId();
             idList.add(id);
             //把二级分类的每一个ID，查询它下面的子节点
             this.getIds(idList,id);
