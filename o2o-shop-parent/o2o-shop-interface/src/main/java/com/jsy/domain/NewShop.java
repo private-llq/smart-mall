@@ -10,8 +10,11 @@ import java.io.Serializable;
 import com.jsy.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * <p>
@@ -25,6 +28,8 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 @TableName("w_new_shop")
 @ApiModel(value="NewShop对象", description="新——店铺表")
+@NoArgsConstructor
+@AllArgsConstructor
 public class NewShop extends BaseEntity  {
 
     private static final long serialVersionUID = 1L;
