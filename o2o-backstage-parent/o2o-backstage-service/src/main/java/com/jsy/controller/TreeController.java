@@ -32,7 +32,7 @@ public class TreeController {
      */
     @ApiOperation("查询本级下面一级的子菜单（不包含本级）")
     @GetMapping("getSunTree")
-    public CommonResult getSunTree(@RequestParam ("id") Integer id) {
+    public CommonResult getSunTree(@RequestParam ("id") Long id) {
         List<Tree> list= treeService.getSunTree(id);
         return CommonResult.ok(list);
     }
@@ -51,7 +51,7 @@ public class TreeController {
      * 删除一条菜单
      */
     @DeleteMapping("delTreeOne")
-    public CommonResult delTreeOne(@RequestParam("id") Integer id) {
+    public CommonResult delTreeOne(@RequestParam("id") Long id) {
         treeService.delTreeOne(id);
         return CommonResult.ok();
     }
@@ -62,7 +62,7 @@ public class TreeController {
      * @return
      */
     @DeleteMapping("removeAllTree")
-    public CommonResult removeAllTree(@RequestParam("id") Integer id) {
+    public CommonResult removeAllTree(@RequestParam("id") Long id) {
         treeService.removeAllTree(id);
         return CommonResult.ok();
     }
@@ -91,7 +91,7 @@ public class TreeController {
      * @return
      */
     @GetMapping("selectAllTree")
-    public CommonResult<List<Tree>> selectAllTree(@RequestParam("id") Integer id){
+    public CommonResult<List<Tree>> selectAllTree(@RequestParam("id") Long id){
         List<Tree> list = treeService.selectAllTree(id);
         return CommonResult.ok(list);
     }
