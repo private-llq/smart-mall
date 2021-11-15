@@ -41,7 +41,7 @@ public class Tree implements Serializable {
     /**
      * 父级id
      */
-    private Integer parentId;
+    private Long parentId;
 
 
     /**
