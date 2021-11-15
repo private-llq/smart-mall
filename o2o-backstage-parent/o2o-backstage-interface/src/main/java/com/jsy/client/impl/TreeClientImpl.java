@@ -12,7 +12,7 @@ public class TreeClientImpl implements TreeClient {
     }
 
     @Override
-    public Tree getTree(Long id) {
+    public CommonResult<Tree> getTree(Long id) {
         return null;
     }
 }

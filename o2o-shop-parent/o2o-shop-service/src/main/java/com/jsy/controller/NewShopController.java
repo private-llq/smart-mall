@@ -1,11 +1,10 @@
 package com.jsy.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.jsy.basic.util.utils.BeansCopyUtils;
 import com.jsy.basic.util.utils.ValidatorUtils;
-import com.jsy.client.TreeClient;
 import com.jsy.dto.NewShopDto;
 import com.jsy.dto.NewShopPreviewDto;
 import com.jsy.dto.NewShopSetDto;
+import com.jsy.dto.NewShopRecommendDto;
 import com.jsy.parameter.NewShopParam;
 import com.jsy.parameter.NewShopSetParam;
 import com.jsy.service.INewShopService;
@@ -16,7 +15,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhsj.basecommon.vo.R;
 import com.zhsj.baseweb.annotation.LoginIgnore;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -24,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.jsy.basic.util.vo.CommonResult;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,9 +86,9 @@ public class NewShopController {
     */
     @GetMapping(value = "/{id}")
     @ApiOperation(("根据店铺id 查询店铺详情"))
-    public NewShop get(@PathVariable("id")Long id)
+    public CommonResult<NewShop> get(@PathVariable("id")Long id)
     {
-        return newShopService.getById(id);
+        return CommonResult.ok(newShopService.getById(id));
     }
 
 
@@ -102,7 +99,7 @@ public class NewShopController {
 //    @LoginIgnore
     @ApiOperation("查询所有店铺")
     @GetMapping(value = "/list")
-    public List<NewShopDto> list(){
+    public CommonResult<List<NewShopDto>> list(){
         List<NewShop> list = newShopService.list(null);
         List<NewShopDto> newShopDtos = new ArrayList<>();
         for (NewShop newShop : list) {
@@ -110,7 +107,7 @@ public class NewShopController {
             BeanUtils.copyProperties(newShop,newShopDto);
             newShopDtos.add(newShopDto);
         }
-        return newShopDtos;
+        return CommonResult.ok(newShopDtos);
     }
 
 
@@ -138,7 +135,7 @@ public class NewShopController {
 
     @ApiOperation("查询商家所拥有的的店铺信息")
     @RequestMapping(value = "/getOwnerShop/{ownerUuid}",method = RequestMethod.GET)
-    public List<NewShopPreviewDto> getOwnerShop(@PathVariable("ownerUuid") Long ownerUuid){
+    public CommonResult<List<NewShopPreviewDto>> getOwnerShop(@PathVariable("ownerUuid") Long ownerUuid){
         List<NewShop> newShops = newShopService.list(new QueryWrapper<NewShop>().eq("owner_uuid", ownerUuid));
         List<NewShopPreviewDto> dtoList = new ArrayList<>();
         for (NewShop newShop : newShops) {
@@ -146,7 +143,7 @@ public class NewShopController {
             BeanUtils.copyProperties(newShop,newShopPreviewDto);
             dtoList.add(newShopPreviewDto);
         }
-        return dtoList;
+        return CommonResult.ok(dtoList);
     }
     @ApiOperation("根据店铺id查询店铺设置")
     @RequestMapping(value = "/getSetShop/{shopId}",method = RequestMethod.GET)
@@ -157,7 +154,7 @@ public class NewShopController {
         return CommonResult.ok(newShopSetDto);
     }
 
-    @ApiOperation("根据店铺id查询店铺设置")
+    @ApiOperation("根据店铺id修改店铺设置")
     @RequestMapping(value = "/setSetShop/",method = RequestMethod.POST)
     public CommonResult setSetShop(@RequestBody NewShopSetParam shopSetParam){
         try {
@@ -165,7 +162,22 @@ public class NewShopController {
             return CommonResult.ok();
         } catch (Exception e) {
             e.printStackTrace();
-            return  CommonResult.error(-1,"创建成功！");
+            return  CommonResult.error(-1,"修改失败！");
         }
     }
+
+    /**************************************C端店铺的数据展示****************************************************************************/
+    @ApiOperation("根据店铺id查询店铺设置")
+    @RequestMapping(value = "/getShopAllList/",method = RequestMethod.POST)
+    public CommonResult<List<NewShopRecommendDto>> getShopAllList(@RequestParam("treeId") Long treeId,@RequestParam("location")String location){
+            List<NewShopRecommendDto> recommendDtoList = newShopService.getShopAllList(treeId,location);
+            if (recommendDtoList!=null){
+                return CommonResult.ok(recommendDtoList);
+            }
+            else {
+                return new  CommonResult(-1,"失败",null);
+            }
+
+    }
+
 }
