@@ -8,10 +8,12 @@ import com.jsy.domain.Tree;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @FeignClient(value = "SHOP-SERVICE-BACKSTAGE",fallback = TreeClientImpl.class,configuration = FeignConfiguration.class)
 public interface TreeClient {
     @GetMapping("/tree/selectAllTree")
-    CommonResult<Boolean> selectAllTree(@RequestParam("id") Integer id);
+    CommonResult<List<Tree>> selectAllTree(@RequestParam("id") Long id);
 
     @RequestMapping(value = "/tree/{id}", method = RequestMethod.GET)
     Tree getTree(@PathVariable("id") Long id);

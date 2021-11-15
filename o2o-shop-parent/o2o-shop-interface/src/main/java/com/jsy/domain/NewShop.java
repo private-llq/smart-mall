@@ -25,7 +25,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 @TableName("w_new_shop")
 @ApiModel(value="NewShop对象", description="新——店铺表")
-public class NewShop extends BaseEntity {
+public class NewShop extends BaseEntity  {
 
     private static final long serialVersionUID = 1L;
 

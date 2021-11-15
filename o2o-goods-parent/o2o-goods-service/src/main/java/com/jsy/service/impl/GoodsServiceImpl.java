@@ -2,9 +2,14 @@ package com.jsy.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.jsy.basic.util.vo.CommonResult;
+import com.jsy.client.NewShopClient;
 import com.jsy.client.ServiceCharacteristicsClient;
+import com.jsy.client.TreeClient;
 import com.jsy.domain.Goods;
+import com.jsy.domain.NewShop;
 import com.jsy.domain.ServiceCharacteristics;
+import com.jsy.domain.Tree;
 import com.jsy.mapper.GoodsMapper;
 import com.jsy.parameter.GoodsParam;
 import com.jsy.parameter.GoodsServiceParam;
@@ -37,6 +42,12 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
 
     @Autowired
     private ServiceCharacteristicsClient client;
+
+    @Autowired
+    private NewShopClient shopClient;
+
+    @Autowired
+    private TreeClient treeClient;
 
 
 
@@ -109,6 +120,26 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         goodsMapper.insert(goods);
     }
 
+
+    /**
+     * 添加服务查询分类
+     * @param shopId
+     * @return
+     */
+    @Override
+    public List<Tree> selectServiceType(Long shopId) {
+        CommonResult<NewShop> result = shopClient.get(shopId);
+
+        NewShop newShop = result.getData();
+        String shopTreeIds = newShop.getShopTreeId();
+        String[] split = shopTreeIds.split(",");
+        Tree tree = treeClient.getTree(Long.valueOf(split.length - 1));
+        CommonResult<List<Tree>> allTree = treeClient.selectAllTree(tree.getParentId());
+
+
+        return  allTree.getData();
+    }
+
     /**
      * 查看一条商品/服务的所有信息
      * @param id
@@ -162,5 +193,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         goods.setIsPutaway(1);
         goodsMapper.update(goods,new QueryWrapper<Goods>().in("id",idList));
     }
+
+
 
 }

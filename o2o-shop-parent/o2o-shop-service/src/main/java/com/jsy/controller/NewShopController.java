@@ -76,11 +76,12 @@ public class NewShopController {
     * 根据id查询一条
     * @param id
     */
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = "/get")
     @ApiOperation(("查询店铺"))
-    public NewShop get(@PathVariable("id")Long id)
+    public CommonResult<NewShop> get(@RequestParam("id")Long id)
     {
-        return newShopService.getById(id);
+        NewShop newShop = newShopService.getById(id);
+        return CommonResult.ok(newShop);
     }
 
 
