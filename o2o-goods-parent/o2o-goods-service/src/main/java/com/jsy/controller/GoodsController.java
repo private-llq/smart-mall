@@ -1,5 +1,6 @@
 package com.jsy.controller;
 import cn.hutool.core.bean.BeanUtil;
+import com.jsy.domain.Tree;
 import com.jsy.dto.GoodsDto;
 import com.jsy.dto.GoodsServiceDto;
 import com.jsy.parameter.GoodsParam;
@@ -44,6 +45,19 @@ public class GoodsController {
     public CommonResult saveService(@RequestBody GoodsServiceParam goodsServiceParam){
         goodsService.saveService(goodsServiceParam);
         return CommonResult.ok();
+
+    }
+
+    /**
+     * 添加服务查询分类
+     * @param shopId
+     * @return
+     */
+    @ApiOperation("添加服务查询分类")
+    @GetMapping(value="/selectServiceType")
+    public CommonResult selectServiceType(@RequestParam("shopId") Long shopId){
+       List<Tree> list= goodsService.selectServiceType(shopId);
+        return CommonResult.ok(list);
 
     }
 

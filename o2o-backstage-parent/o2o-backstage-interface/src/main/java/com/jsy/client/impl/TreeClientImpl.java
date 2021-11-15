@@ -5,10 +5,13 @@ import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.client.TreeClient;
 import com.jsy.domain.Tree;
 
+import java.util.List;
+
 public class TreeClientImpl implements TreeClient {
+
     @Override
-    public CommonResult<Boolean> selectAllTree(Integer id) {
-        return CommonResult.error(JSYError.FUSE_DOWNGRADE.getCode(),"熔断降级");
+    public CommonResult<List<Tree>> selectAllTree(Long id) {
+        return null;
     }
 
     @Override

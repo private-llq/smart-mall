@@ -121,4 +121,5 @@ public class TreeController {
         List<Tree> tree = treeService.getParentList(id);
         return CommonResult.ok(tree);
     }
+
 }

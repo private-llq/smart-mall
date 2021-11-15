@@ -2,6 +2,7 @@ package com.jsy.service;
 
 import com.jsy.domain.Goods;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.jsy.domain.Tree;
 import com.jsy.dto.GoodsDto;
 import com.jsy.dto.GoodsServiceDto;
 import com.jsy.parameter.GoodsParam;
@@ -62,4 +63,11 @@ public interface IGoodsService extends IService<Goods> {
      * 一键上架商品/服务
      */
     void putawayAll(List idList);
+
+    /**
+     * 添加服务查询分类
+     * @param shopId
+     * @return
+     */
+    List<Tree> selectServiceType(Long shopId);
 }
