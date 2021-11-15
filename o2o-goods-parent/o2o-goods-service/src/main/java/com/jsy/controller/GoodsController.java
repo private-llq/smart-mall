@@ -55,7 +55,7 @@ public class GoodsController {
      */
     @ApiOperation("添加服务查询分类")
     @GetMapping(value="/selectServiceType")
-    public CommonResult selectServiceType(@RequestParam("shopId") Long shopId){
+    public CommonResult<List<Tree>> selectServiceType(@RequestParam("shopId") Long shopId){
        List<Tree> list= goodsService.selectServiceType(shopId);
         return CommonResult.ok(list);
 

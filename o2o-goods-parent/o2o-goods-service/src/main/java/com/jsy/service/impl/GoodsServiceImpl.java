@@ -133,10 +133,8 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         NewShop newShop = result.getData();
         String shopTreeIds = newShop.getShopTreeId();
         String[] split = shopTreeIds.split(",");
-        Tree tree = treeClient.getTree(Long.valueOf(split.length - 1));
-        CommonResult<List<Tree>> allTree = treeClient.selectAllTree(tree.getParentId());
-
-
+        Tree data = treeClient.getTree(Long.valueOf(split.length - 1)).getData();
+        CommonResult<List<Tree>> allTree = treeClient.selectAllTree(data.getParentId());
         return  allTree.getData();
     }
 

@@ -3,8 +3,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jsy.basic.util.utils.ValidatorUtils;
 import com.jsy.dto.NewShopDto;
 import com.jsy.dto.NewShopPreviewDto;
-import com.jsy.dto.NewShopSetDto;
 import com.jsy.dto.NewShopRecommendDto;
+import com.jsy.dto.NewShopSetDto;
 import com.jsy.parameter.NewShopParam;
 import com.jsy.parameter.NewShopSetParam;
 import com.jsy.service.INewShopService;
@@ -129,8 +129,10 @@ public class NewShopController {
     @RequestMapping(value = "/getPreviewDto/{shopId}",method = RequestMethod.GET)
     public CommonResult<NewShopPreviewDto> getPreviewDto(@PathVariable("shopId") Long shopId){
 
-        NewShopPreviewDto newShopPreviewDto = newShopService.getPreviewDto(shopId);
-        return CommonResult.ok(newShopPreviewDto);
+   NewShopPreviewDto newShopPreviewDto = newShopService.getPreviewDto(shopId);
+
+  return CommonResult.ok(newShopPreviewDto);
+
     }
 
     @ApiOperation("查询商家所拥有的的店铺信息")
@@ -169,7 +171,7 @@ public class NewShopController {
     /**************************************C端店铺的数据展示****************************************************************************/
     @ApiOperation("根据店铺id查询店铺设置")
     @RequestMapping(value = "/getShopAllList/",method = RequestMethod.POST)
-    public CommonResult<List<NewShopRecommendDto>> getShopAllList(@RequestParam("treeId") Long treeId,@RequestParam("location")String location){
+    public CommonResult<List<NewShopRecommendDto>> getShopAllList(@RequestParam("treeId") Long treeId, @RequestParam("location")String location){
             List<NewShopRecommendDto> recommendDtoList = newShopService.getShopAllList(treeId,location);
             if (recommendDtoList!=null){
                 return CommonResult.ok(recommendDtoList);
