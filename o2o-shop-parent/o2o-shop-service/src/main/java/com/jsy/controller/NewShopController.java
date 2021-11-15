@@ -1,5 +1,9 @@
 package com.jsy.controller;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonObject;
+import com.jsy.basic.util.utils.ObjectMapperUtil;
 import com.jsy.basic.util.utils.ValidatorUtils;
 import com.jsy.dto.NewShopDto;
 import com.jsy.dto.NewShopPreviewDto;
@@ -84,13 +88,13 @@ public class NewShopController {
     * 根据id查询一条
     * @param id
     */
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = "/get")
     @ApiOperation(("根据店铺id 查询店铺详情"))
-    public CommonResult<NewShop> get(@PathVariable("id")Long id)
+    public NewShop get(@RequestParam("id")Long id)
     {
+        NewShop newShop = newShopService.getById(id);
 
-
-        return CommonResult.ok(newShopService.getById(id));
+        return newShop;
     }
 
 

@@ -50,16 +50,10 @@ public class GoodsController {
 
     /**
      * 添加服务查询分类
-     * @param shopId
+     * @param shopIds 第二个 查询菜单接口
      * @return
      */
-    @ApiOperation("添加服务查询分类")
-    @GetMapping(value="/selectServiceType")
-    public CommonResult<List<Tree>> selectServiceType(@RequestParam("shopId") Long shopId){
-       List<Tree> list= goodsService.selectServiceType(shopId);
-        return CommonResult.ok(list);
 
-    }
 
     /**
      * 上架商品/服务
