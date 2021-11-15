@@ -108,4 +108,19 @@ public class NewShop extends BaseEntity {
 
     @ApiModelProperty(value = "经营类型（1-服务行业   0-套餐行业）")
     private Integer type;
+
+    @ApiModelProperty(value = "证件照片（展示给C端看的证件）")
+    private String papers;
+
+    @ApiModelProperty(value = "店铺环境照片")
+    private String shopImages;
+
+    @ApiModelProperty(value = "营业时间1")
+    private String businessHours1;
+
+    @ApiModelProperty(value = "营业时间2")
+    private String businessHours2;
+
+    @ApiModelProperty(value = "店铺公告")
+    private String notice;
 }

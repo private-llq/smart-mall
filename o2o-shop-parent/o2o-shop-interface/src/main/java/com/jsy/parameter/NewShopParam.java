@@ -23,6 +23,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 public class NewShopParam implements Serializable {
 
+    private Long id;
     @NotBlank(groups = {NewShopParam.newShopValidatedGroup.class},message = "所在城市不能为空")
     @ApiModelProperty(name = "city", value = "所在城市")
     private String city;
