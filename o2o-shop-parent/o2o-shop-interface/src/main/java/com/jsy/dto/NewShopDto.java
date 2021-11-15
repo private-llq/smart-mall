@@ -25,9 +25,6 @@ public class NewShopDto implements Serializable {
 
     private Long id;
 
-    @ApiModelProperty(value = "店铺uuid")
-    private String uuid;
-
     @ApiModelProperty(value = "店铺拥有者uuid")
     private String ownerUuid;
 
@@ -102,6 +99,8 @@ public class NewShopDto implements Serializable {
 
     @ApiModelProperty(value = "经营类型（0-服务行业   1-非服务行业）")
     private Integer type;
+
+
 
 
 
