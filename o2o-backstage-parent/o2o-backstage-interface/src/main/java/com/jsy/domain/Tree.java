@@ -30,7 +30,7 @@ public class Tree implements Serializable {
      * 主键 
      */
     @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+    private Long id;
 
 
     /**
@@ -41,7 +41,7 @@ public class Tree implements Serializable {
     /**
      * 父级id
      */
-    private Integer parentId;
+    private Long parentId;
 
 
     /**

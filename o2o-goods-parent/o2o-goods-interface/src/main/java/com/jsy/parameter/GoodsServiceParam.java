@@ -1,11 +1,12 @@
 package com.jsy.parameter;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 
 @Data
@@ -35,7 +36,8 @@ public class GoodsServiceParam {
     private String serviceCharacteristicsIds;
 
     @ApiModelProperty(value = "有效期")
-    private String validUntilTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+    private LocalDateTime validUntilTime;
 
     @ApiModelProperty(value = "服务的价格策略  0:平台销售  1：宣传服务")
     private Integer priceStrategy;

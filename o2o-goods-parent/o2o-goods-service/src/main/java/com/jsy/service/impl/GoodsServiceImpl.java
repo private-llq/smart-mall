@@ -105,6 +105,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
 
         goods.setType(1);//服务类
         BeanUtil.copyProperties(goodsServiceParam,goods);
+
         goodsMapper.insert(goods);
     }
 
