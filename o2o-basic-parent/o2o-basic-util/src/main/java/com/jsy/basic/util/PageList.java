@@ -5,8 +5,15 @@ import java.util.List;
 
 //分页对象：easyui只需两个属性，total(总数),datas（分页数据）就能实现分页
 public class PageList<T> {
+    /**
+     * 总条数
+     */
     private Long total=0L;
     private List<T> rows = new ArrayList<T>();
+    /**
+     * 当前页
+     */
+    private long current = 1;
 
     public long getTotal() {
         return total;
@@ -22,6 +29,14 @@ public class PageList<T> {
 
     public void setRows(List<T> rows) {
         this.rows = rows;
+    }
+
+    public long getCurrent() {
+        return current;
+    }
+
+    public void setCurrent(long current) {
+        this.current = current;
     }
 
     @Override

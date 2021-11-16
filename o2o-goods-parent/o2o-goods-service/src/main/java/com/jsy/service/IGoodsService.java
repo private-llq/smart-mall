@@ -1,15 +1,14 @@
 package com.jsy.service;
 
+import com.jsy.basic.util.PageInfo;
 import com.jsy.domain.Goods;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jsy.domain.Tree;
-import com.jsy.dto.GoodsDto;
-import com.jsy.dto.GoodsServiceDto;
 import com.jsy.parameter.GoodsParam;
 import com.jsy.parameter.GoodsServiceParam;
+import com.jsy.query.GoodsPageQuery;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>
@@ -44,7 +43,7 @@ public interface IGoodsService extends IService<Goods> {
      * 查询店铺下面的所有商品+服务
      */
 
-    Map<Integer, List<Goods>> getGoodsAll(Long shopId);
+    PageInfo<Goods> getGoodsAll(GoodsPageQuery goodsPageQuery);
 
 
     /**

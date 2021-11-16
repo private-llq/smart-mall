@@ -1,10 +1,8 @@
 package com.jsy.service.impl;
-
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.jsy.basic.util.MyJsonUtils;
-import com.jsy.basic.util.vo.CommonResult;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.jsy.basic.util.PageInfo;
 import com.jsy.client.NewShopClient;
 import com.jsy.client.ServiceCharacteristicsClient;
 import com.jsy.client.TreeClient;
@@ -15,6 +13,7 @@ import com.jsy.domain.Tree;
 import com.jsy.mapper.GoodsMapper;
 import com.jsy.parameter.GoodsParam;
 import com.jsy.parameter.GoodsServiceParam;
+import com.jsy.query.GoodsPageQuery;
 import com.jsy.service.IGoodsService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
@@ -22,11 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.*;
 
 /**
  * <p>
@@ -153,13 +148,29 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     }
 
     /**
-     * 查询店铺下面的所有商品+服务
+     *查询店铺下面的所有商品+服务
      */
     @Override
-    public Map<Integer, List<Goods>> getGoodsAll(Long shopId) {
-        List<Goods> list = goodsMapper.selectList(new QueryWrapper<Goods>().eq("shop_id", shopId).eq("is_putaway",1).eq("deleted",0));
-        Map<Integer, List<Goods>> collect = list.stream().collect(Collectors.groupingBy(Goods::getType));
-        return collect;
+    public PageInfo<Goods> getGoodsAll(GoodsPageQuery goodsPageQuery) {
+        Long shopId = goodsPageQuery.getShopId();
+        Integer isPutaway = goodsPageQuery.getIsPutaway();
+        Integer type = goodsPageQuery.getType();
+
+        Page<Goods> page = new Page<>(goodsPageQuery.getPage(),goodsPageQuery.getRows());
+
+        //查商品/服务
+        Page<Goods> goodsPage = goodsMapper.selectPage(page, new QueryWrapper<Goods>()
+                .eq("shop_id", shopId)
+                .eq(Objects.nonNull(isPutaway), "is_putaway", isPutaway)
+                .eq("type", type)
+        );
+
+        PageInfo pageInfo = new PageInfo<Goods>();
+        pageInfo.setCurrent(goodsPage.getCurrent());
+        pageInfo.setSize(goodsPage.getSize());
+        pageInfo.setTotal(goodsPage.getTotal());
+        pageInfo.setRecords(goodsPage.getRecords());
+        return pageInfo;
     }
 
     /**

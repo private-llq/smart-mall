@@ -1,10 +1,9 @@
 package com.jsy.controller;
-import cn.hutool.core.bean.BeanUtil;
+import com.jsy.basic.util.PageInfo;
 import com.jsy.domain.Tree;
-import com.jsy.dto.GoodsDto;
-import com.jsy.dto.GoodsServiceDto;
 import com.jsy.parameter.GoodsParam;
 import com.jsy.parameter.GoodsServiceParam;
+import com.jsy.query.GoodsPageQuery;
 import com.jsy.service.IGoodsService;
 import com.jsy.domain.Goods;
 import io.swagger.annotations.ApiOperation;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.jsy.basic.util.vo.CommonResult;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/goods")
@@ -92,6 +90,9 @@ public class GoodsController {
 
     }
 
+
+
+
     /**
     * 删除商品或者服务
     * @param id
@@ -123,14 +124,16 @@ public class GoodsController {
     }
 
     /**
-     * 查询店铺下面的所有商品+服务
+     *
+     * @param goodsPageQuery
+     * @return
      */
-    @ApiOperation("查询店铺下面的所有商品+服务")
-    @GetMapping("getGoodsAll")
-    public CommonResult<Map<Integer,List<Goods>>> getGoodsAll(@RequestParam("shopId") Long shopId)
+    @ApiOperation("查询店铺下面的商品+服务")
+    @PostMapping("getGoodsAll")
+    public CommonResult<PageInfo<Goods>> getGoodsAll(@RequestBody GoodsPageQuery goodsPageQuery)
     {
-        Map<Integer,List<Goods>> map = goodsService.getGoodsAll(shopId);
-        return CommonResult.ok(map);
+        PageInfo<Goods> pageInfo = goodsService.getGoodsAll(goodsPageQuery);
+        return CommonResult.ok(pageInfo);
     }
 
 }
