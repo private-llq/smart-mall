@@ -49,15 +49,6 @@ public class SetMenuParam implements Serializable {
     @ApiModelProperty(value = "图片（最大三张）")
     private String images;
 
-    @ApiModelProperty(value = "开始有效期")
-    private LocalDateTime indateStart;
-
-    @ApiModelProperty(value = "结束有效期")
-    private LocalDateTime indateEnd;
-
-    @ApiModelProperty(value = "使用规则")
-    private String rule;
-
     @ApiModelProperty(value = "上下架（0下架  1上架）")
     private Integer state;
 

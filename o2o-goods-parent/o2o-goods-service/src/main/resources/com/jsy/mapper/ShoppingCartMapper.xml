@@ -8,6 +8,7 @@
         <result column="user_id" property="userId" />
         <result column="shop_id" property="shopId" />
         <result column="goods_id" property="goodsId" />
+        <result column="set_menu_id" property="setMenuId" />
         <result column="images" property="images" />
         <result column="title" property="title" />
         <result column="create_time" property="createTime" />
@@ -16,6 +17,9 @@
         <result column="price" property="price" />
         <result column="discount_price" property="discountPrice" />
         <result column="num" property="num" />
+        <result column="discount_state" property="discountState" />
+        <result column="is_set_menu" property="isSetMenu" />
+        <result column="is_visiting_service" property="isVisitingService" />
     </resultMap>
 
 </mapper>

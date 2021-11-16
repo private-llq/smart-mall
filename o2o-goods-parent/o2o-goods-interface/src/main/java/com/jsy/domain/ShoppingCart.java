@@ -1,13 +1,11 @@
 package com.jsy.domain;
 
 import java.math.BigDecimal;
-
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-
+import com.baomidou.mybatisplus.annotation.IdType;
+import java.time.LocalDateTime;
+import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
-
-import com.jsy.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -19,15 +17,19 @@ import lombok.EqualsAndHashCode;
  * </p>
  *
  * @author lijin
- * @since 2021-11-11
+ * @since 2021-11-16
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("w_shopping_cart")
 @ApiModel(value="ShoppingCart对象", description="")
-public class ShoppingCart extends BaseEntity implements Serializable {
+public class ShoppingCart implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    @ApiModelProperty(value = "id")
+    @TableId(value = "id", type = IdType.AUTO)
+    private Long id;
 
     @ApiModelProperty(value = "用户id")
     private String userId;
@@ -47,11 +49,17 @@ public class ShoppingCart extends BaseEntity implements Serializable {
     @ApiModelProperty(value = "商品名称/服务标题")
     private String title;
 
+    @ApiModelProperty(value = "创建时间")
+    private LocalDateTime createTime;
+
+    @ApiModelProperty(value = "修改时间")
+    private LocalDateTime updateTime;
+
+    @ApiModelProperty(value = "逻辑删除")
+    private Integer deleted;
+
     @ApiModelProperty(value = "商品价格")
     private BigDecimal price;
-
-    @ApiModelProperty(value = "是否开启折扣：0未开启 1开启")
-    private Integer discountState;
 
     @ApiModelProperty(value = "商品折扣价格")
     private BigDecimal discountPrice;
@@ -59,16 +67,14 @@ public class ShoppingCart extends BaseEntity implements Serializable {
     @ApiModelProperty(value = "购物车数量")
     private Integer num;
 
+    @ApiModelProperty(value = "是否开启折扣：0未开启 1开启")
+    private Integer discountState;
 
-    @ApiModelProperty(value = "1：是套餐 0：不是套餐")
+    @ApiModelProperty(value = "是否是套餐： 1 是  0 不是")
     private Integer isSetMenu;
 
-
-    @ApiModelProperty(value = "1：支持上门 0：不支持上门")
+    @ApiModelProperty(value = "是否支持上门服务 1：支持 0： 不支持")
     private Integer isVisitingService;
-
-
-
 
 
 }

@@ -1,5 +1,6 @@
 package com.jsy.controller;
 import cn.hutool.core.bean.BeanUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jsy.domain.Tree;
 import com.jsy.dto.GoodsDto;
 import com.jsy.dto.GoodsServiceDto;
@@ -133,5 +134,16 @@ public class GoodsController {
         return CommonResult.ok(map);
     }
 
+    @ApiOperation("查询商家最新发布的商品或在服务")
+    @GetMapping("/getShopIdGoods")
+    public CommonResult<Goods> getShopIdGoods(@RequestParam("shopId") Long shopId)
+    {
+        List<Goods> one = goodsService.list(new QueryWrapper<Goods>().eq("shop_id", shopId).orderByDesc("create_time"));
+        if (one.size()>0){
+            Goods goods = one.get(0);
+            return CommonResult.ok(goods);
+        }
+        return  CommonResult.ok(null);
+    }
 }
 

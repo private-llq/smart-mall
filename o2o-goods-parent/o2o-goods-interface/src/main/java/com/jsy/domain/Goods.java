@@ -80,4 +80,5 @@ public class Goods extends BaseEntity implements Serializable {
     private Integer isVisitingService;
 
 
+
 }

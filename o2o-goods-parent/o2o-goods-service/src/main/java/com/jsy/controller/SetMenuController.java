@@ -1,4 +1,6 @@
 package com.jsy.controller;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.jsy.domain.Goods;
 import com.jsy.dto.SetMenuDto;
 import com.jsy.dto.SetMenuGoodsDto;
 import com.jsy.parameter.SetMenuParam;
@@ -13,8 +15,13 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.jsy.basic.util.vo.CommonResult;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/setMenu")
@@ -139,4 +146,18 @@ public class SetMenuController {
         page = setMenuService.page(page);
         return new PageList<SetMenu>(page.getTotal(),page.getRecords());
     }
+
+    @ApiOperation("查询商家最新发布的商品或在服务")
+    @GetMapping("/getShopIdMenus")
+    public CommonResult<SetMenu> getShopIdMenus(@RequestParam("shopId") Long shopId)
+    {
+        List<SetMenu> one = setMenuService.list(new QueryWrapper<SetMenu>().eq("shop_id", shopId).orderByDesc("create_time"));
+        if (one.size()>0){
+            SetMenu setMenu = one.get(0);
+            return CommonResult.ok(setMenu);
+        }else {
+            return CommonResult.ok(null);
+        }
+    }
+
 }

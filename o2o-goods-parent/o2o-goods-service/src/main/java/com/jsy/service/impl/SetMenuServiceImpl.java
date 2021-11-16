@@ -82,6 +82,9 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
     @Override
     public SetMenuDto getSetMenulist(Long shopId,Long id) {
         SetMenu setMenu = setMenuMapper.selectOne(new QueryWrapper<SetMenu>().eq("shop_id", shopId).eq("id", id));
+        if (setMenu==null){
+            throw new JSYException(-1,"套餐为空");
+        }
         List<SetMenuGoods> setMenuGoodsList = menuGoodsMapper.selectList(new QueryWrapper<SetMenuGoods>()
                     .eq("set_menu_id", setMenu.getId())
             );
@@ -163,8 +166,10 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
         List<SetMenuGoods> menuGoods = menuGoodsMapper.selectList(new QueryWrapper<SetMenuGoods>().eq("set_menu_id", setMenuId));
         for (SetMenuGoods setMenuGoods : menuGoods) {
             Goods goods = goodsMapper.selectOne(new QueryWrapper<Goods>().eq("id", setMenuGoods.getGoodsIds()));
-            setMenuGoods.setName(goods.getTitle());
-            setMenuGoods.setPrice(goods.getPrice());
+            if (goods!=null){
+                setMenuGoods.setName(goods.getTitle());
+                setMenuGoods.setPrice(goods.getPrice());
+            }
         }
         List<SetMenuGoodsDto> menuGoodsDtoList = BeansCopyUtils.copyListProperties(menuGoods, SetMenuGoodsDto::new);
         Map<String,List<SetMenuGoodsDto>> map = menuGoodsDtoList.stream().collect(Collectors.groupingBy(SetMenuGoodsDto::getTitle));
