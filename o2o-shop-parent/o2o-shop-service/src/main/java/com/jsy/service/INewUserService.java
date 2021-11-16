@@ -15,7 +15,7 @@ public interface INewUserService extends IService<NewUser> {
 
    NewUser getNewUser(String shopUuid);
 
-   String isNewUser(String shopUuid, String userUuid);
+//   String isNewUser(String shopUuid, String userUuid);
 
     NewUser newestNewUser(String shopUuid);
 }

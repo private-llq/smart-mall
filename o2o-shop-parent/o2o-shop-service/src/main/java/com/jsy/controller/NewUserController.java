@@ -1,13 +1,13 @@
 package com.jsy.controller;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.jsy.service.INewUserService;
+
 import com.jsy.domain.NewUser;
+import com.jsy.service.INewUserService;
 import io.swagger.annotations.ApiOperation;
 import me.zhyd.oauth.utils.UuidUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.jsy.basic.util.vo.CommonResult;
-
 import java.time.LocalDateTime;
 
 @RestController
@@ -72,15 +72,15 @@ public class NewUserController {
         return CommonResult.ok(newUser);
     }
 
-    /**
-     * 判断该用户是否是首单（新客）
-     */
-    @ApiOperation("判断该用户在某家店是否是首单（新客）")
-    @GetMapping("pub/isNewUser")
-    public CommonResult<String> isNewUser(@RequestParam String shopUuid, @RequestParam String userUuid) {
-        String newUserUuid = newUserService.isNewUser(shopUuid, userUuid);
-        return CommonResult.ok(newUserUuid);
-    }
+//    /**
+//     * 判断该用户是否是首单（新客）
+//     */
+//    @ApiOperation("判断该用户在某家店是否是首单（新客）")
+//    @GetMapping("pub/isNewUser")
+//    public CommonResult<String> isNewUser(@RequestParam String shopUuid, @RequestParam String userUuid) {
+////        String newUserUuid = newUserService.isNewUser(shopUuid, userUuid);
+//        return CommonResult.ok(newUserUuid);
+//    }
 
 
 }

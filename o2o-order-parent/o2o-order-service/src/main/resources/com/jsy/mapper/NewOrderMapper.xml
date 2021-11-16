@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jsy.mapper.NewOrderMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jsy.domain.NewOrder">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="shop_id" property="shopId" />
+        <result column="order_num" property="orderNum" />
+        <result column="order_status" property="orderStatus" />
+        <result column="pay_type" property="payType" />
+        <result column="pay_status" property="payStatus" />
+        <result column="pay_time" property="payTime" />
+        <result column="bill_month" property="billMonth" />
+        <result column="bill_num" property="billNum" />
+        <result column="bill_rise" property="billRise" />
+        <result column="comment_status" property="commentStatus" />
+        <result column="order_type" property="orderType" />
+        <result column="appointment_status" property="appointmentStatus" />
+        <result column="consumption_way" property="consumptionWay" />
+        <result column="order_all_price" property="orderAllPrice" />
+        <result column="shipping_address" property="shippingAddress" />
+        <result column="start_time" property="startTime" />
+        <result column="ent_time" property="entTime" />
+        <result column="serve_code" property="serveCode" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="deleted" property="deleted" />
+    </resultMap>
+
+</mapper>

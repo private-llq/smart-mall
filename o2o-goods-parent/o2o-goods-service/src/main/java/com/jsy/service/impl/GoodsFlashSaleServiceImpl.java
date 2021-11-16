@@ -3,23 +3,17 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jsy.basic.util.utils.CurrentUserHolder;
 import com.jsy.basic.util.utils.UUIDUtils;
-import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.basic.util.vo.UserDto;
-import com.jsy.client.OrderClient;
 import com.jsy.config.FlashSaleRabbitConfig;
-import com.jsy.domain.Cart;
 import com.jsy.domain.GoodsBasic;
 import com.jsy.handle.MessageHandle;
 import com.jsy.mapper.GoodsBasicMapper;
 import com.jsy.service.IGoodsFlashSaleService;
 import com.jsy.vo.RecordVo;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 @Service
@@ -38,8 +32,8 @@ public class GoodsFlashSaleServiceImpl extends ServiceImpl<GoodsBasicMapper, Goo
     @Autowired
     private RedisTemplate redisTemplate;
 
-    @Autowired
-    private OrderClient orderClient;
+//    @Autowired
+//    private OrderClient orderClient;
 
     @Autowired
     private CartServiceImpl CartServiceImpl;

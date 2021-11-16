@@ -247,12 +247,12 @@ public class ShopInfoController {
         return CommonResult.ok(shopInfoService.selectShop(uuid,longitude,latitude));
     }
 
-    @ApiOperation("[首页]根据关键字搜索店铺")
-    @PostMapping("/pub/selectByCondition")
-    public CommonResult<PagerUtils<ShopQueryDTO>> selectByCondition(@RequestBody ShopInfoQuery shopInfoQuery) {
-        PagerUtils<ShopQueryDTO> shopQueryDTOPagerUtils = shopInfoService.selectByConditon(shopInfoQuery);
-        return CommonResult.ok(shopQueryDTOPagerUtils);
-    }
+//    @ApiOperation("[首页]根据关键字搜索店铺")
+//    @PostMapping("/pub/selectByCondition")
+//    public CommonResult<PagerUtils<ShopQueryDTO>> selectByCondition(@RequestBody ShopInfoQuery shopInfoQuery) {
+//        PagerUtils<ShopQueryDTO> shopQueryDTOPagerUtils = shopInfoService.selectByConditon(shopInfoQuery);
+//        return CommonResult.ok(shopQueryDTOPagerUtils);
+//    }
 
     /**
      * 根据用户的评价，修改店铺整体的星级

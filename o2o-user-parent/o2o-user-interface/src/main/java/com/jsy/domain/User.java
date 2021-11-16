@@ -20,9 +20,6 @@ import java.io.Serializable;
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
-
-
     /**
      * uuid主键
      */
@@ -31,24 +28,18 @@ public class User implements Serializable {
      * 姓名
      */
     private String name;
-
     /**
      * 密码
      */
     private String password;
-
     /**
      * 电话号码
      */
     private String phone;
-
-
-
     /**
      *关联Id 店家关联店铺Id (后期可关联用户详情表)
      */
      private String relationUuid;
-
 
     /**
      * 头像id
