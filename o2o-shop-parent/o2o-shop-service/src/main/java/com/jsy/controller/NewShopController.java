@@ -90,11 +90,10 @@ public class NewShopController {
     */
     @GetMapping(value = "/get")
     @ApiOperation(("根据店铺id 查询店铺详情"))
-    public NewShop get(@RequestParam("id")Long id)
+    public CommonResult<NewShop> get(@RequestParam("id") Long id)
     {
         NewShop newShop = newShopService.getById(id);
-
-        return newShop;
+        return CommonResult.ok(newShop);
     }
 
 

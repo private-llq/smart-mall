@@ -106,7 +106,7 @@ public class TreeController {
     }
 
     /**
-     * 新增菜单
+     * id查询菜单
      */
     @RequestMapping(value = "/{id}",method = RequestMethod.GET)
     public CommonResult<Tree> getTree(@PathVariable("id")Long id) {

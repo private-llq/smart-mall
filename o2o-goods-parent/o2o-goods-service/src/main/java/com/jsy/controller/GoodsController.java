@@ -31,7 +31,7 @@ public class GoodsController {
     * 添加 商品
     */
     @ApiOperation("添加商品")
-    @PostMapping(value="/saveGoods")
+    @PostMapping(value="saveGoods")
     public CommonResult saveGoods(@RequestBody GoodsParam goodsParam){
         goodsService.saveGoods(goodsParam);
         return CommonResult.ok();
@@ -41,7 +41,7 @@ public class GoodsController {
      * 添加 服务
      */
     @ApiOperation("添加服务")
-    @PostMapping(value="/saveService")
+    @PostMapping(value="saveService")
     public CommonResult saveService(@RequestBody GoodsServiceParam goodsServiceParam){
         goodsService.saveService(goodsServiceParam);
         return CommonResult.ok();
@@ -50,10 +50,16 @@ public class GoodsController {
 
     /**
      * 添加服务查询分类
-     * @param shopIds 第二个 查询菜单接口
+     * @param shopId
      * @return
      */
+    @ApiOperation("添加服务查询分类")
+    @GetMapping(value="selectServiceType")
+    public CommonResult<List<Tree>> selectServiceType(@RequestParam("shopId") Long shopId){
+        List<Tree> list= goodsService.selectServiceType(shopId);
+        return CommonResult.ok(list);
 
+    }
 
     /**
      * 上架商品/服务
@@ -61,7 +67,7 @@ public class GoodsController {
      */
 
     @ApiOperation("上架商品/服务")
-    @GetMapping(value="/putaway")
+    @GetMapping(value="putaway")
     public CommonResult putaway(@RequestParam ("id") Long id){
         goodsService.putaway(id);
         return CommonResult.ok();
@@ -73,7 +79,7 @@ public class GoodsController {
      * @param id
      */
     @ApiOperation("下架商品/服务")
-    @GetMapping(value="/outaway")
+    @GetMapping(value="outaway")
     public CommonResult outaway(@RequestParam ("id") Long id){
         goodsService.outaway(id);
         return CommonResult.ok();
@@ -84,7 +90,7 @@ public class GoodsController {
      * 一键上架商品/服务
      */
     @ApiOperation("一键上架商品/服务")
-    @PostMapping(value="/putawayAll")
+    @PostMapping(value="putawayAll")
     public CommonResult putawayAll(@RequestBody List<Long> idList){
         goodsService.putawayAll(idList);
         return CommonResult.ok();

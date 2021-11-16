@@ -1,8 +1,9 @@
 package com.jsy.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.jsy.basic.util.MyJsonUtils;
 import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.client.NewShopClient;
 import com.jsy.client.ServiceCharacteristicsClient;
@@ -44,7 +45,11 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     @Autowired
     private ServiceCharacteristicsClient client;
 
+    @Autowired
+    private NewShopClient shopClient;
 
+    @Autowired
+    private TreeClient treeClient;
 
 
 
@@ -117,6 +122,25 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         goodsMapper.insert(goods);
     }
 
+
+    /**
+     * 添加服务查询分类
+     * @param shopId
+     * @return
+     */
+    @Override
+    public List<Tree> selectServiceType(Long shopId) {
+        NewShop newShop = shopClient.get(shopId).getData();
+        if (Objects.nonNull(newShop)){
+            String[] ids = newShop.getShopTreeId().split(",");
+            Tree tree = treeClient.getTree(Long.valueOf(ids[ids.length - 1])).getData();
+            if (Objects.nonNull(tree)){
+                List<Tree> treeList = treeClient.selectAllTree(tree.getParentId()).getData();
+                return treeList;
+            }
+        }
+        return null;
+    }
 
     /**
      * 查看一条商品/服务的所有信息

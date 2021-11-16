@@ -64,4 +64,10 @@ public interface IGoodsService extends IService<Goods> {
      */
     void putawayAll(List idList);
 
+    /**
+     * 添加服务查询分类
+     * @param shopId
+     * @return
+     */
+    List<Tree> selectServiceType(Long shopId);
 }
