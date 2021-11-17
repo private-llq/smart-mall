@@ -32,4 +32,10 @@ public interface INewShopService extends IService<NewShop> {
     /***********************************************************************************/
     //C端查询店铺
     List<NewShopRecommendDto> getShopAllList(Long treeId,String location);
+
+
+    /**
+     * 首页搜索
+     */
+    List<NewShop> mainSearch(String keyword);
 }

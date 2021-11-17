@@ -187,4 +187,15 @@ public class NewShopController {
 
     }
 
+    /**
+     * 首页搜索
+     */
+    @ApiOperation("首页搜索")
+    @GetMapping("mainSearch")
+    public CommonResult<List<NewShop>> mainSearch(@RequestParam("keyword") String keyword){
+        List<NewShop> newShops= newShopService.mainSearch(keyword);
+        return CommonResult.ok(newShops);
+    }
+
+
 }

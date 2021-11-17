@@ -2,6 +2,9 @@ package com.jsy.mapper;
 
 import com.jsy.domain.NewShop;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface NewShopMapper extends BaseMapper<NewShop> {
 
+    List<NewShop> mainSearch(@Param("keyword") String keyword);
 }

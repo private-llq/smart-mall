@@ -1,5 +1,6 @@
 package com.jsy.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.utils.GouldUtil;
 import com.jsy.basic.util.utils.RegexUtils;
@@ -162,6 +163,16 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
 //      newShopList.stream().filter(s->{})
 
         return null;
+    }
+
+
+    /**
+     * 首页搜索
+     */
+    @Override
+    public List<NewShop> mainSearch(String keyword) {
+       List<NewShop> newShops= shopMapper.mainSearch(keyword);
+        return newShops;
     }
 
 
