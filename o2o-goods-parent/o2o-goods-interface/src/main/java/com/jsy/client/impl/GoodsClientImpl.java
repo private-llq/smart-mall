@@ -9,4 +9,9 @@ public class GoodsClientImpl implements GoodsClient {
     public CommonResult<Goods> getShopIdGoods(Long shopId) {
         return null;
     }
+
+    @Override
+    public CommonResult<Goods> latelyGoods(Long shopId) {
+        return null;
+    }
 }

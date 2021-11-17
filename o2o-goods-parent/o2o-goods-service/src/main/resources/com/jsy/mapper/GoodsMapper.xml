@@ -25,4 +25,13 @@
         <result column="phone" property="phone" />
     </resultMap>
 
+
+    <select id="latelyGoods" resultType="com.jsy.domain.Goods">
+        SELECT bak.id,bak.selling_price AS price , bak.`name` AS title ,bak.create_time FROM (
+        SELECT id ,selling_price,`name`,create_time FROM w_set_menu WHERE create_time = (SELECT MAX(create_time) FROM w_set_menu) AND deleted=0 AND state=1 AND shop_id=#{shopId}
+        UNION
+        SELECT id, price,title, create_time FROM w_goods WHERE create_time = (SELECT MAX(create_time) FROM w_goods) AND deleted=0 AND is_putaway=1 AND shop_id=#{shopId}) as bak
+        ORDER BY bak.create_time DESC LIMIT 0,1
+    </select>
+
 </mapper>

@@ -14,4 +14,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface GoodsClient {
     @GetMapping("/goods/getShopIdGoods")
      CommonResult<Goods> getShopIdGoods(@RequestParam("shopId") Long shopId);
+
+    /**
+     * 最新上架 商品、服务、套餐
+     * @param shopId
+     * @return
+     */
+    @GetMapping("/goods/latelyGoods/{shopId}")
+    CommonResult<Goods> latelyGoods(@PathVariable("shopId") Long shopId);
 }

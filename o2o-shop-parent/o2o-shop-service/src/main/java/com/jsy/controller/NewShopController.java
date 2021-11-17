@@ -5,10 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 import com.jsy.basic.util.utils.ObjectMapperUtil;
 import com.jsy.basic.util.utils.ValidatorUtils;
-import com.jsy.dto.NewShopDto;
-import com.jsy.dto.NewShopPreviewDto;
-import com.jsy.dto.NewShopRecommendDto;
-import com.jsy.dto.NewShopSetDto;
+import com.jsy.dto.*;
 import com.jsy.parameter.NewShopParam;
 import com.jsy.parameter.NewShopSetParam;
 import com.jsy.service.INewShopService;
@@ -189,12 +186,16 @@ public class NewShopController {
 
     /**
      * 首页搜索
+     * @param keyword 关键字
+     * @param location 定位
+     * @return
      */
     @ApiOperation("首页搜索")
     @GetMapping("mainSearch")
-    public CommonResult<List<NewShop>> mainSearch(@RequestParam("keyword") String keyword){
-        List<NewShop> newShops= newShopService.mainSearch(keyword);
-        return CommonResult.ok(newShops);
+    public CommonResult<List<MyNewShopDto>> mainSearch(@RequestParam("keyword") String keyword ,
+                                                       @RequestParam ("location") String  location){
+        List<MyNewShopDto> list = newShopService.mainSearch(keyword, location);
+        return CommonResult.ok(list);
     }
 
 

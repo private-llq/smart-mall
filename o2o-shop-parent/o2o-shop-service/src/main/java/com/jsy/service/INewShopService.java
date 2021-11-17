@@ -2,6 +2,7 @@ package com.jsy.service;
 
 import com.jsy.domain.NewShop;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.jsy.dto.MyNewShopDto;
 import com.jsy.dto.NewShopPreviewDto;
 import com.jsy.dto.NewShopRecommendDto;
 import com.jsy.parameter.NewShopParam;
@@ -37,5 +38,5 @@ public interface INewShopService extends IService<NewShop> {
     /**
      * 首页搜索
      */
-    List<NewShop> mainSearch(String keyword);
+    List<MyNewShopDto>  mainSearch(String keyword, String  location);
 }

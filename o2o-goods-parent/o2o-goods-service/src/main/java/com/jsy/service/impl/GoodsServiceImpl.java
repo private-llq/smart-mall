@@ -138,6 +138,16 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     }
 
     /**
+     * 最新上架 商品、服务、套餐
+     * @param shopId
+     * @return
+     */
+    @Override
+    public Goods latelyGoods(Long shopId) {
+        return  goodsMapper.latelyGoods(shopId);
+    }
+
+    /**
      * 查看一条商品/服务的所有信息
      * @param id
      */

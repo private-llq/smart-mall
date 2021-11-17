@@ -2,6 +2,7 @@ package com.jsy.mapper;
 
 import com.jsy.domain.Goods;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 /**
@@ -15,4 +16,5 @@ import org.springframework.stereotype.Component;
 @Component
 public interface GoodsMapper extends BaseMapper<Goods> {
 
+    Goods latelyGoods(@Param("shopId") Long shopId);
 }

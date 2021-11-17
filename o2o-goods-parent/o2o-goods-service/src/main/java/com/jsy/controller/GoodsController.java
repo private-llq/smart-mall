@@ -149,5 +149,20 @@ public class GoodsController {
         }
         return  CommonResult.ok(null);
     }
+
+
+    /**
+     * 最新上架 商品、服务、套餐
+     * @param shopId
+     * @return
+     */
+    @GetMapping("/latelyGoods/{shopId}")
+    public CommonResult<Goods> latelyGoods(@PathVariable("shopId") Long shopId)
+    {
+         Goods goods=  goodsService.latelyGoods(shopId);
+
+        return CommonResult.ok(goods);
+    }
+
 }
 

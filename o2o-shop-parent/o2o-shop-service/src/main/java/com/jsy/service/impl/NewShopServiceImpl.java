@@ -12,6 +12,7 @@ import com.jsy.domain.Goods;
 import com.jsy.domain.NewShop;
 import com.jsy.domain.SetMenu;
 import com.jsy.domain.Tree;
+import com.jsy.dto.MyNewShopDto;
 import com.jsy.dto.NewShopPreviewDto;
 import com.jsy.dto.NewShopRecommendDto;
 import com.jsy.mapper.NewShopMapper;
@@ -25,7 +26,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 /**
  * <p>
@@ -237,9 +238,40 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
      * 首页搜索
      */
     @Override
-    public List<NewShop> mainSearch(String keyword) {
-       List<NewShop> newShops= shopMapper.mainSearch(keyword);
-        return newShops;
+    public List<MyNewShopDto> mainSearch(String keyword,String  location) {
+
+
+        List<NewShop> newShops= shopMapper.mainSearch(keyword);
+        if (newShops.size()==0){
+          return new ArrayList<>();
+        }
+        ArrayList<MyNewShopDto> list = new ArrayList<>();
+        for (NewShop newShop : newShops) {
+            MyNewShopDto myNewShopDto = new MyNewShopDto();
+            myNewShopDto.setId(newShop.getId());
+            myNewShopDto.setShopName(newShop.getShopName());
+            myNewShopDto.setGrade(5.0f);
+            Long id = newShop.getId();
+            System.out.println("___________________"+id);
+            Goods goods = goodsClient.latelyGoods(id).getData();
+            System.out.println(goods+"____________");
+            if (Objects.nonNull(goods)){
+                myNewShopDto.setTitle(goods.getTitle());
+                myNewShopDto.setPrice(goods.getPrice());
+            }
+            long addr = GouldUtil.getDistanceByAddress(newShop.getAddressDetail(), location);
+            myNewShopDto.setDistance(addr+"m");
+
+            String[] ids = newShop.getShopTreeId().split(",");
+
+            Tree tree = treeClient.getTree(Long.valueOf(ids[ids.length - 1])).getData();
+            if (Objects.nonNull(tree)){
+                myNewShopDto.setShopTreeIdName(tree.getName());
+            }
+            list.add(myNewShopDto);
+
+        }
+        return list;
     }
 
 

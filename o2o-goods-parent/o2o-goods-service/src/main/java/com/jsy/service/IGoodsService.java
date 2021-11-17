@@ -69,4 +69,12 @@ public interface IGoodsService extends IService<Goods> {
      * @return
      */
     List<Tree> selectServiceType(Long shopId);
+
+
+    /**
+     * 最新上架 商品、服务、套餐
+     * @param shopId
+     * @return
+     */
+    Goods latelyGoods(Long shopId);
 }
