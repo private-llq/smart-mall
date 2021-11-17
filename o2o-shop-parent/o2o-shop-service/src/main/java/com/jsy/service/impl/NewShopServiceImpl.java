@@ -183,29 +183,31 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
                     if (byAddress <= 3000) {
                         NewShopRecommendDto recommendDto = new NewShopRecommendDto();
                         BeanUtils.copyProperties(newShop, recommendDto);
-                        recommendDto.setDistance(String.valueOf(byAddress));
+                        recommendDto.setDistance(String.valueOf(byAddress/1000+"km"));
                         //把商品最近发布的东西查出来   有可能是服务又可能是商品 有可能是 套餐
                         Goods goods = goodsClient.getShopIdGoods(newShop.getId()).getData();
                         SetMenu menu = setMenuClient.getShopIdMenus(newShop.getId()).getData();
                         recommendDto.setShopName(newShop.getShopName());
                         recommendDto.setShopTreeIdName(shopTreeIdName);
                         if (goods!=null||menu!=null){
-                            if (goods!=null&&menu==null){
-                                if (menu!=null){
-                                    if (goods.getCreateTime().compareTo(menu.getCreateTime()) < 0) {
-                                        recommendDto.setTitle(menu.getName());
-                                        recommendDto.setPrice(menu.getSellingPrice());
-                                        shopList.add(recommendDto);
-                                    } else {
+                            if (goods!=null&&menu!=null){
+                                if (goods.getCreateTime().compareTo(menu.getCreateTime()) < 0) {
+                                    recommendDto.setTitle(menu.getName());
+                                    recommendDto.setPrice(menu.getSellingPrice());
+                                    shopList.add(recommendDto);
+                                } else {
+                                    recommendDto.setTitle(goods.getTitle());
+                                    recommendDto.setPrice(goods.getDiscountPrice());
+                                    shopList.add(recommendDto);
+                                }
+                            }else if (goods!=null&&menu==null){
                                         recommendDto.setTitle(goods.getTitle());
                                         recommendDto.setPrice(goods.getDiscountPrice());
                                         shopList.add(recommendDto);
-                                    }
-                                }
-                            }else {
-                                recommendDto.setTitle(goods.getTitle());
-                                recommendDto.setPrice(goods.getDiscountPrice());
-                                shopList.add(recommendDto);
+                                    }else {
+                                        recommendDto.setTitle(menu.getName());
+                                        recommendDto.setPrice(menu.getSellingPrice());
+                                        shopList.add(recommendDto);
                             }
                         }else {
                             recommendDto.setTitle(null);
