@@ -251,10 +251,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
             myNewShopDto.setId(newShop.getId());
             myNewShopDto.setShopName(newShop.getShopName());
             myNewShopDto.setGrade(5.0f);
-            Long id = newShop.getId();
-            System.out.println("___________________"+id);
-            Goods goods = goodsClient.latelyGoods(id).getData();
-            System.out.println(goods+"____________");
+            Goods goods = goodsClient.latelyGoods(newShop.getId()).getData();
             if (Objects.nonNull(goods)){
                 myNewShopDto.setTitle(goods.getTitle());
                 myNewShopDto.setPrice(goods.getPrice());
