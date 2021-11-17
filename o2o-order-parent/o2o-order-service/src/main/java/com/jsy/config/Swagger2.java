@@ -43,7 +43,7 @@ public class Swagger2 {
         return new ApiInfoBuilder()
                 .title("订单管理中心")
                 .description("订单管理中心接口文档说明")
-                .contact(new Contact("liin", "12", "liin@itsource.cn"))
+                .contact(new Contact("arli", "12", "liin@itsource.cn"))
                 .version("1.0")
                 .build();
     }

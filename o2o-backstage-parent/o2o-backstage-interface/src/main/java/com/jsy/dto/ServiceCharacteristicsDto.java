@@ -32,5 +32,7 @@ public class ServiceCharacteristicsDto implements Serializable {
 
 //    @ApiModelProperty(value = "是否启用",name = "state")
 //    private Integer state;
+    @ApiModelProperty(value = "图标",name = "images")
+    private String images;
 
 }

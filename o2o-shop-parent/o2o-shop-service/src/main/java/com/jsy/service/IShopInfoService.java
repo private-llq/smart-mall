@@ -56,7 +56,7 @@ public interface IShopInfoService extends IService<ShopInfo> {
 
 
 /**********************************************************************************************************************/
-    PagerUtils<ShopQueryDTO>   selectByConditon(ShopInfoQuery conditonVo);
+//    PagerUtils<ShopQueryDTO>   selectByConditon(ShopInfoQuery conditonVo);
 
     void addShop(ShopInfoVo shopInfoVo);
 

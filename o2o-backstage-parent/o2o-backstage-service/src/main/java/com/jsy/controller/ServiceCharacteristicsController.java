@@ -15,7 +15,11 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.jsy.basic.util.vo.CommonResult;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/serviceCharacteristics")
@@ -93,6 +97,35 @@ public class ServiceCharacteristicsController {
     public CommonResult<List<ServiceCharacteristicsDto>> list(){
         List<ServiceCharacteristics> list = serviceCharacteristicsService.list(null);
         List<ServiceCharacteristicsDto> serviceCharacteristicsDtos = BeansCopyUtils.listCopy(list, ServiceCharacteristicsDto.class);
+        if(serviceCharacteristicsDtos!=null){
+            return CommonResult.ok(serviceCharacteristicsDtos);
+        }else {
+            return new  CommonResult(-1,"失败",null);
+        }
+    }
+
+    /**
+     * 返回list列表
+     * @return
+     */
+    @ApiOperation("返回list列表")
+    @LoginIgnore
+    @GetMapping(value = "/getList")
+    public CommonResult<List<ServiceCharacteristicsDto>> getList(@RequestParam("serviceId") String serviceId){
+
+        List<ServiceCharacteristics> list = serviceCharacteristicsService.list(null);
+        List<ServiceCharacteristics> list1 = new ArrayList<>();
+        String[] split = serviceId.split(",");
+        for (ServiceCharacteristics serviceCharacteristics : list) {
+            for (String s : split) {
+                boolean contains = s.contains(String.valueOf(serviceCharacteristics.getId()));
+                if (contains){
+                    list1.add(serviceCharacteristics);
+                }
+
+            }
+        }
+        List<ServiceCharacteristicsDto> serviceCharacteristicsDtos = BeansCopyUtils.listCopy(list1, ServiceCharacteristicsDto.class);
         if(serviceCharacteristicsDtos!=null){
             return CommonResult.ok(serviceCharacteristicsDtos);
         }else {

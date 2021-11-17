@@ -23,7 +23,7 @@ import com.jsy.parameter.*;
 import com.jsy.query.AdminShopQuery;
 import com.jsy.query.ShopInfoQuery;
 import com.jsy.service.*;
-import com.jsy.vo.ShopAssetsVO;
+//import com.jsy.vo.ShopAssetsVO;
 import com.jsy.vo.ShopInfoParamVo;
 import com.jsy.vo.ShopInfoVo;
 import com.zhsj.baseweb.support.ContextHolder;
@@ -40,14 +40,15 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * <p>
- * 服务实现类
- * </p>
- *
- * @author lijin
- * @since 2020-11-12
- */
+//*
+// * <p>
+// * 服务实现类
+// * </p>
+// *
+// * @author lijin
+// * @since 2020-11-12
+
+
 @Service
 public class ShopInfoServiceImpl extends ServiceImpl<ShopInfoMapper, ShopInfo> implements IShopInfoService {
 
@@ -66,8 +67,8 @@ public class ShopInfoServiceImpl extends ServiceImpl<ShopInfoMapper, ShopInfo> i
     @Autowired
     private ShopOwnerMapper ownerMapper;
 
-    @Autowired
-    private ShopAssetsClient shopAssetsClient;
+//    @Autowired
+//    private ShopAssetsClient shopAssetsClient;
 
     @Autowired
     private ShopTypeMapper shopTypeMapper;
@@ -115,8 +116,9 @@ public class ShopInfoServiceImpl extends ServiceImpl<ShopInfoMapper, ShopInfo> i
         }
         //登陆者的id
         shopInfo.setOwnerUuid(loginUser.getId().toString());
-/*        //座机电话
-        shopInfo.setMobile(shopInfoParam.getMobile());*/
+        //座机电话
+        shopInfo.setMobile(shopInfoParam.getMobile());
+
         //门店照片
         shopInfo.setShopLogo(shopInfoParam.getShopLogo().toString());
         //门店类型
@@ -324,125 +326,131 @@ public class ShopInfoServiceImpl extends ServiceImpl<ShopInfoMapper, ShopInfo> i
         return postage;
     }
 
-    /***********************************************************************************/
+//*********************************************************************************
 
-    @Override
-    public PagerUtils<ShopQueryDTO> selectByConditon(ShopInfoQuery shopInfoQuery) {
 
-        if (Objects.isNull(shopInfoQuery.getLatitude())||Objects.isNull(shopInfoQuery.getLongitude())){
-            throw new JSYException(-1,"经纬度不能为空！");
-
-        }
-        //搜索半径,单位为千米不能为0
-        if (Objects.isNull(shopInfoQuery.getRadius()) || shopInfoQuery.getRadius() == 0) {
-            shopInfoQuery.setRadius(5 * 1000);//默认半径5千米
-        }
-        /*筛选对象不为空的时候*/
-        if (Objects.nonNull(shopInfoQuery.getShopScreen())) {
-            int estimatedTime = shopInfoQuery.getShopScreen().getEstimatedTime();//送达时间好多分钟
-            double star = shopInfoQuery.getShopScreen().getStar();//星级（送达时间）
-            //将时间变为公里
-            if (estimatedTime > 0) {
-                shopInfoQuery.setRadius((estimatedTime - LatLonUtil.BASIC_TIME/*25*/) / (LatLonUtil.ONEKM/*3*/) + 2);
-            }
-        }
-
-        //计算经纬度范围
-        Double longtitud = shopInfoQuery.getLongitude().doubleValue();
-        Double latitude = shopInfoQuery.getLatitude().doubleValue();
-        Map<String, Double> doubles = LatLonUtil.GetAround(latitude, longtitud, shopInfoQuery.getRadius() * 1000);
-
-        //根据店铺类型查询条件
-        ArrayList<Long> idList = new ArrayList<>();
-
-        if (!Objects.isNull(shopInfoQuery.getId()) && shopInfoQuery.getId() != 0) {
-            if (shopInfoQuery.getId() == 1) {
-                shopInfoQuery.setId(25L);
-            }
-            if (shopInfoQuery.getId() == 2) {
-                shopInfoQuery.setId(26L);
-            }
-            if (shopInfoQuery.getId() == 3) {
-                shopInfoQuery.setId(27L);
-            }
-            if (shopInfoQuery.getId() == 4) {
-                shopInfoQuery.setId(28L);
-            }
-        }
-
-        //没有关键字
-        if (StringUtils.isEmpty(shopInfoQuery.getKeyword())) {
-            shopInfoQuery.setLimit((shopInfoQuery.getPage() - 1) * shopInfoQuery.getRows());
-
-            Page<ShopQueryDTO> page = new Page<>(shopInfoQuery.getPage(), shopInfoQuery.getRows());
-
-            //用户定位后显示附件的商家（分页）
-            IPage<ShopQueryDTO> shopAll = shopInfoMapper.findAll(page, doubles, shopInfoQuery);
-
-            Long total=shopAll.getTotal();//条数
-            List<ShopQueryDTO> resultList = shopAll.getRecords();//总记录数
-
-            ArrayList<String> shopUuidList = new ArrayList<>();//商家的UUID集合
-            resultList.stream().forEach(x ->{
-                shopUuidList.add(x.getUuid());
-            });
-
-            HashMap<String, Object> map = new HashMap<>();//参数传递
-            map.put("shopUuid", shopUuidList);
-            map.put("num", 3);
-            //查出销量高的店铺（从高到低排序）
-            List<GoodsCommendDTO> goodsList = goodsBasicFeign.commendGoods(map).getData();
-
-            for (ShopQueryDTO record : resultList) {
-                //每一个店铺的距离
-                double distance = LatLonUtil.GetDistance(record.getLongitude().doubleValue(), record.getLatitude().doubleValue(), longtitud, latitude);
-                record.setDistance(distance);
-                record.setEstimatedTime(LatLonUtil.getMin(distance));
-
-                //每一个店铺活动，红包的情况
-                ShopInfoDTO shopInfoDTO = selectShop(record.getUuid(), shopInfoQuery.getLongitude().doubleValue(), shopInfoQuery.getLatitude().doubleValue());
-                record.setActivityNameList(shopInfoDTO.getActivityList());
-                record.setShopRedpacketList(shopInfoDTO.getShopRedpacketList());
-
-                //从销量高的店铺拿数据到 返回对象
-                ArrayList<ShopQueryDTO> goodsQueries = new ArrayList<>();
-                for (GoodsCommendDTO goodsDto : goodsList) {
-                    if (record.getUuid().equals(goodsDto.getShopUuid())) {
-                        ShopQueryDTO query = new ShopQueryDTO();
-                        query.setName(goodsDto.getTitle());
-                        query.setImages(goodsDto.getImages().split(",")[0]);
-                        query.setPrice(goodsDto.getPrice());
-                        query.setDiscountPrice(goodsDto.getDiscountPrice());
-                        goodsQueries.add(query);
-                    }
-                }
-                record.setGoodsList(goodsQueries);
-            }
-            int order = shopInfoQuery.getOrder();
-            if (order > 0) {
-                //根据星级排序(由高到低)
-                if (order == 1) {
-                    resultList = resultList.stream().sorted(Comparator.comparing(ShopQueryDTO::getStar, Comparator.reverseOrder())).collect(Collectors.toList());
-                }
-                //根据距离排序(由近到远)/距离相同的按照星级推荐
-                if (order == 2) {
-                    resultList = resultList.stream().sorted(Comparator.comparing((ShopQueryDTO x) -> x.getDistance())
-                            .thenComparing(ShopQueryDTO::getStar, Comparator.reverseOrder())).collect(Collectors.toList());
-                }
-                //根据速度排序(快到慢)
-                if (order == 3) {
-                    resultList = resultList.stream().sorted(Comparator.comparing(shopQueryDTO -> shopQueryDTO.getEstimatedTime())).collect(Collectors.toList());
-                }
-            }
-            PagerUtils<ShopQueryDTO> pagerUtils = new PagerUtils<>();
-            pagerUtils.setTotal(Math.toIntExact(total));
-            pagerUtils.setRecords(resultList);
-            return pagerUtils;
-        }
-        //带关键字查询
-        PagerUtils<ShopQueryDTO> byKeyWrods = selectByKeyWrods(doubles, shopInfoQuery);
-        return byKeyWrods;
-    }
+//    @Override
+//    public PagerUtils<ShopQueryDTO> selectByConditon(ShopInfoQuery shopInfoQuery) {
+//
+//        if (Objects.isNull(shopInfoQuery.getLatitude())||Objects.isNull(shopInfoQuery.getLongitude())){
+//            throw new JSYException(-1,"经纬度不能为空！");
+//
+//        }
+//        //搜索半径,单位为千米不能为0
+//        if (Objects.isNull(shopInfoQuery.getRadius()) || shopInfoQuery.getRadius() == 0) {
+//            shopInfoQuery.setRadius(5 * 1000);//默认半径5千米
+//        }
+//筛选对象不为空的时候
+//
+//        if (Objects.nonNull(shopInfoQuery.getShopScreen())) {
+//            int estimatedTime = shopInfoQuery.getShopScreen().getEstimatedTime();//送达时间好多分钟
+//            double star = shopInfoQuery.getShopScreen().getStar();//星级（送达时间）
+//            //将时间变为公里
+//            if (estimatedTime > 0) {
+//                shopInfoQuery.setRadius((estimatedTime - LatLonUtil.BASIC_TIME
+//25
+//) / (LatLonUtil.ONEKM
+//3
+//) + 2);
+//            }
+//        }
+//
+//        //计算经纬度范围
+//        Double longtitud = shopInfoQuery.getLongitude().doubleValue();
+//        Double latitude = shopInfoQuery.getLatitude().doubleValue();
+//        Map<String, Double> doubles = LatLonUtil.GetAround(latitude, longtitud, shopInfoQuery.getRadius() * 1000);
+//
+//        //根据店铺类型查询条件
+//        ArrayList<Long> idList = new ArrayList<>();
+//
+//        if (!Objects.isNull(shopInfoQuery.getId()) && shopInfoQuery.getId() != 0) {
+//            if (shopInfoQuery.getId() == 1) {
+//                shopInfoQuery.setId(25L);
+//            }
+//            if (shopInfoQuery.getId() == 2) {
+//                shopInfoQuery.setId(26L);
+//            }
+//            if (shopInfoQuery.getId() == 3) {
+//                shopInfoQuery.setId(27L);
+//            }
+//            if (shopInfoQuery.getId() == 4) {
+//                shopInfoQuery.setId(28L);
+//            }
+//        }
+//
+//        //没有关键字
+//        if (StringUtils.isEmpty(shopInfoQuery.getKeyword())) {
+//            shopInfoQuery.setLimit((shopInfoQuery.getPage() - 1) * shopInfoQuery.getRows());
+//
+//            Page<ShopQueryDTO> page = new Page<>(shopInfoQuery.getPage(), shopInfoQuery.getRows());
+//
+//            //用户定位后显示附件的商家（分页）
+//            IPage<ShopQueryDTO> shopAll = shopInfoMapper.findAll(page, doubles, shopInfoQuery);
+//
+//            Long total=shopAll.getTotal();//条数
+//            List<ShopQueryDTO> resultList = shopAll.getRecords();//总记录数
+//
+//            ArrayList<String> shopUuidList = new ArrayList<>();//商家的UUID集合
+//            resultList.stream().forEach(x ->{
+//                shopUuidList.add(x.getUuid());
+//            });
+//
+//            HashMap<String, Object> map = new HashMap<>();//参数传递
+//            map.put("shopUuid", shopUuidList);
+//            map.put("num", 3);
+//            //查出销量高的店铺（从高到低排序）
+//            List<GoodsCommendDTO> goodsList = goodsBasicFeign.commendGoods(map).getData();
+//
+//            for (ShopQueryDTO record : resultList) {
+//                //每一个店铺的距离
+//                double distance = LatLonUtil.GetDistance(record.getLongitude().doubleValue(), record.getLatitude().doubleValue(), longtitud, latitude);
+//                record.setDistance(distance);
+//                record.setEstimatedTime(LatLonUtil.getMin(distance));
+//
+//                //每一个店铺活动，红包的情况
+//                ShopInfoDTO shopInfoDTO = selectShop(record.getUuid(), shopInfoQuery.getLongitude().doubleValue(), shopInfoQuery.getLatitude().doubleValue());
+//                record.setActivityNameList(shopInfoDTO.getActivityList());
+//                record.setShopRedpacketList(shopInfoDTO.getShopRedpacketList());
+//
+//                //从销量高的店铺拿数据到 返回对象
+//                ArrayList<ShopQueryDTO> goodsQueries = new ArrayList<>();
+//                for (GoodsCommendDTO goodsDto : goodsList) {
+//                    if (record.getUuid().equals(goodsDto.getShopUuid())) {
+//                        ShopQueryDTO query = new ShopQueryDTO();
+//                        query.setName(goodsDto.getTitle());
+//                        query.setImages(goodsDto.getImages().split(",")[0]);
+//                        query.setPrice(goodsDto.getPrice());
+//                        query.setDiscountPrice(goodsDto.getDiscountPrice());
+//                        goodsQueries.add(query);
+//                    }
+//                }
+//                record.setGoodsList(goodsQueries);
+//            }
+//            int order = shopInfoQuery.getOrder();
+//            if (order > 0) {
+//                //根据星级排序(由高到低)
+//                if (order == 1) {
+//                    resultList = resultList.stream().sorted(Comparator.comparing(ShopQueryDTO::getStar, Comparator.reverseOrder())).collect(Collectors.toList());
+//                }
+//                //根据距离排序(由近到远)/距离相同的按照星级推荐
+//                if (order == 2) {
+//                    resultList = resultList.stream().sorted(Comparator.comparing((ShopQueryDTO x) -> x.getDistance())
+//                            .thenComparing(ShopQueryDTO::getStar, Comparator.reverseOrder())).collect(Collectors.toList());
+//                }
+//                //根据速度排序(快到慢)
+//                if (order == 3) {
+//                    resultList = resultList.stream().sorted(Comparator.comparing(shopQueryDTO -> shopQueryDTO.getEstimatedTime())).collect(Collectors.toList());
+//                }
+//            }
+//            PagerUtils<ShopQueryDTO> pagerUtils = new PagerUtils<>();
+//            pagerUtils.setTotal(Math.toIntExact(total));
+//            pagerUtils.setRecords(resultList);
+//            return pagerUtils;
+//        }
+//        //带关键字查询
+//        PagerUtils<ShopQueryDTO> byKeyWrods = selectByKeyWrods(doubles, shopInfoQuery);
+//        return byKeyWrods;
+//    }
 
     //首页带关键字查询
     //返回 商铺携带相关商品
@@ -534,11 +542,11 @@ public class ShopInfoServiceImpl extends ServiceImpl<ShopInfoMapper, ShopInfo> i
         shopInfo.setStatus(Integer.getInteger(status));
         int i = shopInfoMapper.update(shopInfo, new QueryWrapper<ShopInfo>().eq("uuid", uuid));
         //审核通过后为用户创建初始化账户用户进出帐
-        ShopAssetsVO vo = new ShopAssetsVO();
-        vo.setAssets(new BigDecimal("0"));
-        vo.setOwnerUuid(uuid);
-        vo.setUuid(UUIDUtils.getUUID());
-        shopAssetsClient.save(vo);
+//        ShopAssetsVO vo = new ShopAssetsVO();
+//        vo.setAssets(new BigDecimal("0"));
+//        vo.setOwnerUuid(uuid);
+//        vo.setUuid(UUIDUtils.getUUID());
+//        shopAssetsClient.save(vo);
 
         return i;
     }
@@ -782,7 +790,7 @@ public class ShopInfoServiceImpl extends ServiceImpl<ShopInfoMapper, ShopInfo> i
             returnList.add(dto);
         }
 
-       /* ArrayList<String> strings = new ArrayList<String>();
+ ArrayList<String> strings = new ArrayList<String>();
         for (ShopActiveDTO shopActiveDTO : returnList) {
             strings.add(shopActiveDTO.getShopLogo());
             for (GoodsBasic goodsBasic : shopActiveDTO.getGoodsBasicList()) {
@@ -790,7 +798,8 @@ public class ShopInfoServiceImpl extends ServiceImpl<ShopInfoMapper, ShopInfo> i
             }
         }
 
-        Map<String, String> picUrl = fileClient.getPicUrl(strings);*/
+        Map<String, String> picUrl = fileClient.getPicUrl(strings);
+
         for (ShopActiveDTO shopActiveDTO : returnList) {
             shopActiveDTO.setShopLogo(shopActiveDTO.getShopLogo());
             for (GoodsBasic goodsBasic : shopActiveDTO.getGoodsBasicList()) {

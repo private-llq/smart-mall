@@ -35,14 +35,14 @@ public class ShopApplication {
         SpringApplication.run(ShopApplication.class,args);
     }
 
-    @Value("${spring.redis.host}")
-    public String IP_REDIS;
-
-    @Value("${spring.redis.port}")
-    public String PORT_REDIS;
-
-    @Value("${spring.redis.password}")
-    public String PAS_REDIS;
+//    @Value("${spring.redis.host}")
+//    public String IP_REDIS;
+//
+//    @Value("${spring.redis.port}")
+//    public String PORT_REDIS;
+//
+//    @Value("${spring.redis.password}")
+//    public String PAS_REDIS;
 
 
 
@@ -72,13 +72,13 @@ public class ShopApplication {
         return objectMapper;
     }
 
-    @Bean
-    public Redisson redisson(){
-        Config config=new Config();
-        config.useSingleServer().setAddress("redis://"+IP_REDIS+":"+PORT_REDIS).setDatabase(11).setPassword(PAS_REDIS);
-        RedissonClient redissonClient = Redisson.create(config);
-        return (Redisson)redissonClient;
-    }
+//    @Bean
+//    public Redisson redisson(){
+//        Config config=new Config();
+//        config.useSingleServer().setAddress("redis://"+IP_REDIS+":"+PORT_REDIS).setDatabase(11).setPassword(PAS_REDIS);
+//        RedissonClient redissonClient = Redisson.create(config);
+//        return (Redisson)redissonClient;
+//    }
 
     /**
      * fastjson类型转换器

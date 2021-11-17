@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jsy.mapper.OrderSetMenuMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jsy.domain.OrderSetMenu">
+        <id column="id" property="id" />
+        <result column="order_details_id" property="orderDetailsId" />
+        <result column="name" property="name" />
+        <result column="shop_id" property="shopId" />
+        <result column="service_characteristics_ids" property="serviceCharacteristicsIds" />
+        <result column="real_price" property="realPrice" />
+        <result column="selling_price" property="sellingPrice" />
+        <result column="images" property="images" />
+        <result column="indate_start" property="indateStart" />
+        <result column="indate_end" property="indateEnd" />
+        <result column="rule" property="rule" />
+        <result column="menu_explain" property="menuExplain" />
+        <result column="deleted" property="deleted" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+</mapper>

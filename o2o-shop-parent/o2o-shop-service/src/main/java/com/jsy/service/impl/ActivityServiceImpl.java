@@ -2,20 +2,13 @@ package com.jsy.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.jsy.basic.util.LocalTimeUtil;
 import com.jsy.basic.util.PageList;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.utils.CurrentUserHolder;
-import com.jsy.basic.util.utils.ObjectMapperUtil;
 import com.jsy.basic.util.utils.UUIDUtils;
-import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.basic.util.vo.UserDto;
-import com.jsy.client.OrderClient;
 import com.jsy.controller.ActivityController;
 import com.jsy.domain.Activity;
-import com.jsy.domain.NewUser;
-import com.jsy.domain.Order;
-import com.jsy.dto.ActivityDTO;
 import com.jsy.mapper.ActivityMapper;
 import com.jsy.query.ActivityQuery;
 import com.jsy.service.IActivityService;
@@ -30,7 +23,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * <p>

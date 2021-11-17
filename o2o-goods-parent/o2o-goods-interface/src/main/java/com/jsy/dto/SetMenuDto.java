@@ -47,14 +47,6 @@ public class SetMenuDto implements Serializable {
     @ApiModelProperty(value = "图片（最大三张）")
     private String images;
 
-    @ApiModelProperty(value = "开始有效期")
-    private LocalDateTime indateStart;
-
-    @ApiModelProperty(value = "结束有效期")
-    private LocalDateTime indateEnd;
-
-    @ApiModelProperty(value = "使用规则")
-    private String rule;
 
     @ApiModelProperty(value = "套餐详情")
     @TableField(exist = false)

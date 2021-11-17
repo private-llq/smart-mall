@@ -4,11 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jsy.basic.util.PageList;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.vo.CommonResult;
-import com.jsy.client.OrderClient;
 import com.jsy.domain.NewUser;
-import com.jsy.domain.Order;
 import com.jsy.mapper.NewUserMapper;
-import com.jsy.query.OrderQuery;
 import com.jsy.service.INewUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
@@ -34,8 +31,8 @@ public class NewUserServiceImpl extends ServiceImpl<NewUserMapper, NewUser> impl
     @Resource
     private NewUserMapper newUserMapper;
 
-    @Resource
-    private OrderClient orderClient;
+//    @Resource
+//    private OrderClient orderClient;
 
 
 
@@ -52,43 +49,43 @@ public class NewUserServiceImpl extends ServiceImpl<NewUserMapper, NewUser> impl
         return null;
     }
 
-    @Override
-    public String isNewUser(String shopUuid, String userUuid) {
-        NewUser newUser = this.getNewUser(shopUuid);
-        //有进行中的新客活动
-        if (Objects.nonNull(newUser)){
-            String newUserUuid = newUser.getUuid();
-            long  startTime=newUser.getStartTime().toEpochSecond(ZoneOffset.of("+8"));
-            long  endTime= newUser.getEndTime().toEpochSecond(ZoneOffset.of("+8"));
-
-            OrderQuery orderQuery = new OrderQuery();
-            orderQuery.setPayState("1");
-            orderQuery.setShopUuid(shopUuid);
-            orderQuery.setShopUuid(userUuid);
-            CommonResult<PageList<Order>> pageListCommonResult = orderClient.pageOrder(orderQuery);
-
-            List<Order> rows = pageListCommonResult.getData().getRows();
-            List<Order> collect = rows.stream().filter(x -> {
-                //是否在该时间重复下过单
-                if (x.getCreateTime().toEpochSecond(ZoneOffset.of("+8")) >= startTime && x.getCreateTime().toEpochSecond(ZoneOffset.of("+8")) <= endTime) {
-                    return true;
-                }
-                return false;
-            }).collect(Collectors.toList());
-
-            if (collect.size()==0){//首单
-                return newUserUuid;
-            }else {//非首单
-
-
-                return null;
-            }
-        }else {
-            return null;
-        }
-
-
-    }
+//    @Override
+//    public String isNewUser(String shopUuid, String userUuid) {
+//        NewUser newUser = this.getNewUser(shopUuid);
+//        //有进行中的新客活动
+//        if (Objects.nonNull(newUser)){
+//            String newUserUuid = newUser.getUuid();
+//            long  startTime=newUser.getStartTime().toEpochSecond(ZoneOffset.of("+8"));
+//            long  endTime= newUser.getEndTime().toEpochSecond(ZoneOffset.of("+8"));
+//
+//            OrderQuery orderQuery = new OrderQuery();
+//            orderQuery.setPayState("1");
+//            orderQuery.setShopUuid(shopUuid);
+//            orderQuery.setShopUuid(userUuid);
+//            CommonResult<PageList<Order>> pageListCommonResult = orderClient.pageOrder(orderQuery);
+//
+//            List<Order> rows = pageListCommonResult.getData().getRows();
+//            List<Order> collect = rows.stream().filter(x -> {
+//                //是否在该时间重复下过单
+//                if (x.getCreateTime().toEpochSecond(ZoneOffset.of("+8")) >= startTime && x.getCreateTime().toEpochSecond(ZoneOffset.of("+8")) <= endTime) {
+//                    return true;
+//                }
+//                return false;
+//            }).collect(Collectors.toList());
+//
+//            if (collect.size()==0){//首单
+//                return newUserUuid;
+//            }else {//非首单
+//
+//
+//                return null;
+//            }
+//        }else {
+//            return null;
+//        }
+//
+//
+//    }
 
     @Override
     public NewUser newestNewUser(String shopUuid) {

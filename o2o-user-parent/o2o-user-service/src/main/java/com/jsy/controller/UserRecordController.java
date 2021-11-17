@@ -1,4 +1,5 @@
 package com.jsy.controller;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jsy.dto.UserRecordDto;
 import com.jsy.param.UserRecordParam;
 import com.jsy.service.IUserRecordService;
@@ -31,7 +32,6 @@ public class UserRecordController {
     @ApiOperation("保存和修改公用的")
     @PostMapping(value="/save")
     public CommonResult save(@RequestBody UserRecordParam userRecordParam){
-        System.out.println(userRecordParam.getId());
         try {
             if(userRecordParam.getId()!=null){
                 UserRecord userRecord = new UserRecord();
@@ -73,12 +73,12 @@ public class UserRecordController {
     */
     @ApiOperation("根据id查询一条")
     @GetMapping(value = "/{id}")
-    public UserRecordDto get(@PathVariable("id")Long id)
+    public CommonResult<UserRecordDto> get(@RequestParam("id")Long id)
     {
         UserRecord record = userRecordService.getById(id);
         UserRecordDto userRecordDto = new UserRecordDto();
         BeanUtils.copyProperties(record,userRecordDto);
-        return userRecordDto;
+        return CommonResult.ok(userRecordDto);
     }
 
 
@@ -98,6 +98,29 @@ public class UserRecordController {
             userRecordDtos.add(userRecordDto);
         }
         return userRecordDtos;
+    }
+
+    /**
+     * 返回list列表
+     * @return
+     */
+    @ApiOperation("返回list列表")
+    @GetMapping(value = "/getList")
+    public CommonResult< List<UserRecordDto>> getList(@RequestParam("recordId")Long recordId,@RequestParam("userId") Long userId){
+
+        List<UserRecord> list = userRecordService.list(new QueryWrapper<UserRecord>().eq("record_id",recordId).eq("user_id",userId));
+        List<UserRecordDto> userRecordDtos = new ArrayList<>();
+        for (UserRecord userRecord : list) {
+            UserRecordDto userRecordDto = new UserRecordDto();
+            BeanUtils.copyProperties(userRecord,userRecordDto);
+            userRecordDtos.add(userRecordDto);
+        }
+        if (userRecordDtos!=null){
+            return CommonResult.ok(userRecordDtos);
+        }else {
+            return  CommonResult.ok(null);
+        }
+
     }
 
 

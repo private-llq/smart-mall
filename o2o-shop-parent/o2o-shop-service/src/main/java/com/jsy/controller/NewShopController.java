@@ -174,7 +174,7 @@ public class NewShopController {
     }
 
     /**************************************C端店铺的数据展示****************************************************************************/
-    @ApiOperation("根据店铺id查询店铺设置")
+    @ApiOperation("C端分类店铺列表")
     @RequestMapping(value = "/getShopAllList/",method = RequestMethod.POST)
     public CommonResult<List<NewShopRecommendDto>> getShopAllList(@RequestParam("treeId") Long treeId, @RequestParam("location")String location){
             List<NewShopRecommendDto> recommendDtoList = newShopService.getShopAllList(treeId,location);
