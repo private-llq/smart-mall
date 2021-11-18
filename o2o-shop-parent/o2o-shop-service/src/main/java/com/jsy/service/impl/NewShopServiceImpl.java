@@ -1,5 +1,8 @@
 package com.jsy.service.impl;
 
+import com.alibaba.druid.sql.PagerUtils;
+import com.jsy.basic.util.MyPageUtils;
+import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.utils.GouldUtil;
 import com.jsy.basic.util.utils.RegexUtils;
@@ -15,9 +18,11 @@ import com.jsy.domain.Tree;
 import com.jsy.dto.MyNewShopDto;
 import com.jsy.dto.NewShopPreviewDto;
 import com.jsy.dto.NewShopRecommendDto;
+import com.jsy.dto.SelectUserOrderDTO;
 import com.jsy.mapper.NewShopMapper;
 import com.jsy.parameter.NewShopParam;
 import com.jsy.parameter.NewShopSetParam;
+import com.jsy.query.MainSearchQuery;
 import com.jsy.service.INewShopService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
@@ -238,13 +243,17 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
      * 首页搜索
      */
     @Override
-    public List<MyNewShopDto> mainSearch(String keyword,String  location) {
+    public PageInfo<MyNewShopDto> mainSearch(MainSearchQuery mainSearchQuery) {
+
+        String keyword = mainSearchQuery.getKeyword();
+        String location = mainSearchQuery.getLocation();
 
 
         List<NewShop> newShops= shopMapper.mainSearch(keyword);
         if (newShops.size()==0){
-          return new ArrayList<>();
+          return null;
         }
+
         ArrayList<MyNewShopDto> list = new ArrayList<>();
         for (NewShop newShop : newShops) {
             MyNewShopDto myNewShopDto = new MyNewShopDto();
@@ -268,7 +277,8 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
             list.add(myNewShopDto);
 
         }
-        return list;
+        PageInfo<MyNewShopDto> pageInfo = MyPageUtils.pageMap(list, mainSearchQuery.getPage(), mainSearchQuery.getRows());
+        return pageInfo;
     }
 
 

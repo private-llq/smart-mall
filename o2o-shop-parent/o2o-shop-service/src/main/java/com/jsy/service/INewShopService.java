@@ -1,5 +1,6 @@
 package com.jsy.service;
 
+import com.jsy.basic.util.PageInfo;
 import com.jsy.domain.NewShop;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jsy.dto.MyNewShopDto;
@@ -7,6 +8,7 @@ import com.jsy.dto.NewShopPreviewDto;
 import com.jsy.dto.NewShopRecommendDto;
 import com.jsy.parameter.NewShopParam;
 import com.jsy.parameter.NewShopSetParam;
+import com.jsy.query.MainSearchQuery;
 
 import java.util.List;
 
@@ -38,5 +40,5 @@ public interface INewShopService extends IService<NewShop> {
     /**
      * 首页搜索
      */
-    List<MyNewShopDto>  mainSearch(String keyword, String  location);
+    PageInfo<MyNewShopDto> mainSearch(MainSearchQuery mainSearchQuery);
 }

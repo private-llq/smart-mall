@@ -3,11 +3,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
+import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.utils.ObjectMapperUtil;
 import com.jsy.basic.util.utils.ValidatorUtils;
 import com.jsy.dto.*;
 import com.jsy.parameter.NewShopParam;
 import com.jsy.parameter.NewShopSetParam;
+import com.jsy.query.MainSearchQuery;
 import com.jsy.service.INewShopService;
 import com.jsy.domain.NewShop;
 import com.jsy.query.NewShopQuery;
@@ -192,9 +194,8 @@ public class NewShopController {
      */
     @ApiOperation("首页搜索")
     @GetMapping("mainSearch")
-    public CommonResult<List<MyNewShopDto>> mainSearch(@RequestParam("keyword") String keyword ,
-                                                       @RequestParam ("location") String  location){
-        List<MyNewShopDto> list = newShopService.mainSearch(keyword, location);
+    public CommonResult<PageInfo<MyNewShopDto>> mainSearch(@RequestBody MainSearchQuery mainSearchQuery){
+        PageInfo<MyNewShopDto> list = newShopService.mainSearch(mainSearchQuery);
         return CommonResult.ok(list);
     }
 
