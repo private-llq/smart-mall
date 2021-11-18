@@ -188,8 +188,7 @@ public class NewShopController {
 
     /**
      * 首页搜索
-     * @param keyword 关键字
-     * @param location 定位
+     * @param mainSearchQuery
      * @return
      */
     @ApiOperation("首页搜索")
