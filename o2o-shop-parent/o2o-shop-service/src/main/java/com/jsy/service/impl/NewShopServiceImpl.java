@@ -254,7 +254,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
 
         List<NewShop> newShops= shopMapper.mainSearch(keyword);
         if (newShops.size()==0){
-          return null;
+          return new PageInfo<>();
         }
 
         ArrayList<MyNewShopDto> list = new ArrayList<>();
