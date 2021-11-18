@@ -280,14 +280,9 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
             list.add(myNewShopDto);
 
         }
-        PagerUtils<MyNewShopDto> pagerUtils = new PagerUtils<>();
-        PagerUtils<MyNewShopDto> page = pagerUtils.queryPage(mainSearchQuery.getPage(), mainSearchQuery.getRows(), list);
-        PageInfo<MyNewShopDto> pageInfo = new PageInfo();
-        pageInfo.setRecords(page.getRecords());
-        pageInfo.setTotal(page.getTotal());
-        pageInfo.setCurrent(mainSearchQuery.getPage());
-        pageInfo.setSize(mainSearchQuery.getRows());
+        PageInfo<MyNewShopDto> pageInfo = MyPageUtils.pageMap(mainSearchQuery.getPage(), mainSearchQuery.getRows(), list);
         return pageInfo;
+
     }
 
 

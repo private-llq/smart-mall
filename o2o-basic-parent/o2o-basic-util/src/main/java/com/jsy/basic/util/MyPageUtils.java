@@ -1,55 +1,53 @@
 package com.jsy.basic.util;
-
-import java.util.ArrayList;
-import java.util.HashMap;
+import com.jsy.basic.util.exception.JSYException;
 import java.util.List;
-
+/**
+ * 手动分页工具类
+ * liin
+ */
 public class MyPageUtils {
-
-    public static <T> PageInfo<T> pageMap(List<T> datas, int pageSize, int pageIndex){
-        //HashMap<String, Object> map = new HashMap<>();
+    /**
+     * @param pageNo   第几页 （从1计数）
+     * @param pageSize 每页展示几条数据
+     * @param data     数据源
+     * @return 分页对象
+     */
+    public static <T> PageInfo<T> pageMap(int pageNo, int pageSize, List<T> data) {
         PageInfo<T> pageInfo = new PageInfo<>();
-        int size = datas.size();//总条数
-        //总页数
-        int totlePage = size / pageSize;//取整
-        int a = size % pageSize;//取余
-        if (a > 0) {
-        }
-
-        //map.put("pages", totlePage);//总页数
-        //map.put("pageNum", pageIndex);//页码
-        pageInfo.setCurrent(pageIndex);
-        //map.put("pageSize", pageSize);//每页显示条数
+        int[] ints = transToStartEnd(pageNo, pageSize, data.size());
+        List<T> list = data.subList(ints[0], ints[1]);
+        pageInfo.setRecords(list);
+        pageInfo.setTotal(data.size());
+        pageInfo.setCurrent(pageNo);
         pageInfo.setSize(pageSize);
-        //map.put("total", size);//总条数
-        pageInfo.setTotal(size);
-        int startNum = (pageIndex-1)* pageSize+1 ;                     //起始截取数据位置
-        if(startNum > datas.size()){
-            return null;
-        }
-        List<T> res = new ArrayList<>();
-        int rum = datas.size() - startNum;
-        if(rum < 0){
-            return null;
-        }
-        if(rum == 0){                                               //说明正好是最后一个了
-            int index = datas.size() -1;
-            res.add(datas.get(index));
-//            return map;
-        }
-        if(rum / pageSize >= 1){                                    //剩下的数据还够1页，返回整页的数据
-            for(int i=startNum;i<startNum + pageSize;i++){          //截取从startNum开始的数据
-                res.add(datas.get(i-1));
-            }
-        }else if((rum / pageSize == 0) && rum > 0){                 //不够一页，直接返回剩下数据
-            for(int j = startNum ;j<=datas.size();j++){
-                res.add(datas.get(j-1));
-            }
-        }
-        //map.put("size",res.size());//当前页总条数
-        //map.put("list",res); //分页当前页list数据
-        pageInfo.setRecords(res);
         return pageInfo;
     }
+    /**
+     *
+     * @param pageNo 第几页 （从1计数）
+     * @param pageSize 每页展示几条数据
+     * @param dataSize 数据源元素个数
+     * @return 第一个开始位置 第二个结束位置
+     */
+    private static int[] transToStartEnd(int pageNo, int pageSize, int dataSize) {
+        if (pageNo < 1) {
+            pageNo = 1;
+        }
 
+        if (pageSize < 1) {
+            pageSize = 0;
+        }
+        final int start=  (pageNo - 1) * pageSize;
+        if (pageSize < 1) {
+            pageSize = 0;
+        }
+        int end = pageNo * pageSize;
+        if (end > dataSize) {
+            end = dataSize;
+        }
+        if (start > end) {
+            throw new JSYException(-1, "页码错误,重新输入");
+        }
+        return new int[] { start, end };
+    }
 }
