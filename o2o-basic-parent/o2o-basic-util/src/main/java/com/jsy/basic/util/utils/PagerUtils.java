@@ -16,7 +16,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PagerUtils<T> {
+public class  PagerUtils<T> {
 
     private Integer total; //查询总数
     private List<T> records; //返回的数据

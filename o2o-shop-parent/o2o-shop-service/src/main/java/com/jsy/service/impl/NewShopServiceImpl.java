@@ -1,10 +1,12 @@
 package com.jsy.service.impl;
 
-import com.alibaba.druid.sql.PagerUtils;
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.util.PageUtil;
 import com.jsy.basic.util.MyPageUtils;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.utils.GouldUtil;
+import com.jsy.basic.util.utils.PagerUtils;
 import com.jsy.basic.util.utils.RegexUtils;
 import com.jsy.basic.util.utils.UUIDUtils;
 import com.jsy.basic.util.vo.CommonResult;
@@ -30,6 +32,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -277,7 +280,13 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
             list.add(myNewShopDto);
 
         }
-        PageInfo<MyNewShopDto> pageInfo = MyPageUtils.pageMap(list, mainSearchQuery.getPage(), mainSearchQuery.getRows());
+        PagerUtils<MyNewShopDto> pagerUtils = new PagerUtils<>();
+        PagerUtils<MyNewShopDto> page = pagerUtils.queryPage(mainSearchQuery.getPage(), mainSearchQuery.getRows(), list);
+        PageInfo<MyNewShopDto> pageInfo = new PageInfo();
+        pageInfo.setRecords(page.getRecords());
+        pageInfo.setTotal(page.getTotal());
+        pageInfo.setCurrent(mainSearchQuery.getPage());
+        pageInfo.setSize(mainSearchQuery.getRows());
         return pageInfo;
     }
 
