@@ -3,7 +3,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.utils.BeansCopyUtils;
+import com.jsy.client.NewShopClient;
+import com.jsy.client.ShopClient;
 import com.jsy.domain.Goods;
+import com.jsy.domain.NewShop;
 import com.jsy.domain.SetMenu;
 import com.jsy.domain.ShoppingCart;
 import com.jsy.dto.ShoppingCartDto;
@@ -45,6 +48,10 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
 
     @Autowired
     private SetMenuMapper setMenuMapper;
+
+
+    @Autowired
+    private NewShopClient shopClient;
 
     /**
      * 添加商品进入购物车
@@ -206,6 +213,10 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
             }else {//按折扣价格算
                 payPrice= payPrice.add(cart.getDiscountPrice().multiply(BigDecimal.valueOf(cart.getNum())));
             }
+        }
+        NewShop newShop = shopClient.get(shopId).getData();
+        if (Objects.nonNull(newShop)){
+            shoppingCartDto.setShopName(newShop.getShopName());//商店名称
         }
         shoppingCartDto.setSumGoods(sumGoods);//商品总数
         shoppingCartDto.setPayPrice(payPrice);//商品支付价格
