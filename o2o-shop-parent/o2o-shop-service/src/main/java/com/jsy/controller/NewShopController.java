@@ -175,8 +175,8 @@ public class NewShopController {
     /**************************************C端店铺的数据展示****************************************************************************/
     @ApiOperation("C端分类店铺列表")
     @RequestMapping(value = "/getShopAllList/",method = RequestMethod.POST)
-    public CommonResult<List<NewShopRecommendDto>> getShopAllList(@RequestParam("treeId") Long treeId, @RequestParam("location")String location){
-            List<NewShopRecommendDto> recommendDtoList = newShopService.getShopAllList(treeId,location);
+    public CommonResult<PageInfo<NewShopRecommendDto>> getShopAllList(@RequestBody NewShopQuery shopQuery){
+            PageInfo<NewShopRecommendDto> recommendDtoList = newShopService.getShopAllList(shopQuery);
             if (recommendDtoList!=null){
                 return CommonResult.ok(recommendDtoList);
             }

@@ -3,6 +3,8 @@ package com.jsy.domain;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
@@ -108,8 +110,6 @@ public class NewShop extends BaseEntity  {
     @ApiModelProperty(value = "营业执照地址）")
     private String businessAddress;
 
-    @ApiModelProperty(value = "经纬度（经度，维度））")
-    private String lonLat;
 
     @ApiModelProperty(value = "经营类型（1-服务行业   0-套餐行业）")
     private Integer type;
@@ -128,4 +128,14 @@ public class NewShop extends BaseEntity  {
 
     @ApiModelProperty(value = "店铺公告")
     private String notice;
+
+    @ApiModelProperty(value = "经度")
+    private BigDecimal longitude;
+
+    @ApiModelProperty(value = "维度")
+    private BigDecimal latitude;
+
+    @ApiModelProperty(value = "距离多远")
+    @TableField(exist = false)
+    private BigDecimal distance;
 }
