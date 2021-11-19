@@ -1,13 +1,20 @@
 package com.jsy.controller;
+import com.jsy.dto.ShoppingCartDto;
+import com.jsy.parameter.ShoppingCartParam;
 import com.jsy.service.IShoppingCartService;
 import com.jsy.domain.ShoppingCart;
 import com.jsy.query.ShoppingCartQuery;
 import com.jsy.basic.util.PageList;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import com.jsy.basic.util.vo.CommonResult;
+
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.jsy.basic.util.utils.CurrentUserHolder.getUserEntity;
 
 @RestController
 @RequestMapping("/shoppingCart")
@@ -16,74 +23,55 @@ public class ShoppingCartController {
     public IShoppingCartService shoppingCartService;
 
     /**
-    * 保存和修改公用的
-    * @param shoppingCart  传递的实体
-    * @return Ajaxresult转换结果
-    */
-    @PostMapping(value="/save")
-    public CommonResult save(@RequestBody ShoppingCart shoppingCart){
-        try {
-            if(shoppingCart.getId()!=null){
-                shoppingCartService.updateById(shoppingCart);
-            }else{
-                shoppingCartService.save(shoppingCart);
-            }
-            return CommonResult.ok();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return CommonResult.error(-1,"操作失败！");
-        }
+     * 添加商品/服务进入购物车
+     * @param shoppingCartParam   userId、shopId、goodsId
+     * @return
+     */
+    @PostMapping("addShoppingCart")
+    public CommonResult addShoppingCart(@RequestBody ShoppingCartParam shoppingCartParam){
+
+        shoppingCartService.addShoppingCart(shoppingCartParam);
+        return CommonResult.ok("success");
     }
 
     /**
-    * 删除对象信息
-    * @param id
-    * @return
-    */
-    @DeleteMapping(value="/{id}")
-    public CommonResult delete(@PathVariable("id") Long id){
-        try {
-            shoppingCartService.removeById(id);
-            return CommonResult.ok();
-        } catch (Exception e) {
-        e.printStackTrace();
-            return  CommonResult.error(-1,"删除失败！");
-        }
+     * 添加套餐进入购物车
+     * @param shoppingCartParam userId、shopId、setMenuId
+     * @return
+     */
+    @PostMapping("addSetMenu")
+    public CommonResult addSetMenu(@RequestBody ShoppingCartParam shoppingCartParam){
+        shoppingCartService.addSetMenu(shoppingCartParam);
+        return CommonResult.ok("success");
     }
 
     /**
-    * 根据id查询一条
-    * @param id
-    */
-    @GetMapping(value = "/{id}")
-    public ShoppingCart get(@PathVariable("id")Long id)
-    {
-        return shoppingCartService.getById(id);
+     * 清空购物车
+     * @param shoppingCartParam  userId、shopId
+     */
+    @DeleteMapping("clearShoppingCart")
+    public CommonResult  clearCart (@RequestBody ShoppingCartParam shoppingCartParam){
+        shoppingCartService.clearCart(shoppingCartParam);
+        return CommonResult.ok("success");
+    }
+
+    /**
+     * 累减购物车
+     * @param id
+     */
+    @DeleteMapping("reduceShoppingCart")
+    public CommonResult reduceShoppingCart(@RequestParam("id") Long id) {
+        shoppingCartService.reduceShoppingCart(id);
+        return CommonResult.ok("success");
     }
 
 
     /**
-    * 返回list列表
-    * @return
-    */
-    @GetMapping(value = "/list")
-    public List<ShoppingCart> list(){
-
-        return shoppingCartService.list(null);
-    }
-
-
-    /**
-    * 分页查询数据
-    *
-    * @param query 查询对象
-    * @return PageList 分页对象
-    */
-    @PostMapping(value = "/pagelist")
-    public PageList<ShoppingCart> json(@RequestBody ShoppingCartQuery query)
-    {
-        Page<ShoppingCart> page = new Page<ShoppingCart>(query.getPage(),query.getRows());
-        page = shoppingCartService.page(page);
-        return new PageList<ShoppingCart>(page.getTotal(),page.getRecords());
+     * 查询购物车
+     */
+    @PostMapping("queryCart")
+    public CommonResult<ShoppingCartDto> queryCart(@RequestBody ShoppingCartParam shoppingCartParam){
+        ShoppingCartDto shoppingCartDto= shoppingCartService.queryCart(shoppingCartParam);
+        return CommonResult.ok(shoppingCartDto);
     }
 }

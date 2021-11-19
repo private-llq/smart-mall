@@ -2,6 +2,7 @@ package com.jsy.mapper;
 
 import com.jsy.domain.ShoppingCart;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.springframework.stereotype.Component;
 
 /**
  * <p>
@@ -11,6 +12,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author lijin
  * @since 2021-11-16
  */
+@Component
 public interface ShoppingCartMapper extends BaseMapper<ShoppingCart> {
 
 }
