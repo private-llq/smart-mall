@@ -67,11 +67,20 @@ public class ShoppingCartController {
 
 
     /**
-     * 查询购物车
+     * 查询购物车(店铺)
      */
     @PostMapping("queryCart")
     public CommonResult<ShoppingCartDto> queryCart(@RequestBody ShoppingCartParam shoppingCartParam){
         ShoppingCartDto shoppingCartDto= shoppingCartService.queryCart(shoppingCartParam);
+        return CommonResult.ok(shoppingCartDto);
+    }
+
+    /**
+     * 查询购物车(用户)
+     */
+    @PostMapping("queryCartAll")
+    public CommonResult<List<ShoppingCartDto>> queryCartAll(@RequestBody ShoppingCartParam shoppingCartParam){
+        List<ShoppingCartDto> shoppingCartDto= shoppingCartService.queryCartAll(shoppingCartParam);
         return CommonResult.ok(shoppingCartDto);
     }
 }

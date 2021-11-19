@@ -21,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 /**
@@ -162,7 +164,7 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
 
 
     /**
-     * 查询购物车
+     * 查询购物车（店铺）
      */
     @Override
     public ShoppingCartDto queryCart(ShoppingCartParam shoppingCartParam) {
@@ -215,7 +217,27 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
     }
 
 
-
-
-
+    /**
+     * 查询购物车(用户)
+     * @param shoppingCartParam
+     * @return
+     */
+    @Override
+    public List<ShoppingCartDto> queryCartAll(ShoppingCartParam shoppingCartParam) {
+        //查询出用户在那些店铺有购物车
+        String userId = shoppingCartParam.getUserId();//用户id
+        List<ShoppingCart> userCartList= shoppingCartMapper.selectList(new QueryWrapper<ShoppingCart>().eq("user_id", userId));
+        HashSet<Long> shopIds = new HashSet<>();
+        for (ShoppingCart cart : userCartList) {
+            shopIds.add(cart.getShopId());
+        }
+        ArrayList<ShoppingCartDto> shoppingCartDtos = new ArrayList<>();
+        ShoppingCartParam temp = new ShoppingCartParam();
+        temp.setUserId(userId);
+        for (Long shopId : shopIds) {
+            temp.setShopId(shopId);
+            shoppingCartDtos.add(this.queryCart(temp));
+        }
+        return shoppingCartDtos;
+    }
 }
