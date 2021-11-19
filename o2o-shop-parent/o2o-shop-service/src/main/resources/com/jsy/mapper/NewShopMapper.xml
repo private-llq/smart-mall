@@ -27,12 +27,54 @@
         <result column="weChat" property="weChat" />
         <result column="update_time" property="updateTime" />
         <result column="deleted" property="deleted" />
+        <result column="longitude" property="longitude" />
+        <result column="latitude" property="latitude" />
+
+        <result column="distance" property="distance" />
     </resultMap>
     <select id="mainSearch" resultType="com.jsy.domain.NewShop">
         SELECT * FROM w_new_shop WHERE shop_name LIKE CONCAT("%",#{keyword},"%") AND deleted = 0
         UNION
         SELECT s.* FROM w_goods g LEFT JOIN w_new_shop s ON g.shop_id=s.id WHERE g.title like CONCAT("%",#{keyword},"%")
         AND g.is_putaway=1  AND g.deleted = 0 AND s.deleted=0
+    </select>
+<!-- 查询距离 -->
+    <select id="selectAddress" resultType="com.jsy.domain.NewShop">
+        SELECT
+        *,
+        round (
+        (
+        6378.138 * 2 * ASIN(
+        SQRT(
+        POW(
+        SIN( ( 29.607283 * PI( ) / 180 - t1.latitude * PI( ) / 180 ) / 2 ),
+        2
+        ) + COS( 29.607283 * PI( ) / 180 ) * COS( t1.latitude * PI( ) / 180 ) * POW(
+        SIN( ( 106.550442 * PI( ) / 180 - t1.longitude * PI( ) / 180 ) / 2 ),
+        2
+        )
+        )
+        ) * 1000
+        )
+        )  as distance
+        from  w_new_shop t1  WHERE
+        round (
+        (
+        6378.138 * 2 * ASIN(
+        SQRT(
+        POW(
+        SIN( ( 29.607283 * PI( ) / 180 - t1.latitude * PI( ) / 180 ) / 2 ),
+        2
+        ) + COS( 29.607283 * PI( ) / 180 ) * COS( t1.latitude * PI( ) / 180 ) * POW(
+        SIN( ( 106.550442 * PI( ) / 180 - t1.longitude * PI( ) / 180 ) / 2 ),
+        2
+        )
+        )
+        ) * 1000
+        )
+        )
+        &lt;3000
+
     </select>
 
 </mapper>

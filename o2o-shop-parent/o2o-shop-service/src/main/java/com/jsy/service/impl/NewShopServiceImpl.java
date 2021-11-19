@@ -25,12 +25,15 @@ import com.jsy.mapper.NewShopMapper;
 import com.jsy.parameter.NewShopParam;
 import com.jsy.parameter.NewShopSetParam;
 import com.jsy.query.MainSearchQuery;
+import com.jsy.query.NewShopQuery;
 import com.jsy.service.INewShopService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -102,7 +105,14 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         //获取登录用户
 //        LoginUser loginUser = ContextHolder.getContext().getLoginUser();
 //        newShop.setOwnerUuid(loginUser.getId().toString());
-        newShop.setLonLat(GouldUtil.getLonLat(shopPacketParam.getAddressDetail()));
+        String lonLat = GouldUtil.getLonLat(shopPacketParam.getAddressDetail());
+        String[] split1 = lonLat.split(",");
+        if (split1!=null){
+            //经度
+            newShop.setLongitude(BigDecimal.valueOf(Long.valueOf(split[0])));
+            //维度
+            newShop.setLatitude(BigDecimal.valueOf(Long.valueOf(split[1])));
+        }
 //        newShop.setUuid(UUIDUtils.getUUID());
         shopMapper.insert(newShop);
     }
@@ -160,7 +170,15 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         //获取登录用户
 //        LoginUser loginUser = ContextHolder.getContext().getLoginUser();
 //        newShop.setOwnerUuid(loginUser.getId().toString());
-        newShop.setLonLat(GouldUtil.getLonLat(shopPacketParam.getAddressDetail()));
+        // 返回输入地址address的经纬度信息, 格式是 经度,纬度
+        String lonLat = GouldUtil.getLonLat(shopPacketParam.getAddressDetail());
+        String[] split1 = lonLat.split(",");
+        if (split1!=null){
+            //经度
+            newShop.setLongitude(BigDecimal.valueOf(Long.valueOf(split[0])));
+            //维度
+            newShop.setLatitude(BigDecimal.valueOf(Long.valueOf(split[1])));
+        }
 //        newShop.setUuid(UUIDUtils.getUUID());
         shopMapper.updateById(newShop);
     }
@@ -175,8 +193,8 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
 
     //C端查询店铺
     @Override
-    public List<NewShopRecommendDto> getShopAllList(Long treeId, String location) {
-        List<NewShop> newShopList = shopMapper.selectList(null);
+    public PageInfo<NewShopRecommendDto> getShopAllList(NewShopQuery shopQuery) {
+       /* List<NewShop> newShopList = shopMapper.selectList(null);
         List<NewShopRecommendDto> shopList = new ArrayList<>();
         for (NewShop newShop : newShopList) {
             String shopTreeIdName = "";
@@ -227,8 +245,51 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
                 }
             }
 
+        }*/
+        //用户地址
+        String location = shopQuery.getLocation();
+        //分类id
+        Long treeId = shopQuery.getTreeId();
+        //获取用户经纬度
+        String lonLat = GouldUtil.getLonLat(location);
+        String[] split = lonLat.split(",");
+
+        BigDecimal longitude =  new BigDecimal((split[0]));
+        BigDecimal latitude = new BigDecimal((split[0]));
+
+        List<NewShop> newShopList = shopMapper.selectAddress(location,latitude);
+        List<NewShopRecommendDto> shopList = new ArrayList<>();
+        long byAddress = 0;
+        for (NewShop newShop : newShopList) {
+                //判断是否的当前分类下面的店
+                    //店铺的地址名称
+                    String addressDetail = newShop.getAddressDetail();
+                    if (StringUtils.isNotEmpty(location)){
+                        byAddress = GouldUtil.getDistanceByAddress(addressDetail, location);
+                    }
+                    //默认3km
+                        NewShopRecommendDto recommendDto = new NewShopRecommendDto();
+                        BeanUtils.copyProperties(newShop, recommendDto);
+                        recommendDto.setShopName(newShop.getShopName());
+
+                        String[] ids = newShop.getShopTreeId().split(",");
+                        Tree tree = treeClient.getTree(Long.valueOf(ids[ids.length - 1])).getData();
+                        if (Objects.nonNull(tree)){
+                            recommendDto.setShopTreeIdName(tree.getName());
+                        }
+                        //评分
+                        recommendDto.setGrade(5.0f);
+                        //把商品最近发布的东西查出来   有可能是服务又可能是商品 有可能是 套餐
+                        Goods goods = goodsClient.latelyGoods(newShop.getId()).getData();
+                        if (goods!=null){
+                            recommendDto.setTitle(goods.getTitle());
+                            recommendDto.setPrice(goods.getPrice());
+                            shopList.add(recommendDto);
+                        }
         }
-        return shopList;
+        PageInfo<NewShopRecommendDto> pageInfo = MyPageUtils.pageMap(shopQuery.getPage(), shopQuery.getRows(), shopList);
+
+        return pageInfo;
     }
 
     private String getString(String[] split) {
@@ -263,6 +324,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
             myNewShopDto.setId(newShop.getId());
             myNewShopDto.setShopName(newShop.getShopName());
             myNewShopDto.setGrade(5.0f);
+            //查询
             Goods goods = goodsClient.latelyGoods(newShop.getId()).getData();
             if (Objects.nonNull(goods)){
                 myNewShopDto.setTitle(goods.getTitle());

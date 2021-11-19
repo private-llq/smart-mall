@@ -9,6 +9,7 @@ import com.jsy.dto.NewShopRecommendDto;
 import com.jsy.parameter.NewShopParam;
 import com.jsy.parameter.NewShopSetParam;
 import com.jsy.query.MainSearchQuery;
+import com.jsy.query.NewShopQuery;
 
 import java.util.List;
 
@@ -34,7 +35,7 @@ public interface INewShopService extends IService<NewShop> {
 
     /***********************************************************************************/
     //C端查询店铺
-    List<NewShopRecommendDto> getShopAllList(Long treeId,String location);
+    PageInfo<NewShopRecommendDto> getShopAllList(NewShopQuery shopQuery);
 
 
     /**

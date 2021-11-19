@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * <p>
@@ -94,8 +95,11 @@ public class NewShopDto implements Serializable {
     @ApiModelProperty(value = "营业执照地址）")
     private String businessAddress;
 
-    @ApiModelProperty(value = "经纬度（经度，维度））")
-    private String lonLat;
+    @ApiModelProperty(value = "经度")
+    private BigDecimal longitude;
+
+    @ApiModelProperty(value = "维度")
+    private BigDecimal latitude;
 
     @ApiModelProperty(value = "经营类型（0-服务行业   1-非服务行业）")
     private Integer type;

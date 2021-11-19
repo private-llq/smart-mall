@@ -10,6 +10,7 @@ import org.springframework.util.StringUtils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -186,7 +187,17 @@ public class GouldUtil {
 	public static void main(String[] args) {
 		String s="重庆市渝北区天宫殿街道泰山大道东段106号";
 		String lonLat = GouldUtil.getLonLat(s);
-		System.out.println(lonLat);
+		String lat = GouldUtil.getLonLat("冉家坝");
+//		String[] split = lat.split(",");
+//		BigDecimal longitude = new BigDecimal((split[0]));
+		System.out.println(lat);
+
+//		System.out.println(lonLat);
+//		System.out.println(lat);
+//		long distanceByAddress = GouldUtil.getApiDistance(lonLat, lat);
+//		System.out.println(longitude);
+
+
 	}
 
 }
