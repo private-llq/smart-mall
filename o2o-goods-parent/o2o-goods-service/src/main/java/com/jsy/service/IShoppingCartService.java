@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.jsy.dto.ShoppingCartDto;
 import com.jsy.parameter.ShoppingCartParam;
 
+import java.util.List;
+
 /**
  * <p>
  *  服务类
@@ -36,16 +38,25 @@ public interface IShoppingCartService extends IService<ShoppingCart> {
 
 
     /**
-     * 查询购物车
-     * @param shoppingCartParam
-     * @return
-     */
-    ShoppingCartDto queryCart(ShoppingCartParam shoppingCartParam);
-
-    /**
      * 添加套餐进入购物车
      * @param shoppingCartParam userId、shopId、setMenuId
      * @return
      */
     void addSetMenu(ShoppingCartParam shoppingCartParam);
+
+
+    /**
+     * 查询购物车(店铺)
+     * @param shoppingCartParam
+     * @return
+     */
+    ShoppingCartDto queryCart(ShoppingCartParam shoppingCartParam);
+
+
+    /**
+     * 查询购物车(用户)
+     * @param shoppingCartParam
+     * @return
+     */
+    List<ShoppingCartDto> queryCartAll(ShoppingCartParam shoppingCartParam);
 }

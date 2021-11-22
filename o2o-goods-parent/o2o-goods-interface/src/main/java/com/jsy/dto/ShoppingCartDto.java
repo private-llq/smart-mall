@@ -41,4 +41,9 @@ public class ShoppingCartDto implements Serializable {
      */
     private List<ShoppingCartListDto> cartList=new ArrayList<>();
 
+    /**
+     * 店铺名称
+     */
+    private String shopName;
+
 }

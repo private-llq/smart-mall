@@ -331,7 +331,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
                 myNewShopDto.setPrice(goods.getPrice());
             }
             long addr = GouldUtil.getDistanceByAddress(newShop.getAddressDetail(), location);
-            myNewShopDto.setDistance(addr+"m");
+            myNewShopDto.setDistance(addr/1000+"km");
 
             String[] ids = newShop.getShopTreeId().split(",");
 

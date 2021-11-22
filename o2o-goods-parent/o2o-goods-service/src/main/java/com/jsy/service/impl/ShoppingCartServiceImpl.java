@@ -3,7 +3,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.utils.BeansCopyUtils;
+import com.jsy.client.NewShopClient;
+import com.jsy.client.ShopClient;
 import com.jsy.domain.Goods;
+import com.jsy.domain.NewShop;
 import com.jsy.domain.SetMenu;
 import com.jsy.domain.ShoppingCart;
 import com.jsy.dto.ShoppingCartDto;
@@ -21,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 /**
@@ -43,6 +48,10 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
 
     @Autowired
     private SetMenuMapper setMenuMapper;
+
+
+    @Autowired
+    private NewShopClient shopClient;
 
     /**
      * 添加商品进入购物车
@@ -162,7 +171,7 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
 
 
     /**
-     * 查询购物车
+     * 查询购物车（店铺）
      */
     @Override
     public ShoppingCartDto queryCart(ShoppingCartParam shoppingCartParam) {
@@ -205,6 +214,10 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
                 payPrice= payPrice.add(cart.getDiscountPrice().multiply(BigDecimal.valueOf(cart.getNum())));
             }
         }
+        NewShop newShop = shopClient.get(shopId).getData();
+        if (Objects.nonNull(newShop)){
+            shoppingCartDto.setShopName(newShop.getShopName());//商店名称
+        }
         shoppingCartDto.setSumGoods(sumGoods);//商品总数
         shoppingCartDto.setPayPrice(payPrice);//商品支付价格
         shoppingCartDto.setCartList(cartList);//购物车列表
@@ -215,7 +228,27 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
     }
 
 
-
-
-
+    /**
+     * 查询购物车(用户)
+     * @param shoppingCartParam
+     * @return
+     */
+    @Override
+    public List<ShoppingCartDto> queryCartAll(ShoppingCartParam shoppingCartParam) {
+        //查询出用户在那些店铺有购物车
+        String userId = shoppingCartParam.getUserId();//用户id
+        List<ShoppingCart> userCartList= shoppingCartMapper.selectList(new QueryWrapper<ShoppingCart>().eq("user_id", userId));
+        HashSet<Long> shopIds = new HashSet<>();
+        for (ShoppingCart cart : userCartList) {
+            shopIds.add(cart.getShopId());
+        }
+        ArrayList<ShoppingCartDto> shoppingCartDtos = new ArrayList<>();
+        ShoppingCartParam temp = new ShoppingCartParam();
+        temp.setUserId(userId);
+        for (Long shopId : shopIds) {
+            temp.setShopId(shopId);
+            shoppingCartDtos.add(this.queryCart(temp));
+        }
+        return shoppingCartDtos;
+    }
 }
