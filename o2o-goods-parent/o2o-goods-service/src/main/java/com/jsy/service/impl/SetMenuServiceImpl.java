@@ -231,7 +231,12 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
     public List<SetMenuDto> batchIds(List<Long> ids) {
         List<SetMenu> setMenus = setMenuMapper.selectBatchIds(ids);
         List<SetMenuDto> dtoList= new ArrayList<>();
-        BeansCopyUtils.copyListProperties(setMenus,SetMenuDto::new);
+        for (SetMenu setMenu : setMenus) {
+            SetMenuDto setMenuDto = new SetMenuDto();
+            BeanUtils.copyProperties(setMenu,setMenuDto);
+            dtoList.add(setMenuDto);
+        }
+//        BeansCopyUtils.copyListProperties(setMenus,SetMenuDto::new);
         return dtoList;
     }
 
