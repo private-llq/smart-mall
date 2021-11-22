@@ -5,10 +5,7 @@ import cn.hutool.core.util.PageUtil;
 import com.jsy.basic.util.MyPageUtils;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.exception.JSYException;
-import com.jsy.basic.util.utils.GouldUtil;
-import com.jsy.basic.util.utils.PagerUtils;
-import com.jsy.basic.util.utils.RegexUtils;
-import com.jsy.basic.util.utils.UUIDUtils;
+import com.jsy.basic.util.utils.*;
 import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.client.GoodsClient;
 import com.jsy.client.SetMenuClient;
@@ -17,10 +14,7 @@ import com.jsy.domain.Goods;
 import com.jsy.domain.NewShop;
 import com.jsy.domain.SetMenu;
 import com.jsy.domain.Tree;
-import com.jsy.dto.MyNewShopDto;
-import com.jsy.dto.NewShopPreviewDto;
-import com.jsy.dto.NewShopRecommendDto;
-import com.jsy.dto.SelectUserOrderDTO;
+import com.jsy.dto.*;
 import com.jsy.mapper.NewShopMapper;
 import com.jsy.parameter.NewShopParam;
 import com.jsy.parameter.NewShopSetParam;
@@ -345,6 +339,13 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         PageInfo<MyNewShopDto> pageInfo = MyPageUtils.pageMap(mainSearchQuery.getPage(), mainSearchQuery.getRows(), list);
         return pageInfo;
 
+    }
+
+    @Override
+    public List<NewShopDto> batchIds(List<Long> ids) {
+        List<NewShop> newShops = baseMapper.selectBatchIds(ids);
+        List<NewShopDto> newShopDtos = BeansCopyUtils.listCopy(newShops, NewShopDto.class);
+        return newShopDtos;
     }
 
 

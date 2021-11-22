@@ -29,5 +29,5 @@ public interface IUserCollectService extends IService<UserCollect> {
      * @param userCollectQuery 查询对象
      * @return PageList 分页对象
      */
-    PageInfo<userCollectDto> userCollectPageList(UserCollectQuery userCollectQuery);
+    userCollectDto userCollectPageList(UserCollectQuery userCollectQuery);
 }

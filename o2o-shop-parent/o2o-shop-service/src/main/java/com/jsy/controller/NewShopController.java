@@ -198,5 +198,14 @@ public class NewShopController {
         return CommonResult.ok(list);
     }
 
+    @ApiOperation("根据id批量查询")
+    @PostMapping("/batchIds")
+    public CommonResult<List<NewShopDto>> batchIds(@RequestBody List<Long> ids)
+    {
+        List<NewShopDto> dtoList = newShopService.batchIds(ids);
+        return CommonResult.ok(dtoList);
+
+    }
+
 
 }

@@ -2,13 +2,18 @@ package com.jsy.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.jsy.basic.util.MyPageUtils;
 import com.jsy.basic.util.PageInfo;
+import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.client.GoodsClient;
 import com.jsy.client.NewShopClient;
 import com.jsy.client.SetMenuClient;
+import com.jsy.domain.NewShop;
 import com.jsy.domain.UserCollect;
 import com.jsy.dto.GoodsDto;
+import com.jsy.dto.NewShopDto;
+import com.jsy.dto.SetMenuDto;
 import com.jsy.dto.userCollectDto;
 import com.jsy.mapper.UserCollectMapper;
 import com.jsy.param.UserCollectParam;
@@ -20,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -55,6 +61,34 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
      */
     @Override
     public void addUserCollect(UserCollectParam userCollectParam) {
+        //查询是否收藏过
+        if (userCollectParam.getType()==0){
+            UserCollect userCollect = userCollectMapper.selectOne(new QueryWrapper<UserCollect>()
+                    .eq("user_id", userCollectParam.getUserId())
+                    .eq("goods_id", userCollectParam.getGoodsId())
+            );
+            if (Objects.nonNull(userCollect)){
+                throw new JSYException(-1,"该商品已经收藏");
+            }
+        }
+        if (userCollectParam.getType()==1){
+            UserCollect userCollect = userCollectMapper.selectOne(new QueryWrapper<UserCollect>()
+                    .eq("user_id", userCollectParam.getUserId())
+                    .eq("menu_id", userCollectParam.getMenuId())
+            );
+            if (Objects.nonNull(userCollect)){
+                throw new JSYException(-1,"该套餐已经收藏");
+            }
+        }
+        if (userCollectParam.getType()==2){
+            UserCollect userCollect = userCollectMapper.selectOne(new QueryWrapper<UserCollect>()
+                    .eq("user_id", userCollectParam.getUserId())
+                    .eq("shop_id", userCollectParam.getMenuId())
+            );
+            if (Objects.nonNull(userCollect)){
+                throw new JSYException(-1,"该商店已经收藏");
+            }
+        }
         UserCollect userCollect = new UserCollect();
         BeanUtils.copyProperties(userCollectParam,userCollect);
         userCollectMapper.insert(userCollect);
@@ -67,13 +101,12 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
      * @return PageList 分页对象
      */
     @Override
-    public PageInfo<userCollectDto> userCollectPageList(UserCollectQuery userCollectQuery) {
-        Page<UserCollect> page = new Page<>(userCollectQuery.getPage(), userCollectQuery.getRows());
-        Page<UserCollect> userCollectPage = userCollectMapper.selectPage(page, new QueryWrapper<UserCollect>().eq("user_id", userCollectQuery.getUserId()));
+    public userCollectDto userCollectPageList(UserCollectQuery userCollectQuery) {
+        List<UserCollect> list = userCollectMapper.selectList(new QueryWrapper<UserCollect>().eq("user_id", userCollectQuery.getUserId()));
         List<Long> goodsServiceCollect = new ArrayList<>();
         List<Long> setMenuCollect = new ArrayList<>();
         List<Long> shopCollect = new ArrayList<>();
-        userCollectPage.getRecords().stream().forEach(x->{
+        list.stream().forEach(x->{
             if (x.getType()==0){
                 goodsServiceCollect.add(x.getGoodsId());
             }
@@ -85,9 +118,30 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
             }
         });
 
-        CommonResult<List<GoodsDto>> listCommonResult = goodsClient.batchGoods(goodsServiceCollect);
 
+        userCollectDto userCollectDto = new userCollectDto();
 
-        return null;
+        if (userCollectQuery.getType()==0){
+            List<GoodsDto> goodsDtos = goodsClient.batchGoods(goodsServiceCollect).getData();
+            if (Objects.nonNull(goodsDtos)){
+                PageInfo<GoodsDto> goodsDtoPageInfo = MyPageUtils.pageMap(userCollectQuery.getPage(), userCollectQuery.getRows(), goodsDtos);
+                userCollectDto.setGoodsDto(goodsDtoPageInfo);
+            }
+        }
+        if (userCollectQuery.getType()==1){
+            List<SetMenuDto> setMenuDtos = setMenuClient.batchIds(setMenuCollect).getData();
+            if (Objects.nonNull(setMenuDtos)){
+                PageInfo<SetMenuDto> setMenuDtoPageInfo = MyPageUtils.pageMap(userCollectQuery.getPage(), userCollectQuery.getRows(), setMenuDtos);
+                userCollectDto.setSetMenuDto(setMenuDtoPageInfo);
+            }
+        }
+        if (userCollectQuery.getType()==2){
+            List<NewShopDto> newShopDtos = newShopClient.batchIds(shopCollect).getData();
+            if (Objects.nonNull(newShopDtos)){
+                PageInfo<NewShopDto> newShopDtoPageInfo = MyPageUtils.pageMap(userCollectQuery.getPage(), userCollectQuery.getRows(), newShopDtos);
+                userCollectDto.setNewShopDto(newShopDtoPageInfo);
+            }
+        }
+        return userCollectDto;
     }
 }

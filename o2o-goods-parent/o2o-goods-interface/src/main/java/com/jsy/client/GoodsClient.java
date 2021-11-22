@@ -28,6 +28,6 @@ public interface GoodsClient {
      * 批量查询 商品、服务
      */
     @PostMapping("/goods/batchGoods")
-    CommonResult<List <GoodsDto>> batchGoods(@RequestBody List<Long> goodsList);
+    CommonResult<List<GoodsDto>> batchGoods(@RequestBody List<Long> goodsList);
 
 }

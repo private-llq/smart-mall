@@ -1,4 +1,5 @@
 package com.jsy.dto;
+import com.jsy.basic.util.PageInfo;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -10,16 +11,16 @@ public class userCollectDto implements Serializable {
     /**
      * 商品服务返回对象
      */
-    private List<GoodsDto> goodsDto;
+    private PageInfo<GoodsDto> goodsDto;
 
     /**
      * 套餐返回对象
      */
-    private List<SetMenuDto> setMenuDto;
+    private PageInfo<SetMenuDto> setMenuDto;
 
     /**
      * 商家返回对象
      */
-    private List<NewShopDto> newShopDto;
+    private PageInfo<NewShopDto> newShopDto;
 
 }

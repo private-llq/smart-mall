@@ -46,9 +46,9 @@ public class UserCollectController {
     * @return PageList 分页对象
     */
     @PostMapping(value = "/userCollectPageList")
-    public CommonResult<PageInfo<userCollectDto>> userCollectPageList(@RequestBody UserCollectQuery userCollectQuery)
+    public CommonResult<userCollectDto> userCollectPageList(@RequestBody UserCollectQuery userCollectQuery)
     {
-        PageInfo<userCollectDto> pageInfo= userCollectService.userCollectPageList(userCollectQuery);
-        return CommonResult.ok(pageInfo);
+        userCollectDto userCollectDto= userCollectService.userCollectPageList(userCollectQuery);
+        return CommonResult.ok(userCollectDto);
     }
 }
