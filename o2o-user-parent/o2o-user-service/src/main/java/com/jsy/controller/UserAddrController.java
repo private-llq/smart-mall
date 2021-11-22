@@ -1,18 +1,12 @@
 package com.jsy.controller;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.dto.UserAddrDto;
-import com.jsy.dto.UserAddressDto;
 import com.jsy.param.UserAddrParam;
 import com.jsy.service.IUserAddrService;
-import com.jsy.domain.UserAddr;
 import com.jsy.query.UserAddrQuery;
-import com.jsy.basic.util.PageList;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.jsy.basic.util.vo.CommonResult;
-import java.util.List;
 
 @RestController
 @RequestMapping("/userAddr")
