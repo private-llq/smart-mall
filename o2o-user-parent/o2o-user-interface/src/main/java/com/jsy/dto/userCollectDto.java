@@ -9,9 +9,15 @@ import java.util.List;
 public class userCollectDto implements Serializable {
 
     /**
-     * 商品服务返回对象
+     * 商品返回对象
      */
     private PageInfo<GoodsDto> goodsDto;
+
+
+    /**
+     * 服务返回对象
+     */
+    private PageInfo<GoodsServiceDto> goodsServiceDto;
 
     /**
      * 套餐返回对象
@@ -22,5 +28,6 @@ public class userCollectDto implements Serializable {
      * 商家返回对象
      */
     private PageInfo<NewShopDto> newShopDto;
+
 
 }

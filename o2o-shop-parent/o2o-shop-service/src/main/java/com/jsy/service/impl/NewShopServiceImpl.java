@@ -23,6 +23,7 @@ import com.jsy.query.NewShopQuery;
 import com.jsy.service.INewShopService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang.StringUtils;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -344,8 +345,13 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
     @Override
     public List<NewShopDto> batchIds(List<Long> ids) {
         List<NewShop> newShops = baseMapper.selectBatchIds(ids);
-        List<NewShopDto> newShopDtos = BeansCopyUtils.listCopy(newShops, NewShopDto.class);
-        return newShopDtos;
+        List<NewShopDto> dtoList= new ArrayList<>();
+        for (NewShop newShop : newShops) {
+            NewShopDto newShopDto = new NewShopDto();
+            BeanUtils.copyProperties(newShop,newShopDto);
+            dtoList.add(newShopDto);
+        }
+        return dtoList;
     }
 
 

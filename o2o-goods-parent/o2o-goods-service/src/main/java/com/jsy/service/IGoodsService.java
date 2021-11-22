@@ -1,10 +1,13 @@
 package com.jsy.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jsy.basic.util.PageInfo;
+import com.jsy.basic.util.utils.BeansCopyUtils;
 import com.jsy.domain.Goods;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jsy.domain.Tree;
 import com.jsy.dto.GoodsDto;
+import com.jsy.dto.GoodsServiceDto;
 import com.jsy.parameter.GoodsParam;
 import com.jsy.parameter.GoodsServiceParam;
 import com.jsy.query.GoodsPageQuery;
@@ -22,7 +25,6 @@ import java.util.List;
 public interface IGoodsService extends IService<Goods> {
 
 
-
     /**
      * 添加 商品
      */
@@ -36,6 +38,7 @@ public interface IGoodsService extends IService<Goods> {
 
     /**
      * 查看一条商品/服务的所有信息
+     *
      * @param id
      */
     Goods getGoodsService(Long id);
@@ -49,12 +52,14 @@ public interface IGoodsService extends IService<Goods> {
 
     /**
      * 上架商品/服务
+     *
      * @param id
      */
     void putaway(Long id);
 
     /**
      * 下架商品/服务
+     *
      * @param id
      */
     void outaway(Long id);
@@ -66,6 +71,7 @@ public interface IGoodsService extends IService<Goods> {
 
     /**
      * 添加服务查询分类
+     *
      * @param shopId
      * @return
      */
@@ -74,6 +80,7 @@ public interface IGoodsService extends IService<Goods> {
 
     /**
      * 最新上架 商品、服务、套餐
+     *
      * @param shopId
      * @return
      */
@@ -81,8 +88,13 @@ public interface IGoodsService extends IService<Goods> {
 
 
     /**
-     * 批量查询 商品、服务
+     * 批量查询 商品
      */
 
     List<GoodsDto> batchGoods(List<Long> goodsList);
+
+    /**
+     * 批量查询 服务
+     */
+    List<GoodsServiceDto> batchGoodsService(List<Long> goodsServiceList);
 }

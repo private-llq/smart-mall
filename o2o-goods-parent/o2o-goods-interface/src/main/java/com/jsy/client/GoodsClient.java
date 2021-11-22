@@ -5,6 +5,7 @@ import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.client.impl.GoodsClientImpl;
 import com.jsy.domain.Goods;
 import com.jsy.dto.GoodsDto;
+import com.jsy.dto.GoodsServiceDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,9 +26,15 @@ public interface GoodsClient {
 
 
     /**
-     * 批量查询 商品、服务
+     * 批量查询 商品
      */
     @PostMapping("/goods/batchGoods")
     CommonResult<List<GoodsDto>> batchGoods(@RequestBody List<Long> goodsList);
+
+    /**
+     * 批量查询 服务
+     */
+    @PostMapping("goods/batchGoodsService")
+    CommonResult<List<GoodsServiceDto>> batchGoodsService(@RequestBody List<Long> goodsServiceList);
 
 }

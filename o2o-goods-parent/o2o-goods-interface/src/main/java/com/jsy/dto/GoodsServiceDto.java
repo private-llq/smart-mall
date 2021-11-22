@@ -49,4 +49,9 @@ public class GoodsServiceDto {
 
     @ApiModelProperty(value = "0:普通商品 1：服务类商品")
     private Integer type;
+
+    /**
+     * 是否支持上门服务：0 不支持 1 支持
+     */
+    private Integer isVisitingService;
 }

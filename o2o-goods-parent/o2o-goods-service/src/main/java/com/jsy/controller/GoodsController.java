@@ -2,8 +2,10 @@ package com.jsy.controller;
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jsy.basic.util.PageInfo;
+import com.jsy.basic.util.utils.BeansCopyUtils;
 import com.jsy.domain.Tree;
 import com.jsy.dto.GoodsDto;
+import com.jsy.dto.GoodsServiceDto;
 import com.jsy.parameter.GoodsParam;
 import com.jsy.parameter.GoodsServiceParam;
 import com.jsy.query.GoodsPageQuery;
@@ -166,7 +168,7 @@ public class GoodsController {
     }
 
     /**
-     * 批量查询 商品、服务
+     * 批量查询 商品
      */
 
     @PostMapping("/batchGoods")
@@ -174,6 +176,15 @@ public class GoodsController {
     {
        List <GoodsDto> goodsDtoList=  goodsService.batchGoods(goodsList);
         return CommonResult.ok(goodsDtoList);
+    }
+
+    /**
+     * 批量查询 服务
+     */
+    @PostMapping("/batchGoodsService")
+    public CommonResult<List<GoodsServiceDto>>  batchGoodsService(@RequestBody List<Long> goodsServiceList) {
+        List<GoodsServiceDto> goodsServiceDtos = goodsService.batchGoodsService(goodsServiceList);
+        return CommonResult.ok(goodsServiceDtos);
     }
 }
 

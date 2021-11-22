@@ -12,6 +12,7 @@ import com.jsy.client.ServiceCharacteristicsClient;
 import com.jsy.client.TreeClient;
 import com.jsy.domain.*;
 import com.jsy.dto.GoodsDto;
+import com.jsy.dto.GoodsServiceDto;
 import com.jsy.mapper.GoodsMapper;
 import com.jsy.parameter.GoodsParam;
 import com.jsy.parameter.GoodsServiceParam;
@@ -154,13 +155,23 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
 
 
     /**
-     * 批量查询 商品、服务
+     * 批量查询 商品
      */
     @Override
     public List<GoodsDto> batchGoods(List<Long> goodsList) {
-        List<Goods> list = goodsMapper.selectBatchIds(goodsList);
+        List<Goods> list = goodsMapper.selectList(new QueryWrapper<Goods>().in("id", goodsList).eq("type", 0));
         List<GoodsDto> goodsDtoList = BeansCopyUtils.listCopy(list, GoodsDto.class);
         return goodsDtoList;
+    }
+
+    /**
+     * 批量查询 服务
+     */
+    @Override
+    public List<GoodsServiceDto> batchGoodsService(List<Long> goodsServiceList) {
+        List<Goods> list = goodsMapper.selectList(new QueryWrapper<Goods>().in("id", goodsServiceList).eq("type", 1));
+        List<GoodsServiceDto> goodsServiceDtoList = BeansCopyUtils.listCopy(list, GoodsServiceDto.class);
+        return goodsServiceDtoList;
     }
 
     /**

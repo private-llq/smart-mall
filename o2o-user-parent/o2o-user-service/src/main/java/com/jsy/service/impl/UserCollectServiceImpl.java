@@ -11,10 +11,7 @@ import com.jsy.client.NewShopClient;
 import com.jsy.client.SetMenuClient;
 import com.jsy.domain.NewShop;
 import com.jsy.domain.UserCollect;
-import com.jsy.dto.GoodsDto;
-import com.jsy.dto.NewShopDto;
-import com.jsy.dto.SetMenuDto;
-import com.jsy.dto.userCollectDto;
+import com.jsy.dto.*;
 import com.jsy.mapper.UserCollectMapper;
 import com.jsy.param.UserCollectParam;
 import com.jsy.query.UserCollectQuery;
@@ -68,7 +65,7 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
                     .eq("goods_id", userCollectParam.getGoodsId())
             );
             if (Objects.nonNull(userCollect)){
-                throw new JSYException(-1,"该商品已经收藏");
+                throw new JSYException(-1,"该商品或服务已经收藏");
             }
         }
         if (userCollectParam.getType()==1){
@@ -96,19 +93,20 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
 
 
     /**
-     * 分页查询收藏的商品、服务、套餐、店铺
+     * 分页查询收藏的商品/服务、套餐、店铺
      * @param userCollectQuery 查询对象
      * @return PageList 分页对象
      */
     @Override
     public userCollectDto userCollectPageList(UserCollectQuery userCollectQuery) {
         List<UserCollect> list = userCollectMapper.selectList(new QueryWrapper<UserCollect>().eq("user_id", userCollectQuery.getUserId()));
+        List<Long> goodsCollect = new ArrayList<>();
         List<Long> goodsServiceCollect = new ArrayList<>();
         List<Long> setMenuCollect = new ArrayList<>();
         List<Long> shopCollect = new ArrayList<>();
         list.stream().forEach(x->{
             if (x.getType()==0){
-                goodsServiceCollect.add(x.getGoodsId());
+                goodsCollect.add(x.getGoodsId());
             }
             if (x.getType()==1){
                 setMenuCollect.add(x.getMenuId());
@@ -116,26 +114,38 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
             if (x.getType()==2){
                 shopCollect.add(x.getShopId());
             }
+            if (x.getType()==3){
+                goodsServiceCollect.add(x.getGoodsId());
+            }
+
         });
 
 
         userCollectDto userCollectDto = new userCollectDto();
 
-        if (userCollectQuery.getType()==0){
-            List<GoodsDto> goodsDtos = goodsClient.batchGoods(goodsServiceCollect).getData();
+        if (userCollectQuery.getType()==0 ){//商品
+            List<GoodsDto> goodsDtos = goodsClient.batchGoods(goodsCollect).getData();
             if (Objects.nonNull(goodsDtos)){
                 PageInfo<GoodsDto> goodsDtoPageInfo = MyPageUtils.pageMap(userCollectQuery.getPage(), userCollectQuery.getRows(), goodsDtos);
                 userCollectDto.setGoodsDto(goodsDtoPageInfo);
             }
         }
-        if (userCollectQuery.getType()==1){
+        if (userCollectQuery.getType()==3 ){//服务
+            List<GoodsServiceDto> goodsServiceDtos = goodsClient.batchGoodsService(goodsServiceCollect).getData();
+            if (Objects.nonNull(goodsServiceDtos)){
+                PageInfo<GoodsServiceDto> goodsServiceDtoPageInfo = MyPageUtils.pageMap(userCollectQuery.getPage(), userCollectQuery.getRows(), goodsServiceDtos);
+                userCollectDto.setGoodsServiceDto(goodsServiceDtoPageInfo);
+            }
+        }
+
+        if (userCollectQuery.getType()==1){//套餐
             List<SetMenuDto> setMenuDtos = setMenuClient.batchIds(setMenuCollect).getData();
             if (Objects.nonNull(setMenuDtos)){
                 PageInfo<SetMenuDto> setMenuDtoPageInfo = MyPageUtils.pageMap(userCollectQuery.getPage(), userCollectQuery.getRows(), setMenuDtos);
                 userCollectDto.setSetMenuDto(setMenuDtoPageInfo);
             }
         }
-        if (userCollectQuery.getType()==2){
+        if (userCollectQuery.getType()==2){//店铺
             List<NewShopDto> newShopDtos = newShopClient.batchIds(shopCollect).getData();
             if (Objects.nonNull(newShopDtos)){
                 PageInfo<NewShopDto> newShopDtoPageInfo = MyPageUtils.pageMap(userCollectQuery.getPage(), userCollectQuery.getRows(), newShopDtos);
