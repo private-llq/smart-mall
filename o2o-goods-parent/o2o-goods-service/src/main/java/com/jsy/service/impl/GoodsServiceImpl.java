@@ -1,15 +1,15 @@
 package com.jsy.service.impl;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsy.basic.util.PageInfo;
+import com.jsy.client.BrowseClient;
 import com.jsy.client.NewShopClient;
 import com.jsy.client.ServiceCharacteristicsClient;
 import com.jsy.client.TreeClient;
-import com.jsy.domain.Goods;
-import com.jsy.domain.NewShop;
-import com.jsy.domain.ServiceCharacteristics;
-import com.jsy.domain.Tree;
+import com.jsy.domain.*;
 import com.jsy.mapper.GoodsMapper;
 import com.jsy.parameter.GoodsParam;
 import com.jsy.parameter.GoodsServiceParam;
@@ -45,6 +45,9 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
 
     @Autowired
     private TreeClient treeClient;
+
+    @Autowired
+    private BrowseClient browseClient;
 
 
 
@@ -154,6 +157,18 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     @Override
     public Goods getGoodsService(Long id) {
         Goods goods = goodsMapper.selectOne(new QueryWrapper<Goods>().eq("id", id));
+        if (Objects.nonNull(goods)){
+            //添加一条用户的浏览记录
+            Browse browse = new Browse();
+            browse.setShopId(goods.getShopId());
+            //browse.setUserId(0L);
+            browse.setName(goods.getTitle());
+            browse.setTextDescription(goods.getTextDescription());
+            browse.setRealPrice(goods.getPrice());
+            browse.setSellingPrice(goods.getDiscountPrice());
+            browse.setIsVisitingService(goods.getIsVisitingService());
+            browseClient.save(browse);
+        }
         return goods;
     }
 

@@ -49,7 +49,7 @@ public class UserAddr extends BaseEntity implements Serializable  {
     @ApiModelProperty(value = "标签 0 家 | 1 公司 | 2 学校 ")
     private String tag;
 
-    @ApiModelProperty(value = "默认地址")
-    private String defaultAddress;
+    @ApiModelProperty(value = "默认地址 1 是 0 否")
+    private Integer defaultAddress;
 
 }
