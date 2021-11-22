@@ -8,7 +8,7 @@ import com.jsy.domain.SetMenu;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-@FeignClient(value = "SHOP-SERVICE-GOODS",fallback = SetMenuClientImpl.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "shop-service-goods",fallback = SetMenuClientImpl.class,configuration = FeignConfiguration.class)
 public interface SetMenuClient {
     @GetMapping("/setMenu/getShopIdMenus")
     CommonResult<SetMenu> getShopIdMenus(@RequestParam("shopId") Long shopId);

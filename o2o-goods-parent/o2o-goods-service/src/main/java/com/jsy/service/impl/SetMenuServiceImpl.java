@@ -4,11 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.utils.BeansCopyUtils;
 import com.jsy.basic.util.vo.CommonResult;
+import com.jsy.client.BrowseClient;
 import com.jsy.client.ServiceCharacteristicsClient;
-import com.jsy.domain.Goods;
-import com.jsy.domain.ServiceCharacteristics;
-import com.jsy.domain.SetMenu;
-import com.jsy.domain.SetMenuGoods;
+import com.jsy.domain.*;
 import com.jsy.dto.ServiceCharacteristicsDto;
 import com.jsy.dto.SetMenuDto;
 import com.jsy.dto.SetMenuGoodsDto;
@@ -47,6 +45,8 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
     private GoodsMapper goodsMapper;
     @Resource
     private ServiceCharacteristicsClient characteristicsClient;
+    @Resource
+    private BrowseClient browseClient;
 
     @Override
     public void addSetMenu(SetMenuParam setMenu) {
@@ -117,6 +117,17 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
         BeanUtils.copyProperties(setMenu,setMenuDto);
         setMenuDto.setMap(map);
         setMenuDto.setServiceCharacteristicsIds(serviceCharacteristicsDtoList);
+
+        //用户浏览记录
+        //用户id没设置
+        Browse browse = new Browse();
+        browse.setRealPrice(setMenu.getRealPrice());
+        browse.setSellingPrice(setMenu.getSellingPrice());
+        browse.setIsVisitingService(setMenu.getIsVisitingService());
+        browse.setName(setMenu.getName());
+        browse.setShopId(setMenu.getShopId());
+        browse.setTextDescription(setMenu.getMenuExplain());
+        browseClient.save(browse);
         return setMenuDto;
 
 

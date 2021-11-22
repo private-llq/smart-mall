@@ -6,7 +6,7 @@ import com.jsy.domain.NewShop;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient(value = "SHOP-SERVICE-SHOP",configuration = FeignConfiguration.class)
+@FeignClient(value = "shop-service-shop",configuration = FeignConfiguration.class)
 public interface NewShopClient {
     /**
      * 根据id查询一条

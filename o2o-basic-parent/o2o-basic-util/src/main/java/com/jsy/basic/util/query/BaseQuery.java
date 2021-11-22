@@ -8,7 +8,7 @@ import java.io.Serializable;
  * 基础查询对象
  */
 @Data
-public class BaseQuery<T> implements Serializable {
+public class  BaseQuery<T> implements Serializable {
     //关键字
     private String keyword;
     //有公共属性-分页

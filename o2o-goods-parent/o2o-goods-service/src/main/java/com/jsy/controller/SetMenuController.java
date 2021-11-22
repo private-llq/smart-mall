@@ -132,21 +132,8 @@ public class SetMenuController {
         }
     }
 
-    /**
-    * 分页查询数据
-    *
-    * @param query 查询对象
-    * @return PageList 分页对象
-    */
-    @PostMapping(value = "/pagelist")
-    public PageList<SetMenu> json(@RequestBody SetMenuQuery query)
-    {
-        Page<SetMenu> page = new Page<SetMenu>(query.getPage(),query.getRows());
-        page = setMenuService.page(page);
-        return new PageList<SetMenu>(page.getTotal(),page.getRecords());
-    }
 
-    @ApiOperation("查询商家最新发布的商品或在服务")
+    @ApiOperation("查询商家最新发布的套餐")
     @GetMapping("/getShopIdMenus")
     public CommonResult<SetMenu> getShopIdMenus(@RequestParam("shopId") Long shopId)
     {

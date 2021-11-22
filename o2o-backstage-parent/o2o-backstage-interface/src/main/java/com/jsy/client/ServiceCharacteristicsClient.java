@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-@FeignClient(value = "SHOP-SERVICE-BACKSTAGE",fallback = ServiceCharacteristicsClientImpl.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "shop-service-backstage",fallback = ServiceCharacteristicsClientImpl.class,configuration = FeignConfiguration.class)
 public interface ServiceCharacteristicsClient {
     @RequestMapping(value = "/serviceCharacteristics/{id}",method = RequestMethod.GET)
      CommonResult<ServiceCharacteristics> get(@PathVariable("id")Long id);

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(value = "SHOP-SERVICE-BACKSTAGE",fallback = TreeClientImpl.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "shop-service-backstage",fallback = TreeClientImpl.class,configuration = FeignConfiguration.class)
 public interface TreeClient {
     @GetMapping("/tree/selectAllTree/")
     CommonResult<List<Tree>> selectAllTree(@RequestParam("id") Long id);
