@@ -4,6 +4,7 @@ import com.jsy.basic.util.PageInfo;
 import com.jsy.domain.Goods;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jsy.domain.Tree;
+import com.jsy.dto.GoodsDto;
 import com.jsy.parameter.GoodsParam;
 import com.jsy.parameter.GoodsServiceParam;
 import com.jsy.query.GoodsPageQuery;
@@ -77,4 +78,11 @@ public interface IGoodsService extends IService<Goods> {
      * @return
      */
     Goods latelyGoods(Long shopId);
+
+
+    /**
+     * 批量查询 商品、服务
+     */
+
+    List<GoodsDto> batchGoods(List<Long> goodsList);
 }

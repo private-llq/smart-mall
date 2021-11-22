@@ -5,11 +5,13 @@ import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsy.basic.util.PageInfo;
+import com.jsy.basic.util.utils.BeansCopyUtils;
 import com.jsy.client.BrowseClient;
 import com.jsy.client.NewShopClient;
 import com.jsy.client.ServiceCharacteristicsClient;
 import com.jsy.client.TreeClient;
 import com.jsy.domain.*;
+import com.jsy.dto.GoodsDto;
 import com.jsy.mapper.GoodsMapper;
 import com.jsy.parameter.GoodsParam;
 import com.jsy.parameter.GoodsServiceParam;
@@ -148,6 +150,17 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     @Override
     public Goods latelyGoods(Long shopId) {
         return  goodsMapper.latelyGoods(shopId);
+    }
+
+
+    /**
+     * 批量查询 商品、服务
+     */
+    @Override
+    public List<GoodsDto> batchGoods(List<Long> goodsList) {
+        List<Goods> list = goodsMapper.selectBatchIds(goodsList);
+        List<GoodsDto> goodsDtoList = BeansCopyUtils.listCopy(list, GoodsDto.class);
+        return goodsDtoList;
     }
 
     /**
