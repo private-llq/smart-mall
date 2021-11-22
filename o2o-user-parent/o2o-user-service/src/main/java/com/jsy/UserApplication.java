@@ -20,7 +20,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableFeignClients
 //@EnableTransactionManagement
 //@EnableDistributedTransaction
-//@ComponentScan("com.zhsj")
+@ComponentScan("com.zhsj")
+@ComponentScan("com.jsy")
+
 public class UserApplication {
     public static void main(String[] args) {
         SpringApplication.run(UserApplication.class,args);
