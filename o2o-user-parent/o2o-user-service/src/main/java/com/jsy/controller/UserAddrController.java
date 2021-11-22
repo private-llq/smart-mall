@@ -8,6 +8,7 @@ import com.jsy.domain.UserAddr;
 import com.jsy.query.UserAddrQuery;
 import com.jsy.basic.util.PageList;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.jsy.basic.util.vo.CommonResult;
@@ -47,7 +48,7 @@ public class UserAddrController {
      * @param id
      * @return
      */
-    @PostMapping(value="/deleteUserAddr")
+    @DeleteMapping(value="/deleteUserAddr")
     public CommonResult deleteUserAddr(@RequestParam Long id){
         userAddrService.deleteUserAddr(id);
         return CommonResult.ok();

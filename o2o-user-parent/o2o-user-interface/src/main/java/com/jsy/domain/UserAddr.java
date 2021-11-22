@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
+
+import com.jsy.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -12,7 +14,7 @@ import lombok.EqualsAndHashCode;
 
 /**
  * <p>
- * 用户地址管理表	
+ * 用户地址管理表
  * </p>
  *
  * @author yu
@@ -21,14 +23,13 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("w_user_addr")
-@ApiModel(value="UserAddr对象", description="用户地址管理表	")
-public class UserAddr implements Serializable {
+@ApiModel(value="UserAddr对象", description="用户地址管理表")
+public class UserAddr extends BaseEntity implements Serializable  {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "主键")
-    @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
+    @ApiModelProperty(value = "用户id")
+    private String userId;
 
     @ApiModelProperty(value = "联系人")
     private String linkman;
@@ -50,15 +51,5 @@ public class UserAddr implements Serializable {
 
     @ApiModelProperty(value = "默认地址")
     private String defaultAddress;
-
-    @ApiModelProperty(value = "创建时间")
-    private LocalDateTime createTime;
-
-    @ApiModelProperty(value = "更新时间")
-    private LocalDateTime updateTime;
-
-    @ApiModelProperty(value = "逻辑删除   0 正常 |   1 删除")
-    private Long deleted;
-
 
 }

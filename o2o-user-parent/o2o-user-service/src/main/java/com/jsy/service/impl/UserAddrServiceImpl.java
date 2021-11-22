@@ -1,6 +1,8 @@
 package com.jsy.service.impl;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsy.basic.util.PageInfo;
+import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.utils.BeansCopyUtils;
 import com.jsy.domain.UserAddr;
 import com.jsy.dto.UserAddrDto;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -75,8 +78,11 @@ public class UserAddrServiceImpl extends ServiceImpl<UserAddrMapper, UserAddr> i
      */
     @Override
     public PageInfo<UserAddrDto> UserAddrPageList(UserAddrQuery userAddrQuery) {
+        if (Objects.isNull(userAddrQuery.getUserId())){
+            throw new JSYException(-1,"用户id为空");
+        }
         Page<UserAddr> page = new Page<>(userAddrQuery.getPage(),userAddrQuery.getRows());
-        Page<UserAddr> userAddrPage = useraddrmapper.selectPage(page, null);
+        Page<UserAddr> userAddrPage = useraddrmapper.selectPage(page, new QueryWrapper<UserAddr>().eq("user_id",userAddrQuery.getUserId()));
         List<UserAddr> records = userAddrPage.getRecords();
         List<UserAddrDto> userAddrDtos = BeansCopyUtils.listCopy(records, UserAddrDto.class);
         PageInfo<UserAddrDto> pageInfo = new PageInfo<>();
