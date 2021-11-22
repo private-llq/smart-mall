@@ -16,6 +16,8 @@ import com.jsy.mapper.SetMenuMapper;
 import com.jsy.parameter.SetMenuParam;
 import com.jsy.service.ISetMenuService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zhsj.baseweb.support.ContextHolder;
+import com.zhsj.baseweb.support.LoginUser;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -127,6 +129,9 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
         browse.setName(setMenu.getName());
         browse.setShopId(setMenu.getShopId());
         browse.setTextDescription(setMenu.getMenuExplain());
+        LoginUser loginUser = ContextHolder.getContext().getLoginUser();
+        System.out.println(loginUser);
+        browse.setUserId(loginUser.getId());
         browseClient.save(browse);
         return setMenuDto;
 
@@ -220,6 +225,14 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
             System.out.println(setMenuGoods);
             menuGoodsMapper.updateById(setMenuGoods);
         }
+    }
+
+    @Override
+    public List<SetMenuDto> batchIds(List<Long> ids) {
+        List<SetMenu> setMenus = setMenuMapper.selectBatchIds(ids);
+        List<SetMenuDto> dtoList= new ArrayList<>();
+        BeansCopyUtils.copyListProperties(setMenus,SetMenuDto::new);
+        return dtoList;
     }
 
 

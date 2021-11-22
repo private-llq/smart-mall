@@ -32,4 +32,6 @@ Map<String,List<SetMenuGoodsDto>> getMenuId(Long setMenuId);
     void setState(Long id,Integer state);
 //修改套餐
     void updateSetMenu(SetMenuParam setMenu);
+//根据id批量查询
+    List<SetMenuDto> batchIds(List<Long> ids);
 }
