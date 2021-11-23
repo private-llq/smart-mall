@@ -1,10 +1,15 @@
 package com.jsy.dto;
 
+import com.jsy.query.CreationOrderGoodsParam;
+import com.jsy.query.CreationOrderMenuParam;
+import com.jsy.query.CreationOrderServiceParam;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @className（类名称）: SelectUserOrderDTO
@@ -65,12 +70,29 @@ public class SelectUserOrderDTO {
 
     @ApiModelProperty(value = "用户配送地址id（针对商家上门）")
     private Long shippingAddress;
+    @ApiModelProperty(value = "联系人")
+    private String linkman;
+    @ApiModelProperty(value = "性别    0  男  |  1 女")
+    private Integer sex;
+    @ApiModelProperty(value = "电话")
+    private String telepone;
+    @ApiModelProperty(value = "地区")
+    private String district;
+    @ApiModelProperty(value = "详细地址")
+    private String detailedAddress;
 
     @ApiModelProperty(value = "预计最早时间")
     private LocalDateTime startTime;
 
     @ApiModelProperty(value = "预计最晚时间")
     private LocalDateTime entTime;
+
+    @ApiModelProperty(value = "如果是商品的添加到商品详情")
+    private List<SelectUserOrderGoodsDto> OrderGoodsDtos=new ArrayList<>();
+    @ApiModelProperty(value = "如果是服务的添加到服务详情")
+    private   List<SelectUserOrderServiceDto> OrderServiceDtos=new ArrayList<>();
+    @ApiModelProperty(value = "如果是套餐的添加到套餐详情")
+    private  List<SelectUserOrderMenuDto> OrderMenuDtos=new ArrayList<>();
 
 
 }

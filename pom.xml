@@ -28,6 +28,17 @@
             <groupId>com.zhsj</groupId>
             <artifactId>base_web</artifactId>
             <version>${project.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.alibaba.cloud</groupId>
+                    <artifactId>spring-boot-starter-dubbo</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.zhsj</groupId>
+            <artifactId>base_api</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
@@ -56,6 +67,7 @@
                 <artifactId>mysql-connector-java</artifactId>
                 <version>${mysql.version}</version>
             </dependency>
+
         </dependencies>
     </dependencyManagement>
 

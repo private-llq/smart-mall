@@ -11,6 +11,10 @@ import lombok.Data;
  */
 @Data
 public class SelectUserOrderParam {
+    @ApiModelProperty("第几页")
+    private Integer page;
+    @ApiModelProperty("多少条数据")
+    private Integer size;
 
     @ApiModelProperty(value = "订单状态（[1待上门、待配送、待发货]，2、完成）")
     private Integer orderStatus;

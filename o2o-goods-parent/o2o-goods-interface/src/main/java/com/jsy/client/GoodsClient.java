@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(value = "SHOP-SERVICE-GOODS",fallback = GoodsClientImpl.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "shop-service-goods",fallback = GoodsClientImpl.class,configuration = FeignConfiguration.class)
 public interface GoodsClient {
     @GetMapping("/goods/getShopIdGoods")
      CommonResult<Goods> getShopIdGoods(@RequestParam("shopId") Long shopId);

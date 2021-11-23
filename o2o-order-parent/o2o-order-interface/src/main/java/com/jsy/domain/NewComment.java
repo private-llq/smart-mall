@@ -29,16 +29,16 @@ public class NewComment extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "店铺id")
-    private String shopId;
+    private Long shopId;
 
     @ApiModelProperty(value = "用户uuid")
-    private String userId;
+    private Long userId;
 
     @ApiModelProperty(value = "用户名")
     private String name;
 
     @ApiModelProperty(value = "订单id")
-    private String orderId;
+    private Long orderId;
 
     @ApiModelProperty(value = "图片用;隔开")
     private String images;
