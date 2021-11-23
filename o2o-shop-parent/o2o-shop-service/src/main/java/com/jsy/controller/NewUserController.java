@@ -1,6 +1,8 @@
 package com.jsy.controller;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 
+import com.jsy.basic.util.GetServiceName;
+import com.jsy.basic.util.RestUtils;
 import com.jsy.domain.NewUser;
 import com.jsy.service.INewUserService;
 import io.swagger.annotations.ApiOperation;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.jsy.basic.util.vo.CommonResult;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/newUser")
@@ -69,6 +72,8 @@ public class NewUserController {
     @GetMapping("/pub/newestNewUser")
     public CommonResult<NewUser> newestNewUser(@RequestParam("shopUuid") String shopUuid) {
         NewUser newUser = newUserService.newestNewUser(shopUuid);
+        RestUtils restUtils = new RestUtils();
+
         return CommonResult.ok(newUser);
     }
 

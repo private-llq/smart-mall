@@ -1,7 +1,10 @@
 package com.jsy.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.jsy.basic.util.GetServiceName;
 import com.jsy.basic.util.PageInfo;
+import com.jsy.basic.util.RestUtils;
 import com.jsy.basic.util.utils.ValidatorUtils;
+import com.jsy.domain.Goods;
 import com.jsy.dto.*;
 import com.jsy.parameter.NewShopParam;
 import com.jsy.parameter.NewShopSetParam;
@@ -16,12 +19,16 @@ import com.zhsj.baseweb.annotation.LoginIgnore;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 import com.jsy.basic.util.vo.CommonResult;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -31,6 +38,10 @@ import java.util.List;
 public class NewShopController {
     @Autowired
     public INewShopService newShopService;
+
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     /**
      * 保存和修改公用的

@@ -73,6 +73,11 @@ public class GoodsApplication {
 //        return sqlSessionFactoryBean.getObject();
 //
 //    }
+    @Bean
+    @LoadBalanced
+    public RestTemplate restTemplate(){
+        return new RestTemplate();
+    }
 
     @Bean
     public ObjectMapper serializingObjectMapper() {

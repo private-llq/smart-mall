@@ -65,6 +65,11 @@ public class ShopApplication {
         return paginationInterceptor;
     }
 
+    @Bean
+    @LoadBalanced
+    public RestTemplate restTemplate(){
+        return new RestTemplate();
+    }
 
     @Bean
     public ObjectMapper serializingObjectMapper() {
