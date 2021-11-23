@@ -1,8 +1,6 @@
 package com.jsy.controller;
-import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jsy.basic.util.PageInfo;
-import com.jsy.basic.util.utils.BeansCopyUtils;
 import com.jsy.domain.Tree;
 import com.jsy.dto.GoodsDto;
 import com.jsy.dto.GoodsServiceDto;
@@ -145,6 +143,7 @@ public class GoodsController {
     @GetMapping("/getShopIdGoods")
     public CommonResult<Goods> getShopIdGoods(@RequestParam("shopId") Long shopId)
     {
+
         List<Goods> one = goodsService.list(new QueryWrapper<Goods>().eq("shop_id", shopId).orderByDesc("create_time"));
         if (one.size()>0){
             Goods goods = one.get(0);
@@ -186,5 +185,8 @@ public class GoodsController {
         List<GoodsServiceDto> goodsServiceDtos = goodsService.batchGoodsService(goodsServiceList);
         return CommonResult.ok(goodsServiceDtos);
     }
+
+
+
 }
 

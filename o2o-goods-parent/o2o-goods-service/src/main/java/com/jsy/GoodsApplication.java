@@ -19,10 +19,12 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -37,6 +39,8 @@ public class GoodsApplication {
     public static void main(String[] args) {
         SpringApplication.run(GoodsApplication.class,args);
     }
+
+
     /**
      * 配置分页插件，分页功能才能正常时候
      * 不配置分页不会报错，但是查询没有分页功能

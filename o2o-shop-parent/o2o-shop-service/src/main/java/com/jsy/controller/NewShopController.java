@@ -1,10 +1,6 @@
 package com.jsy.controller;
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.JsonObject;
 import com.jsy.basic.util.PageInfo;
-import com.jsy.basic.util.utils.ObjectMapperUtil;
 import com.jsy.basic.util.utils.ValidatorUtils;
 import com.jsy.dto.*;
 import com.jsy.parameter.NewShopParam;
@@ -35,7 +31,6 @@ import java.util.List;
 public class NewShopController {
     @Autowired
     public INewShopService newShopService;
-
 
     /**
      * 保存和修改公用的
@@ -206,6 +201,4 @@ public class NewShopController {
         return CommonResult.ok(dtoList);
 
     }
-
-
 }
