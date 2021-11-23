@@ -2,6 +2,7 @@ package com.jsy.clent;
 
 import com.jsy.FeignConfiguration;
 import com.jsy.basic.util.vo.CommonResult;
+import com.jsy.dto.SelectShopCommentScoreDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,6 +18,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public interface CommentClent {
     //查询店铺的评分
     @RequestMapping(value = "/newComment/selectShopCommentScore",method = RequestMethod.GET)
-    public CommonResult<Double> selectShopCommentScore(Long shopId);
+    public CommonResult<SelectShopCommentScoreDto> selectShopCommentScore(Long shopId);
 
 }

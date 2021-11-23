@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsy.domain.NewComment;
 import com.jsy.dto.SelectCommentAndReplyDto;
 import com.jsy.dto.SelectShopCommentPageDto;
+import com.jsy.dto.SelectShopCommentScoreDto;
 import com.jsy.mapper.NewCommentMapper;
 import com.jsy.query.CreateCommentParam;
 import com.jsy.query.SelectShopCommentPageParam;
@@ -60,14 +61,16 @@ public class NewCommentServiceImpl extends ServiceImpl<NewCommentMapper, NewComm
     }
     //查询店铺的评分
     @Override
-    public Double selectShopCommentScore(Long shopId) {
+    public SelectShopCommentScoreDto selectShopCommentScore(Long shopId) {
+        SelectShopCommentScoreDto scoreDto=new SelectShopCommentScoreDto();
         double value=5.0;
         QueryWrapper<NewComment> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("shop_id",shopId);
         List<NewComment> newComments = newCommentMapper.selectList(queryWrapper);
         int size = newComments.size();
         if (size==0) {
-            return value;
+            scoreDto.setScore(5.0);
+            scoreDto.setSize(0);
         }
         value=0.0;
         double sum = newComments.stream().mapToDouble(NewComment::getEvaluateLevel).sum();
@@ -75,7 +78,10 @@ public class NewCommentServiceImpl extends ServiceImpl<NewCommentMapper, NewComm
         forma.setMaximumFractionDigits(1);
         String format = forma.format(sum/size);
         Double aDouble = Double.valueOf(format);
-        return aDouble;
+
+        scoreDto.setScore(aDouble);
+        scoreDto.setSize(size);
+        return scoreDto;
     }
 
     @Override

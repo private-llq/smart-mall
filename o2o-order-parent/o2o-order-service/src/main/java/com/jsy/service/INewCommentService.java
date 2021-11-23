@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsy.domain.NewComment;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jsy.dto.SelectShopCommentPageDto;
+import com.jsy.dto.SelectShopCommentScoreDto;
 import com.jsy.query.CreateCommentParam;
 import com.jsy.query.SelectShopCommentPageParam;
 import com.jsy.utils.MyPage;
@@ -23,7 +24,7 @@ public interface INewCommentService extends IService<NewComment> {
     //新增一条评论
     Boolean createComment(CreateCommentParam param);
     //查询店铺评分
-    Double selectShopCommentScore(Long shopId);
+    SelectShopCommentScoreDto selectShopCommentScore(Long shopId);
 
     Page<NewComment> selectShopCommentPage(SelectShopCommentPageParam param);
    //查询评论和商家回复

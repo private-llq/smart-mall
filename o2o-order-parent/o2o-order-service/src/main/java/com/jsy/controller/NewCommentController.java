@@ -1,6 +1,7 @@
 package com.jsy.controller;
 
 import com.jsy.dto.SelectShopCommentPageDto;
+import com.jsy.dto.SelectShopCommentScoreDto;
 import com.jsy.query.CreateCommentParam;
 import com.jsy.query.SelectShopCommentPageParam;
 import com.jsy.service.INewCommentService;
@@ -106,8 +107,8 @@ public class NewCommentController {
 
     //查询店铺的评分
     @RequestMapping(value = "/selectShopCommentScore",method =RequestMethod.GET)
-    public CommonResult<Double> selectShopCommentScore(Long shopId) {
-        Double value= newCommentService.selectShopCommentScore(shopId);
+    public CommonResult<SelectShopCommentScoreDto> selectShopCommentScore(Long shopId) {
+        SelectShopCommentScoreDto value= newCommentService.selectShopCommentScore(shopId);
         return CommonResult.ok(value);
     }
 
