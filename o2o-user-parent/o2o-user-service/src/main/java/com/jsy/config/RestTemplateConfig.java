@@ -1,5 +1,4 @@
 package com.jsy.config;
-
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.impl.client.HttpClientBuilder;
