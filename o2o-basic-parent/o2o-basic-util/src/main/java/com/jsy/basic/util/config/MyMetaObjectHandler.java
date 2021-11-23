@@ -1,7 +1,10 @@
 package com.jsy.basic.util.config;
+import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.core.injector.DefaultSqlInjector;
 import com.baomidou.mybatisplus.core.injector.ISqlInjector;
+import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -37,5 +40,13 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
 	@Bean
 	public ISqlInjector sqlInjector() {
 		return new DefaultSqlInjector();
+	}
+
+	@Bean
+	public MybatisPlusInterceptor mybatisPlusInterceptor() {
+		MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
+		//interceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());//乐观锁组件
+		interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.H2));//分页查询组件
+		return interceptor;
 	}
 }

@@ -76,6 +76,16 @@ public class NewOrder extends BaseEntity implements Serializable {
 
     @ApiModelProperty(value = "用户配送地址id（针对商家上门）")
     private Long shippingAddress;
+    @ApiModelProperty(value = "联系人")
+    private String linkman;
+    @ApiModelProperty(value = "性别    0  男  |  1 女")
+    private Integer sex;
+    @ApiModelProperty(value = "电话")
+    private String telepone;
+    @ApiModelProperty(value = "地区")
+    private String district;
+    @ApiModelProperty(value = "详细地址")
+    private String detailedAddress;
 
     @ApiModelProperty(value = "预计最早时间")
     private LocalDateTime startTime;

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(value = "SHOP-SERVICE-GOODS",fallback = GoodsClientImpl.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "shop-service-goods",fallback = GoodsClientImpl.class,configuration = FeignConfiguration.class)
 public interface GoodsClient {
     @GetMapping("/goods/getShopIdGoods")
      CommonResult<Goods> getShopIdGoods(@RequestParam("shopId") Long shopId);
