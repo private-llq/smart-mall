@@ -17,8 +17,8 @@ public interface NewShopClient {
      * @param id
      */
     //todo 网络http请求路径
-    @GetMapping(value = "/newShop/get/{id}")
-    CommonResult<NewShop> get(@PathVariable("id")Long id);
+    @GetMapping(value = "/newShop/get/")
+    CommonResult<NewShop> get(@RequestParam("id")Long id);
 
 
     @PostMapping("/newShop/batchIds")

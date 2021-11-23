@@ -1,12 +1,9 @@
 package com.jsy.domain;
-
 import java.math.BigDecimal;
+import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.jsy.BaseEntity;
 import io.swagger.annotations.ApiModel;
@@ -61,7 +58,8 @@ public class Goods extends BaseEntity implements Serializable {
     private String serviceCharacteristicsIds;
 
     @ApiModelProperty(value = "服务的有效期")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime validUntilTime;
 
     @ApiModelProperty(value = "服务的价格策略  0:平台销售  1：宣传服务")

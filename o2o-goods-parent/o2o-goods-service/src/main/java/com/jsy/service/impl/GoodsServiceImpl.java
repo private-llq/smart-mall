@@ -20,6 +20,7 @@ import com.jsy.query.GoodsPageQuery;
 import com.jsy.service.IGoodsService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -169,9 +170,15 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
      */
     @Override
     public List<GoodsServiceDto> batchGoodsService(List<Long> goodsServiceList) {
+
         List<Goods> list = goodsMapper.selectList(new QueryWrapper<Goods>().in("id", goodsServiceList).eq("type", 1));
-        List<GoodsServiceDto> goodsServiceDtoList = BeansCopyUtils.listCopy(list, GoodsServiceDto.class);
-        return goodsServiceDtoList;
+        ArrayList<GoodsServiceDto> goodsServiceDtos = new ArrayList<>();
+        for (Goods goods : list) {
+            GoodsServiceDto goodsServiceDto = new GoodsServiceDto();
+            BeanUtils.copyProperties(goods,goodsServiceDto);
+            goodsServiceDtos.add(goodsServiceDto);
+        }
+        return goodsServiceDtos;
     }
 
     /**
