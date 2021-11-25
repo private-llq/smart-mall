@@ -1,10 +1,12 @@
 package com.jsy.service;
 
+import com.jsy.basic.util.PageInfo;
 import com.jsy.domain.SetMenu;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jsy.dto.SetMenuDto;
 import com.jsy.dto.SetMenuGoodsDto;
 import com.jsy.parameter.SetMenuParam;
+import com.jsy.query.SetMenuQuery;
 
 import java.util.List;
 import java.util.Map;
@@ -27,7 +29,7 @@ public interface ISetMenuService extends IService<SetMenu> {
 //通过套餐id查询套餐详情
 Map<String,List<SetMenuGoodsDto>> getMenuId(Long setMenuId);
 //查询商家所有套餐
-    List<SetMenuDto> listAll(Long shopId);
+    PageInfo<SetMenuDto> listAll(SetMenuQuery setMenuQuery);
 //修改上下架
     void setState(Long id,Integer state);
 //修改套餐

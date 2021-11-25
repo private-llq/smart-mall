@@ -10,7 +10,7 @@ import com.jsy.dto.SelectShopCommentScoreDto;
 import com.jsy.mapper.NewCommentMapper;
 import com.jsy.query.CreateCommentParam;
 import com.jsy.query.SelectShopCommentPageParam;
-import com.jsy.rpc.IBaseUserInfoRpcServiceImpl;
+//import com.jsy.rpc.IBaseUserInfoRpcServiceImpl;
 import com.jsy.service.INewCommentService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jsy.utils.MyPage;
@@ -40,8 +40,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class NewCommentServiceImpl extends ServiceImpl<NewCommentMapper, NewComment> implements INewCommentService {
-   @Resource
-   private IBaseUserInfoRpcServiceImpl infoRpcService;
+//   @Resource
+//   private IBaseUserInfoRpcServiceImpl infoRpcService;
 
     @Resource
     private NewCommentMapper newCommentMapper;

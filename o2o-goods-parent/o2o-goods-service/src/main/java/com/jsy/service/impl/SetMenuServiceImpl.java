@@ -1,6 +1,8 @@
 package com.jsy.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.jsy.basic.util.MyPageUtils;
+import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.utils.BeansCopyUtils;
 import com.jsy.basic.util.vo.CommonResult;
@@ -14,6 +16,7 @@ import com.jsy.mapper.GoodsMapper;
 import com.jsy.mapper.SetMenuGoodsMapper;
 import com.jsy.mapper.SetMenuMapper;
 import com.jsy.parameter.SetMenuParam;
+import com.jsy.query.SetMenuQuery;
 import com.jsy.service.ISetMenuService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhsj.baseweb.support.ContextHolder;
@@ -195,16 +198,17 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
     }
 
     @Override
-    public List<SetMenuDto> listAll(Long shopId) {
+    public PageInfo<SetMenuDto> listAll(SetMenuQuery setMenuQuery) {
         //根据商家id 和所
-        List<SetMenu> menuList = setMenuMapper.selectList(new QueryWrapper<SetMenu>().eq("shop_id", shopId));
+        List<SetMenu> menuList = setMenuMapper.selectList(new QueryWrapper<SetMenu>().eq("shop_id", setMenuQuery.getShopId()));
         List<SetMenuDto> dtoList = new ArrayList<>();
         for (SetMenu setMenu : menuList) {
             SetMenuDto setMenuDto = new SetMenuDto();
             BeanUtils.copyProperties(setMenu,setMenuDto);
             dtoList.add(setMenuDto);
         }
-        return dtoList;
+        PageInfo<SetMenuDto> setMenuDtoPageInfo = MyPageUtils.pageMap(setMenuQuery.getPage(), setMenuQuery.getRows(), dtoList);
+        return setMenuDtoPageInfo;
     }
 
     @Override
