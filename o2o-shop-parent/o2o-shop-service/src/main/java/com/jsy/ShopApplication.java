@@ -30,8 +30,8 @@ import java.util.ArrayList;
 @SpringBootApplication
 @MapperScan(value = "com.jsy.mapper")
 @EnableFeignClients
-//@ComponentScan("com.zhsj")
-//@ComponentScan("com.jsy")
+@ComponentScan("com.zhsj")
+@ComponentScan("com.jsy")
 @EnableTransactionManagement
 public class ShopApplication {
     public static void main(String[] args) {

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 @MapperScan("com.jsy.mapper")
 @EnableFeignClients
 @ComponentScan("com.zhsj")
+@ComponentScan("com.jsy")
 @Component
 @EnableDistributedTransaction
 public class BackstageApplication {
