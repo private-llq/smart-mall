@@ -39,10 +39,6 @@ public class NewShopController {
     @Autowired
     public INewShopService newShopService;
 
-
-    @Autowired
-    private RestTemplate restTemplate;
-
     /**
      * 保存和修改公用的
      * @param shopPacketParam  传递的实体
