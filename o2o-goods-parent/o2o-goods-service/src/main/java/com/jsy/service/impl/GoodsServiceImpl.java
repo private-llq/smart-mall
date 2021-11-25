@@ -5,11 +5,14 @@ import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsy.basic.util.PageInfo;
+import com.jsy.basic.util.utils.BeansCopyUtils;
 import com.jsy.client.BrowseClient;
 import com.jsy.client.NewShopClient;
 import com.jsy.client.ServiceCharacteristicsClient;
 import com.jsy.client.TreeClient;
 import com.jsy.domain.*;
+import com.jsy.dto.GoodsDto;
+import com.jsy.dto.GoodsServiceDto;
 import com.jsy.mapper.GoodsMapper;
 import com.jsy.parameter.GoodsParam;
 import com.jsy.parameter.GoodsServiceParam;
@@ -17,6 +20,7 @@ import com.jsy.query.GoodsPageQuery;
 import com.jsy.service.IGoodsService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -148,6 +152,33 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     @Override
     public Goods latelyGoods(Long shopId) {
         return  goodsMapper.latelyGoods(shopId);
+    }
+
+
+    /**
+     * 批量查询 商品
+     */
+    @Override
+    public List<GoodsDto> batchGoods(List<Long> goodsList) {
+        List<Goods> list = goodsMapper.selectList(new QueryWrapper<Goods>().in("id", goodsList).eq("type", 0));
+        List<GoodsDto> goodsDtoList = BeansCopyUtils.listCopy(list, GoodsDto.class);
+        return goodsDtoList;
+    }
+
+    /**
+     * 批量查询 服务
+     */
+    @Override
+    public List<GoodsServiceDto> batchGoodsService(List<Long> goodsServiceList) {
+
+        List<Goods> list = goodsMapper.selectList(new QueryWrapper<Goods>().in("id", goodsServiceList).eq("type", 1));
+        ArrayList<GoodsServiceDto> goodsServiceDtos = new ArrayList<>();
+        for (Goods goods : list) {
+            GoodsServiceDto goodsServiceDto = new GoodsServiceDto();
+            BeanUtils.copyProperties(goods,goodsServiceDto);
+            goodsServiceDtos.add(goodsServiceDto);
+        }
+        return goodsServiceDtos;
     }
 
     /**

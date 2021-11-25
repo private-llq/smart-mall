@@ -155,11 +155,8 @@ public class SetMenuController {
     public CommonResult<List<SetMenuDto>> batchIds(@RequestBody List<Long> ids)
     {
         List<SetMenuDto> dtoList = setMenuService.batchIds(ids);
-        if (dtoList.size()>0){
-            return CommonResult.ok(dtoList);
-        }else {
-            return CommonResult.ok(null);
-        }
+        return CommonResult.ok(dtoList);
+
     }
 
 }

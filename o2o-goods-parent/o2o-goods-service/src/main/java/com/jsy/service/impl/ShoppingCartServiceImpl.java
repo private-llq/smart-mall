@@ -214,7 +214,7 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
                 payPrice= payPrice.add(cart.getDiscountPrice().multiply(BigDecimal.valueOf(cart.getNum())));
             }
         }
-        NewShop newShop = shopClient.get(shopId).getData();
+        NewShop newShop = shopClient.get(shopId).getData();//http://127.0.0.1:7006/newShop/get/1457644731467661314
         if (Objects.nonNull(newShop)){
             shoppingCartDto.setShopName(newShop.getShopName());//商店名称
         }

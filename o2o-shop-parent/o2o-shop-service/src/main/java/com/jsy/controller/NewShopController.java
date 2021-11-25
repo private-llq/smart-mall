@@ -1,11 +1,10 @@
 package com.jsy.controller;
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.JsonObject;
+import com.jsy.basic.util.GetServiceName;
 import com.jsy.basic.util.PageInfo;
-import com.jsy.basic.util.utils.ObjectMapperUtil;
+import com.jsy.basic.util.RestUtils;
 import com.jsy.basic.util.utils.ValidatorUtils;
+import com.jsy.domain.Goods;
 import com.jsy.dto.*;
 import com.jsy.parameter.NewShopParam;
 import com.jsy.parameter.NewShopSetParam;
@@ -20,12 +19,16 @@ import com.zhsj.baseweb.annotation.LoginIgnore;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 import com.jsy.basic.util.vo.CommonResult;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -36,6 +39,9 @@ public class NewShopController {
     @Autowired
     public INewShopService newShopService;
 
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     /**
      * 保存和修改公用的
@@ -87,9 +93,9 @@ public class NewShopController {
     * 根据id查询一条
     * @param id
     */
-    @GetMapping(value = "/get/{id}")
+    @GetMapping(value = "/get")
     @ApiOperation(("根据店铺id 查询店铺详情"))
-    public CommonResult<NewShop> get(@PathVariable("id") Long id)
+    public CommonResult<NewShop> get(@RequestParam("id") Long id)
     {
         NewShop newShop = newShopService.getById(id);
         return CommonResult.ok(newShop);
@@ -198,5 +204,12 @@ public class NewShopController {
         return CommonResult.ok(list);
     }
 
+    @ApiOperation("根据id批量查询")
+    @PostMapping("/batchIds")
+    public CommonResult<List<NewShopDto>> batchIds(@RequestBody List<Long> ids)
+    {
+        List<NewShopDto> dtoList = newShopService.batchIds(ids);
+        return CommonResult.ok(dtoList);
 
+    }
 }
