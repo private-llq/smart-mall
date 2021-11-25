@@ -107,19 +107,19 @@ public class NewCommentController {
 
     //查询店铺的评分
     @RequestMapping(value = "/selectShopCommentScore",method =RequestMethod.GET)
-    public CommonResult<SelectShopCommentScoreDto> selectShopCommentScore(Long shopId) {
+    public CommonResult<SelectShopCommentScoreDto> selectShopCommentScore(@RequestParam Long shopId) {
         SelectShopCommentScoreDto value= newCommentService.selectShopCommentScore(shopId);
         return CommonResult.ok(value);
     }
 
 
-    //分页查询店铺的评论
+   /* //分页查询店铺的评论
     @LoginIgnore
     @RequestMapping(value = "/selectShopCommentPage",method =RequestMethod.POST)
     public CommonResult<Page<NewComment>> selectShopCommentPage(@RequestBody SelectShopCommentPageParam param) {
        Page<NewComment>   values=newCommentService.selectShopCommentPage(param);
         return CommonResult.ok(values);
-    }
+    }*/
 
     //分页查询店铺的评论and回复
    /* @LoginIgnore*/

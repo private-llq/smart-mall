@@ -24,4 +24,5 @@ public class SelectCommentAndReplyDto {
     private LocalDateTime commenttime;
     private String reply;
     private LocalDateTime replytime;
+    private  String   headpPhoto;
 }

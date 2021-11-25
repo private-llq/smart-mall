@@ -12,6 +12,7 @@ import com.jsy.service.INewOrderService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,73 +57,74 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
     @Override
     @Transactional
     public Boolean creationOrder(CreationOrderParam creationOrderParam) {
-        NewOrder newOrder = new NewOrder();
-        newOrder.setOrderNum(OrderNoUtil.getOrder());//订单号
-        if (creationOrderParam.getConsumptionWay()==1) {//消费方式（1商家上门)
-            newOrder.setAppointmentStatus(0);//预约状态（0预约中，1预约成功，2预约失败）
-        }
-        if (creationOrderParam.getConsumptionWay()==0) {//消费方式（1商家上门)
-            newOrder.setPayStatus(0);//支付状态（0未支付，1支付成功,2退款中，3退款成功，4拒绝退款）
-        }
-        //newOrder.setOrderStatus(1);//订单状态（[1待上门、待配送、待发货]，2、完成）
-        //newOrder.setPayStatus(0);//支付状态（0未支付，1支付成功,2退款中，3退款成功，4拒绝退款）
-        //newOrder.setCommentStatus(0);//是否评价0未评价，1评价（评价完成为订单完成）
-        BeanUtils.copyProperties(creationOrderParam, newOrder);
-        int insert = newOrderMapper.insert(newOrder);
-
-        if (creationOrderParam.getOrderType() == 0) {//服务订单
-            List<CreationOrderServiceParam> orderServiceParams = creationOrderParam.getOrderServiceParams();
-            for (CreationOrderServiceParam Param : orderServiceParams) {
-                OrderService orderService = new OrderService();
-                orderService.setOrderId(newOrder.getId());//订单id回填
-                BeanUtils.copyProperties(Param, orderService);
-                int insert1 = orderServiceMapper.insert(orderService);
+        try {
+            NewOrder newOrder = new NewOrder();
+            newOrder.setOrderNum(OrderNoUtil.getOrder());//订单号
+            if (creationOrderParam.getConsumptionWay()==1) {//消费方式（1商家上门)
+                newOrder.setAppointmentStatus(0);//预约状态（0预约中，1预约成功，2预约失败）
             }
-        }
+            if (creationOrderParam.getConsumptionWay()==0) {//消费方式（0用户到店)
+                newOrder.setPayStatus(0);//支付状态（0未支付，1支付成功,2退款中，3退款成功，4拒绝退款）
+            }
+            //newOrder.setOrderStatus(1);//订单状态（[1待上门、待配送、待发货]，2、完成）
+            //newOrder.setPayStatus(0);//支付状态（0未支付，1支付成功,2退款中，3退款成功，4拒绝退款）
+            //newOrder.setCommentStatus(0);//是否评价0未评价，1评价（评价完成为订单完成）
+            BeanUtils.copyProperties(creationOrderParam, newOrder);
+            int insert = newOrderMapper.insert(newOrder);
 
-
-        if (creationOrderParam.getOrderType() == 1) {//普通订单(包含单品和套餐)
-
-            //单品
-            if (creationOrderParam.getOrderGoodsParamS() != null) {
-                List<CreationOrderGoodsParam> orderGoodsParamS = creationOrderParam.getOrderGoodsParamS();
-                for (CreationOrderGoodsParam orderGoodsParam : orderGoodsParamS) {
-                    OrderGoods orderGoods = new OrderGoods();
-                    orderGoods.setOrderId(newOrder.getId());//订单id回填
-                    BeanUtils.copyProperties(orderGoodsParam, orderGoods);
-                    int insert1 = orderGoodsMapper.insert(orderGoods);
-
+            if (creationOrderParam.getOrderType() == 0) {//服务订单
+                List<CreationOrderServiceParam> orderServiceParams = creationOrderParam.getOrderServiceParams();
+                for (CreationOrderServiceParam Param : orderServiceParams) {
+                    OrderService orderService = new OrderService();
+                    orderService.setOrderId(newOrder.getId());//订单id回填
+                    BeanUtils.copyProperties(Param, orderService);
+                    int insert1 = orderServiceMapper.insert(orderService);
                 }
             }
 
 
-            //套餐
-            if (creationOrderParam.getOrderMenuParams() != null) {
-                List<CreationOrderMenuParam> orderMenuParams = creationOrderParam.getOrderMenuParams();
-                for (CreationOrderMenuParam orderMenuParam : orderMenuParams) {
-                    OrderSetMenu orderSetMenu = new OrderSetMenu();
-                    orderSetMenu.setOrderId(newOrder.getId());//订单id回填
-                    BeanUtils.copyProperties(orderMenuParam, orderSetMenu);
-                    int insert1 = orderSetMenuMapper.insert(orderSetMenu);
-                    //套餐详情
-                    List<CreationOrderMenuGoodsParam> creationOrderMenuGoodsParams = orderMenuParam.getCreationOrderMenuGoodsParams();
-                    for (CreationOrderMenuGoodsParam creationOrderMenuGoodsParam : creationOrderMenuGoodsParams) {
-                        OrderSetMenuGoods orderSetMenuGoods = new OrderSetMenuGoods();
-                        orderSetMenuGoods.setOrderMenuId(orderSetMenu.getId());//套餐id回填
-                        BeanUtils.copyProperties(creationOrderMenuGoodsParam, orderSetMenuGoods);
-                        int insert2 = orderSetMenuGoodsMapper.insert(orderSetMenuGoods);
+            if (creationOrderParam.getOrderType() == 1) {//普通订单(包含单品和套餐)
 
+                //单品
+                if (creationOrderParam.getOrderGoodsParamS() != null) {
+                    List<CreationOrderGoodsParam> orderGoodsParamS = creationOrderParam.getOrderGoodsParamS();
+                    for (CreationOrderGoodsParam orderGoodsParam : orderGoodsParamS) {
+                        OrderGoods orderGoods = new OrderGoods();
+                        orderGoods.setOrderId(newOrder.getId());//订单id回填
+                        BeanUtils.copyProperties(orderGoodsParam, orderGoods);
+                        int insert1 = orderGoodsMapper.insert(orderGoods);
 
                     }
                 }
+
+
+                //套餐
+                if (creationOrderParam.getOrderMenuParams() != null) {
+                    List<CreationOrderMenuParam> orderMenuParams = creationOrderParam.getOrderMenuParams();
+                    for (CreationOrderMenuParam orderMenuParam : orderMenuParams) {
+                        OrderSetMenu orderSetMenu = new OrderSetMenu();
+                        orderSetMenu.setOrderId(newOrder.getId());//订单id回填
+                        BeanUtils.copyProperties(orderMenuParam, orderSetMenu);
+                        int insert1 = orderSetMenuMapper.insert(orderSetMenu);
+                        //套餐详情
+                        List<CreationOrderMenuGoodsParam> creationOrderMenuGoodsParams = orderMenuParam.getCreationOrderMenuGoodsParams();
+                        for (CreationOrderMenuGoodsParam creationOrderMenuGoodsParam : creationOrderMenuGoodsParams) {
+                            OrderSetMenuGoods orderSetMenuGoods = new OrderSetMenuGoods();
+                            orderSetMenuGoods.setOrderMenuId(orderSetMenu.getId());//套餐id回填
+                            BeanUtils.copyProperties(creationOrderMenuGoodsParam, orderSetMenuGoods);
+                            int insert2 = orderSetMenuGoodsMapper.insert(orderSetMenuGoods);
+
+
+                        }
+                    }
+                }
             }
+        } catch (BeansException e) {
+            e.printStackTrace();
         }
 
+        return true;
 
-        if (insert > 0) {
-            return true;
-        }
-        return false;
     }
 
     //用户根据转态查询订单

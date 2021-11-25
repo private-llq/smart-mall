@@ -33,6 +33,7 @@
                     <groupId>com.alibaba.cloud</groupId>
                     <artifactId>spring-boot-starter-dubbo</artifactId>
                 </exclusion>
+
             </exclusions>
         </dependency>
         <dependency>
@@ -56,11 +57,11 @@
     <dependencyManagement>
         <dependencies>
 
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
-                <version>${elasticsearch}</version>
-            </dependency>
+<!--            <dependency>-->
+<!--                <groupId>org.springframework.boot</groupId>-->
+<!--                <artifactId>spring-boot-starter-data-elasticsearch</artifactId>-->
+<!--                <version>${elasticsearch}</version>-->
+<!--            </dependency>-->
             <!-- 数据持久化 -->
             <dependency>
                 <groupId>mysql</groupId>
