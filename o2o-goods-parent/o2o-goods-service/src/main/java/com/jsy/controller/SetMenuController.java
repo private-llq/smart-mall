@@ -1,5 +1,6 @@
 package com.jsy.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.jsy.basic.util.PageInfo;
 import com.jsy.domain.Goods;
 import com.jsy.dto.SetMenuDto;
 import com.jsy.dto.SetMenuGoodsDto;
@@ -113,8 +114,10 @@ public class SetMenuController {
      */
     @ApiOperation("查询商家所有套餐")
     @GetMapping(value = "/listAll")
-    public List<SetMenuDto> listAll(@RequestParam("shopId") Long shopId){
-        return setMenuService.listAll(shopId);
+    public PageInfo<SetMenuDto> listAll(@RequestBody SetMenuQuery setMenuQuery){
+        PageInfo<SetMenuDto> dtoList = setMenuService.listAll(setMenuQuery);
+
+        return dtoList;
     }
 
     /**

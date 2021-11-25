@@ -14,6 +14,6 @@ public interface TreeClient {
     @GetMapping("/tree/selectAllTree/")
     CommonResult<List<Tree>> selectAllTree(@RequestParam("id") Long id);
 
-    @RequestMapping(value = "/tree/getTree/", method = RequestMethod.GET)
-    CommonResult<Tree> getTree(@RequestParam("id")Long id);
+    @RequestMapping(value = "/tree/getTree",method = RequestMethod.GET)
+     CommonResult<Tree> getTree(@RequestParam("id")Long id);
 }

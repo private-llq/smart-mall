@@ -6,11 +6,12 @@ import com.jsy.dto.SelectShopCommentScoreDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @className（类名称）: CommentClent
  * @description（类描述）: this is the CommentClent class
- * @author（创建人）: ${Administrator}
+ * @author（创建人）: ${arli}
  * @createDate（创建时间）: 2021/11/23
  * @version（版本）: v1.0
  */
@@ -18,6 +19,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public interface CommentClent {
     //查询店铺的评分
     @RequestMapping(value = "/newComment/selectShopCommentScore",method = RequestMethod.GET)
-    public CommonResult<SelectShopCommentScoreDto> selectShopCommentScore(Long shopId);
+    public CommonResult<SelectShopCommentScoreDto> selectShopCommentScore(@RequestParam("shopId") Long shopId);
 
 }

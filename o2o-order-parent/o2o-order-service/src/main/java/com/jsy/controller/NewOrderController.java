@@ -123,12 +123,13 @@ public class NewOrderController {
         PagerUtils pagerUtils1 = pagerUtils.queryPage(param.getPage(), param.getSize(), list);
         return new CommonResult<>(200, "查询成功", pagerUtils1.getRecords());
     }
+
+
     @ApiOperation("商家根据转态查询订单")
     @RequestMapping(value = "/selectShopOrder", method = RequestMethod.POST)
     public CommonResult<List<SelectUserOrderDTO>> selectShopOrder(@RequestBody SelectUserOrderParam param) {
         LoginUser loginUser = ContextHolder.getContext().getLoginUser();//获取用户id
         Long id = 0L;/*loginUser.getId();*/
-
         List<SelectUserOrderDTO> list = newOrderService.selectUserOrder(id, param, 1);
         return new CommonResult<>(200, "查询成功", list);
     }
@@ -146,6 +147,11 @@ public class NewOrderController {
         Boolean b = newOrderService.consentOrder(OrderId);
         return new CommonResult<>(200, "商家接受预约", b);
     }
+
+
+
+
+
    // @Permit("")
     @ApiOperation("测试支付")
     @RequestMapping(value = "/testPay", method = RequestMethod.POST)

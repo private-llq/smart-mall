@@ -1,16 +1,13 @@
 package com.jsy.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsy.domain.NewComment;
 import com.jsy.dto.SelectCommentAndReplyDto;
-import com.jsy.dto.SelectShopCommentPageDto;
 import com.jsy.dto.SelectShopCommentScoreDto;
 import com.jsy.mapper.NewCommentMapper;
 import com.jsy.query.CreateCommentParam;
 import com.jsy.query.SelectShopCommentPageParam;
-import com.jsy.rpc.IBaseUserInfoRpcServiceImpl;
 import com.jsy.service.INewCommentService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jsy.utils.MyPage;
@@ -19,7 +16,6 @@ import com.zhsj.base.api.entity.UserDetail;
 import com.zhsj.base.api.rpc.IBaseUserInfoRpcService;
 import com.zhsj.baseweb.support.ContextHolder;
 import com.zhsj.baseweb.support.LoginUser;
-import lombok.Data;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +24,6 @@ import javax.annotation.Resource;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -40,8 +35,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class NewCommentServiceImpl extends ServiceImpl<NewCommentMapper, NewComment> implements INewCommentService {
-   @Resource
-   private IBaseUserInfoRpcServiceImpl infoRpcService;
+  /* @Resource
+   private IBaseUserInfoRpcService infoRpcService;*/
 
     @Resource
     private NewCommentMapper newCommentMapper;
@@ -109,12 +104,8 @@ public class NewCommentServiceImpl extends ServiceImpl<NewCommentMapper, NewComm
 
 
 
- //       total = newCommentMapper.selectCommentAndReplyCount(param.getShopId());//总数
-//        LoginUser loginUser = ContextHolder.getContext().getLoginUser();
-//        System.out.println("id***************************"+loginUser.getId());
-//        UserDetail userDetail = infoRpcService.getUserDetail(loginUser.getId());
-//        String avatarThumbnail = userDetail.getAvatarThumbnail();
-//        System.out.println("头像****************************************"+avatarThumbnail);
+
+
         Integer   total=0;
         if (param.getIsPicture()==1) {
             selectCommentAndReplyVos= newCommentMapper.selectCommentAndReply(index, end, param.getShopId(),1);//查询有图片的
@@ -128,6 +119,14 @@ public class NewCommentServiceImpl extends ServiceImpl<NewCommentMapper, NewComm
         selectCommentAndReplyVos.forEach(a->{
             SelectCommentAndReplyDto selectCommentAndReplyDto=new SelectCommentAndReplyDto();
             BeanUtils.copyProperties(a,selectCommentAndReplyDto);
+//        IBaseUserInfoRpcService infoRpcService=new IBaseUserInfoRpcService();
+//        LoginUser loginUser = ContextHolder.getContext().getLoginUser();
+//        System.out.println("id***************************"+loginUser.getId());
+//        UserDetail userDetail = infoRpcService.getUserDetail(loginUser.getId());
+//        String avatarThumbnail = userDetail.getAvatarThumbnail();
+//        System.out.println("头像****************************************"+avatarThumbnail);
+
+            selectCommentAndReplyDto.setHeadpPhoto("用户头像");
             list.add(selectCommentAndReplyDto);
         });
 

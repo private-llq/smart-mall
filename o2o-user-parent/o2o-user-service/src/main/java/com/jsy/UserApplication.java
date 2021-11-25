@@ -2,6 +2,7 @@ package com.jsy;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.pagination.optimize.JsqlParserCountOptimize;
 //import com.codingapi.txlcn.tc.config.EnableDistributedTransaction;
+import com.codingapi.txlcn.tc.config.EnableDistributedTransaction;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -20,10 +21,10 @@ import org.springframework.web.client.RestTemplate;
 @SpringBootApplication
 @MapperScan("com.jsy.mapper")
 @EnableFeignClients
-//@EnableTransactionManagement
-//@EnableDistributedTransaction
-//@ComponentScan("com.zhsj")
-//@ComponentScan("com.jsy")
+@EnableTransactionManagement
+@EnableDistributedTransaction
+@ComponentScan("com.zhsj")
+@ComponentScan("com.jsy")
 
 public class UserApplication {
     public static void main(String[] args) {
