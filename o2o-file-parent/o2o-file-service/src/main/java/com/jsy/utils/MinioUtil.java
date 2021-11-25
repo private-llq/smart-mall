@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -24,7 +25,22 @@ public class MinioUtil {
 
     private static final String SECRETKET = "minimini"; //SECRET_KEY 密码
 
-    private static final String BUCKETNAME = "MALL";//存储桶名称
+    private static final String BUCKETNAME = "mall";//存储桶名称
+
+
+    /**
+     *  删除数据同步删除文件
+     * @param path 文件地址
+     */
+    public static void delFile(String path){
+        if (Objects.nonNull(path)){
+            String[] split = path.split("/");
+            String objectName=split[split.length-1];
+            String bucketName="mall";
+            removeFile(bucketName,objectName);
+        }
+    }
+
 
     /**
      * 删除文件
@@ -48,6 +64,9 @@ public class MinioUtil {
         }
 
     }
+
+
+
 
     /**
      * 文件上传
@@ -110,7 +129,7 @@ public class MinioUtil {
             // 存储文件
             minioClient.putObject(BUCKETNAME, objectName, file.getInputStream(), file.getContentType());
             String filePath =BUCKETNAME + "/" + objectName;//文件路径就是 桶名/文件名
-            String download_url=ENDPOINT+PROT+filePath;//下在地址
+            String download_url=ENDPOINT+":"+PROT+"/"+filePath;//下载地址
             return download_url;
         }catch (Exception e){
             throw new JSYException(-1,"上传失败");
@@ -165,5 +184,11 @@ public class MinioUtil {
             e.printStackTrace();
         }
         return "";
+    }
+
+    public static void main(String[] args) {
+        String url="http://222.178.212.29:9000/mall/55a9d3ba-78d2-46f6-905b-fec93c8c0d72-Koala.jpg";
+       delFile(url);
+
     }
 }
