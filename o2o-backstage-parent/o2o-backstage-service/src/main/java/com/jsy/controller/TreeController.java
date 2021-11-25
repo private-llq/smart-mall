@@ -108,7 +108,7 @@ public class TreeController {
     /**
      * id查询菜单
      */
-    @RequestMapping(value = "/getTree/",method = RequestMethod.GET)
+    @RequestMapping(value = "/getTree",method = RequestMethod.GET)
     public CommonResult<Tree> getTree(@RequestParam("id")Long id) {
         Tree tree = treeService.getById(id);
         return CommonResult.ok(tree);

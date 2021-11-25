@@ -131,4 +131,16 @@ public class FileInfoServiceImpl extends ServiceImpl<FileInfoMapper, FileInfo> i
 
         return map;
     }
+
+    /**********************************************************2.0************************************************/
+
+    /**
+     * 上传并获取路径
+     * @param file
+     * @return
+     */
+    @Override
+    public String uploadFile2(MultipartFile file) {
+       return MinioUtil.uploadGetUrl(file);
+    }
 }

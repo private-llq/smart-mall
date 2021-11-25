@@ -28,4 +28,6 @@ public interface IFileInfoService extends IService<FileInfo> {
     String printPicBase64(String uuid);
 
     Map<String, String> getUrlByList(List<String> picList);
+
+    String uploadFile2(MultipartFile file);
 }

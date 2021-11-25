@@ -73,54 +73,18 @@ public class FileInfoController {
         for (String key : picUrl.keySet()) {
            objects.add(picUrl.get(key));
         }
-
         String join = StringUtils.join(objects.toArray(), ";");
-
         return CommonResult.ok(join);
     }
 
-    public static void main(String[] args) {
-        ArrayList<Integer> test=new ArrayList();
-        test.add(1);
-        test.add(10);
-        test.add(11);
-        test.add(20);
-        test.add(25);
-        test.add(30);
-        Integer a=14;
-        int num=0;
-        while (true){
-            ArrayList<Integer> SS=new ArrayList(33);
-            while (true) {
-                int max=33,min=1;
-                int ran2 = (int) (Math.random()*(max-min)+min);
-                if(SS.contains(ran2)){
-                    continue;
-                }
-                if (SS.size()==7) {
-                    break;
-                }
-                SS.add(ran2);
-            }
-            int max=15,min=1;
-            int ran= (int) (Math.random()*(max-min)+min);
-            System.out.println(SS+"————"+ran);
-             num++;
-             if(ran==a){
-                 int x=0;
-                 for (Integer s : SS) {
-                         if(test.contains(s)){
-                             x++;
-                         }
-                 }
-                 System.out.println("蓝色中奖"+"红球中了"+x+"个");
-                 if(x==6){
-                     System.out.println("中奖了"+num+"————"+SS);
-                     break;
-                 }
+    /********************************************2.0*****************************************************************/
 
-             }
-        }
 
+    @ApiOperation("上传文件")
+    @PostMapping("/uploadFile2")
+    public CommonResult<String> uploadFile2(MultipartFile file) {
+       String path= fileInfoService.uploadFile2(file);
+       return CommonResult.ok(path);
     }
+
 }

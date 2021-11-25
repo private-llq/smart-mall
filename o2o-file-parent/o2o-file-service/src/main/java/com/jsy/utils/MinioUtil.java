@@ -8,7 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.time.LocalDate;
 import java.util.UUID;
 
 /**
@@ -16,16 +15,16 @@ import java.util.UUID;
  * eg:http://222.178.212.29:9000/2020-12-08/05a4358f-d37d-4ea5-92c3-edee92145095-shop.jpg
  */
 public class MinioUtil {
-    //ip
-    private static final String ENDPOINT = "http://222.178.212.29";
-    //端口
-    private static final int PROT = 9000;
-    //ACCESS_KEY
-    private static final String ACCESSKEY = "minio"; //用户名
-    //SECRET_KEY
-    private static final String SECRETKET = "minimini";//密码
-    //(+shop/)存储桶名称
-    private static String BUCKETNAME = null;
+
+    private static final String ENDPOINT = "http://222.178.212.29";//ip
+
+    private static final int PROT = 9000;//端口
+
+    private static final String ACCESSKEY = "minio";  //ACCESS_KEY 用户名
+
+    private static final String SECRETKET = "minimini"; //SECRET_KEY 密码
+
+    private static final String BUCKETNAME = "MALL";//存储桶名称
 
     /**
      * 删除文件
@@ -60,9 +59,6 @@ public class MinioUtil {
         FileInfo fileInfo=null;
         try {
             MinioClient minioClient = new MinioClient(ENDPOINT, PROT, ACCESSKEY, SECRETKET);
-            // 存储桶
-            BUCKETNAME = String.valueOf(LocalDate.now());// 当前年月日
-            //存入bucket不存在则创建
             if (!minioClient.bucketExists(BUCKETNAME)) {
                 minioClient.makeBucket(BUCKETNAME);
 
@@ -90,6 +86,37 @@ public class MinioUtil {
         }
         return fileInfo;
     }
+
+    /**
+     * 文件上传2.0
+     * @param file
+     * @return
+     * @throws Exception
+     */
+    public static String uploadGetUrl(MultipartFile file){
+        try {
+            MinioClient minioClient = new MinioClient(ENDPOINT, PROT, ACCESSKEY, SECRETKET);
+            if (!minioClient.bucketExists(BUCKETNAME)) {
+                minioClient.makeBucket(BUCKETNAME);
+
+                //给一个存储桶+文件对象前缀 设置策略。
+                minioClient.setBucketPolicy(BUCKETNAME,"*", PolicyType.READ_WRITE);//存储桶名称  文件对象前缀 存储策略：读写
+            }
+            String fileName = file.getOriginalFilename();
+            String prefix=fileName.substring(fileName.lastIndexOf(".")+1);
+            // 文件存储的目录结构
+            String uuid = UUID.randomUUID().toString();
+            String objectName = uuid +"-"+ fileName;
+            // 存储文件
+            minioClient.putObject(BUCKETNAME, objectName, file.getInputStream(), file.getContentType());
+            String filePath =BUCKETNAME + "/" + objectName;//文件路径就是 桶名/文件名
+            String download_url=ENDPOINT+PROT+filePath;//下在地址
+            return download_url;
+        }catch (Exception e){
+            throw new JSYException(-1,"上传失败");
+        }
+    }
+
 
     /**
      * 下载文件
