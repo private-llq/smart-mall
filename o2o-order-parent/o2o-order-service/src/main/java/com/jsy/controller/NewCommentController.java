@@ -107,7 +107,7 @@ public class NewCommentController {
 
     //查询店铺的评分
     @RequestMapping(value = "/selectShopCommentScore",method =RequestMethod.GET)
-    public CommonResult<SelectShopCommentScoreDto> selectShopCommentScore(@RequestParam Long shopId) {
+    public CommonResult<SelectShopCommentScoreDto> selectShopCommentScore(@RequestParam("shopId") Long shopId) {
         SelectShopCommentScoreDto value= newCommentService.selectShopCommentScore(shopId);
         return CommonResult.ok(value);
     }

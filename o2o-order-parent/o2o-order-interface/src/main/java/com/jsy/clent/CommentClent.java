@@ -19,6 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface CommentClent {
     //查询店铺的评分
     @RequestMapping(value = "/newComment/selectShopCommentScore",method = RequestMethod.GET)
-    public CommonResult<SelectShopCommentScoreDto> selectShopCommentScore(@RequestParam Long shopId);
+    public CommonResult<SelectShopCommentScoreDto> selectShopCommentScore(@RequestParam("shopId") Long shopId);
 
 }
