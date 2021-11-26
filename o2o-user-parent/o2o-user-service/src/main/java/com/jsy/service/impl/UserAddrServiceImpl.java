@@ -11,6 +11,8 @@ import com.jsy.param.UserAddrParam;
 import com.jsy.query.UserAddrQuery;
 import com.jsy.service.IUserAddrService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zhsj.baseweb.support.ContextHolder;
+import com.zhsj.baseweb.support.LoginUser;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,7 +44,12 @@ public class UserAddrServiceImpl extends ServiceImpl<UserAddrMapper, UserAddr> i
     @Override
     @Transactional
     public void addUserAddr(UserAddrParam userAddrParam) {
+        LoginUser loginUser = ContextHolder.getContext().getLoginUser();
+        if (Objects.isNull(loginUser)){
+            new JSYException(-1,"用户认证失败！");
+        }
         UserAddr userAddr = new UserAddr();
+        userAddr.setUserId(loginUser.getId());
         BeanUtils.copyProperties(userAddrParam,userAddr);
         useraddrmapper.insert(userAddr);
 
@@ -56,7 +63,12 @@ public class UserAddrServiceImpl extends ServiceImpl<UserAddrMapper, UserAddr> i
     @Override
     @Transactional
     public void updateUserAddr(UserAddrParam userAddrParam) {
+        LoginUser loginUser = ContextHolder.getContext().getLoginUser();
+        if (Objects.isNull(loginUser)){
+            new JSYException(-1,"用户认证失败！");
+        }
         UserAddr userAddr = new UserAddr();
+        userAddr.setUserId(loginUser.getId());
         BeanUtils.copyProperties(userAddrParam,userAddr);
         useraddrmapper.updateById(userAddr);
     }
@@ -78,11 +90,12 @@ public class UserAddrServiceImpl extends ServiceImpl<UserAddrMapper, UserAddr> i
      */
     @Override
     public PageInfo<UserAddrDto> UserAddrPageList(UserAddrQuery userAddrQuery) {
-        if (Objects.isNull(userAddrQuery.getUserId())){
-            throw new JSYException(-1,"用户id为空");
+        LoginUser loginUser = ContextHolder.getContext().getLoginUser();
+        if (Objects.isNull(loginUser)){
+            new JSYException(-1,"用户认证失败！");
         }
         Page<UserAddr> page = new Page<>(userAddrQuery.getPage(),userAddrQuery.getRows());
-        Page<UserAddr> userAddrPage = useraddrmapper.selectPage(page, new QueryWrapper<UserAddr>().eq("user_id",userAddrQuery.getUserId()));
+        Page<UserAddr> userAddrPage = useraddrmapper.selectPage(page, new QueryWrapper<UserAddr>().eq("user_id",loginUser.getId()));
         List<UserAddr> records = userAddrPage.getRecords();
         List<UserAddrDto> userAddrDtos = BeansCopyUtils.listCopy(records, UserAddrDto.class);
         PageInfo<UserAddrDto> pageInfo = new PageInfo<>();

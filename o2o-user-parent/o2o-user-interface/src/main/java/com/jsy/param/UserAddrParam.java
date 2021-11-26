@@ -13,10 +13,6 @@ public class UserAddrParam implements Serializable {
 
     @ApiModelProperty(value = "id")
     private Long id;
-
-    @ApiModelProperty(value = "用户id")
-    private String userId;
-
     @ApiModelProperty(value = "联系人")
     private String linkman;
 

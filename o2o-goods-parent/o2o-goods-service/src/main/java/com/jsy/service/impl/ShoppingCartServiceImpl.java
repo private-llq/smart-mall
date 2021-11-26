@@ -17,6 +17,8 @@ import com.jsy.mapper.ShoppingCartMapper;
 import com.jsy.parameter.ShoppingCartParam;
 import com.jsy.service.IShoppingCartService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zhsj.baseweb.support.ContextHolder;
+import com.zhsj.baseweb.support.LoginUser;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -62,7 +64,12 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
     @Transactional
     public void addShoppingCart(ShoppingCartParam shoppingCartParam) {
 
-        String userId = shoppingCartParam.getUserId();//用户id
+        LoginUser loginUser = ContextHolder.getContext().getLoginUser();
+        if (Objects.isNull(loginUser)){
+            new JSYException(-1,"用户认证失败！");
+        }
+
+        Long userId = loginUser.getId();//用户id
         Long shopId = shoppingCartParam.getShopId();//商店id
         Long goodsId = shoppingCartParam.getGoodsId();//商品id
         //查询购物车
@@ -105,7 +112,11 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
      */
     @Override
     public void addSetMenu(ShoppingCartParam shoppingCartParam) {
-        String userId = shoppingCartParam.getUserId();//用户id
+        LoginUser loginUser = ContextHolder.getContext().getLoginUser();
+        if (Objects.isNull(loginUser)){
+            new JSYException(-1,"用户认证失败！");
+        }
+        Long userId = loginUser.getId();//用户id
         Long shopId = shoppingCartParam.getShopId();//商店id
         Long setMenuId = shoppingCartParam.getSetMenuId();//套餐id
         //查询购物车
@@ -120,7 +131,6 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
             if (Objects.isNull(setMenu)){
                 throw new JSYException(-1,"该套餐状态异常！");
             }
-
             ShoppingCart cartEntity = new ShoppingCart();
             cartEntity.setUserId(userId);
             cartEntity.setShopId(shopId);
@@ -148,8 +158,13 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
     @Override
     @Transactional
     public void clearCart(ShoppingCartParam shoppingCartParam) {
+        LoginUser loginUser = ContextHolder.getContext().getLoginUser();
+        if (Objects.isNull(loginUser)){
+            new JSYException(-1,"用户认证失败！");
+        }
+        Long userId = loginUser.getId();//用户id
         shoppingCartMapper.delete(new QueryWrapper<ShoppingCart>()
-                .eq("user_id",shoppingCartParam.getUserId())
+                .eq("user_id",userId)
                 .eq("shop_id",shoppingCartParam.getShopId())
         );
     }
@@ -175,8 +190,12 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
      */
     @Override
     public ShoppingCartDto queryCart(ShoppingCartParam shoppingCartParam) {
+        LoginUser loginUser = ContextHolder.getContext().getLoginUser();
+        if (Objects.isNull(loginUser)){
+            new JSYException(-1,"用户认证失败！");
+        }
 
-        String userId = shoppingCartParam.getUserId();//用户id
+        Long userId = loginUser.getId();//用户id
         Long shopId = shoppingCartParam.getShopId();//商店id
 
         //商品总数量
@@ -235,8 +254,13 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
      */
     @Override
     public List<ShoppingCartDto> queryCartAll(ShoppingCartParam shoppingCartParam) {
+
+        LoginUser loginUser = ContextHolder.getContext().getLoginUser();
+        if (Objects.isNull(loginUser)){
+            new JSYException(-1,"用户认证失败！");
+        }
         //查询出用户在那些店铺有购物车
-        String userId = shoppingCartParam.getUserId();//用户id
+        Long userId = loginUser.getId();//用户id
         List<ShoppingCart> userCartList= shoppingCartMapper.selectList(new QueryWrapper<ShoppingCart>().eq("user_id", userId));
         HashSet<Long> shopIds = new HashSet<>();
         for (ShoppingCart cart : userCartList) {

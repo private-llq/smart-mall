@@ -29,7 +29,7 @@ public class UserAddr extends BaseEntity implements Serializable  {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "用户id")
-    private String userId;
+    private Long userId;
 
     @ApiModelProperty(value = "联系人")
     private String linkman;

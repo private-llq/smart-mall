@@ -32,7 +32,7 @@ public class ShoppingCart implements Serializable {
     private Long id;
 
     @ApiModelProperty(value = "用户id")
-    private String userId;
+    private Long userId;
 
     @ApiModelProperty(value = "商家id")
     private Long shopId;

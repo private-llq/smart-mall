@@ -22,6 +22,7 @@ public class UserAddrController {
      */
     @PostMapping(value="/addUserAddr")
     public CommonResult addUserAddr(@RequestBody UserAddrParam userAddrParam){
+
         userAddrService.addUserAddr(userAddrParam);
         return CommonResult.ok();
     }

@@ -10,5 +10,4 @@ import lombok.Data;
  */
 @Data
 public class UserAddrQuery extends BaseQuery{
-    private String userId;
 }

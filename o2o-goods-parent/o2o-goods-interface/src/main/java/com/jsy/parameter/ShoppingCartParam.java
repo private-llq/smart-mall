@@ -13,7 +13,7 @@ public class ShoppingCartParam implements Serializable {
     /**
      * 用户id
      */
-    private String userId;
+    private Long userId;
 
     /**
      * 商家id
