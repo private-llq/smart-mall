@@ -1,16 +1,11 @@
 package com.jsy.controller;
-import com.jsy.basic.util.PageInfo;
 import com.jsy.dto.userCollectDto;
 import com.jsy.param.UserCollectParam;
 import com.jsy.service.IUserCollectService;
-import com.jsy.domain.UserCollect;
 import com.jsy.query.UserCollectQuery;
-import com.jsy.basic.util.PageList;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.jsy.basic.util.vo.CommonResult;
-import java.util.List;
 
 @RestController
 @RequestMapping("/userCollect")

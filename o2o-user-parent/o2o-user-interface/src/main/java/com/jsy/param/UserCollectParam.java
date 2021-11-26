@@ -12,9 +12,6 @@ public class UserCollectParam implements Serializable {
     @ApiModelProperty(value = "商家id")
     private Long shopId;
 
-    @ApiModelProperty(value = "用户id")
-    private String userId;
-
     @ApiModelProperty(value = "商品id")
     private Long goodsId;
 

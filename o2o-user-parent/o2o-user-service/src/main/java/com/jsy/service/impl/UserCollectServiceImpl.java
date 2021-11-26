@@ -17,6 +17,8 @@ import com.jsy.param.UserCollectParam;
 import com.jsy.query.UserCollectQuery;
 import com.jsy.service.IUserCollectService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zhsj.baseweb.support.ContextHolder;
+import com.zhsj.baseweb.support.LoginUser;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,10 +60,16 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
      */
     @Override
     public void addUserCollect(UserCollectParam userCollectParam) {
+        LoginUser loginUser = ContextHolder.getContext().getLoginUser();
+        if (Objects.isNull(loginUser)){
+            new JSYException(-1,"用户认证失败！");
+        }
+        Long userId = loginUser.getId();//用户id
+
         //查询是否收藏过
         if (userCollectParam.getType()==0){
             UserCollect userCollect = userCollectMapper.selectOne(new QueryWrapper<UserCollect>()
-                    .eq("user_id", userCollectParam.getUserId())
+                    .eq("user_id", userId)
                     .eq("goods_id", userCollectParam.getGoodsId())
             );
             if (Objects.nonNull(userCollect)){
@@ -70,7 +78,7 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
         }
         if (userCollectParam.getType()==1){
             UserCollect userCollect = userCollectMapper.selectOne(new QueryWrapper<UserCollect>()
-                    .eq("user_id", userCollectParam.getUserId())
+                    .eq("user_id", userId)
                     .eq("menu_id", userCollectParam.getMenuId())
             );
             if (Objects.nonNull(userCollect)){
@@ -79,7 +87,7 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
         }
         if (userCollectParam.getType()==2){
             UserCollect userCollect = userCollectMapper.selectOne(new QueryWrapper<UserCollect>()
-                    .eq("user_id", userCollectParam.getUserId())
+                    .eq("user_id", userId)
                     .eq("shop_id", userCollectParam.getMenuId())
             );
             if (Objects.nonNull(userCollect)){
@@ -87,6 +95,7 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
             }
         }
         UserCollect userCollect = new UserCollect();
+        userCollect.setUserId(userId);
         BeanUtils.copyProperties(userCollectParam,userCollect);
         userCollectMapper.insert(userCollect);
     }
@@ -99,7 +108,12 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
      */
     @Override
     public userCollectDto userCollectPageList(UserCollectQuery userCollectQuery) {
-        List<UserCollect> list = userCollectMapper.selectList(new QueryWrapper<UserCollect>().eq("user_id", userCollectQuery.getUserId()));
+        LoginUser loginUser = ContextHolder.getContext().getLoginUser();
+        if (Objects.isNull(loginUser)){
+            new JSYException(-1,"用户认证失败！");
+        }
+        Long userId = loginUser.getId();//用户id
+        List<UserCollect> list = userCollectMapper.selectList(new QueryWrapper<UserCollect>().eq("user_id", userId));
         List<Long> goodsCollect = new ArrayList<>();
         List<Long> goodsServiceCollect = new ArrayList<>();
         List<Long> setMenuCollect = new ArrayList<>();

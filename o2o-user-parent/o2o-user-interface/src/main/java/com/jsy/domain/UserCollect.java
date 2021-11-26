@@ -25,7 +25,7 @@ public class UserCollect extends BaseEntity implements Serializable {
     private Long shopId;
 
     @ApiModelProperty(value = "用户id")
-    private String userId;
+    private Long userId;
 
     @ApiModelProperty(value = "商品id")
     private Long goodsId;
