@@ -3,6 +3,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.utils.BeansCopyUtils;
@@ -19,6 +20,8 @@ import com.jsy.parameter.GoodsServiceParam;
 import com.jsy.query.GoodsPageQuery;
 import com.jsy.service.IGoodsService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zhsj.baseweb.support.ContextHolder;
+import com.zhsj.baseweb.support.LoginUser;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -187,12 +190,16 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
      */
     @Override
     public Goods getGoodsService(Long id) {
+        LoginUser loginUser = ContextHolder.getContext().getLoginUser();
         Goods goods = goodsMapper.selectOne(new QueryWrapper<Goods>().eq("id", id));
         if (Objects.nonNull(goods)){
+            //添加商品、服务访问量
+            long pvNum = goods.getPvNum() + 1;
+            goodsMapper.update(null,new UpdateWrapper<Goods>().eq("id",id).set("pv_num",pvNum));
             //添加一条用户的浏览记录
             Browse browse = new Browse();
             browse.setShopId(goods.getShopId());
-            //browse.setUserId(0L);
+            browse.setUserId(loginUser.getId());
             browse.setName(goods.getTitle());
             browse.setTextDescription(goods.getTextDescription());
             browse.setRealPrice(goods.getPrice());

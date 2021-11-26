@@ -1,4 +1,5 @@
 package com.jsy.utils;
+import com.alibaba.fastjson.JSONObject;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.domain.FileInfo;
 import io.minio.MinioClient;
@@ -8,8 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * 文件服务访问路径 服务器地址/端口号/存储桶/文件名
@@ -187,8 +187,19 @@ public class MinioUtil {
     }
 
     public static void main(String[] args) {
-        String url="http://222.178.212.29:9000/mall/55a9d3ba-78d2-46f6-905b-fec93c8c0d72-Koala.jpg";
-       delFile(url);
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("name","张三");
+        jsonObject.put("age",25);
+        jsonObject.put("hobby",new String[]{"蓝球","排球","网球"});
+        jsonObject.put("list", Arrays.asList("java","springboot",2));
+        System.out.println(jsonObject.toJSONString());
+
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("name","张三");
+        hashMap.put("age",25);
+        hashMap.put("hobby",new String[]{"蓝球","排球","网球"});
+        System.out.println(new JSONObject(hashMap).toJSONString());
 
     }
 }

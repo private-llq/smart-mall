@@ -1,4 +1,8 @@
 package com.jsy.controller;
+import cn.hutool.json.JSON;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
+import com.alibaba.druid.support.json.JSONUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jsy.basic.util.MyPageUtils;
 import com.jsy.basic.util.PageInfo;
@@ -65,6 +69,8 @@ public class BrowseController {
         List<Browse> list = browseService.list(new QueryWrapper<Browse>().eq("user_id",browseQuery.getUserId()));
         List<BrowseDto> dtoList = BeansCopyUtils.copyListProperties(list, BrowseDto::new);
         PageInfo<BrowseDto> browsePageInfo = MyPageUtils.pageMap(browseQuery.getPage(), browseQuery.getRows(), dtoList);
+        Object parse = JSONUtils.parse("");
+
         return CommonResult.ok(browsePageInfo);
     }
 }
