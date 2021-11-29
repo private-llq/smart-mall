@@ -142,17 +142,6 @@ public class GoodsController {
         return CommonResult.ok(pageInfo);
     }
 
-    /**
-     *
-     * @param goodsBackstageQuery
-     * @return
-     */
-    @ApiOperation("大后台查询店铺下面的商品")
-    @PostMapping("backstageGoodsList")
-    public CommonResult<PageInfo<GoodsBackstageDto>> backstageGoodsList(@RequestBody GoodsBackstageQuery goodsBackstageQuery) {
-        PageInfo<GoodsBackstageDto> pageInfo =goodsService.backstageGoodsList(goodsBackstageQuery);
-        return CommonResult.ok(pageInfo);
-    }
 
     @ApiOperation("查询商家最新发布的商品或在服务")
     @GetMapping("/getShopIdGoods")

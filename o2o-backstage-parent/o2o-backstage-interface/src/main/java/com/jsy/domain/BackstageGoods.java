@@ -26,6 +26,9 @@ public class BackstageGoods extends BaseEntity implements Serializable {
     @ApiModelProperty(value = "商品分类id")
     private Long goodsTypeId;
 
+    @ApiModelProperty(value = "商品分类名称")
+    private String goodsTypeName;
+
     @ApiModelProperty(value = "商品标题")
     private String title;
 

@@ -3,6 +3,7 @@ package com.jsy.service;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.domain.BackstageGoods;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.jsy.dto.BacksageDto;
 import com.jsy.dto.BackstageGoodsDto;
 import com.jsy.param.BackstageGoodsParam;
 import com.jsy.query.BackstageGoodsQuery;
@@ -21,5 +22,12 @@ public interface IBackstageGoodsService extends IService<BackstageGoods> {
 
     void updateBackstageGoods(BackstageGoodsParam backstageGoodsParam);
 
-    PageInfo<BackstageGoodsDto> pageBackstageGoods(BackstageGoodsQuery query);
+    PageInfo<BacksageDto>  pageBackstageGoods(BackstageGoodsQuery backstageGoodsQuery);
+
+    /**
+     * 分页条件查询 医疗C端页面
+     * @param backstageGoodsQuery
+     * @return
+     */
+    PageInfo<BackstageGoodsDto> listBackstageGoods(BackstageGoodsQuery backstageGoodsQuery);
 }

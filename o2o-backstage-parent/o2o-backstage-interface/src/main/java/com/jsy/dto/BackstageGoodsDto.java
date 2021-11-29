@@ -10,6 +10,8 @@ import java.math.BigDecimal;
 @Data
 public class BackstageGoodsDto implements Serializable {
 
+    private Long id;
+
     @ApiModelProperty(value = "商品标题")
     private String title;
 
@@ -18,6 +20,5 @@ public class BackstageGoodsDto implements Serializable {
 
     @ApiModelProperty(value = "展示价格")
     private BigDecimal showPrice;
-
 
 }

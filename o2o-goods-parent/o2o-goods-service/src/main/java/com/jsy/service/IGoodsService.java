@@ -100,10 +100,4 @@ public interface IGoodsService extends IService<Goods> {
      */
     List<GoodsServiceDto> batchGoodsService(List<Long> goodsServiceList);
 
-    /**
-     * 大后台查询店铺下面的商品
-     * @param goodsBackstageQuery
-     * @return
-     */
-    PageInfo<GoodsBackstageDto> backstageGoodsList(GoodsBackstageQuery goodsBackstageQuery);
 }

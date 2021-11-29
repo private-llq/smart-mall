@@ -267,39 +267,6 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     }
 
 
-    /**
-     * 大后台查询店铺下面的商品
-     * @param goodsBackstageQuery
-     * @return
-     */
-    @Override
-    public PageInfo<GoodsBackstageDto> backstageGoodsList(GoodsBackstageQuery goodsBackstageQuery) {
-        String goodsName = goodsBackstageQuery.getGoodsName();
-        String goodsNumber = goodsBackstageQuery.getGoodsNumber();
-        LocalDateTime startTime = goodsBackstageQuery.getStartTime();
-        LocalDateTime endTime = goodsBackstageQuery.getEndTime();
-        Long goodsTypeId = goodsBackstageQuery.getGoodsTypeId();
-        Page<Goods> page= new Page<>(goodsBackstageQuery.getPage(),goodsBackstageQuery.getRows());
-        Page<Goods> goodsPage = goodsMapper.selectPage(page, new QueryWrapper<Goods>()
-                .eq("is_putaway", 1)
-                .eq("type",0)
-                .like(StringUtils.isNotBlank(goodsName),"title",goodsName)
-                .eq(StringUtils.isNotBlank(goodsNumber),"goods_number",goodsNumber)
-                .between(Objects.nonNull(startTime) && Objects.nonNull(endTime),"create_time",startTime,endTime)
-                .eq(Objects.nonNull(goodsTypeId),"goods_type_id",goodsTypeId)
-
-        );
-
-        PageInfo<GoodsBackstageDto> pageInfo = new PageInfo<>();
-        List<Goods> records = goodsPage.getRecords();
-        List<GoodsBackstageDto> backstageDtos = BeansCopyUtils.listCopy(records, GoodsBackstageDto.class);
-        pageInfo.setRecords(backstageDtos);
-        pageInfo.setCurrent(goodsPage.getCurrent());
-        pageInfo.setSize(goodsPage.getSize());
-        pageInfo.setTotal(goodsPage.getTotal());
-        return pageInfo;
-    }
-
 
 
     /**
