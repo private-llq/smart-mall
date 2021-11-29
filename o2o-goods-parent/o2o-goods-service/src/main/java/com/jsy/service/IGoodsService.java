@@ -6,10 +6,12 @@ import com.jsy.basic.util.utils.BeansCopyUtils;
 import com.jsy.domain.Goods;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jsy.domain.Tree;
+import com.jsy.dto.GoodsBackstageDto;
 import com.jsy.dto.GoodsDto;
 import com.jsy.dto.GoodsServiceDto;
 import com.jsy.parameter.GoodsParam;
 import com.jsy.parameter.GoodsServiceParam;
+import com.jsy.query.GoodsBackstageQuery;
 import com.jsy.query.GoodsPageQuery;
 
 import java.util.List;
@@ -97,4 +99,11 @@ public interface IGoodsService extends IService<Goods> {
      * 批量查询 服务
      */
     List<GoodsServiceDto> batchGoodsService(List<Long> goodsServiceList);
+
+    /**
+     * 大后台查询店铺下面的商品
+     * @param goodsBackstageQuery
+     * @return
+     */
+    PageInfo<GoodsBackstageDto> backstageGoodsList(GoodsBackstageQuery goodsBackstageQuery);
 }

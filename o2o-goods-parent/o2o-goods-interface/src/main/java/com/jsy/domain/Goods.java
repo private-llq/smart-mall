@@ -27,14 +27,23 @@ public class Goods extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @ApiModelProperty(value = "商品编号")
+    private String goodsNumber;
+
     @ApiModelProperty(value = "商家id")
     private Long shopId;
+
+    @ApiModelProperty(value = "商家name")
+    private String shopName;
 
     @ApiModelProperty(value = "商品/服务 - 图片1-3张")
     private String images;
 
     @ApiModelProperty(value = "商品/服务 分类id")
     private Long goodsTypeId;
+
+    @ApiModelProperty(value = "商品/服务 分类name")
+    private String goodsTypeName;
 
     @ApiModelProperty(value = "商品名称/服务标题")
     private String title;
@@ -79,6 +88,12 @@ public class Goods extends BaseEntity implements Serializable {
 
     @ApiModelProperty(value = "访问量")
     private Long pvNum;
+
+    @ApiModelProperty(value = "大后台：排序序号")
+    private Long sort;
+
+    @ApiModelProperty(value = "大后台：商品状态 0 启用 1禁用")
+    private Integer state;
 
 
 

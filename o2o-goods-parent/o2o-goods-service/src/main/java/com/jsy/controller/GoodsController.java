@@ -1,11 +1,14 @@
 package com.jsy.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.domain.Tree;
+import com.jsy.dto.GoodsBackstageDto;
 import com.jsy.dto.GoodsDto;
 import com.jsy.dto.GoodsServiceDto;
 import com.jsy.parameter.GoodsParam;
 import com.jsy.parameter.GoodsServiceParam;
+import com.jsy.query.GoodsBackstageQuery;
 import com.jsy.query.GoodsPageQuery;
 import com.jsy.service.IGoodsService;
 import com.jsy.domain.Goods;
@@ -136,6 +139,18 @@ public class GoodsController {
     public CommonResult<PageInfo<Goods>> getGoodsAll(@RequestBody GoodsPageQuery goodsPageQuery)
     {
         PageInfo<Goods> pageInfo = goodsService.getGoodsAll(goodsPageQuery);
+        return CommonResult.ok(pageInfo);
+    }
+
+    /**
+     *
+     * @param goodsBackstageQuery
+     * @return
+     */
+    @ApiOperation("大后台查询店铺下面的商品")
+    @PostMapping("backstageGoodsList")
+    public CommonResult<PageInfo<GoodsBackstageDto>> backstageGoodsList(@RequestBody GoodsBackstageQuery goodsBackstageQuery) {
+        PageInfo<GoodsBackstageDto> pageInfo =goodsService.backstageGoodsList(goodsBackstageQuery);
         return CommonResult.ok(pageInfo);
     }
 
