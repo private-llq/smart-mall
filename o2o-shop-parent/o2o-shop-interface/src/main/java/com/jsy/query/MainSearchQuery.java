@@ -11,8 +11,14 @@ public class MainSearchQuery extends BaseQuery {
      * 关键字
      */
     private String keyword ;
+
     /**
-     * 定位地址
+     * 定位地址  经度
      */
-    private String  location;
+    private String  longitude;
+    /**
+     * 定位地址 维度
+     */
+
+    private String  latitude;
 }

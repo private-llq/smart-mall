@@ -53,5 +53,10 @@ public class NewShopSetDto implements Serializable {
     @ApiModelProperty(value = "店铺公告")
     private String notice;
 
+    //分数
+    private Double  score;
+    //数量
+    private Integer size;
+
 
 }

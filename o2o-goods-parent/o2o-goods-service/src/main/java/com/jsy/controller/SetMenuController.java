@@ -89,7 +89,7 @@ public class SetMenuController {
         return setMenuService.getMenuId(setMenuId);
     }
     /**
-     * 查询所有套餐以及套餐详情
+     * 据id查询套餐和套餐详情
      * @return
      */
     @GetMapping(value = "/SetMenuList")

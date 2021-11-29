@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -77,23 +78,29 @@ public class NewShopParam implements Serializable {
     @NotBlank(groups = {NewShopParam.newShopValidatedGroup.class},message = "个人电话不能为空")
     @ApiModelProperty(name = "mobile", value = "座机电话")
     private String mobile;
-    @NotEmpty(groups = {NewShopParam.newShopValidatedGroup.class},message = "银行资料/开户许可证不能为空")
-    @ApiModelProperty(name = "bankImages", value = "银行资料/开户许可证(file_url)")
-    private List<String> bankImages;
-    @NotBlank(groups = {NewShopParam.newShopValidatedGroup.class},message = "银行卡号不能为空")
-    @ApiModelProperty(name = "bankNumber", value = "银行卡号")
-    private String bankNumber;
-    @NotBlank(groups = {NewShopParam.newShopValidatedGroup.class},message = "开户银行不能为空")
-    @ApiModelProperty(name = "depositBank", value = "开户银行")
-    private String depositBank;
-    @NotBlank(groups = {NewShopParam.newShopValidatedGroup.class},message = "开户支行不能为空")
-    @ApiModelProperty(name = "branchBank", value = "开户支行")
-    private String branchBank ;
 
-    @ApiModelProperty(name = "aliPay", value = "支付宝账号")
-    private String aliPay;
-    @ApiModelProperty(name = "weChat", value = "微信账号")
-    private String weChat ;
+    @ApiModelProperty(value = "经度")
+    private BigDecimal longitude;
+
+    @ApiModelProperty(value = "维度")
+    private BigDecimal latitude;
+//    @NotEmpty(groups = {NewShopParam.newShopValidatedGroup.class},message = "银行资料/开户许可证不能为空")
+//    @ApiModelProperty(name = "bankImages", value = "银行资料/开户许可证(file_url)")
+//    private List<String> bankImages;
+//    @NotBlank(groups = {NewShopParam.newShopValidatedGroup.class},message = "银行卡号不能为空")
+//    @ApiModelProperty(name = "bankNumber", value = "银行卡号")
+//    private String bankNumber;
+//    @NotBlank(groups = {NewShopParam.newShopValidatedGroup.class},message = "开户银行不能为空")
+//    @ApiModelProperty(name = "depositBank", value = "开户银行")
+//    private String depositBank;
+//    @NotBlank(groups = {NewShopParam.newShopValidatedGroup.class},message = "开户支行不能为空")
+//    @ApiModelProperty(name = "branchBank", value = "开户支行")
+//    private String branchBank ;
+//
+//    @ApiModelProperty(name = "aliPay", value = "支付宝账号")
+//    private String aliPay;
+//    @ApiModelProperty(name = "weChat", value = "微信账号")
+//    private String weChat ;
 //
 //    @NotBlank(groups = {NewShopParam.newShopValidatedGroup.class},message = "经营类型不能为空")
 //    @ApiModelProperty(value = "经营类型（0-服务行业   1-非服务行业）")

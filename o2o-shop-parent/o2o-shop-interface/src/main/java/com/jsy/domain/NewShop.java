@@ -138,4 +138,7 @@ public class NewShop extends BaseEntity  {
     @ApiModelProperty(value = "距离多远")
     @TableField(exist = false)
     private BigDecimal distance;
+
+    @ApiModelProperty(value = "审核状态 0未审核 1已审核 2审核未通过")
+    private Integer state;
 }

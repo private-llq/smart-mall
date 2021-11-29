@@ -19,11 +19,17 @@ import com.zhsj.baseweb.annotation.LoginIgnore;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 import com.jsy.basic.util.vo.CommonResult;
+import org.springframework.web.client.RestTemplate;
+
+import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -33,6 +39,11 @@ import java.util.List;
 public class NewShopController {
     @Autowired
     public INewShopService newShopService;
+    @Autowired
+    private RestTemplate restTemplate;
+    @Resource
+    private CommentClent commentClent;
+
 
     /**
      * 保存和修改公用的
@@ -111,21 +122,6 @@ public class NewShopController {
         return CommonResult.ok(newShopDtos);
     }
 
-
-    /**
-    * 分页查询数据
-    *
-    * @param query 查询对象
-    * @return PageList 分页对象
-    */
-    @PostMapping(value = "/pagelist")
-    public PageList<NewShop> json(@RequestBody NewShopQuery query)
-    {
-        Page<NewShop> page = new Page<NewShop>(query.getPage(),query.getRows());
-        page = newShopService.page(page);
-        return new PageList<NewShop>(page.getTotal(),page.getRecords());
-    }
-
     @ApiOperation("通过店铺id预览店铺基本信息")
     @RequestMapping(value = "/getPreviewDto/{shopId}",method = RequestMethod.GET)
     public CommonResult<NewShopPreviewDto> getPreviewDto(@PathVariable("shopId") Long shopId){
@@ -154,6 +150,9 @@ public class NewShopController {
         NewShop newShop = newShopService.getById(shopId);
         NewShopSetDto newShopSetDto = new NewShopSetDto();
         BeanUtils.copyProperties(newShop,newShopSetDto);
+        SelectShopCommentScoreDto data = commentClent.selectShopCommentScore(shopId).getData();
+        newShopSetDto.setScore(data.getScore());
+        newShopSetDto.setSize(data.getSize());
         return CommonResult.ok(newShopSetDto);
     }
 
@@ -180,8 +179,23 @@ public class NewShopController {
             else {
                 return new  CommonResult(-1,"失败",null);
             }
-
     }
+
+
+    @ApiOperation("热门推荐")
+    @RequestMapping(value = "/getHot/",method = RequestMethod.POST)
+    public CommonResult<PageInfo<NewShopRecommendDto>> getHot(@RequestBody NewShopQuery shopQuery){
+        PageInfo<NewShopRecommendDto> recommendDtoList = newShopService.getShopAllList(shopQuery);
+        if (recommendDtoList!=null){
+            return CommonResult.ok(recommendDtoList);
+        }
+        else {
+            return new  CommonResult(-1,"失败",null);
+        }
+    }
+
+
+
 
     /**
      * 首页搜索
@@ -201,6 +215,20 @@ public class NewShopController {
     {
         List<NewShopDto> dtoList = newShopService.batchIds(ids);
         return CommonResult.ok(dtoList);
+    }
 
+
+
+    /**************************************大后台数据展示****************************************************************************/
+    @ApiOperation("C端分类店铺列表")
+    @RequestMapping(value = "/newShopPage/",method = RequestMethod.POST)
+    public CommonResult<PageInfo<NewShopDto>> newShopPage(@RequestBody NewShopQuery shopQuery){
+        PageInfo<NewShopDto> shopAllList = newShopService.newShopPage(shopQuery);
+        if (shopAllList!=null){
+            return CommonResult.ok(shopAllList);
+        }
+        else {
+            return new  CommonResult(-1,"失败",null);
+        }
     }
 }

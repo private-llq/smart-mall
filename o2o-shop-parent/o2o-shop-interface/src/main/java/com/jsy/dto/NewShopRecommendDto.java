@@ -27,7 +27,7 @@ public class NewShopRecommendDto implements Serializable {
     private BigDecimal price;
 
     @ApiModelProperty(value = "评分")
-    private Float grade;
+    private Double grade;
 
     @ApiModelProperty(value = "距离多远")
     private BigDecimal distance;

@@ -50,7 +50,7 @@ public class BrowseController {
     * @return
     */
     @DeleteMapping(value="/{id}")
-    public CommonResult delete(@PathVariable("id") Long id){
+    public CommonResult delete(@RequestParam("id") Long id){
         try {
             browseService.removeById(id);
             return CommonResult.ok();
@@ -72,5 +72,6 @@ public class BrowseController {
         Object parse = JSONUtils.parse("");
 
         return CommonResult.ok(browsePageInfo);
+
     }
 }

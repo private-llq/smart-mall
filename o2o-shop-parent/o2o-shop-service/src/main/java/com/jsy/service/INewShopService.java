@@ -51,4 +51,10 @@ public interface INewShopService extends IService<NewShop> {
      * @return
      */
     List<NewShopDto> batchIds(List<Long> ids);
+ /**
+  * @author Tian
+  * @since 2021/11/29-9:34
+  * @description 大后台分页
+  **/
+    PageInfo<NewShopDto> newShopPage(NewShopQuery shopQuery);
 }

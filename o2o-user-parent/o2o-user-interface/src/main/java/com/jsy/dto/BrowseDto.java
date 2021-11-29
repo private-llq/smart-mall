@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
@@ -20,7 +21,7 @@ import java.math.BigDecimal;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value="Browse对象", description="用户个人最近浏览记录参数返回对象")
-public class BrowseDto extends BaseEntity {
+public class BrowseDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private Long id;
