@@ -71,23 +71,23 @@ public class NewShopDto implements Serializable {
     @ApiModelProperty(value = "身份证号")
     private String idNumber;
 
-    @ApiModelProperty(value = "银行卡图片")
-    private String bankImages;
-
-    @ApiModelProperty(value = "银行卡卡号")
-    private String bankNumber;
-
-    @ApiModelProperty(value = "开户支行")
-    private String depositBank;
-
-    @ApiModelProperty(value = "开户银行")
-    private String branchBank;
-
-    @ApiModelProperty(value = "支付宝账号")
-    private String aliPay;
-
-    @ApiModelProperty(value = "微信账号")
-    private String weChat;
+//    @ApiModelProperty(value = "银行卡图片")
+//    private String bankImages;
+//
+//    @ApiModelProperty(value = "银行卡卡号")
+//    private String bankNumber;
+//
+//    @ApiModelProperty(value = "开户支行")
+//    private String depositBank;
+//
+//    @ApiModelProperty(value = "开户银行")
+//    private String branchBank;
+//
+//    @ApiModelProperty(value = "支付宝账号")
+//    private String aliPay;
+//
+//    @ApiModelProperty(value = "微信账号")
+//    private String weChat;
 
     @ApiModelProperty(value = "详细地址（定位）")
     private String addressDetail;
@@ -105,6 +105,8 @@ public class NewShopDto implements Serializable {
     private Integer type;
 
 
+    @ApiModelProperty(value = "审核状态 0未审核 1已审核 2审核未通过")
+    private Integer state;
 
 
 

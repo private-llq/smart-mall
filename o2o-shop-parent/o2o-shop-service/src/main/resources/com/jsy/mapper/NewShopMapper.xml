@@ -47,10 +47,10 @@
         6378.138 * 2 * ASIN(
         SQRT(
         POW(
-        SIN( ( 29.607283 * PI( ) / 180 - t1.latitude * PI( ) / 180 ) / 2 ),
+        SIN( ( #{latitude} * PI( ) / 180 - t1.latitude * PI( ) / 180 ) / 2 ),
         2
-        ) + COS( 29.607283 * PI( ) / 180 ) * COS( t1.latitude * PI( ) / 180 ) * POW(
-        SIN( ( 106.550442 * PI( ) / 180 - t1.longitude * PI( ) / 180 ) / 2 ),
+        ) + COS( #{latitude} * PI( ) / 180 ) * COS( t1.latitude * PI( ) / 180 ) * POW(
+        SIN( ( #{longitude} * PI( ) / 180 - t1.longitude * PI( ) / 180 ) / 2 ),
         2
         )
         )
@@ -63,10 +63,10 @@
         6378.138 * 2 * ASIN(
         SQRT(
         POW(
-        SIN( ( 29.607283 * PI( ) / 180 - t1.latitude * PI( ) / 180 ) / 2 ),
+        SIN( ( #{latitude} * PI( ) / 180 - t1.latitude * PI( ) / 180 ) / 2 ),
         2
-        ) + COS( 29.607283 * PI( ) / 180 ) * COS( t1.latitude * PI( ) / 180 ) * POW(
-        SIN( ( 106.550442 * PI( ) / 180 - t1.longitude * PI( ) / 180 ) / 2 ),
+        ) + COS( #{latitude} * PI( ) / 180 ) * COS( t1.latitude * PI( ) / 180 ) * POW(
+        SIN( ( #{longitude} * PI( ) / 180 - t1.longitude * PI( ) / 180 ) / 2 ),
         2
         )
         )
@@ -75,6 +75,15 @@
         )
         &lt;3000
 
+    </select>
+    <select id="selecctNewShopPage" resultType="com.jsy.domain.NewShop">
+        select * from w_new_shop s where deleted=0
+        <if test="shopQuery.state !=null and shopQuery.state !=''">
+            AND s.state= #{shopQuery.state,jdbcType=INTEGER}
+        </if>
+        <if test="shopQuery.shopName !=null and shopQuery.shopName!=''">
+            AND s.shop_name LIKE CONCAT('%',#{shopQuery.shopName,jdbcType=VARCHAR},'%')
+        </if>
     </select>
 
 </mapper>

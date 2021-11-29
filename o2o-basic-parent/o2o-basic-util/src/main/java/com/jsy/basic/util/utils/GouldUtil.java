@@ -116,7 +116,7 @@ public class GouldUtil {
 	 *  高德api
 	 * @return 两个定位点之间的距离
 	 */
-	private static long getApiDistance(String startLonLat, String endLonLat) {
+	public static long getApiDistance(String startLonLat, String endLonLat) {
 		// 返回起始地startAddr与目的地endAddr之间的距离，单位：米
 		Long result = new Long(0);
 		String queryUrl = "http://restapi.amap.com/v3/distance?key="+GOULD_KEY+"&origins=" + startLonLat + "&destination=" + endLonLat;
@@ -185,15 +185,15 @@ public class GouldUtil {
 	}
 
 	public static void main(String[] args) {
-		String s="重庆市渝北区天宫殿街道泰山大道东段106号";
+		String s="重庆天宫殿社区医院";
 		String lonLat = GouldUtil.getLonLat(s);
-		String lat = GouldUtil.getLonLat("冉家坝");
+		String lat = GouldUtil.getLonLat("重庆市南广场凯里亚德酒店");
 //		String[] split = lat.split(",");
 //		BigDecimal longitude = new BigDecimal((split[0]));
 		System.out.println(lat);
 
-//		System.out.println(lonLat);
-//		System.out.println(lat);
+		System.out.println(lonLat);
+		System.out.println(GouldUtil.getApiDistance(lonLat,lat));
 //		long distanceByAddress = GouldUtil.getApiDistance(lonLat, lat);
 //		System.out.println(longitude);
 

@@ -87,6 +87,10 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
     @Override
     public SetMenuDto getSetMenulist(Long shopId,Long id) {
         SetMenu setMenu = setMenuMapper.selectOne(new QueryWrapper<SetMenu>().eq("shop_id", shopId).eq("id", id));
+        //套餐访问量+1
+        setMenu.setPvNum(setMenu.getPvNum()+1);
+        setMenuMapper.updateById(setMenu);
+
         if (setMenu==null){
             throw new JSYException(-1,"套餐为空");
         }
@@ -123,8 +127,9 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
         setMenuDto.setMap(map);
         setMenuDto.setServiceCharacteristicsIds(serviceCharacteristicsDtoList);
 
+
+
         //用户浏览记录
-        //用户id没设置
         Browse browse = new Browse();
         browse.setRealPrice(setMenu.getRealPrice());
         browse.setSellingPrice(setMenu.getSellingPrice());
@@ -136,6 +141,8 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
         System.out.println(loginUser);
         browse.setUserId(loginUser.getId());
         browseClient.save(browse);
+
+
         return setMenuDto;
 
 

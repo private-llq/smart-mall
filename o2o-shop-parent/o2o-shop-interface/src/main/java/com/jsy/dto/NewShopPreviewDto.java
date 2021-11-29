@@ -46,5 +46,8 @@ public class NewShopPreviewDto implements Serializable {
     @ApiModelProperty(value = "详细地址（定位）")
     private String addressDetail;
 
+    @ApiModelProperty(value = "审核状态 0未审核 1已审核 2审核未通过")
+    private Integer state;
+
 
 }

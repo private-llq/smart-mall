@@ -59,4 +59,7 @@ public class SetMenuDto implements Serializable {
     @ApiModelProperty(value = "是否支持上门服务 0 不支持 1 支持")
     private Integer isVisitingService;
 
+    @ApiModelProperty(value = "套餐访问量")
+    private Long pvNum;
+
 }
