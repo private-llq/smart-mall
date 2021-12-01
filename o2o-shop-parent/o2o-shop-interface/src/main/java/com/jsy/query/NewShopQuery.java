@@ -29,6 +29,6 @@ public class NewShopQuery extends BaseQuery{
     private String shopName;
 
 
-    @ApiModelProperty(value = "审核状态 0未审核 1已审核 2审核未通过")
+    @ApiModelProperty(value = "审核状态 0未审核 1已审核 2审核未通过  3资质未认证")
     private Integer state;
 }

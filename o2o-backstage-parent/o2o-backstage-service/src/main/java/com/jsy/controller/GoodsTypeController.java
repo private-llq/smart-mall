@@ -47,13 +47,13 @@ public class GoodsTypeController {
     }
 
     /**
-     * 删除对象信息
+     * 根据id删除商品分类
      * @param id
      * @return
      */
     @ApiOperation(value = "删除对象信息",httpMethod = "Delete",response = CommonResult.class)
-    @DeleteMapping(value="/{id}")
-    public CommonResult delete(@PathVariable("id") Long id){
+    @DeleteMapping(value="/del")
+    public CommonResult delete(@RequestParam("id") Long id){
         try {
             goodsTypeService.deleteById(id);
             return CommonResult.ok();
@@ -67,9 +67,9 @@ public class GoodsTypeController {
      * 根据id查询一条
      * @param id
      */
-    @ApiOperation("根据id查询")
-    @GetMapping(value = "/{id}")
-    public CommonResult<GoodsTypeDto> get(@PathVariable("id")Long id)
+    @ApiOperation("根据分类id查询分类详情")
+    @GetMapping(value = "/get")
+    public CommonResult<GoodsTypeDto> get(@RequestParam("id")Long id)
     {
         GoodsType goodsType = null;
         try {
@@ -103,19 +103,4 @@ public class GoodsTypeController {
         return CommonResult.ok(dtoList);
     }
 
-
-    /**
-     * 分页查询数据
-     *
-     * @param query 查询对象
-     * @return PageList 分页对象
-     */
-//    @ApiOperation(value = "获取分页数据",httpMethod = "POST",response = CommonResult.class)
-    @PostMapping(value = "/pagelist")
-    public PageList<GoodsType> json(@RequestBody IndustryCategoryQuery query)
-    {
-        Page<GoodsType> page = new Page<GoodsType>(query.getPage(),query.getRows());
-        page = goodsTypeService.page(page);
-        return new PageList<GoodsType>(page.getTotal(),page.getRecords());
-    }
 }

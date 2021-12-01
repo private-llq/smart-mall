@@ -2,6 +2,7 @@ package com.jsy.dto;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.jsy.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -10,6 +11,7 @@ import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -27,7 +29,7 @@ public class NewShopDto implements Serializable {
     private Long id;
 
     @ApiModelProperty(value = "店铺拥有者uuid")
-    private String ownerUuid;
+    private Long ownerUuid;
 
     @ApiModelProperty(value = "店铺所在城市")
     private String city;
@@ -89,8 +91,8 @@ public class NewShopDto implements Serializable {
 //    @ApiModelProperty(value = "微信账号")
 //    private String weChat;
 
-    @ApiModelProperty(value = "详细地址（定位）")
-    private String addressDetail;
+//    @ApiModelProperty(value = "详细地址（定位）")
+//    private String addressDetail;
 
     @ApiModelProperty(value = "营业执照地址）")
     private String businessAddress;
@@ -105,8 +107,15 @@ public class NewShopDto implements Serializable {
     private Integer type;
 
 
-    @ApiModelProperty(value = "审核状态 0未审核 1已审核 2审核未通过")
+    @ApiModelProperty(value = "审核状态 0未审核 1已审核 2审核未通过  3资质未认证")
     private Integer state;
+
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createTime;
+
+    @ApiModelProperty(name = "shopTreeIdName", value = "门店类型名称")
+    private String shopTreeIdName;
+
 
 
 

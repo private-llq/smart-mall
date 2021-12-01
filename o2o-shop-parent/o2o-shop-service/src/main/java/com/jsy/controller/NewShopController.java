@@ -4,9 +4,12 @@ import com.jsy.basic.util.GetServiceName;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.RestUtils;
 import com.jsy.basic.util.utils.ValidatorUtils;
+import com.jsy.clent.CommentClent;
 import com.jsy.domain.Goods;
 import com.jsy.dto.*;
+import com.jsy.parameter.NewShopModifyParam;
 import com.jsy.parameter.NewShopParam;
+import com.jsy.parameter.NewShopQualificationParam;
 import com.jsy.parameter.NewShopSetParam;
 import com.jsy.query.MainSearchQuery;
 import com.jsy.service.INewShopService;
@@ -46,27 +49,92 @@ public class NewShopController {
 
 
     /**
-     * 保存和修改公用的
+     * 创建店铺  基本信息填写
      * @param shopPacketParam  传递的实体
      * @return Ajaxresult转换结果
      */
-    @ApiOperation("创建店铺")
-    @PostMapping(value="/save")
-    public CommonResult save(@RequestBody NewShopParam shopPacketParam){
+    @ApiOperation("创建店铺基本信息填写")
+    @PostMapping(value="/addBasic")
+    public CommonResult addBasic(@RequestBody NewShopParam shopPacketParam){
         log.info("入参：{}",shopPacketParam);
          ValidatorUtils.validateEntity(shopPacketParam,NewShopParam.newShopValidatedGroup.class);
         try {
-            if (shopPacketParam.getId()==null){
-                newShopService.addNewShop(shopPacketParam);
-            }else {
-                newShopService.update(shopPacketParam);
-            }
+               Long shopId =  newShopService.addNewShop(shopPacketParam);
+            return  CommonResult.ok(shopId);
+
         } catch (Exception e) {
             e.printStackTrace();
             return  CommonResult.error(-1,"创建失败！");
         }
+
+    }
+
+    /**
+     * 创建店铺   资质认证填写
+     * @param qualificationParam  传递的实体
+     * @return Ajaxresult转换结果
+     */
+    @ApiOperation("创建店铺资质认证填写")
+    @PostMapping(value="/addQualification")
+    public CommonResult addQualification(@RequestBody NewShopQualificationParam qualificationParam){
+        log.info("入参：{}",qualificationParam);
+        ValidatorUtils.validateEntity(qualificationParam,NewShopParam.newShopValidatedGroup.class);
+        try {
+            newShopService.addQualification(qualificationParam);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return  CommonResult.error(-1,"资质上传失败！");
+        }
         return  CommonResult.ok();
     }
+
+    @ApiOperation("修改店铺基本信息填写")
+    @PostMapping(value="/updateBasic")
+    public CommonResult updateBasic(@RequestBody NewShopParam shopPacketParam){
+        log.info("入参：{}",shopPacketParam);
+        ValidatorUtils.validateEntity(shopPacketParam,NewShopParam.newShopValidatedGroup.class);
+        try {
+            newShopService.updateBasic(shopPacketParam);
+            return  CommonResult.ok("修改成功");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return  CommonResult.error(-1,"修改失败！");
+        }
+
+    }
+
+    /**
+     * 修改所有店铺信息
+     * @param modifyParam  传递的实体
+     * @return Ajaxresult转换结果
+     */
+    @ApiOperation("修改所有店铺信息")
+    @PostMapping(value="/updateNewShop")
+    public CommonResult updateNewShop(@RequestBody NewShopModifyParam modifyParam){
+        log.info("入参：{}",modifyParam);
+        ValidatorUtils.validateEntity(modifyParam,NewShopParam.newShopValidatedGroup.class);
+        try {
+            newShopService.update(modifyParam);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return  CommonResult.error(-1,"修改店铺信息失败！");
+        }
+        return  CommonResult.ok();
+    }
+     /**
+      * @author Tian
+      * @since 2021/12/1-11:53
+      * @description 预览门店基本信息
+      **/
+    @PostMapping(value = "/selectBasic")
+    public CommonResult<NewShopBasicDto> selectBasic(@RequestParam(" ") Long shopId){
+       NewShopBasicDto basicDto =  newShopService.selectBasic(shopId);
+        return CommonResult.ok(basicDto);
+    }
+
+
+
 
     @LoginIgnore
     @PostMapping("/test")
@@ -76,14 +144,14 @@ public class NewShopController {
 
     /**
     * 删除对象信息
-    * @param id
+    * @param shopId
     * @return
     */
-    @DeleteMapping(value="/{id}")
+    @DeleteMapping(value="/del")
     @ApiOperation("删除店铺")
-    public CommonResult delete(@PathVariable("id") Long id){
+    public CommonResult delete(@RequestParam("shopId") Long shopId){
         try {
-            newShopService.removeById(id);
+            newShopService.removeById(shopId);
             return CommonResult.ok();
         } catch (Exception e) {
         e.printStackTrace();
@@ -93,14 +161,16 @@ public class NewShopController {
 
     /**
     * 根据id查询一条
-    * @param id
+    * @param shopId
     */
     @GetMapping(value = "/get")
     @ApiOperation(("根据店铺id 查询店铺详情"))
-    public CommonResult<NewShop> get(@RequestParam("id") Long id)
+    public CommonResult<NewShopDto> get(@RequestParam("shopId") Long shopId)
     {
-        NewShop newShop = newShopService.getById(id);
-        return CommonResult.ok(newShop);
+        NewShop newShop = newShopService.getById(shopId);
+        NewShopDto newShopDto = new NewShopDto();
+        BeanUtils.copyProperties(newShop,newShopDto);
+        return CommonResult.ok(newShopDto);
     }
 
 
@@ -123,8 +193,8 @@ public class NewShopController {
     }
 
     @ApiOperation("通过店铺id预览店铺基本信息")
-    @RequestMapping(value = "/getPreviewDto/{shopId}",method = RequestMethod.GET)
-    public CommonResult<NewShopPreviewDto> getPreviewDto(@PathVariable("shopId") Long shopId){
+    @RequestMapping(value = "/getPreviewDto",method = RequestMethod.GET)
+    public CommonResult<NewShopPreviewDto> getPreviewDto(@RequestParam("shopId") Long shopId){
 
    NewShopPreviewDto newShopPreviewDto = newShopService.getPreviewDto(shopId);
 
@@ -133,8 +203,8 @@ public class NewShopController {
     }
 
     @ApiOperation("查询商家所拥有的的店铺信息")
-    @RequestMapping(value = "/getOwnerShop/{ownerUuid}",method = RequestMethod.GET)
-    public CommonResult<List<NewShopPreviewDto>> getOwnerShop(@PathVariable("ownerUuid") Long ownerUuid){
+    @RequestMapping(value = "/getOwnerShop",method = RequestMethod.GET)
+    public CommonResult<List<NewShopPreviewDto>> getOwnerShop(@RequestParam("ownerUuid") Long ownerUuid){
         List<NewShop> newShops = newShopService.list(new QueryWrapper<NewShop>().eq("owner_uuid", ownerUuid));
         List<NewShopPreviewDto> dtoList = new ArrayList<>();
         for (NewShop newShop : newShops) {
@@ -145,8 +215,8 @@ public class NewShopController {
         return CommonResult.ok(dtoList);
     }
     @ApiOperation("根据店铺id查询店铺设置")
-    @RequestMapping(value = "/getSetShop/{shopId}",method = RequestMethod.GET)
-    public CommonResult<NewShopSetDto> getSetShop(@PathVariable("shopId") Long shopId){
+    @RequestMapping(value = "/getSetShop",method = RequestMethod.GET)
+    public CommonResult<NewShopSetDto> getSetShop(@RequestParam("shopId") Long shopId){
         NewShop newShop = newShopService.getById(shopId);
         NewShopSetDto newShopSetDto = new NewShopSetDto();
         BeanUtils.copyProperties(newShop,newShopSetDto);
@@ -184,10 +254,10 @@ public class NewShopController {
 
     @ApiOperation("热门推荐")
     @RequestMapping(value = "/getHot/",method = RequestMethod.POST)
-    public CommonResult<PageInfo<NewShopRecommendDto>> getHot(@RequestBody NewShopQuery shopQuery){
-        PageInfo<NewShopRecommendDto> recommendDtoList = newShopService.getShopAllList(shopQuery);
-        if (recommendDtoList!=null){
-            return CommonResult.ok(recommendDtoList);
+    public CommonResult<PageInfo<NewShopHotDto>> getHot(@RequestBody NewShopQuery newShopQuery){
+        PageInfo<NewShopHotDto> hotDtoPageInfo = newShopService.getHot(newShopQuery);
+        if (hotDtoPageInfo!=null){
+            return CommonResult.ok(hotDtoPageInfo);
         }
         else {
             return new  CommonResult(-1,"失败",null);
@@ -220,7 +290,7 @@ public class NewShopController {
 
 
     /**************************************大后台数据展示****************************************************************************/
-    @ApiOperation("C端分类店铺列表")
+    @ApiOperation("店铺审核")
     @RequestMapping(value = "/newShopPage/",method = RequestMethod.POST)
     public CommonResult<PageInfo<NewShopDto>> newShopPage(@RequestBody NewShopQuery shopQuery){
         PageInfo<NewShopDto> shopAllList = newShopService.newShopPage(shopQuery);

@@ -1,38 +1,34 @@
 package com.jsy.service.impl;
 
-import cn.hutool.core.collection.ListUtil;
-import cn.hutool.core.util.PageUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jsy.basic.util.MyPageUtils;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.utils.*;
-import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.clent.CommentClent;
 import com.jsy.client.GoodsClient;
 import com.jsy.client.SetMenuClient;
 import com.jsy.client.TreeClient;
 import com.jsy.domain.Goods;
 import com.jsy.domain.NewShop;
-import com.jsy.domain.SetMenu;
 import com.jsy.domain.Tree;
 import com.jsy.dto.*;
 import com.jsy.mapper.NewShopMapper;
+import com.jsy.parameter.NewShopModifyParam;
 import com.jsy.parameter.NewShopParam;
+import com.jsy.parameter.NewShopQualificationParam;
 import com.jsy.parameter.NewShopSetParam;
 import com.jsy.query.MainSearchQuery;
 import com.jsy.query.NewShopQuery;
 import com.jsy.service.INewShopService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.apache.commons.lang.StringUtils;
-import org.checkerframework.checker.units.qual.A;
+import com.zhsj.baseweb.support.ContextHolder;
+import com.zhsj.baseweb.support.LoginUser;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -62,22 +58,22 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
 
     /**
      * @param shopPacketParam
-     * @Description: 创建店铺
+     * @Description: 创建店铺基本信息
      * @Param: [shopPacketParam]
      * @Return: void
      * @Author: Tian
      * @Date: 2021/11/8-11:49
      */
     @Override
-    public void addNewShop(NewShopParam shopPacketParam) {
-        boolean mobile = RegexUtils.isLandline(shopPacketParam.getMobile());//验证电话
-        if (!mobile) {
-            throw new JSYException(-1, "座机电话格式错误");
-        }
-        boolean phone = RegexUtils.isMobile(shopPacketParam.getShopPhone());
-        if (!phone) {
-            throw new JSYException(-1, "经营者/法人电话格式错误");
-        }
+    public Long addNewShop(NewShopParam shopPacketParam) {
+//        boolean mobile = RegexUtils.isLandline(shopPacketParam.getMobile());//验证电话
+//        if (!mobile) {
+//            throw new JSYException(-1, "座机电话格式错误");
+//        }
+//        boolean phone = RegexUtils.isMobile(shopPacketParam.getShopPhone());
+//        if (!phone) {
+//            throw new JSYException(-1, "经营者/法人电话格式错误");
+//        }
 
         if (shopPacketParam.getShopName().length() > 15) {
             throw new JSYException(-1, "店铺名太长");
@@ -89,100 +85,126 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
 
         NewShop newShop = new NewShop();
         BeanUtils.copyProperties(shopPacketParam, newShop);
+
+        newShop.setShopLogo(shopPacketParam.getShopLogo().toString());
+        //店铺拥有者id
+        LoginUser loginUser = ContextHolder.getContext().getLoginUser();
+        newShop.setOwnerUuid(loginUser.getId());
+
+        //设置state 状态   "审核状态 0未审核 1已审核 2审核未通过  3资质未认证")
+        newShop.setState(3);
+
+
         //行业分类的  一级二级三级标题  逗号分隔，最少有俩级
         String treeId = shopPacketParam.getShopTreeId();
         //数组
-        String[] split = treeId.split(",");
-        Long aLong = Long.valueOf(split[1]);
-        System.out.println(aLong);
-        Tree tree = treeClient.getTree(aLong).getData();
-        //1是服务行业  0 套餐行业
-        if (tree.getParentId() == 1) {
-            newShop.setType(1);
-        } else {
-            newShop.setType(0);
+
+        try {
+            String[] split = treeId.split(",");
+            Long aLong = Long.valueOf(split[1]);
+            System.out.println(aLong);
+            Tree tree = treeClient.getTree(aLong).getData();
+            //1是服务行业  0 套餐行业
+            if (tree.getParentId() == 1) {
+                newShop.setType(1);
+            } else {
+                newShop.setType(0);
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            throw new JSYException(-1,"店铺创建分类错误");
         }
-        //获取登录用户
-//        LoginUser loginUser = ContextHolder.getContext().getLoginUser();
-//        newShop.setOwnerUuid(loginUser.getId().toString());
-//        String lonLat = GouldUtil.getLonLat(shopPacketParam.getAddressDetail());
-//        String[] split1 = lonLat.split(",");
-//        if (split1!=null){
-//            //经度
-//            newShop.setLongitude(BigDecimal.valueOf(Long.valueOf(split[0])));
-//            //维度
-//            newShop.setLatitude(BigDecimal.valueOf(Long.valueOf(split[1])));
-//        }
-//        newShop.setUuid(UUIDUtils.getUUID());
         shopMapper.insert(newShop);
+        Long shopId = newShop.getId();
+        return shopId;
     }
 
+     /**
+      * @author Tian
+      * @since 2021/12/1-11:08
+      * @description 根据店铺id预览店铺基本信息
+      **/
     @Override
     public NewShopPreviewDto getPreviewDto(Long shopId) {
         NewShop newShop = shopMapper.selectById(shopId);
+        if (newShop==null){
+            throw new JSYException(-1,"店铺为空");
+        }
         NewShopPreviewDto newShopPreviewDto = new NewShopPreviewDto();
-        String treeId = newShop.getShopTreeId();
-        String[] split = treeId.split(",");
-        String shopTreeIdName = getString(split);
-//        for (String s : split) {
-//            Tree tree = treeClient.getTree(Long.valueOf(s)).getData();
-//            shopTreeIdName = shopTreeIdName + "-" + tree.getName();
-//        }
-        newShopPreviewDto.setShopTreeIdName(shopTreeIdName);
+        try {
+            if (newShop.getShopTreeId()!=null){
+                String treeId = newShop.getShopTreeId();
+
+                String[] split = treeId.split(",");
+                String shopTreeIdName = getString(split);
+                newShopPreviewDto.setShopTreeIdName(shopTreeIdName);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new JSYException(-1,"店铺分类错误");
+        }
+
         BeanUtils.copyProperties(newShop, newShopPreviewDto);
+
         return newShopPreviewDto;
     }
-
+ /**
+  * @author Tian
+  * @since 2021/12/1-11:09
+  * @description 修改所有店铺的参数
+  **/
     @Override
-    public void update(NewShopParam shopPacketParam) {
-        boolean mobile = RegexUtils.isLandline(shopPacketParam.getMobile());//验证电话
-        if (!mobile) {
-            throw new JSYException(-1, "座机电话格式错误");
+        public void update(NewShopModifyParam modifyParam) {
+//        boolean mobile = RegexUtils.isLandline(modifyParam.getMobile());//验证电话
+//        if (!mobile) {
+//            throw new JSYException(-1, "座机电话格式错误");
+//        }
+        if(!RegexUtils.isIDCard(modifyParam.getIdNumber())){
+            throw  new JSYException(-1,"身份证号有误");
         }
-        boolean phone = RegexUtils.isMobile(shopPacketParam.getShopPhone());
+        boolean phone = RegexUtils.isMobile(modifyParam.getShopPhone());
         if (!phone) {
             throw new JSYException(-1, "经营者/法人电话格式错误");
         }
 
-        if (shopPacketParam.getShopName().length() > 15) {
+        if (modifyParam.getShopName().length() > 15) {
             throw new JSYException(-1, "店铺名太长");
         }
-        List<String> shopLogo = shopPacketParam.getShopLogo();
+        List<String> shopLogo = modifyParam.getShopLogo();
         if (shopLogo.size() > 1) {
             throw new JSYException(-1, "照片只能上传1张");
         }
 
         NewShop newShop = new NewShop();
-        BeanUtils.copyProperties(shopPacketParam, newShop);
-        //行业分类的  二级三级标题  逗号分隔
-        String treeId = shopPacketParam.getShopTreeId();
-        //数组
-        String[] split = treeId.split(",");
-        Long aLong = Long.valueOf(split[1]);
-        Tree tree = treeClient.getTree(aLong).getData();
+        BeanUtils.copyProperties(modifyParam, newShop);
+        try {
+            //行业分类的  二级三级标题  逗号分隔
+            String treeId = modifyParam.getShopTreeId();
+            //数组
+            String[] split = treeId.split(",");
+            Long aLong = Long.valueOf(split[1]);
+            Tree tree = treeClient.getTree(aLong).getData();
 
-        //1是服务行业  0 套餐行业
-        if (tree.getParentId() == 1) {
-            newShop.setType(1);
-        } else {
-            newShop.setType(0);
+            //1是服务行业  0 套餐行业
+            if (tree.getParentId() == 1) {
+                newShop.setType(1);
+            } else {
+                newShop.setType(0);
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            throw new JSYException(-1,"店铺分类错误");
         }
-        //获取登录用户
-//        LoginUser loginUser = ContextHolder.getContext().getLoginUser();
-//        newShop.setOwnerUuid(loginUser.getId().toString());
-        // 返回输入地址address的经纬度信息, 格式是 经度,纬度
-//        String lonLat = GouldUtil.getLonLat(shopPacketParam.getAddressDetail());
-//        String[] split1 = lonLat.split(",");
-//        if (split1!=null){
-//            //经度
-//            newShop.setLongitude(BigDecimal.valueOf(Long.valueOf(split[0])));
-//            //维度
-//            newShop.setLatitude(BigDecimal.valueOf(Long.valueOf(split[1])));
-//        }
-//        newShop.setUuid(UUIDUtils.getUUID());
+        newShop.setState(0);
+
         shopMapper.updateById(newShop);
     }
 
+    /**
+     * @author Tian
+     * @since 2021/12/1-11:09
+     * @description 修改店铺设置
+     **/
     @Override
     public void setSetShop(NewShopSetParam shopSetParam) {
         NewShop newShop = shopMapper.selectById(shopSetParam.getId());
@@ -191,7 +213,11 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         shopMapper.updateById(newShop);
     }
 
-    //C端查询店铺
+     /**
+      * @author Tian
+      * @since 2021/12/1-11:09
+      * @description C端查询店铺
+      **/
     @Override
     public PageInfo<NewShopRecommendDto> getShopAllList(NewShopQuery shopQuery) {
         System.out.println(shopQuery);
@@ -371,11 +397,128 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         List<NewShopDto> dtoList = new ArrayList<>();
         for (NewShop newShop : shopList) {
             NewShopDto newShopDto = new NewShopDto();
+            try {
+                if (newShop.getShopTreeId()!=null){
+                    String treeId = newShop.getShopTreeId();
+
+                    String[] split = treeId.split(",");
+                    String shopTreeIdName = getString(split);
+                    newShopDto.setShopTreeIdName(shopTreeIdName);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new JSYException(-1,"店铺分类错误");
+            }
+
             BeanUtils.copyProperties(newShop,newShopDto);
             dtoList.add(newShopDto);
         }
+
+
         PageInfo<NewShopDto> newShopDtoPageInfo = MyPageUtils.pageMap(shopQuery.getPage(), shopQuery.getRows(), dtoList);
         return newShopDtoPageInfo;
+    }
+
+    @Override
+    public PageInfo<NewShopHotDto> getHot(NewShopQuery newShopQuery) {
+        List<NewShopHotDto> newShopHotDtos = shopMapper.selectHot();
+        PageInfo<NewShopHotDto> hotDtoPageInfo = MyPageUtils.pageMap(newShopQuery.getPage(), newShopQuery.getRows(), newShopHotDtos);
+        return hotDtoPageInfo;
+    }
+ /**
+  * @author Tian
+  * @since 2021/12/1-11:10
+  * @description 新增店铺资质认证
+  **/
+ @Override
+    public void addQualification(NewShopQualificationParam qualificationParam) {
+        if(!RegexUtils.isIDCard(qualificationParam.getIdNumber())){
+            throw  new JSYException(-1,"身份证号有误");
+        }
+        if (!RegexUtils.isMobile(qualificationParam.getShopPhone())) {
+            throw new JSYException(-1, "经营者/法人电话格式错误");
+        }
+        NewShop newShop = new NewShop();
+        BeanUtils.copyProperties(qualificationParam,newShop);
+        //设置state 状态   "审核状态 0未审核 1已审核 2审核未通过  3资质未认证")
+        newShop.setState(0);
+        shopMapper.updateById(newShop);
+    }
+ /**
+  * @author Tian
+  * @since 2021/12/1-11:19
+  * @description 店铺预览基本信息查询
+  **/
+    @Override
+    public NewShopBasicDto selectBasic(Long shopId) {
+        NewShop newShop = shopMapper.selectById(shopId);
+//        if (newShop.getState()==3){
+//
+//        }
+        NewShopBasicDto basicDto = new NewShopBasicDto();
+        BeanUtils.copyProperties(newShop,basicDto);
+        try {
+            if (newShop.getShopTreeId()!=null){
+                String treeId = newShop.getShopTreeId();
+
+                String[] split = treeId.split(",");
+                String shopTreeIdName = getString(split);
+                basicDto.setShopTreeIdName(shopTreeIdName);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new JSYException(-1,"店铺分类错误");
+        }
+        return basicDto;
+    }
+ /**
+  * @author Tian
+  * @since 2021/12/1-11:47
+  * @description 修改店铺基本信息填写
+  **/
+    @Override
+    public void updateBasic(NewShopParam shopPacketParam) {
+
+        if (shopPacketParam.getShopName().length() > 15) {
+            throw new JSYException(-1, "店铺名太长");
+        }
+        List<String> shopLogo = shopPacketParam.getShopLogo();
+        if (shopLogo.size() > 1) {
+            throw new JSYException(-1, "照片只能上传1张");
+        }
+
+        NewShop newShop = new NewShop();
+        BeanUtils.copyProperties(shopPacketParam, newShop);
+
+        newShop.setShopLogo(shopPacketParam.getShopLogo().toString());
+        //店铺拥有者id
+//        LoginUser loginUser = ContextHolder.getContext().getLoginUser();
+//        newShop.setOwnerUuid(loginUser.getId());
+
+        //设置state 状态   "审核状态 0未审核 1已审核 2审核未通过  3资质未认证")
+        newShop.setState(3);
+
+
+        //行业分类的  一级二级三级标题  逗号分隔，最少有俩级
+        String treeId = shopPacketParam.getShopTreeId();
+        //数组
+
+        try {
+            String[] split = treeId.split(",");
+            Long aLong = Long.valueOf(split[1]);
+            System.out.println(aLong);
+            Tree tree = treeClient.getTree(aLong).getData();
+            //1是服务行业  0 套餐行业
+            if (tree.getParentId() == 1) {
+                newShop.setType(1);
+            } else {
+                newShop.setType(0);
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            throw new JSYException(-1,"店铺创建分类错误");
+        }
+        shopMapper.updateById(newShop);
     }
 
 

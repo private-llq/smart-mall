@@ -175,16 +175,17 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
     }
 
     @Override
-    public List<SetMenuDto> getList(Long shopId,Integer state) {
+    public PageInfo<SetMenuDto> getList(SetMenuQuery setMenuQuery) {
         //根据商家id 和所
-        List<SetMenu> menuList = setMenuMapper.selectList(new QueryWrapper<SetMenu>().eq("shop_id", shopId).eq("state",state));
+        List<SetMenu> menuList = setMenuMapper.selectList(new QueryWrapper<SetMenu>().eq("shop_id", setMenuQuery.getShopId()).eq("state",setMenuQuery.getState()));
         List<SetMenuDto> dtoList = new ArrayList<>();
         for (SetMenu setMenu : menuList) {
             SetMenuDto setMenuDto = new SetMenuDto();
             BeanUtils.copyProperties(setMenu,setMenuDto);
             dtoList.add(setMenuDto);
         }
-        return dtoList;
+        PageInfo<SetMenuDto> setMenuDtoPageInfo = MyPageUtils.pageMap(setMenuQuery.getPage(), setMenuQuery.getRows(), dtoList);
+        return setMenuDtoPageInfo;
     }
 
     @Override
@@ -206,7 +207,7 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
 
     @Override
     public PageInfo<SetMenuDto> listAll(SetMenuQuery setMenuQuery) {
-        //根据商家id 和所
+        //根据商家id
         List<SetMenu> menuList = setMenuMapper.selectList(new QueryWrapper<SetMenu>().eq("shop_id", setMenuQuery.getShopId()));
         List<SetMenuDto> dtoList = new ArrayList<>();
         for (SetMenu setMenu : menuList) {

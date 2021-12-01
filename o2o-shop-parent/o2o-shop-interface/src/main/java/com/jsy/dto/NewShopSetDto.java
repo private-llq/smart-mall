@@ -23,7 +23,7 @@ public class NewShopSetDto implements Serializable {
     private Long id;
 
     @ApiModelProperty(value = "店铺拥有者uuid")
-    private String ownerUuid;
+    private Long ownerUuid;
 
     @ApiModelProperty(value = "店铺logo(file_url)")
     private String shopLogo;
@@ -34,9 +34,10 @@ public class NewShopSetDto implements Serializable {
     @ApiModelProperty(value = "店铺联系电话")
     private String mobile;
 
-
-    @ApiModelProperty(value = "详细地址（定位）")
-    private String addressDetail;
+    @ApiModelProperty(value = "营业执照地址）")
+    private String businessAddress;
+//    @ApiModelProperty(value = "详细地址（定位）")
+//    private String addressDetail;
 
     @ApiModelProperty(value = "证件照片（展示给C端看的证件）")
     private String papers;
@@ -53,9 +54,9 @@ public class NewShopSetDto implements Serializable {
     @ApiModelProperty(value = "店铺公告")
     private String notice;
 
-    //分数
+    //店铺评分
     private Double  score;
-    //数量
+    //评价数量
     private Integer size;
 
 

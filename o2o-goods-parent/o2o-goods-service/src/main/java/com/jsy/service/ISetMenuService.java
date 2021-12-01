@@ -25,7 +25,7 @@ public interface ISetMenuService extends IService<SetMenu> {
 //根据id查询套餐和套餐详情
   SetMenuDto getSetMenulist(Long shopId,Long id);
 //查询所有套餐上下架套餐
-    List<SetMenuDto> getList(Long shopId,Integer state);
+PageInfo<SetMenuDto> getList(SetMenuQuery setMenuQuery);
 //通过套餐id查询套餐详情
 Map<String,List<SetMenuGoodsDto>> getMenuId(Long setMenuId);
 //查询商家所有套餐
