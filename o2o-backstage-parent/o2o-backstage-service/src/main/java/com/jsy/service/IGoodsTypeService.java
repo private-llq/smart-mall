@@ -2,6 +2,7 @@ package com.jsy.service;
 
 import com.jsy.domain.GoodsType;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.jsy.dto.GoodsTypeDto;
 
 import java.util.List;
 
@@ -22,4 +23,6 @@ public interface IGoodsTypeService extends IService<GoodsType> {
 
     //删除当前的节点 以及她的子节点
     void deleteById(Long id);
+
+    List<GoodsTypeDto> selectLevel(Integer level);
 }

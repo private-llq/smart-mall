@@ -1,22 +1,21 @@
 package com.jsy.service.impl;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsy.basic.util.PageInfo;
+import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.utils.BeansCopyUtils;
-import com.jsy.client.BrowseClient;
-import com.jsy.client.NewShopClient;
-import com.jsy.client.ServiceCharacteristicsClient;
-import com.jsy.client.TreeClient;
+import com.jsy.basic.util.utils.SnowFlake;
+import com.jsy.client.*;
 import com.jsy.domain.*;
-import com.jsy.dto.GoodsDto;
-import com.jsy.dto.GoodsServiceDto;
+import com.jsy.dto.*;
 import com.jsy.mapper.GoodsMapper;
 import com.jsy.parameter.GoodsParam;
 import com.jsy.parameter.GoodsServiceParam;
+import com.jsy.query.BackstageGoodsQuery;
+import com.jsy.query.BackstageServiceQuery;
 import com.jsy.query.GoodsPageQuery;
 import com.jsy.service.IGoodsService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -56,6 +55,9 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     @Autowired
     private BrowseClient browseClient;
 
+    @Autowired
+    private GoodsTypeClient goodsTypeClient;
+
 
 
     /**
@@ -64,11 +66,22 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     @Override
     @Transactional
     public void saveGoods(GoodsParam goodsParam) {
-
         Goods goods = new Goods();
-
+        if (Objects.nonNull(goodsParam.getShopId())){
+            NewShop newShop = shopClient.get(goodsParam.getShopId()).getData();
+            if (Objects.nonNull(newShop)){
+                goods.setShopName(newShop.getShopName());
+            }
+        }
+        if (Objects.nonNull(goodsParam.getGoodsTypeId())){
+            GoodsTypeDto data = goodsTypeClient.get(goodsParam.getGoodsTypeId()).getData();
+            if (Objects.isNull(data)){
+                throw new JSYException(-1,"商品分类不存在！");
+            }
+            goods.setGoodsTypeName(data.getClassifyName());
+        }
+        goods.setGoodsNumber(String.valueOf(SnowFlake.nextId()));
         String[] ids = goodsParam.getServiceCharacteristicsIds().split(",");//服务特点ids
-
         ArrayList<ServiceCharacteristics> list = new ArrayList<>();
         for (String id : ids) {
            list.add(client.get(Long.valueOf(id)).getData());
@@ -87,7 +100,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         }
 
         goods.setType(0);//商品类
-
+        goods.setIsPutaway(0);//默认未上架
         BeanUtil.copyProperties(goodsParam,goods);
         goodsMapper.insert(goods);
     }
@@ -101,12 +114,28 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     public void saveService(GoodsServiceParam goodsServiceParam) {
 
         Goods goods = new Goods();
-
+        if (Objects.nonNull(goodsServiceParam.getShopId())){
+            NewShop newShop = shopClient.get(goodsServiceParam.getShopId()).getData();
+            if (Objects.isNull(newShop)){
+                throw new JSYException(-1,"商家不存在！");
+            }
+            goods.setShopName(newShop.getShopName());
+        }
+        if (Objects.nonNull(goodsServiceParam.getGoodsTypeId())){
+            GoodsTypeDto data = goodsTypeClient.get(goodsServiceParam.getGoodsTypeId()).getData();
+            if (Objects.isNull(data)){
+                throw new JSYException(-1,"商品分类不存在！");
+            }
+            goods.setGoodsTypeName(data.getClassifyName());
+        }
+        goods.setGoodsNumber(String.valueOf(SnowFlake.nextId()));
         String[] ids = goodsServiceParam.getServiceCharacteristicsIds().split(",");//服务特点ids
-
         ArrayList<ServiceCharacteristics> list = new ArrayList<>();
+        StringBuffer strName=new StringBuffer();
         for (String id : ids) {
-            list.add(client.get(Long.valueOf(id)).getData());
+            ServiceCharacteristics data = client.get(Long.valueOf(id)).getData();
+            strName.append(data.getName()+",");
+            list.add(data);
         }
 
         list.forEach(x->{
@@ -120,8 +149,10 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         }else {
             goods.setDiscountState(0);
         }
-
+        String substring = strName.substring(0, strName.length() - 1);
+        goods.setServiceCharacteristicsName(substring);
         goods.setType(1);//服务类
+        goods.setIsPutaway(0);//默认未上架
         BeanUtil.copyProperties(goodsServiceParam,goods);
 
         goodsMapper.insert(goods);
@@ -184,6 +215,9 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         return goodsServiceDtos;
     }
 
+
+
+
     /**
      * 查看一条商品/服务的所有信息
      * @param id
@@ -211,13 +245,16 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     }
 
     /**
-     *查询店铺下面的所有商品+服务
+     * 查询店铺下面的商品+服务 B端
+     * @param goodsPageQuery   0:普通商品 1：服务类商品
+     * @return
      */
     @Override
     public PageInfo<Goods> getGoodsAll(GoodsPageQuery goodsPageQuery) {
         Long shopId = goodsPageQuery.getShopId();
         Integer isPutaway = goodsPageQuery.getIsPutaway();
         Integer type = goodsPageQuery.getType();
+        Integer state = goodsPageQuery.getState();
 
         Page<Goods> page = new Page<>(goodsPageQuery.getPage(),goodsPageQuery.getRows());
 
@@ -225,7 +262,8 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         Page<Goods> goodsPage = goodsMapper.selectPage(page, new QueryWrapper<Goods>()
                 .eq("shop_id", shopId)
                 .eq(Objects.nonNull(isPutaway), "is_putaway", isPutaway)
-                .eq("type", type)
+                .eq(Objects.nonNull(type),"type", type)
+                .eq(Objects.nonNull(state),"state",state)
         );
 
         PageInfo pageInfo = new PageInfo<Goods>();
@@ -235,6 +273,87 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         pageInfo.setRecords(goodsPage.getRecords());
         return pageInfo;
     }
+
+
+    /**
+     * 大后台查询商品列表
+     * @param backstageGoodsQuery
+     * @return
+     */
+    @Override
+    public PageInfo<BackstageGoodsDto> backstageGetGoodsAll(BackstageGoodsQuery backstageGoodsQuery) {
+        String goodsName = backstageGoodsQuery.getGoodsName();
+        Long goodsTypeId = backstageGoodsQuery.getGoodsTypeId();
+        LocalDateTime startTime = backstageGoodsQuery.getStartTime();
+        LocalDateTime endTime = backstageGoodsQuery.getEndTime();
+        Page<Goods> page = new Page<>(backstageGoodsQuery.getPage(), backstageGoodsQuery.getRows());
+        Page<Goods> goodsPage = goodsMapper.selectPage(page, new QueryWrapper<Goods>()
+                .eq("type", 0)
+                .like(StringUtils.isNotBlank(goodsName), "title", goodsName)
+                .eq(Objects.nonNull(goodsTypeId), "goods_type_id", goodsTypeId)
+                .between(Objects.nonNull(startTime) && Objects.nonNull(endTime), "create_time", startTime, endTime)
+        );
+        List<Goods> records = goodsPage.getRecords();
+        List<BackstageGoodsDto> list = BeansCopyUtils.listCopy(records, BackstageGoodsDto.class);
+        PageInfo<BackstageGoodsDto> pageInfo = new PageInfo<>();
+        pageInfo.setRecords(list);
+        pageInfo.setCurrent(goodsPage.getCurrent());
+        pageInfo.setSize(goodsPage.getSize());
+        pageInfo.setTotal(goodsPage.getTotal());
+        return pageInfo;
+    }
+
+    /**
+     * 大后台查询服务列表
+     * @param backstageServiceQuery
+     * @return
+     */
+    @Override
+    public PageInfo<BackstageServiceDto> backstageGetServiceAll(BackstageServiceQuery backstageServiceQuery) {
+        String serviceName = backstageServiceQuery.getServiceName();
+        Integer state = backstageServiceQuery.getState();
+        LocalDateTime startTime = backstageServiceQuery.getStartTime();
+        LocalDateTime endTime = backstageServiceQuery.getEndTime();
+        Long goodsTypeId = backstageServiceQuery.getGoodsTypeId();
+        Page<Goods> page = new Page<>(backstageServiceQuery.getPage(), backstageServiceQuery.getRows());
+        Page<Goods> servicePage = goodsMapper.selectPage(page, new QueryWrapper<Goods>()
+                .eq("type", 1)
+                .like(StringUtils.isNotBlank(serviceName), "title", serviceName)
+                .eq(Objects.nonNull(goodsTypeId), "goods_type_id", goodsTypeId)
+                .eq(Objects.nonNull(state), "state", state)
+                .between(Objects.nonNull(startTime) && Objects.nonNull(endTime), "create_time", startTime, endTime)
+
+
+        );
+        List<Goods> records = servicePage.getRecords();
+        List<BackstageServiceDto> list = BeansCopyUtils.listCopy(records, BackstageServiceDto.class);
+        PageInfo<BackstageServiceDto> pageInfo = new PageInfo<>();
+        pageInfo.setRecords(list);
+        pageInfo.setTotal(servicePage.getTotal());
+        pageInfo.setSize(servicePage.getSize());
+        pageInfo.setCurrent(servicePage.getSize());
+        return pageInfo;
+    }
+
+    /**
+     * 大后台屏蔽商家的商品
+     * @param id
+     */
+    @Override
+    @Transactional
+    public void shieldGoods(Long id) {
+        goodsMapper.update(null,new UpdateWrapper<Goods>().eq("id",id).set("state",1));
+    }
+
+    /**
+     * 大后台显示商家的商品
+     * @param id
+     */
+    @Override
+    public void showGoods(Long id) {
+        goodsMapper.update(null,new UpdateWrapper<Goods>().eq("id",id).set("state",0));
+    }
+
 
     /**
      * 上架商品/服务

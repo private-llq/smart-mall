@@ -1,11 +1,14 @@
 package com.jsy.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.domain.Tree;
-import com.jsy.dto.GoodsDto;
-import com.jsy.dto.GoodsServiceDto;
+import com.jsy.dto.*;
 import com.jsy.parameter.GoodsParam;
 import com.jsy.parameter.GoodsServiceParam;
+import com.jsy.query.BackstageGoodsQuery;
+import com.jsy.query.BackstageServiceQuery;
+import com.jsy.query.GoodsBackstageQuery;
 import com.jsy.query.GoodsPageQuery;
 import com.jsy.service.IGoodsService;
 import com.jsy.domain.Goods;
@@ -114,7 +117,7 @@ public class GoodsController {
     }
 
     /**
-     * 查看一条商品/服务的详细信息
+     * 查看一条商品/服务的详细信息 B端+C端
      * @param id
      *
      */
@@ -127,11 +130,12 @@ public class GoodsController {
     }
 
     /**
-     *
+     * 查询店铺下面的商品+服务 B端+端
      * @param goodsPageQuery
      * @return
      */
-    @ApiOperation("查询店铺下面的商品+服务")
+    //todo c端用户查询需要传 shopId=?  type=? (state=0，isPutaway=1) ; b端店主查询只需要shopId=?,type=?,isPutaway=?;
+    @ApiOperation("查询店铺下面的商品")
     @PostMapping("getGoodsAll")
     public CommonResult<PageInfo<Goods>> getGoodsAll(@RequestBody GoodsPageQuery goodsPageQuery)
     {
@@ -139,11 +143,56 @@ public class GoodsController {
         return CommonResult.ok(pageInfo);
     }
 
+    /**
+     *
+     * @param backstageGoodsQuery
+     * @return
+     */
+    @ApiOperation("大后台查询商品列表")
+    @PostMapping("backstageGetGoodsAll")
+    public CommonResult<PageInfo<BackstageGoodsDto>> backstageGetGoodsAll(@RequestBody BackstageGoodsQuery backstageGoodsQuery)
+    {
+        PageInfo<BackstageGoodsDto> pageInfo = goodsService.backstageGetGoodsAll(backstageGoodsQuery);
+        return CommonResult.ok(pageInfo);
+    }
+
+    /**
+     *
+     * @param backstageServiceQuery
+     * @return
+     */
+    @ApiOperation("大后台查询服务列表")
+    @PostMapping("backstageGetServiceAll")
+    public CommonResult<PageInfo<BackstageServiceDto>> backstageGetServiceAll(@RequestBody BackstageServiceQuery backstageServiceQuery)
+    {
+        PageInfo<BackstageServiceDto> pageInfo = goodsService.backstageGetServiceAll(backstageServiceQuery);
+        return CommonResult.ok(pageInfo);
+    }
+
+    /**
+     * 大后台屏蔽商家的商品+服务
+     * @param id
+     */
+    @GetMapping("shieldGoods")
+    public CommonResult shieldGoods(@RequestParam("id") Long id) {
+        goodsService.shieldGoods(id);
+       return CommonResult.ok();
+    }
+
+    /**
+     * 大后台显示商家的商品+服务
+     * @param id
+     */
+    @GetMapping("showGoods")
+    public CommonResult showGoods(@RequestParam("id") Long id) {
+        goodsService.showGoods(id);
+       return CommonResult.ok();
+    }
+
     @ApiOperation("查询商家最新发布的商品或在服务")
     @GetMapping("/getShopIdGoods")
     public CommonResult<Goods> getShopIdGoods(@RequestParam("shopId") Long shopId)
     {
-
         List<Goods> one = goodsService.list(new QueryWrapper<Goods>().eq("shop_id", shopId).orderByDesc("create_time"));
         if (one.size()>0){
             Goods goods = one.get(0);

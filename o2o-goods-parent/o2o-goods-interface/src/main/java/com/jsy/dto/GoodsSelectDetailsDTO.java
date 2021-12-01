@@ -3,7 +3,6 @@ package com.jsy.dto;
 import com.jsy.domain.GoodsOtherCost;
 import com.jsy.domain.GoodsProperty;
 import com.jsy.domain.GoodsSpec;
-import com.jsy.domain.GoodsType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

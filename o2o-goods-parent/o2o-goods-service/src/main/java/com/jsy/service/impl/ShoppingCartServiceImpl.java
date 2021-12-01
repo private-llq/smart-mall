@@ -1,10 +1,10 @@
 package com.jsy.service.impl;
+import cn.hutool.core.lang.Dict;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.utils.BeansCopyUtils;
 import com.jsy.client.NewShopClient;
-import com.jsy.client.ShopClient;
 import com.jsy.domain.Goods;
 import com.jsy.domain.NewShop;
 import com.jsy.domain.SetMenu;
@@ -19,11 +19,9 @@ import com.jsy.service.IShoppingCartService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhsj.baseweb.support.ContextHolder;
 import com.zhsj.baseweb.support.LoginUser;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

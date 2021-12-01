@@ -3,7 +3,11 @@ package com.jsy;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
+import com.baomidou.mybatisplus.annotation.DbType;
+import com.baomidou.mybatisplus.autoconfigure.SpringBootVFS;
+import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.pagination.optimize.JsqlParserCountOptimize;
 import com.codingapi.txlcn.tc.config.EnableDistributedTransaction;
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
@@ -15,7 +19,9 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.zhsj.basecommon.vo.R;
 import com.zhsj.baseweb.support.ContextHolder;
 import com.zhsj.baseweb.support.LoginUser;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.tomcat.util.descriptor.web.ContextHandler;
+import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -48,37 +54,27 @@ public class GoodsApplication {
 
 
     /**
-     * 配置分页插件，分页功能才能正常时候
-     * 不配置分页不会报错，但是查询没有分页功能
+     * 新版配置
+     *
      * @return
      */
     @Bean
-    public PaginationInterceptor paginationInterceptor() {
-        PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
-        // 设置请求的页面大于最大页后操作， true调回到首页，false 继续请求  默认false
-        //        // paginationInterceptor.setOverflow(false);
-        //        // 设置最大单页限制数量，默认 500 条，-1 不受限制
-        //        // paginationInterceptor.setLimit(500);
-        //        // 开启 count 的 join 优化,只针对部分 left join
-        paginationInterceptor.setCountSqlParser(new JsqlParserCountOptimize(true));
-        return paginationInterceptor;
+    public MybatisPlusInterceptor mybatisPlusInterceptor() {
+        MybatisPlusInterceptor mybatisPlusInterceptor = new MybatisPlusInterceptor();
+        mybatisPlusInterceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
+        return mybatisPlusInterceptor;
     }
 
-//    @Bean
-//    public PaginationInnerInterceptor paginationInnerInterceptor() {
-//        PaginationInnerInterceptor interceptor = new PaginationInnerInterceptor();
-//        interceptor.set
-//    }
 
-//    @Bean(name="sqlSessionFactory")
-//    public SqlSessionFactory sqlSessionFactory(@Qualifier("dataSource") DataSource dataSource) throws Exception {
-//        SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
-//        sqlSessionFactoryBean.setDataSource(dataSource);
-//        sqlSessionFactoryBean.setVfs(SpringBootVFS.class);
-//        sqlSessionFactoryBean.getObject().getConfiguration().setMapUnderscoreToCamelCase(true);
-//        return sqlSessionFactoryBean.getObject();
-//
-//    }
+    /*@Bean(name="sqlSessionFactory")
+    public SqlSessionFactory sqlSessionFactory(@Qualifier("dataSource") DataSource dataSource) throws Exception {
+        SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
+        sqlSessionFactoryBean.setDataSource(dataSource);
+        sqlSessionFactoryBean.setVfs(SpringBootVFS.class);
+        sqlSessionFactoryBean.getObject().getConfiguration().setMapUnderscoreToCamelCase(true);
+        return sqlSessionFactoryBean.getObject();
+
+    }*/
     @Bean
     @LoadBalanced
     public RestTemplate restTemplate(){
