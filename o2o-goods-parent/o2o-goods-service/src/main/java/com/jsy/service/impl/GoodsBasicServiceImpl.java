@@ -46,8 +46,8 @@ public class GoodsBasicServiceImpl extends ServiceImpl<GoodsBasicMapper, GoodsBa
     private GoodsBasicMapper goodsBasicMapper;
     @Resource
     private IGoodsBasicService goodsBasicService;
-    @Resource
-    private GoodsTypeMapper goodsTypeMapper;
+    //@Resource
+   // private GoodsTypeMapper goodsTypeMapper;
     @Resource
     private FileClient fileClient;
     @Resource
@@ -182,13 +182,13 @@ public class GoodsBasicServiceImpl extends ServiceImpl<GoodsBasicMapper, GoodsBa
     public GoodsSelectDetailsDTO selectDetails(String goodsUUid) {
         GoodsSelectDetailsDTO goodsSelectDetailsDTO = new GoodsSelectDetailsDTO();
         GoodsBasic goodsBasic = goodsBasicMapper.selectOne(new QueryWrapper<GoodsBasic>().eq("uuid", goodsUUid));
-        GoodsType goodsType = goodsTypeMapper.selectOne(new QueryWrapper<GoodsType>().eq("uuid", goodsBasic.getGoodsTypeUuid()));
-        String name = goodsType.getName();
+        //GoodsType goodsType = goodsTypeMapper.selectOne(new QueryWrapper<GoodsType>().eq("uuid", goodsBasic.getGoodsTypeUuid()));
+        //String name = goodsType.getName();
         ArrayList<GoodsSpec> specS = (ArrayList<GoodsSpec>) goodsSpecMapper.selectList(new QueryWrapper<GoodsSpec>().eq("goods_uuid", goodsUUid));
         ArrayList<GoodsProperty> properties = (ArrayList<GoodsProperty>) goodsPropertyMapper.selectList(new QueryWrapper<GoodsProperty>().eq("goods_uuid", goodsUUid));
         ArrayList<GoodsOtherCost> Others = (ArrayList<GoodsOtherCost>) goodsOtherCostMapper.selectList(new QueryWrapper<GoodsOtherCost>().eq("goods_uuid", goodsUUid));
         BeanUtils.copyProperties(goodsBasic, goodsSelectDetailsDTO);
-        goodsSelectDetailsDTO.setGoodsType(name);
+        //goodsSelectDetailsDTO.setGoodsType(name);
         goodsSelectDetailsDTO.setGoodsSpecs(specS);
         goodsSelectDetailsDTO.setGoodsOtherCosts(Others);
         goodsSelectDetailsDTO.setGoodsPropertys(properties);

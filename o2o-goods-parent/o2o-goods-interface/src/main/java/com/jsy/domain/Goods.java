@@ -66,6 +66,9 @@ public class Goods extends BaseEntity implements Serializable {
     @ApiModelProperty(value = "服务特点表ids 逗号隔开")
     private String serviceCharacteristicsIds;
 
+    @ApiModelProperty(value = "服务特点name 逗号隔开")
+    private String serviceCharacteristicsName;
+
     @ApiModelProperty(value = "服务的有效期")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @JSONField(format="yyyy-MM-dd HH:mm:ss")
@@ -88,6 +91,7 @@ public class Goods extends BaseEntity implements Serializable {
 
     @ApiModelProperty(value = "访问量")
     private Long pvNum;
+
 
     @ApiModelProperty(value = "大后台：商品状态 0 启用 1禁用")
     private Integer state;

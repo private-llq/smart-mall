@@ -3,13 +3,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.domain.Tree;
-import com.jsy.dto.BackstageGoodsDto;
-import com.jsy.dto.GoodsBackstageDto;
-import com.jsy.dto.GoodsDto;
-import com.jsy.dto.GoodsServiceDto;
+import com.jsy.dto.*;
 import com.jsy.parameter.GoodsParam;
 import com.jsy.parameter.GoodsServiceParam;
 import com.jsy.query.BackstageGoodsQuery;
+import com.jsy.query.BackstageServiceQuery;
 import com.jsy.query.GoodsBackstageQuery;
 import com.jsy.query.GoodsPageQuery;
 import com.jsy.service.IGoodsService;
@@ -159,7 +157,20 @@ public class GoodsController {
     }
 
     /**
-     * 大后台屏蔽商家的商品
+     *
+     * @param backstageServiceQuery
+     * @return
+     */
+    @ApiOperation("大后台查询服务列表")
+    @PostMapping("backstageGetServiceAll")
+    public CommonResult<PageInfo<BackstageServiceDto>> backstageGetServiceAll(@RequestBody BackstageServiceQuery backstageServiceQuery)
+    {
+        PageInfo<BackstageServiceDto> pageInfo = goodsService.backstageGetServiceAll(backstageServiceQuery);
+        return CommonResult.ok(pageInfo);
+    }
+
+    /**
+     * 大后台屏蔽商家的商品+服务
      * @param id
      */
     @GetMapping("shieldGoods")
@@ -169,7 +180,7 @@ public class GoodsController {
     }
 
     /**
-     * 大后台显示商家的商品
+     * 大后台显示商家的商品+服务
      * @param id
      */
     @GetMapping("showGoods")
