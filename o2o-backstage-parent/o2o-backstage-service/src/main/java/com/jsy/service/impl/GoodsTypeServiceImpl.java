@@ -1,6 +1,10 @@
 package com.jsy.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.jsy.basic.util.exception.JSYException;
+import com.jsy.basic.util.utils.BeansCopyUtils;
 import com.jsy.domain.GoodsType;
+import com.jsy.dto.GoodsTypeDto;
 import com.jsy.mapper.GoodsTypeMapper;
 import com.jsy.service.IGoodsTypeService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -8,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -56,6 +61,14 @@ public class GoodsTypeServiceImpl extends ServiceImpl<GoodsTypeMapper, GoodsType
             categoryMapper.deleteById(item.getId());
         }
     }
+
+    @Override
+    public List<GoodsTypeDto> selectLevel(Integer level) {
+        List<GoodsType> goodsTypes = categoryMapper.selectList(new QueryWrapper<GoodsType>().eq("level", level).eq("state", 1));
+        List<GoodsTypeDto> dtos = BeansCopyUtils.listCopy(goodsTypes, GoodsTypeDto.class);
+        return dtos;
+    }
+
     public void getNext(List<GoodsType> category){
         //判断当前chrldren是否为空
         if (category.size()>0) {

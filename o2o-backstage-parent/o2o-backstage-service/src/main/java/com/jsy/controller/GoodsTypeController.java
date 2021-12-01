@@ -1,4 +1,5 @@
 package com.jsy.controller;
+import com.jsy.basic.util.utils.BeansCopyUtils;
 import com.jsy.dto.GoodsTypeDto;
 import com.jsy.param.GoodsTypeParam;
 import com.jsy.service.IGoodsTypeService;
@@ -85,6 +86,19 @@ public class GoodsTypeController {
 
     }
 
+    /**
+     *
+     * @param level 1 2 3 级
+     * @return
+     */
+    @ApiOperation("根据级别查询菜单")
+    @GetMapping(value = "/selectLevel")
+    public CommonResult<List<GoodsTypeDto>> selectLevel(@RequestParam("level")Integer level)
+    {
+        List<GoodsTypeDto> list= goodsTypeService.selectLevel(level);
+        return CommonResult.ok(list);
+    }
+
 
     /**
      * 返回list列表
@@ -102,5 +116,7 @@ public class GoodsTypeController {
         }
         return CommonResult.ok(dtoList);
     }
+
+
 
 }
