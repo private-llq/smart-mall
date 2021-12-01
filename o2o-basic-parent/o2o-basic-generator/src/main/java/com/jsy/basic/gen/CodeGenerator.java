@@ -13,7 +13,7 @@ import java.util.ResourceBundle;
 
 public class CodeGenerator {
     public static void main(String[] args) {
-            final ResourceBundle resource = ResourceBundle.getBundle("generator-backstage");
+            final ResourceBundle resource = ResourceBundle.getBundle("generator-shop");
         // 代码生成器
         AutoGenerator mpg = new AutoGenerator();
         // 全局配置

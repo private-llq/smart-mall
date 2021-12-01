@@ -141,4 +141,7 @@ public class NewShop extends BaseEntity  {
 
     @ApiModelProperty(value = "审核状态 0未审核 1已审核 2审核未通过  3资质未认证")
     private Integer state;
+
+    @ApiModelProperty(value = "是否被屏蔽   1已屏蔽  0未屏蔽")
+    private Integer shielding;
 }
