@@ -89,9 +89,6 @@ public class Goods extends BaseEntity implements Serializable {
     @ApiModelProperty(value = "访问量")
     private Long pvNum;
 
-    @ApiModelProperty(value = "大后台：排序序号")
-    private Long sort;
-
     @ApiModelProperty(value = "大后台：商品状态 0 启用 1禁用")
     private Integer state;
 

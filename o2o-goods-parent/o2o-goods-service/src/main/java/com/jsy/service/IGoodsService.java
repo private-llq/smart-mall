@@ -6,11 +6,13 @@ import com.jsy.basic.util.utils.BeansCopyUtils;
 import com.jsy.domain.Goods;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jsy.domain.Tree;
+import com.jsy.dto.BackstageGoodsDto;
 import com.jsy.dto.GoodsBackstageDto;
 import com.jsy.dto.GoodsDto;
 import com.jsy.dto.GoodsServiceDto;
 import com.jsy.parameter.GoodsParam;
 import com.jsy.parameter.GoodsServiceParam;
+import com.jsy.query.BackstageGoodsQuery;
 import com.jsy.query.GoodsBackstageQuery;
 import com.jsy.query.GoodsPageQuery;
 
@@ -46,9 +48,10 @@ public interface IGoodsService extends IService<Goods> {
     Goods getGoodsService(Long id);
 
     /**
-     * 查询店铺下面的所有商品+服务
+     * 查询店铺下面的商品+服务 B端
+     * @param goodsPageQuery   0:普通商品 1：服务类商品
+     * @return
      */
-
     PageInfo<Goods> getGoodsAll(GoodsPageQuery goodsPageQuery);
 
 
@@ -100,4 +103,22 @@ public interface IGoodsService extends IService<Goods> {
      */
     List<GoodsServiceDto> batchGoodsService(List<Long> goodsServiceList);
 
+    /**
+     * 大后台查询商品列表
+     * @param backstageGoodsQuery
+     * @return
+     */
+    PageInfo<BackstageGoodsDto> backstageGetGoodsAll(BackstageGoodsQuery backstageGoodsQuery);
+
+    /**
+     * 大后台屏蔽商家的商品
+     * @param id
+     */
+    void shieldGoods(Long id);
+
+    /**
+     * 大后台显示商家的商品
+     * @param id
+     */
+    void showGoods(Long id);
 }

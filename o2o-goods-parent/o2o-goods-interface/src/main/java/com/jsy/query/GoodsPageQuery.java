@@ -23,5 +23,10 @@ public class GoodsPageQuery extends PageQuery {
      */
     private Integer Type;
 
+    /**
+     * 大后台：商品状态 0 启用 1禁用
+     */
+    private Integer state;
+
 
 }

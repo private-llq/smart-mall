@@ -13,6 +13,7 @@ import com.jsy.client.NewShopClient;
 import com.jsy.client.ServiceCharacteristicsClient;
 import com.jsy.client.TreeClient;
 import com.jsy.domain.*;
+import com.jsy.dto.BackstageGoodsDto;
 import com.jsy.dto.GoodsBackstageDto;
 import com.jsy.dto.GoodsDto;
 import com.jsy.dto.GoodsServiceDto;
@@ -20,6 +21,7 @@ import com.jsy.mapper.GoodsMapper;
 import com.jsy.mapper.GoodsTypeMapper;
 import com.jsy.parameter.GoodsParam;
 import com.jsy.parameter.GoodsServiceParam;
+import com.jsy.query.BackstageGoodsQuery;
 import com.jsy.query.GoodsBackstageQuery;
 import com.jsy.query.GoodsPageQuery;
 import com.jsy.service.IGoodsService;
@@ -214,6 +216,8 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     }
 
 
+
+
     /**
      * 查看一条商品/服务的所有信息
      * @param id
@@ -241,13 +245,16 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     }
 
     /**
-     *查询店铺下面的所有商品+服务
+     * 查询店铺下面的商品+服务 B端
+     * @param goodsPageQuery   0:普通商品 1：服务类商品
+     * @return
      */
     @Override
     public PageInfo<Goods> getGoodsAll(GoodsPageQuery goodsPageQuery) {
         Long shopId = goodsPageQuery.getShopId();
         Integer isPutaway = goodsPageQuery.getIsPutaway();
         Integer type = goodsPageQuery.getType();
+        Integer state = goodsPageQuery.getState();
 
         Page<Goods> page = new Page<>(goodsPageQuery.getPage(),goodsPageQuery.getRows());
 
@@ -255,7 +262,8 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         Page<Goods> goodsPage = goodsMapper.selectPage(page, new QueryWrapper<Goods>()
                 .eq("shop_id", shopId)
                 .eq(Objects.nonNull(isPutaway), "is_putaway", isPutaway)
-                .eq("type", type)
+                .eq(Objects.nonNull(type),"type", type)
+                .eq(Objects.nonNull(state),"state",state)
         );
 
         PageInfo pageInfo = new PageInfo<Goods>();
@@ -267,6 +275,52 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     }
 
 
+    /**
+     * 大后台查询商品列表
+     * @param backstageGoodsQuery
+     * @return
+     */
+    @Override
+    public PageInfo<BackstageGoodsDto> backstageGetGoodsAll(BackstageGoodsQuery backstageGoodsQuery) {
+        String goodsName = backstageGoodsQuery.getGoodsName();
+        Long goodsTypeId = backstageGoodsQuery.getGoodsTypeId();
+        LocalDateTime startTime = backstageGoodsQuery.getStartTime();
+        LocalDateTime endTime = backstageGoodsQuery.getEndTime();
+        Page<Goods> page = new Page<>(backstageGoodsQuery.getPage(), backstageGoodsQuery.getRows());
+        Page<Goods> goodsPage = goodsMapper.selectPage(page, new QueryWrapper<Goods>()
+                .eq("type", 0)
+                .like(StringUtils.isNotBlank(goodsName), "title", goodsName)
+                .eq(Objects.nonNull(goodsTypeId), "goods_type_id", goodsTypeId)
+                .between(Objects.nonNull(startTime) && Objects.nonNull(endTime), "create_time", startTime, endTime)
+        );
+        List<Goods> records = goodsPage.getRecords();
+        List<BackstageGoodsDto> list = BeansCopyUtils.listCopy(records, BackstageGoodsDto.class);
+        PageInfo<BackstageGoodsDto> pageInfo = new PageInfo<>();
+        pageInfo.setRecords(list);
+        pageInfo.setCurrent(goodsPage.getCurrent());
+        pageInfo.setSize(goodsPage.getSize());
+        pageInfo.setTotal(goodsPage.getTotal());
+        return pageInfo;
+    }
+
+    /**
+     * 大后台屏蔽商家的商品
+     * @param id
+     */
+    @Override
+    @Transactional
+    public void shieldGoods(Long id) {
+        goodsMapper.update(null,new UpdateWrapper<Goods>().eq("id",id).set("state",1));
+    }
+
+    /**
+     * 大后台显示商家的商品
+     * @param id
+     */
+    @Override
+    public void showGoods(Long id) {
+        goodsMapper.update(null,new UpdateWrapper<Goods>().eq("id",id).set("state",0));
+    }
 
 
     /**

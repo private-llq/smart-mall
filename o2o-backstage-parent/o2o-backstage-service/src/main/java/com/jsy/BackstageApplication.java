@@ -1,5 +1,4 @@
 package com.jsy;
-//import com.codingapi.txlcn.tc.config.EnableDistributedTransaction;
 import com.codingapi.txlcn.tc.config.EnableDistributedTransaction;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
