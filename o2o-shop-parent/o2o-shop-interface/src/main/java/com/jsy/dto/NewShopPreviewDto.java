@@ -23,7 +23,7 @@ public class NewShopPreviewDto implements Serializable {
     private Long id;
 
     @ApiModelProperty(value = "店铺拥有者uuid")
-    private String ownerUuid;
+    private Long ownerUuid;
 
     @ApiModelProperty(value = "店铺所在城市")
     private String city;
@@ -43,11 +43,14 @@ public class NewShopPreviewDto implements Serializable {
     @ApiModelProperty(value = "店铺logo(file_url)")
     private String shopLogo;
 
-    @ApiModelProperty(value = "详细地址（定位）")
-    private String addressDetail;
+//    @ApiModelProperty(value = "详细地址（定位）")
+//    private String addressDetail;
 
-    @ApiModelProperty(value = "审核状态 0未审核 1已审核 2审核未通过")
+    @ApiModelProperty(value = "审核状态 0未审核 1已审核 2审核未通过 3资质未认证")
     private Integer state;
+    @ApiModelProperty(value = "营业执照地址）")
+    private String businessAddress;
+
 
 
 }

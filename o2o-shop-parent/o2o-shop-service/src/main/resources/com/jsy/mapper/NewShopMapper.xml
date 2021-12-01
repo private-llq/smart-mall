@@ -81,9 +81,13 @@
         <if test="shopQuery.state !=null and shopQuery.state !=''">
             AND s.state= #{shopQuery.state,jdbcType=INTEGER}
         </if>
-        <if test="shopQuery.shopName !=null and shopQuery.shopName!=''">
-            AND s.shop_name LIKE CONCAT('%',#{shopQuery.shopName,jdbcType=VARCHAR},'%')
+        <if test="shopQuery.keyword !=null and shopQuery.keyword!=''">
+            AND s.shop_name LIKE CONCAT('%',#{shopQuery.keyword,jdbcType=VARCHAR},'%')
+            OR s.shop_username LIKE CONCAT('%',#{shopQuery.keyword,jdbcType=VARCHAR},'%')
         </if>
+    </select>
+    <select id="selectHot" resultType="com.jsy.dto.NewShopHotDto">
+        SELECT * FROM sv_num WHERE id in(SELECT id FROM pv_num)
     </select>
 
 </mapper>

@@ -62,4 +62,6 @@ public class SetMenuDto implements Serializable {
     @ApiModelProperty(value = "套餐访问量")
     private Long pvNum;
 
+    private Long shopId;
+
 }

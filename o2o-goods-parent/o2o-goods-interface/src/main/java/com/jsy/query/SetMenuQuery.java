@@ -17,4 +17,5 @@ import lombok.NoArgsConstructor;
 public class SetMenuQuery extends BaseQuery{
     @ApiModelProperty(value = "店铺id")
     private Long shopId;
+    private Integer state;
 }

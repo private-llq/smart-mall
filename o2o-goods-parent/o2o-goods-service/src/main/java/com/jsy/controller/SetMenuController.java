@@ -57,7 +57,7 @@ public class SetMenuController {
     * @param id
     * @return
     */
-    @DeleteMapping(value="/{id}")
+    @DeleteMapping(value="/del")
     public CommonResult delete(@PathVariable("id") Long id){
         try {
             setMenuService.removeById(id);
@@ -72,8 +72,8 @@ public class SetMenuController {
     * 根据id查询一条
     * @param id
     */
-    @GetMapping(value = "/{id}")
-    public SetMenu get(@PathVariable("id")Long id)
+    @GetMapping(value = "/get")
+    public SetMenu get(@RequestParam("id")Long id)
     {
         return setMenuService.getById(id);
     }
@@ -102,10 +102,11 @@ public class SetMenuController {
      * @return
      */
     @ApiOperation("查询商家 上架或下架套餐")
-    @GetMapping(value = "/list")
-    public List<SetMenuDto> list(@RequestParam("shopId") Long shopId, @RequestParam("state") Integer state){
+    @PostMapping(value = "/list")
+    public CommonResult<PageInfo<SetMenuDto>> list(@RequestBody SetMenuQuery setMenuQuery){
 //        Long shopId= 1L;
-        return setMenuService.getList(shopId,state);
+        PageInfo<SetMenuDto> list = setMenuService.getList(setMenuQuery);
+        return CommonResult.ok(list);
     }
 
     /**
@@ -113,11 +114,11 @@ public class SetMenuController {
      * @return
      */
     @ApiOperation("查询商家所有套餐")
-    @GetMapping(value = "/listAll")
-    public PageInfo<SetMenuDto> listAll(@RequestBody SetMenuQuery setMenuQuery){
+    @PostMapping(value = "/listAll")
+    public CommonResult<PageInfo<SetMenuDto>> listAll(@RequestBody SetMenuQuery setMenuQuery){
         PageInfo<SetMenuDto> dtoList = setMenuService.listAll(setMenuQuery);
 
-        return dtoList;
+        return CommonResult.ok(dtoList);
     }
 
     /**

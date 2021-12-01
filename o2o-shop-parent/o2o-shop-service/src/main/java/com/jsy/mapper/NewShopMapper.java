@@ -2,6 +2,7 @@ package com.jsy.mapper;
 
 import com.jsy.domain.NewShop;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.jsy.dto.NewShopHotDto;
 import com.jsy.query.NewShopQuery;
 import org.apache.ibatis.annotations.Param;
 
@@ -24,5 +25,6 @@ public interface NewShopMapper extends BaseMapper<NewShop> {
     List<NewShop> selectAddress(@Param("longitude") BigDecimal longitude, @Param("latitude") BigDecimal latitude);
     //大后台商家分页
     List<NewShop> selecctNewShopPage(@Param("shopQuery") NewShopQuery shopQuery);
-
+//热门推荐
+    List<NewShopHotDto> selectHot();
 }

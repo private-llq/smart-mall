@@ -42,7 +42,7 @@ public class NewShop extends BaseEntity  {
 
 
     @ApiModelProperty(value = "店铺拥有者uuid")
-    private String ownerUuid;
+    private Long ownerUuid;
 
     @ApiModelProperty(value = "店铺所在城市")
     private String city;
@@ -139,6 +139,6 @@ public class NewShop extends BaseEntity  {
     @TableField(exist = false)
     private BigDecimal distance;
 
-    @ApiModelProperty(value = "审核状态 0未审核 1已审核 2审核未通过")
+    @ApiModelProperty(value = "审核状态 0未审核 1已审核 2审核未通过  3资质未认证")
     private Integer state;
 }

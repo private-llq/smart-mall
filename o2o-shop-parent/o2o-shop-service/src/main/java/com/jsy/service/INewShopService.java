@@ -3,11 +3,10 @@ package com.jsy.service;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.domain.NewShop;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.jsy.dto.MyNewShopDto;
-import com.jsy.dto.NewShopDto;
-import com.jsy.dto.NewShopPreviewDto;
-import com.jsy.dto.NewShopRecommendDto;
+import com.jsy.dto.*;
+import com.jsy.parameter.NewShopModifyParam;
 import com.jsy.parameter.NewShopParam;
+import com.jsy.parameter.NewShopQualificationParam;
 import com.jsy.parameter.NewShopSetParam;
 import com.jsy.query.MainSearchQuery;
 import com.jsy.query.NewShopQuery;
@@ -24,11 +23,11 @@ import java.util.List;
  */
 public interface INewShopService extends IService<NewShop> {
     //创建店铺
-    void addNewShop(NewShopParam shopPacketParam);
+    Long addNewShop(NewShopParam shopPacketParam);
     //根据店铺id预览店铺基本信息
     NewShopPreviewDto getPreviewDto(Long shopId);
-//修改店铺的参数
-    void update(NewShopParam shopPacketParam);
+//修改所有店铺的参数
+    void update(NewShopModifyParam modifyParam);
 //修改店铺设置
     void setSetShop(NewShopSetParam shopSetParam);
 
@@ -57,4 +56,30 @@ public interface INewShopService extends IService<NewShop> {
   * @description 大后台分页
   **/
     PageInfo<NewShopDto> newShopPage(NewShopQuery shopQuery);
+ /**
+  * @author Tian
+  * @since 2021/11/29-16:08
+  * @description 热门推荐
+  *
+  * @param newShopQuery*/
+    PageInfo<NewShopHotDto> getHot(NewShopQuery newShopQuery);
+
+     /**
+      * @author Tian
+      * @since 2021/12/1-9:29
+      * @description   创建店铺资质认证
+      **/
+    void addQualification(NewShopQualificationParam qualificationParam);
+ /**
+  * @author Tian
+  * @since 2021/12/1-11:18
+  * @description 店铺预览基本信息查询
+  **/
+    NewShopBasicDto selectBasic(Long shopId);
+     /**
+      * @author Tian
+      * @since 2021/12/1-11:47
+      * @description 修改店铺基本信息填写
+      **/
+    void updateBasic(NewShopParam shopPacketParam);
 }
