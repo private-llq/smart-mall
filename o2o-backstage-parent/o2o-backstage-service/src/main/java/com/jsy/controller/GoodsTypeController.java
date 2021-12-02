@@ -6,7 +6,6 @@ import com.jsy.service.IGoodsTypeService;
 import com.jsy.domain.GoodsType;
 import com.jsy.query.IndustryCategoryQuery;
 import com.jsy.basic.util.PageList;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

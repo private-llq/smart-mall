@@ -13,6 +13,7 @@ import org.springframework.context.annotation.ComponentScan;
 @EnableFeignClients
 @ComponentScan("com.zhsj")
 @EnableDistributedTransaction
+@ComponentScan("com.jsy")
 public class FileApplication {
     public static void main(String[] args) {
         SpringApplication.run(FileApplication.class,args);
