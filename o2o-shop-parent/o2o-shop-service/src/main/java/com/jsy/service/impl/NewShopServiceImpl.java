@@ -299,9 +299,10 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
                         if (Objects.nonNull(tree)){
                             recommendDto.setShopTreeIdName(tree.getName());
                         }
-
+            System.out.println("评分");
                         //评分
                         SelectShopCommentScoreDto data = commentClent.selectShopCommentScore(newShop.getId()).getData();
+            System.out.println(data.getScore());
                         recommendDto.setGrade(data.getScore());
 
                         //把商品最近发布的东西查出来   有可能是服务又可能是商品 有可能是 套餐

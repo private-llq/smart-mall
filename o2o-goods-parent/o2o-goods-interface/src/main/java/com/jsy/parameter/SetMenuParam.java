@@ -37,8 +37,8 @@ public class SetMenuParam implements Serializable {
     @ApiModelProperty(value = "店铺id")
     private Long shopId;
 
-    @ApiModelProperty(value = "服务特点表ids 逗号隔开")
-    private String serviceCharacteristicsIds;
+//    @ApiModelProperty(value = "服务特点表ids 逗号隔开")
+//    private String serviceCharacteristicsIds;
 
     @ApiModelProperty(value = "真实价格")
     private BigDecimal realPrice;
