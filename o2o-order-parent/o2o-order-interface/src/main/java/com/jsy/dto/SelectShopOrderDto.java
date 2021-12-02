@@ -1,8 +1,5 @@
 package com.jsy.dto;
 
-import com.jsy.query.CreationOrderGoodsParam;
-import com.jsy.query.CreationOrderMenuParam;
-import com.jsy.query.CreationOrderServiceParam;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -12,15 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @className（类名称）: SelectUserOrderDTO
- * @description（类描述）: this is the SelectUserOrderDTO class
+ * @className（类名称）: SelectShopOrderDto
+ * @description（类描述）: this is the SelectShopOrderDto class
  * @author（创建人）: ${arli}
- * @createDate（创建时间）: 2021/11/16
+ * @createDate（创建时间）: 2021/11/29
  * @version（版本）: v1.0
  */
 @Data
-public class SelectUserOrderDTO {
-
+public class SelectShopOrderDto {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "c端用户id")
@@ -81,6 +77,8 @@ public class SelectUserOrderDTO {
     @ApiModelProperty(value = "详细地址")
     private String detailedAddress;
 
+    @ApiModelProperty(value = "验证状态")
+    private Integer serverCodeStatus;
     @ApiModelProperty(value = "预计最早时间")
     private LocalDateTime startTime;
 
@@ -93,6 +91,4 @@ public class SelectUserOrderDTO {
     private   List<SelectUserOrderServiceDto> OrderServiceDtos=new ArrayList<>();
     @ApiModelProperty(value = "如果是套餐的添加到套餐详情")
     private  List<SelectUserOrderMenuDto> OrderMenuDtos=new ArrayList<>();
-
-
 }

@@ -55,6 +55,9 @@ public class SelectUserOrderServiceDto {
     @ApiModelProperty(value = "服务有效期")
     private LocalDateTime validUntilTime;
 
+    @ApiModelProperty(value = "服务Id")
+    private Long serviceId;
+
     @ApiModelProperty(value = "服务数量")
     private Integer amount;
 }

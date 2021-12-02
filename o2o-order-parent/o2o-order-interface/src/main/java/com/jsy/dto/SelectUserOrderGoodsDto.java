@@ -24,6 +24,9 @@ public class SelectUserOrderGoodsDto {
     @ApiModelProperty(value = "商家id")
     private Long shopId;
 
+    @ApiModelProperty(value = "商品id")
+    private Long goodsId;
+
     @ApiModelProperty(value = "商品分类id")
     private Long goodsTypeId;
 

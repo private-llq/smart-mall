@@ -2,10 +2,9 @@ package com.jsy.service;
 
 import com.jsy.domain.NewOrder;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.jsy.dto.SelectUserOrderDTO;
-import com.jsy.query.CompletionPayParam;
-import com.jsy.query.CreationOrderParam;
-import com.jsy.query.SelectUserOrderParam;
+import com.jsy.dto.SelectShopOrderDto;
+import com.jsy.dto.SelectUserOrderDto;
+import com.jsy.query.*;
 
 import java.util.List;
 
@@ -20,13 +19,20 @@ import java.util.List;
 public interface INewOrderService extends IService<NewOrder> {
     //新增一条订单
     Boolean creationOrder(CreationOrderParam creationOrderParam);
-    //用户根据转态查询订单(Integer type 0用户 1是商家)
-    List<SelectUserOrderDTO> selectUserOrder(Long id, SelectUserOrderParam param,Integer type);
+    //用户根据转态查询订单
+    List<SelectUserOrderDto> selectUserOrder(Long id, SelectUserOrderParam param);
+    //商家根据转态查询订单
+    List<SelectShopOrderDto> selectShopOrder( SelectShopOrderParam param);
     //用户删除订单
     boolean deletedUserOrder(Long orderId);
     //商家同意预约订单
-    Boolean consentOrder(Long orderId);
+    Boolean consentOrder(Long shopId,Long orderId);
     //用户支付后调用的接口
     public Boolean completionPay(CompletionPayParam param);
+    //商家验卷接口
+    public boolean acceptanceCheck(Long shopId, String code);
+    //商家根据验证码查询订单
+    SelectShopOrderDto shopConsentOrder(ShopConsentOrderParam param);
+
 
 }

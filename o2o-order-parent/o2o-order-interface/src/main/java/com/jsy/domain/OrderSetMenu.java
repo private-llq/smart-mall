@@ -33,6 +33,9 @@ public class OrderSetMenu extends BaseEntity implements Serializable {
     @ApiModelProperty(value = "订单id")
     private Long orderId;
 
+    @ApiModelProperty(value = "套餐id")
+    private Long menuId;
+
     @ApiModelProperty(value = "套餐名称")
     private String name;
 
@@ -63,6 +66,8 @@ public class OrderSetMenu extends BaseEntity implements Serializable {
     @ApiModelProperty(value = "套餐说明")
     private String menuExplain;
 
+    @ApiModelProperty(value = "数量")
+    private Integer amount;
 
 
 

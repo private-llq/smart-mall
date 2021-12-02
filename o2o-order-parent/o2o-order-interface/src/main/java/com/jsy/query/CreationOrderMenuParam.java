@@ -25,6 +25,9 @@ public class CreationOrderMenuParam implements Serializable {
     @ApiModelProperty(value = "套餐名称")
     private String name;
 
+    @ApiModelProperty(value = "套餐id")
+    private Long menuId;
+
     @ApiModelProperty(value = "店铺id")
     private Long shopId;
 
@@ -55,6 +58,9 @@ public class CreationOrderMenuParam implements Serializable {
 
     @ApiModelProperty(value = "套餐说明")
     private String menuExplain;
+
+    @ApiModelProperty(value = "数量")
+    private Integer amount;
 
     @ApiModelProperty(value = "套餐的详情")
     private List<CreationOrderMenuGoodsParam> creationOrderMenuGoodsParams;
