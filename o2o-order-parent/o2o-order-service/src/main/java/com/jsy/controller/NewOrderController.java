@@ -17,7 +17,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.jsy.basic.util.vo.CommonResult;
-
 import java.util.List;
 
 @RestController
@@ -25,7 +24,6 @@ import java.util.List;
 public class NewOrderController {
     @Autowired
     public INewOrderService newOrderService;
-
     /**
      * 保存和修改公用的
      *
@@ -46,7 +44,6 @@ public class NewOrderController {
             return CommonResult.error(-1, "操作失败！");
         }
     }
-
     /**
      * 删除对象信息
      *
@@ -63,7 +60,6 @@ public class NewOrderController {
             return CommonResult.error(-1, "删除失败！");
         }
     }
-
     /**
      * 根据id查询一条
      *
@@ -73,8 +69,6 @@ public class NewOrderController {
     public NewOrder get(@PathVariable("id") Long id) {
         return newOrderService.getById(id);
     }
-
-
     /**
      * 返回list列表
      *

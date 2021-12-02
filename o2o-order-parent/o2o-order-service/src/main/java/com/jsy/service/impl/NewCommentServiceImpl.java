@@ -66,16 +66,17 @@ public class NewCommentServiceImpl extends ServiceImpl<NewCommentMapper, NewComm
         if (size==0) {
             scoreDto.setScore(5.0);
             scoreDto.setSize(0);
+        }else {
+            value=0.0;
+            double sum = newComments.stream().mapToDouble(NewComment::getEvaluateLevel).sum();
+            NumberFormat forma = NumberFormat.getIntegerInstance();
+            forma.setMaximumFractionDigits(1);
+            String format = forma.format(sum/size);
+            Double aDouble = Double.valueOf(format);
+            scoreDto.setScore(aDouble);
+            scoreDto.setSize(size);
         }
-        value=0.0;
-        double sum = newComments.stream().mapToDouble(NewComment::getEvaluateLevel).sum();
-        NumberFormat forma = NumberFormat.getIntegerInstance();
-        forma.setMaximumFractionDigits(1);
-        String format = forma.format(sum/size);
-        Double aDouble = Double.valueOf(format);
 
-        scoreDto.setScore(aDouble);
-        scoreDto.setSize(size);
         return scoreDto;
     }
 
@@ -93,19 +94,11 @@ public class NewCommentServiceImpl extends ServiceImpl<NewCommentMapper, NewComm
     @Override
     public MyPage selectCommentAndReply(SelectShopCommentPageParam param) {
         MyPage<SelectCommentAndReplyDto> myPage=new MyPage();
-
-
-
         Integer current = param.getCurrent();//页码
         Integer amount = param.getAmount();//数量
         Integer    index=(current-1)*(amount);//起始位置
         Integer   end=amount;//每页数量
         List<SelectCommentAndReplyVo> selectCommentAndReplyVos =null;
-
-
-
-
-
         Integer   total=0;
         if (param.getIsPicture()==1) {
             selectCommentAndReplyVos= newCommentMapper.selectCommentAndReply(index, end, param.getShopId(),1);//查询有图片的
@@ -125,7 +118,6 @@ public class NewCommentServiceImpl extends ServiceImpl<NewCommentMapper, NewComm
 //        UserDetail userDetail = infoRpcService.getUserDetail(loginUser.getId());
 //        String avatarThumbnail = userDetail.getAvatarThumbnail();
 //        System.out.println("头像****************************************"+avatarThumbnail);
-
             selectCommentAndReplyDto.setHeadpPhoto("用户头像");
             list.add(selectCommentAndReplyDto);
         });

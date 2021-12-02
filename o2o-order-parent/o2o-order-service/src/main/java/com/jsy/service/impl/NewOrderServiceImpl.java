@@ -177,10 +177,10 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
                     SelectUserOrderServiceDto serviceDto = new SelectUserOrderServiceDto();
                     BeanUtils.copyProperties(orderService, serviceDto);
                     //服务特点的集合
-                    String serviceCharacteristicsIds = orderService.getServiceCharacteristicsIds();
-                    List<ServiceCharacteristicsDto> list = characteristicsClient.getList(serviceCharacteristicsIds).getData();
-                    serviceDto.setServiceCharacteristicsDtos(new ArrayList<>());
-                    serviceDto.getServiceCharacteristicsDtos().addAll(list);
+//                    String serviceCharacteristicsIds = orderService.getServiceCharacteristicsIds();
+//                    List<ServiceCharacteristicsDto> list = characteristicsClient.getList(serviceCharacteristicsIds).getData();
+//                    serviceDto.setServiceCharacteristicsDtos(new ArrayList<>());
+//                    serviceDto.getServiceCharacteristicsDtos().addAll(list);
                     serviceDtos.add(serviceDto);
                 }
 
@@ -195,12 +195,12 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
                 for (OrderGoods orderGood : orderGoods) {
                     SelectUserOrderGoodsDto orderGoodsDto = new SelectUserOrderGoodsDto();
                     BeanUtils.copyProperties(orderGood, orderGoodsDto);
-                    //服务特点的集合
-                    String serviceCharacteristicsIds = orderGood.getServiceCharacteristicsIds();
-                    List<ServiceCharacteristicsDto> list = characteristicsClient.getList(serviceCharacteristicsIds).getData();
-                    orderGoodsDto.setServiceCharacteristicsDtos(new ArrayList<>());
-                    orderGoodsDto.getServiceCharacteristicsDtos().addAll(list);
-
+//                    //服务特点的集合
+//                    String serviceCharacteristicsIds = orderGood.getServiceCharacteristicsIds();
+//                    List<ServiceCharacteristicsDto> list = characteristicsClient.getList(serviceCharacteristicsIds).getData();
+//                    orderGoodsDto.setServiceCharacteristicsDtos(new ArrayList<>());
+//                    orderGoodsDto.getServiceCharacteristicsDtos().addAll(list);
+//
                     OrderGoodsDtos.add(orderGoodsDto);
                 }
 
@@ -223,20 +223,20 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
                             SelectUserOrderMenuGoodsDto orderMenuGoodsDto = new SelectUserOrderMenuGoodsDto();
                             BeanUtils.copyProperties(orderSetMenuGood, orderMenuGoodsDto);
                             //服务特点的集合
-                            String serviceCharacteristicsIds = orderSetMenuGood.getServiceCharacteristicsIds();
-                            List<ServiceCharacteristicsDto> list = characteristicsClient.getList(serviceCharacteristicsIds).getData();
-                            orderMenuGoodsDto.setServiceCharacteristicsDtos(new ArrayList<>());
-                            orderMenuGoodsDto.getServiceCharacteristicsDtos().addAll(list);
+//                            String serviceCharacteristicsIds = orderSetMenuGood.getServiceCharacteristicsIds();
+//                            List<ServiceCharacteristicsDto> list = characteristicsClient.getList(serviceCharacteristicsIds).getData();
+//                            orderMenuGoodsDto.setServiceCharacteristicsDtos(new ArrayList<>());
+//                            orderMenuGoodsDto.getServiceCharacteristicsDtos().addAll(list);
                             orderMenuGoodsDtos.add(orderMenuGoodsDto);
                         }
 
                         SelectUserOrderMenuDto userOrderMenuDto = new SelectUserOrderMenuDto();
                         BeanUtils.copyProperties(orderSetMenu, userOrderMenuDto);
-                        //服务特点的集合
-                        String serviceCharacteristicsIds = orderSetMenu.getServiceCharacteristicsIds();
-                        List<ServiceCharacteristicsDto> list = characteristicsClient.getList(serviceCharacteristicsIds).getData();
-                        userOrderMenuDto.setServiceCharacteristicsDtos(new ArrayList<>());
-                        userOrderMenuDto.getServiceCharacteristicsDtos().addAll(list);
+//                        //服务特点的集合
+//                        String serviceCharacteristicsIds = orderSetMenu.getServiceCharacteristicsIds();
+//                        List<ServiceCharacteristicsDto> list = characteristicsClient.getList(serviceCharacteristicsIds).getData();
+//                        userOrderMenuDto.setServiceCharacteristicsDtos(new ArrayList<>());
+//                        userOrderMenuDto.getServiceCharacteristicsDtos().addAll(list);
 
                         userOrderMenuDto.setOrderMenuGoodsDtos(new ArrayList<>());//开辟空间
                         userOrderMenuDto.getOrderMenuGoodsDtos().addAll(orderMenuGoodsDtos);//给套餐中添加商品详细的集合
