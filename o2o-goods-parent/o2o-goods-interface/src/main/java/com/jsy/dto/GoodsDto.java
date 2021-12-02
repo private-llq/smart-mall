@@ -38,14 +38,14 @@ public class GoodsDto {
     @ApiModelProperty(value = "0:普通商品 1：服务类商品")
     private Integer type;
 
-    @ApiModelProperty(value = "服务/商品 特点表ids 逗号隔开")
-    private String serviceCharacteristicsIds;
+   /* @ApiModelProperty(value = "服务/商品 特点表ids 逗号隔开")
+    private String serviceCharacteristicsIds;*/
 
     @ApiModelProperty(value = "商品的说明/服务的备注")
     private String textDescription;
 
-    @ApiModelProperty(value = "是否支持上门服务 0 不支持 1 支持")
-    private Integer isVisitingService;
+   /* @ApiModelProperty(value = "是否支持上门服务 0 不支持 1 支持")
+    private Integer isVisitingService;*/
 
 
 }

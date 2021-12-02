@@ -253,7 +253,7 @@ public class NewShopController {
 
 
     @ApiOperation("热门推荐")
-    @RequestMapping(value = "/getHot/",method = RequestMethod.POST)
+    @RequestMapping(value = "/getHot",method = RequestMethod.POST)
     public CommonResult<PageInfo<NewShopHotDto>> getHot(@RequestBody NewShopQuery newShopQuery){
         PageInfo<NewShopHotDto> hotDtoPageInfo = newShopService.getHot(newShopQuery);
         if (hotDtoPageInfo!=null){

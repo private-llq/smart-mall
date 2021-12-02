@@ -81,8 +81,8 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
             goods.setGoodsTypeName(data.getClassifyName());
         }
         goods.setGoodsNumber(String.valueOf(SnowFlake.nextId()));
-        String[] ids = goodsParam.getServiceCharacteristicsIds().split(",");//服务特点ids
-        ArrayList<ServiceCharacteristics> list = new ArrayList<>();
+        //String[] ids = goodsParam.getServiceCharacteristicsIds().split(",");//服务特点ids
+       /* ArrayList<ServiceCharacteristics> list = new ArrayList<>();
         for (String id : ids) {
            list.add(client.get(Long.valueOf(id)).getData());
         }
@@ -91,7 +91,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
             if (StringUtils.containsAny(x.getName(),"上门服务","上门","到家","到家服务")){
                 goods.setIsVisitingService(1);//支持上门服务
             }
-        });
+        });*/
 
         if (Objects.nonNull(goodsParam.getDiscountPrice())){
             goods.setDiscountState(1);//开启折扣
@@ -129,7 +129,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
             goods.setGoodsTypeName(data.getClassifyName());
         }
         goods.setGoodsNumber(String.valueOf(SnowFlake.nextId()));
-        String[] ids = goodsServiceParam.getServiceCharacteristicsIds().split(",");//服务特点ids
+        /*String[] ids = goodsServiceParam.getServiceCharacteristicsIds().split(",");//服务特点ids
         ArrayList<ServiceCharacteristics> list = new ArrayList<>();
         StringBuffer strName=new StringBuffer();
         for (String id : ids) {
@@ -142,15 +142,15 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
             if (StringUtils.containsAny(x.getName(),"上门服务","上门","到家","到家服务")){
                 goods.setIsVisitingService(1);//支持上门服务
             }
-        });
+        });*/
 
         if (Objects.nonNull(goodsServiceParam.getDiscountPrice())){
             goods.setDiscountState(1);//开启折扣
         }else {
             goods.setDiscountState(0);
         }
-        String substring = strName.substring(0, strName.length() - 1);
-        goods.setServiceCharacteristicsName(substring);
+        //String substring = strName.substring(0, strName.length() - 1);
+       // goods.setServiceCharacteristicsName(substring);
         goods.setType(1);//服务类
         goods.setIsPutaway(0);//默认未上架
         BeanUtil.copyProperties(goodsServiceParam,goods);
@@ -238,7 +238,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
             browse.setTextDescription(goods.getTextDescription());
             browse.setRealPrice(goods.getPrice());
             browse.setSellingPrice(goods.getDiscountPrice());
-            browse.setIsVisitingService(goods.getIsVisitingService());
+            //browse.setIsVisitingService(goods.getIsVisitingService());
             browseClient.save(browse);
         }
         return goods;

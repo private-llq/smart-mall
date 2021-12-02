@@ -20,7 +20,7 @@ import java.util.List;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class GoodsTypeDto implements Serializable {
+public class    GoodsTypeDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
