@@ -28,11 +28,11 @@ public class NewShopHotDto implements Serializable {
     private BigDecimal price;
 
 
-    @ApiModelProperty(value = "服务/商品 特点表ids 逗号隔开")
-    private String serviceCharacteristicsIds;
+//    @ApiModelProperty(value = "服务/商品 特点表ids 逗号隔开")
+//    private String serviceCharacteristicsIds;
 
 
-    @ApiModelProperty(value = "服务/商品 特点表ids 逗号隔开")
+    @ApiModelProperty(value = "售卖数量")
     private String amount;
 
 }

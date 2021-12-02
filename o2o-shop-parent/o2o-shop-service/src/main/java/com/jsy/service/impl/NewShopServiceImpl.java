@@ -97,7 +97,6 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         //行业分类的  一级二级三级标题  逗号分隔，最少有俩级
         String treeId = shopPacketParam.getShopTreeId();
         //数组
-
         try {
             String[] split = treeId.split(",");
             Long aLong = Long.valueOf(split[1]);

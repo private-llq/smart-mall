@@ -46,8 +46,8 @@ public class Browse extends BaseEntity {
     @ApiModelProperty(value = "折扣价")
     private BigDecimal sellingPrice;
 
-    @ApiModelProperty(value = "是否支持上门服务   0不支持  1支持")
-    private Integer isVisitingService;
+//    @ApiModelProperty(value = "是否支持上门服务   0不支持  1支持")
+//    private Integer isVisitingService;
 
 
 }

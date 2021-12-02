@@ -38,4 +38,9 @@ public class NewShopBasicDto implements Serializable {
 
     @ApiModelProperty(name = "shopTreeIdName", value = "门店类型名称")
     private String shopTreeIdName;
+
+    @ApiModelProperty(value = "是否支持上门服务：0 不支持 1 支持")
+    private Integer isVisitingService;
+    @ApiModelProperty(value = "是否是虚拟店铺  0不是 1是")
+    private Integer isVirtualShop;
 }

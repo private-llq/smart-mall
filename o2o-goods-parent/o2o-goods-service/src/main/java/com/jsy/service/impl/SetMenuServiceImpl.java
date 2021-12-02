@@ -138,7 +138,7 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
         Browse browse = new Browse();
         browse.setRealPrice(setMenu.getRealPrice());
         browse.setSellingPrice(setMenu.getSellingPrice());
-        browse.setIsVisitingService(setMenu.getIsVisitingService());
+//        browse.setIsVisitingService(setMenu.getIsVisitingService());
         browse.setName(setMenu.getName());
         browse.setShopId(setMenu.getShopId());
         browse.setTextDescription(setMenu.getMenuExplain());
