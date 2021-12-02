@@ -290,8 +290,8 @@ public class NewShopController {
 
 
     /**************************************大后台数据展示****************************************************************************/
-    @ApiOperation("店铺审核")
-    @RequestMapping(value = "/newShopPage/",method = RequestMethod.POST)
+    @ApiOperation("店铺展示列表")
+    @RequestMapping(value = "/newShopPage",method = RequestMethod.POST)
     public CommonResult<PageInfo<NewShopDto>> newShopPage(@RequestBody NewShopQuery shopQuery){
         PageInfo<NewShopDto> shopAllList = newShopService.newShopPage(shopQuery);
         if (shopAllList!=null){
@@ -301,4 +301,24 @@ public class NewShopController {
             return new  CommonResult(-1,"失败",null);
         }
     }
+//    @ApiOperation("店铺审核")
+//    @RequestMapping(value = "/newShopState",method = RequestMethod.POST)
+//    public CommonResult newShopState(@RequestParam("shopId") Long shopId,@RequestParam("state") Integer state){
+//        NewShop newShop = newShopService.getById(shopId);
+//        newShop.setState(state);
+//        boolean b = newShopService.update(newShop, null);
+//        if (b){
+//            return  CommonResult.ok();
+//        }else {
+//            return new CommonResult(-1,"审核失败",null);
+//        }
+//    }
+    @ApiOperation("本月入驻的商家数量")
+    @RequestMapping(value = "/newShopAudit",method = RequestMethod.POST)
+    public CommonResult newShopAudit(){
+        Integer count = newShopService.newShopAudit();
+        return CommonResult.ok(count);
+    }
+
+
 }

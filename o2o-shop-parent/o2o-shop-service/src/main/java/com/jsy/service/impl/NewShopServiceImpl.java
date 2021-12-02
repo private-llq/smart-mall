@@ -28,9 +28,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * <p>
@@ -520,6 +519,27 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         }
         shopMapper.updateById(newShop);
     }
+ /** 
+  * @author Tian
+  * @since 2021/12/2-10:10
+  * @description 本月入驻商家数量
+  **/
+    @Override
+    public Integer newShopAudit() {
+        ///审核状态 0未审核 1已审核 2审核未通过 3资质未认证
+        Integer state = 1;
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM");
+        Date date = new Date();
+        String startDate = new SimpleDateFormat("yyyy-MM").format(new Date()).toString()+"-01";
 
+        //日历
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date); // 设置为当前时间
+        calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) +1); // 设置为上一个月
+        date = calendar.getTime();
+        String endDate = format.format(date)+"-01";
+        Integer count  = shopMapper.newShopAudit(startDate,endDate,state);
+        return count;
+    }
 
 }

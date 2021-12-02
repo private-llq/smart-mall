@@ -116,6 +116,11 @@ public class NewShopDto implements Serializable {
     @ApiModelProperty(name = "shopTreeIdName", value = "门店类型名称")
     private String shopTreeIdName;
 
+    @ApiModelProperty(value = "是否被屏蔽   1已屏蔽  0未屏蔽")
+    private Integer shielding;
+
+
+
 
 
 
