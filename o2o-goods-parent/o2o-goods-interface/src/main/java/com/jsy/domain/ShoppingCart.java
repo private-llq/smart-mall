@@ -73,8 +73,8 @@ public class ShoppingCart implements Serializable {
     @ApiModelProperty(value = "是否是套餐： 1 是  0 不是")
     private Integer isSetMenu;
 
-    @ApiModelProperty(value = "是否支持上门服务 1：支持 0： 不支持")
-    private Integer isVisitingService;
+  /*  @ApiModelProperty(value = "是否支持上门服务 1：支持 0： 不支持")
+    private Integer isVisitingService;*/
 
 
 }

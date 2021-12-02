@@ -36,6 +36,6 @@ public class GoodsParam {
     @ApiModelProperty(value = "商品的说明/服务的备注")
     private String textDescription;
 
-    @ApiModelProperty(value = "服务特点表ids 逗号隔开")
-    private String serviceCharacteristicsIds;
+    /*@ApiModelProperty(value = "服务特点表ids 逗号隔开")
+    private String serviceCharacteristicsIds;*/
 }

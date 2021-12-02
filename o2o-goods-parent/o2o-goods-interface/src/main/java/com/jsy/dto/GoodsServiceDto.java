@@ -39,8 +39,8 @@ public class GoodsServiceDto {
     @ApiModelProperty(value = "0:普通商品 1：服务类商品")
     private Integer type;
 
-    @ApiModelProperty(value = "服务特点表ids 逗号隔开")
-    private String serviceCharacteristicsIds;
+  /*  @ApiModelProperty(value = "服务特点表ids 逗号隔开")
+    private String serviceCharacteristicsIds;*/
 
     @ApiModelProperty(value = "服务的有效期")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
@@ -59,6 +59,6 @@ public class GoodsServiceDto {
     @ApiModelProperty(value = "服务的使用规则")
     private String serviceRegulations;
 
-    @ApiModelProperty(value = "是否支持上门服务 0 不支持 1 支持")
-    private Integer isVisitingService;
+   /* @ApiModelProperty(value = "是否支持上门服务 0 不支持 1 支持")
+    private Integer isVisitingService;*/
 }

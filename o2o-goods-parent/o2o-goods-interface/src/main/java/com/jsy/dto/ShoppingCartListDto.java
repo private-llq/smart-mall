@@ -29,6 +29,6 @@ public class ShoppingCartListDto {
     @ApiModelProperty(value = "1：是套餐 0：不是套餐")
     private Integer isSetMenu;
 
-    @ApiModelProperty(value = "1：支持上门 0：不支持上门")
-    private Integer isVisitingService;
+    /*@ApiModelProperty(value = "1：支持上门 0：不支持上门")
+    private Integer isVisitingService;*/
 }
