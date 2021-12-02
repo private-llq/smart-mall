@@ -82,4 +82,10 @@ public interface INewShopService extends IService<NewShop> {
       * @description 修改店铺基本信息填写
       **/
     void updateBasic(NewShopParam shopPacketParam);
+ /**
+  * @author Tian
+  * @since 2021/12/2-10:10
+  * @description 本月入驻商家数量
+  **/
+    Integer newShopAudit();
 }

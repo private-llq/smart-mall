@@ -1,4 +1,5 @@
 package com.jsy.controller;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jsy.parameter.NewShopAuditParam;
 import com.jsy.service.INewShopService;
 import com.jsy.service.IShopAuditService;
@@ -45,6 +46,16 @@ public class ShopAuditController {
       * @since 2021/12/1-18:03
       * @description 查询审核不通过理由
       **/
+
+     @GetMapping(value = "/getRejected")
+     public CommonResult getRejected(@RequestParam("shopId")Long shopId){
+         ShopAudit shopAudit = shopAuditService.getOne(new QueryWrapper<ShopAudit>()
+                         .eq("shop_id", shopId)
+                         .orderByDesc("create_time")
+                         .last("limit 1")
+         );
+         return CommonResult.ok(shopAudit);
+     }
 
       /**
        * @author Tian

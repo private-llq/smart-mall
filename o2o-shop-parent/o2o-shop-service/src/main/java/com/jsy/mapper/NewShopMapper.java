@@ -27,4 +27,7 @@ public interface NewShopMapper extends BaseMapper<NewShop> {
     List<NewShop> selecctNewShopPage(@Param("shopQuery") NewShopQuery shopQuery);
 //热门推荐
     List<NewShopHotDto> selectHot();
+//大后台查询当月入驻商家
+    Integer newShopAudit(@Param("startDate") String startDate, @Param("endDate") String endDate,@Param("state") Integer state);
+
 }

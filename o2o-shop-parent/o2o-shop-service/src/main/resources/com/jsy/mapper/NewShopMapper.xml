@@ -32,6 +32,19 @@
 
         <result column="distance" property="distance" />
     </resultMap>
+    <!-- 当月入驻商家 -->
+    <select id="newShopAudit" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM w_new_shop s
+        where 1 = 1
+          and s.state=#{state}
+        <if test="startDate != null and endDate != null and startDate != '' and endDate != ''">
+            AND DATE_FORMAT(create_time, "%Y-%m-%d")
+            BETWEEN DATE_FORMAT(#{startDate,jdbcType=VARCHAR}, "%Y-%m-%d")
+            AND DATE_FORMAT(#{endDate,jdbcType=VARCHAR}, "%Y-%m-%d")
+        </if>
+
+<!--        WHERE s.create_time>=#{startDate} AND s.create_time <= #{endDate} AND s.state=#{state}-->
+    </select>
     <select id="mainSearch" resultType="com.jsy.domain.NewShop">
         SELECT * FROM w_new_shop WHERE shop_name LIKE CONCAT("%",#{keyword},"%") AND deleted = 0
         UNION
