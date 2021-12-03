@@ -2,6 +2,8 @@ package com.jsy.service.impl;
 import cn.hutool.core.lang.Dict;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.jsy.basic.util.MyPageUtils;
+import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.utils.BeansCopyUtils;
 import com.jsy.client.NewShopClient;
@@ -251,7 +253,7 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
      * @return
      */
     @Override
-    public List<ShoppingCartDto> queryCartAll(ShoppingCartParam shoppingCartParam) {
+    public PageInfo<ShoppingCartDto> queryCartAll(ShoppingCartParam shoppingCartParam) {
 
         LoginUser loginUser = ContextHolder.getContext().getLoginUser();
         if (Objects.isNull(loginUser)){
@@ -271,6 +273,8 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
             temp.setShopId(shopId);
             shoppingCartDtos.add(this.queryCart(temp));
         }
-        return shoppingCartDtos;
+
+        PageInfo<ShoppingCartDto> pageInfo = MyPageUtils.pageMap(shoppingCartParam.getPage(), shoppingCartParam.getSize(), shoppingCartDtos);
+        return pageInfo;
     }
 }

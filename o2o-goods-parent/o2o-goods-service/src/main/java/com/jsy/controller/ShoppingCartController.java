@@ -1,4 +1,5 @@
 package com.jsy.controller;
+import com.jsy.basic.util.PageInfo;
 import com.jsy.dto.ShoppingCartDto;
 import com.jsy.parameter.ShoppingCartParam;
 import com.jsy.service.IShoppingCartService;
@@ -56,6 +57,15 @@ public class ShoppingCartController {
     }
 
     /**
+     * 删除购物车里面单条商品
+     */
+    @DeleteMapping("delShoppingCart")
+    public CommonResult  delShoppingCart (@RequestParam("id") Long id){
+        shoppingCartService.removeById(id);
+        return CommonResult.ok("success");
+    }
+
+    /**
      * 累减购物车
      * @param id
      */
@@ -79,8 +89,8 @@ public class ShoppingCartController {
      * 查询购物车(用户)
      */
     @PostMapping("queryCartAll")
-    public CommonResult<List<ShoppingCartDto>> queryCartAll(@RequestBody ShoppingCartParam shoppingCartParam){
-        List<ShoppingCartDto> shoppingCartDto= shoppingCartService.queryCartAll(shoppingCartParam);
-        return CommonResult.ok(shoppingCartDto);
+    public CommonResult<PageInfo<ShoppingCartDto>> queryCartAll(@RequestBody ShoppingCartParam shoppingCartParam){
+        PageInfo<ShoppingCartDto> pageInfo= shoppingCartService.queryCartAll(shoppingCartParam);
+        return CommonResult.ok(pageInfo);
     }
 }
