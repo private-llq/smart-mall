@@ -1,5 +1,6 @@
 package com.jsy.service;
 
+import com.jsy.basic.util.PageInfo;
 import com.jsy.domain.ShoppingCart;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jsy.dto.ShoppingCartDto;
@@ -58,5 +59,5 @@ public interface IShoppingCartService extends IService<ShoppingCart> {
      * @param shoppingCartParam
      * @return
      */
-    List<ShoppingCartDto> queryCartAll(ShoppingCartParam shoppingCartParam);
+    PageInfo<ShoppingCartDto> queryCartAll(ShoppingCartParam shoppingCartParam);
 }

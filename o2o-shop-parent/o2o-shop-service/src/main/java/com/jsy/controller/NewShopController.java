@@ -295,7 +295,7 @@ public class NewShopController {
      * @return
      */
     @ApiOperation("首页搜索")
-    @GetMapping("mainSearch")
+    @PostMapping("mainSearch")
     public CommonResult<PageInfo<MyNewShopDto>> mainSearch(@RequestBody MainSearchQuery mainSearchQuery){
         PageInfo<MyNewShopDto> list = newShopService.mainSearch(mainSearchQuery);
         return CommonResult.ok(list);
