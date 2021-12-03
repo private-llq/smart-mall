@@ -59,18 +59,23 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
         List<SetMenuGoods> setMenuGoodsList = setMenu.getSetMenuGoodsList();
         SetMenu menu = new SetMenu();
         BeanUtils.copyProperties(setMenu,menu);
-        String[] ids = setMenu.getServiceCharacteristicsIds().split(",");//服务特点ids
-
-        ArrayList<ServiceCharacteristics> list = new ArrayList<>();
-        for (String id : ids) {
-            list.add(characteristicsClient.get(Long.valueOf(id)).getData());
-        }
-
-        list.stream().forEach(x->{
-            if (StringUtils.containsAny(x.getName(),"上门服务","上门","到家","到家服务")){
-                menu.setIsVisitingService(1);//支持上门服务
-            }
-        });
+//        String[] ids = setMenu.getServiceCharacteristicsIds().split(",");//服务特点ids
+//
+//        ArrayList<ServiceCharacteristics> list = new ArrayList<>();
+//        for (String id : ids) {
+//            try {
+//                list.add(characteristicsClient.get(Long.valueOf(id)).getData());
+//            } catch (NumberFormatException e) {
+//                e.printStackTrace();
+//                throw  new JSYException(-1,"服务特点错误");
+//            }
+//        }
+//
+//        list.stream().forEach(x->{
+//            if (StringUtils.containsAny(x.getName(),"上门服务","上门","到家","到家服务")){
+//                menu.setIsVisitingService(1);//支持上门服务
+//            }
+//        });
 
         setMenuMapper.insert(menu);
         Long id = menu.getId();
@@ -99,15 +104,15 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
             );
         List<SetMenuGoodsDto> menuGoodsDtoList = new ArrayList<>();
         //查询服务特点
-        String characteristicsIds = setMenu.getServiceCharacteristicsIds();
-        String[] strings = characteristicsIds.split(",");
-        List<ServiceCharacteristicsDto> serviceCharacteristicsDtoList = new ArrayList<>();
-        for (String s : strings) {
-            ServiceCharacteristics serviceCharacteristics = characteristicsClient.get(Long.valueOf(s)).getData();
-            ServiceCharacteristicsDto serviceCharacteristicsDto = new ServiceCharacteristicsDto();
-            BeanUtils.copyProperties(serviceCharacteristics,serviceCharacteristicsDto);
-            serviceCharacteristicsDtoList.add(serviceCharacteristicsDto);
-        }
+//        String characteristicsIds = setMenu.getServiceCharacteristicsIds();
+//        String[] strings = characteristicsIds.split(",");
+//        List<ServiceCharacteristicsDto> serviceCharacteristicsDtoList = new ArrayList<>();
+//        for (String s : strings) {
+//            ServiceCharacteristics serviceCharacteristics = characteristicsClient.get(Long.valueOf(s)).getData();
+//            ServiceCharacteristicsDto serviceCharacteristicsDto = new ServiceCharacteristicsDto();
+//            BeanUtils.copyProperties(serviceCharacteristics,serviceCharacteristicsDto);
+//            serviceCharacteristicsDtoList.add(serviceCharacteristicsDto);
+//        }
 
         for (SetMenuGoods setMenuGoods : setMenuGoodsList) {
                 Goods goods = goodsMapper.selectOne(new QueryWrapper<Goods>().eq("id", setMenuGoods.getGoodsIds()));
@@ -125,7 +130,7 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
         SetMenuDto setMenuDto = new SetMenuDto();
         BeanUtils.copyProperties(setMenu,setMenuDto);
         setMenuDto.setMap(map);
-        setMenuDto.setServiceCharacteristicsIds(serviceCharacteristicsDtoList);
+//        setMenuDto.setServiceCharacteristicsIds(serviceCharacteristicsDtoList);
 
 
 
@@ -133,7 +138,7 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
         Browse browse = new Browse();
         browse.setRealPrice(setMenu.getRealPrice());
         browse.setSellingPrice(setMenu.getSellingPrice());
-        browse.setIsVisitingService(setMenu.getIsVisitingService());
+//        browse.setIsVisitingService(setMenu.getIsVisitingService());
         browse.setName(setMenu.getName());
         browse.setShopId(setMenu.getShopId());
         browse.setTextDescription(setMenu.getMenuExplain());

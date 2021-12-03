@@ -116,7 +116,7 @@ public class GouldUtil {
 	 *  高德api
 	 * @return 两个定位点之间的距离
 	 */
-	private static long getApiDistance(String startLonLat, String endLonLat) {
+	public static long getApiDistance(String startLonLat, String endLonLat) {
 		// 返回起始地startAddr与目的地endAddr之间的距离，单位：米
 		Long result = new Long(0);
 		String queryUrl = "http://restapi.amap.com/v3/distance?key="+GOULD_KEY+"&origins=" + startLonLat + "&destination=" + endLonLat;

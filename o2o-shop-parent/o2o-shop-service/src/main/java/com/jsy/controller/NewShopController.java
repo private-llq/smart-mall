@@ -227,7 +227,7 @@ public class NewShopController {
     }
 
     @ApiOperation("根据店铺id修改店铺设置")
-    @RequestMapping(value = "/setSetShop/",method = RequestMethod.POST)
+    @RequestMapping(value = "/setSetShop",method = RequestMethod.POST)
     public CommonResult setSetShop(@RequestBody NewShopSetParam shopSetParam){
         try {
             newShopService.setSetShop(shopSetParam);
@@ -240,7 +240,7 @@ public class NewShopController {
 
     /**************************************C端店铺的数据展示****************************************************************************/
     @ApiOperation("C端分类店铺列表")
-    @RequestMapping(value = "/getShopAllList/",method = RequestMethod.POST)
+    @RequestMapping(value = "/getShopAllList",method = RequestMethod.POST)
     public CommonResult<PageInfo<NewShopRecommendDto>> getShopAllList(@RequestBody NewShopQuery shopQuery){
             PageInfo<NewShopRecommendDto> recommendDtoList = newShopService.getShopAllList(shopQuery);
             if (recommendDtoList!=null){

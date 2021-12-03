@@ -14,10 +14,10 @@ import java.util.List;
 
 @FeignClient(value = "shop-service-backstage",fallback = ServiceCharacteristicsClientImpl.class,configuration = FeignConfiguration.class)
 public interface ServiceCharacteristicsClient {
-    @RequestMapping(value = "/serviceCharacteristics/{id}",method = RequestMethod.GET)
-     CommonResult<ServiceCharacteristics> get(@PathVariable("id")Long id);
-
-    @ApiOperation("返回list列表")
-    @GetMapping(value = "/serviceCharacteristics/getList")
-    public CommonResult<List<ServiceCharacteristicsDto>> getList(@RequestParam("serviceId") String serviceId);
+//    @RequestMapping(value = "/serviceCharacteristics/{id}",method = RequestMethod.GET)
+//     CommonResult<ServiceCharacteristics> get(@PathVariable("id")Long id);
+//
+//    @ApiOperation("返回list列表")
+//    @GetMapping(value = "/serviceCharacteristics/getList")
+//    public CommonResult<List<ServiceCharacteristicsDto>> getList(@RequestParam("serviceId") String serviceId);
 }

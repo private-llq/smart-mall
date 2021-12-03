@@ -119,6 +119,11 @@ public class NewShopDto implements Serializable {
     @ApiModelProperty(value = "是否被屏蔽   1已屏蔽  0未屏蔽")
     private Integer shielding;
 
+    @ApiModelProperty(value = "是否支持上门服务：0 不支持 1 支持")
+    private Integer isVisitingService;
+    @ApiModelProperty(value = "是否是虚拟店铺  0不是 1是")
+    private Integer isVirtualShop;
+
 
 
 

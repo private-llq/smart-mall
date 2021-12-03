@@ -28,123 +28,123 @@ public class ServiceCharacteristicsController {
     @Autowired
     public IServiceCharacteristicsService serviceCharacteristicsService;
 
-    /**
-    * 保存和修改公用的
-    * @param characteristicsParam  传递的实体
-    * @return Ajaxresult转换结果
-    */
-    @PostMapping(value="/save")
-    @ApiOperation("保存和修改公用的")
-    public CommonResult save(@RequestBody ServiceCharacteristicsParam characteristicsParam){
-        try {
-            if(characteristicsParam.getId()!=null){
-                ServiceCharacteristics serviceCharacteristics = new ServiceCharacteristics();
-                BeanUtils.copyProperties(characteristicsParam,serviceCharacteristics);
-                serviceCharacteristicsService.updateById(serviceCharacteristics);
-            }else{
-                ServiceCharacteristics serviceCharacteristics = new ServiceCharacteristics();
-                BeanUtils.copyProperties(characteristicsParam,serviceCharacteristics);
-                serviceCharacteristicsService.save(serviceCharacteristics);
-            }
-            return CommonResult.ok();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return CommonResult.error(-1,"操作失败！");
-        }
-    }
-
-    /**
-    * 删除对象信息
-    * @param id
-    * @return
-    */
-    @ApiOperation("删除对象信息")
-    @DeleteMapping(value="/{id}")
-    public CommonResult delete(@PathVariable("id") Long id){
-        try {
-            serviceCharacteristicsService.removeById(id);
-            return CommonResult.ok();
-        } catch (Exception e) {
-        e.printStackTrace();
-            return  CommonResult.error(-1,"删除失败！");
-        }
-    }
-
-    /**
-    * 根据id查询一条
-    * @param id
-    */
-    @ApiOperation("根据id查询一条")
-    @RequestMapping(value = "/{id}",method = RequestMethod.GET)
-    public CommonResult<ServiceCharacteristics> get(@PathVariable("id")Long id)
-    {
-        ServiceCharacteristics service = serviceCharacteristicsService.getById(id);
-        if (service!=null){
-            return CommonResult.ok(service);
-        }else {
-            return new  CommonResult(-1,"失败",null);
-        }
-    }
-
-
-    /**
-    * 返回list列表
-    * @return
-    */
-    @ApiOperation("返回list列表")
-    @LoginIgnore
-    @GetMapping(value = "/list")
-    public CommonResult<List<ServiceCharacteristicsDto>> list(){
-        List<ServiceCharacteristics> list = serviceCharacteristicsService.list(null);
-        List<ServiceCharacteristicsDto> serviceCharacteristicsDtos = BeansCopyUtils.listCopy(list, ServiceCharacteristicsDto.class);
-        if(serviceCharacteristicsDtos!=null){
-            return CommonResult.ok(serviceCharacteristicsDtos);
-        }else {
-            return new  CommonResult(-1,"失败",null);
-        }
-    }
-
-    /**
-     * 返回list列表
-     * @return
-     */
-    @ApiOperation("返回list列表")
-    @LoginIgnore
-    @GetMapping(value = "/getList")
-    public CommonResult<List<ServiceCharacteristicsDto>> getList(@RequestParam("serviceId") String serviceId){
-
-        List<ServiceCharacteristics> list = serviceCharacteristicsService.list(null);
-        List<ServiceCharacteristics> list1 = new ArrayList<>();
-        String[] split = serviceId.split(",");
-        for (ServiceCharacteristics serviceCharacteristics : list) {
-            for (String s : split) {
-                boolean contains = s.contains(String.valueOf(serviceCharacteristics.getId()));
-                if (contains){
-                    list1.add(serviceCharacteristics);
-                }
-
-            }
-        }
-        List<ServiceCharacteristicsDto> serviceCharacteristicsDtos = BeansCopyUtils.listCopy(list1, ServiceCharacteristicsDto.class);
-        if(serviceCharacteristicsDtos!=null){
-            return CommonResult.ok(serviceCharacteristicsDtos);
-        }else {
-            return new  CommonResult(-1,"失败",null);
-        }
-    }
-
-
-    /**
-    * 分页查询数据
-    *
-    * @param query 查询对象
-    * @return PageList 分页对象
-    */
-    @PostMapping(value = "/pagelist")
-    public PageList<ServiceCharacteristics> json(@RequestBody ServiceCharacteristicsQuery query)
-    {
-        Page<ServiceCharacteristics> page = new Page<ServiceCharacteristics>(query.getPage(),query.getRows());
-        page = serviceCharacteristicsService.page(page);
-        return new PageList<ServiceCharacteristics>(page.getTotal(),page.getRecords());
-    }
+//    /**
+//    * 保存和修改公用的
+//    * @param characteristicsParam  传递的实体
+//    * @return Ajaxresult转换结果
+//    */
+//    @PostMapping(value="/save")
+//    @ApiOperation("保存和修改公用的")
+//    public CommonResult save(@RequestBody ServiceCharacteristicsParam characteristicsParam){
+//        try {
+//            if(characteristicsParam.getId()!=null){
+//                ServiceCharacteristics serviceCharacteristics = new ServiceCharacteristics();
+//                BeanUtils.copyProperties(characteristicsParam,serviceCharacteristics);
+//                serviceCharacteristicsService.updateById(serviceCharacteristics);
+//            }else{
+//                ServiceCharacteristics serviceCharacteristics = new ServiceCharacteristics();
+//                BeanUtils.copyProperties(characteristicsParam,serviceCharacteristics);
+//                serviceCharacteristicsService.save(serviceCharacteristics);
+//            }
+//            return CommonResult.ok();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return CommonResult.error(-1,"操作失败！");
+//        }
+//    }
+//
+//    /**
+//    * 删除对象信息
+//    * @param id
+//    * @return
+//    */
+//    @ApiOperation("删除对象信息")
+//    @DeleteMapping(value="/{id}")
+//    public CommonResult delete(@PathVariable("id") Long id){
+//        try {
+//            serviceCharacteristicsService.removeById(id);
+//            return CommonResult.ok();
+//        } catch (Exception e) {
+//        e.printStackTrace();
+//            return  CommonResult.error(-1,"删除失败！");
+//        }
+//    }
+//
+//    /**
+//    * 根据id查询一条
+//    * @param id
+//    */
+//    @ApiOperation("根据id查询一条")
+//    @RequestMapping(value = "/{id}",method = RequestMethod.GET)
+//    public CommonResult<ServiceCharacteristics> get(@PathVariable("id")Long id)
+//    {
+//        ServiceCharacteristics service = serviceCharacteristicsService.getById(id);
+//        if (service!=null){
+//            return CommonResult.ok(service);
+//        }else {
+//            return new  CommonResult(-1,"失败",null);
+//        }
+//    }
+//
+//
+//    /**
+//    * 返回list列表
+//    * @return
+//    */
+//    @ApiOperation("返回list列表")
+//    @LoginIgnore
+//    @GetMapping(value = "/list")
+//    public CommonResult<List<ServiceCharacteristicsDto>> list(){
+//        List<ServiceCharacteristics> list = serviceCharacteristicsService.list(null);
+//        List<ServiceCharacteristicsDto> serviceCharacteristicsDtos = BeansCopyUtils.listCopy(list, ServiceCharacteristicsDto.class);
+//        if(serviceCharacteristicsDtos!=null){
+//            return CommonResult.ok(serviceCharacteristicsDtos);
+//        }else {
+//            return new  CommonResult(-1,"失败",null);
+//        }
+//    }
+//
+//    /**
+//     * 返回list列表
+//     * @return
+//     */
+//    @ApiOperation("返回list列表")
+//    @LoginIgnore
+//    @GetMapping(value = "/getList")
+//    public CommonResult<List<ServiceCharacteristicsDto>> getList(@RequestParam("serviceId") String serviceId){
+//
+//        List<ServiceCharacteristics> list = serviceCharacteristicsService.list(null);
+//        List<ServiceCharacteristics> list1 = new ArrayList<>();
+//        String[] split = serviceId.split(",");
+//        for (ServiceCharacteristics serviceCharacteristics : list) {
+//            for (String s : split) {
+//                boolean contains = s.contains(String.valueOf(serviceCharacteristics.getId()));
+//                if (contains){
+//                    list1.add(serviceCharacteristics);
+//                }
+//
+//            }
+//        }
+//        List<ServiceCharacteristicsDto> serviceCharacteristicsDtos = BeansCopyUtils.listCopy(list1, ServiceCharacteristicsDto.class);
+//        if(serviceCharacteristicsDtos!=null){
+//            return CommonResult.ok(serviceCharacteristicsDtos);
+//        }else {
+//            return new  CommonResult(-1,"失败",null);
+//        }
+//    }
+//
+//
+//    /**
+//    * 分页查询数据
+//    *
+//    * @param query 查询对象
+//    * @return PageList 分页对象
+//    */
+//    @PostMapping(value = "/pagelist")
+//    public PageList<ServiceCharacteristics> json(@RequestBody ServiceCharacteristicsQuery query)
+//    {
+//        Page<ServiceCharacteristics> page = new Page<ServiceCharacteristics>(query.getPage(),query.getRows());
+//        page = serviceCharacteristicsService.page(page);
+//        return new PageList<ServiceCharacteristics>(page.getTotal(),page.getRecords());
+//    }
 }

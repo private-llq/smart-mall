@@ -40,8 +40,8 @@ public class SetMenu  extends BaseEntity {
     @ApiModelProperty(value = "店铺id")
     private Long shopId;
 
-    @ApiModelProperty(value = "服务特点表ids 逗号隔开")
-    private String serviceCharacteristicsIds;
+//    @ApiModelProperty(value = "服务特点表ids 逗号隔开")
+//    private String serviceCharacteristicsIds;
 
     @ApiModelProperty(value = "真实价格")
     private BigDecimal realPrice;
@@ -66,8 +66,8 @@ public class SetMenu  extends BaseEntity {
     @ApiModelProperty(value = "套餐说明")
     private String menuExplain;
 
-    @ApiModelProperty(value = "是否支持上门服务 0 不支持 1 支持")
-    private Integer isVisitingService;
+//    @ApiModelProperty(value = "是否支持上门服务 0 不支持 1 支持")
+//    private Integer isVisitingService;
 
     @ApiModelProperty(value = "套餐访问量")
     private Long pvNum;

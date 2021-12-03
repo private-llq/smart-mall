@@ -11,13 +11,13 @@ import java.util.List;
 
 public class ServiceCharacteristicsClientImpl implements ServiceCharacteristicsClient {
 
-    @Override
-    public CommonResult<ServiceCharacteristics> get(Long id) {
-        return null;
-    }
-
-    @Override
-    public CommonResult<List<ServiceCharacteristicsDto>> getList(String serviceId) {
-        return null;
-    }
+//    @Override
+//    public CommonResult<ServiceCharacteristics> get(Long id) {
+//        return null;
+//    }
+//
+//    @Override
+//    public CommonResult<List<ServiceCharacteristicsDto>> getList(String serviceId) {
+//        return null;
+//    }
 }

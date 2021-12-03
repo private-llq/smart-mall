@@ -31,6 +31,7 @@
         <result column="latitude" property="latitude" />
 
         <result column="distance" property="distance" />
+        <result column="shielding" property="shielding" />
     </resultMap>
     <!-- 当月入驻商家 -->
     <select id="newShopAudit" resultType="java.lang.Integer">
@@ -87,6 +88,8 @@
         )
         )
         &lt;3000
+        AND t1.state=1
+        AND t1.shielding=0
 
     </select>
     <select id="selecctNewShopPage" resultType="com.jsy.domain.NewShop">
