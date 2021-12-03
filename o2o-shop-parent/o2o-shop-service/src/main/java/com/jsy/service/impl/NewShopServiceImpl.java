@@ -319,7 +319,11 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
 
         return pageInfo;
     }
-
+ /**
+  * @author Tian
+  * @since 2021/12/3-11:32
+  * @description 店铺分类名称
+  **/
     private String getShopTreeIdName(String[] split) {
         String shopTreeIdName = "";
         if (split.length<=2){
@@ -438,6 +442,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
     @Override
     public PageInfo<NewShopHotDto> getHot(NewShopQuery newShopQuery) {
         List<NewShopHotDto> newShopHotDtos = shopMapper.selectHot();
+
         PageInfo<NewShopHotDto> hotDtoPageInfo = MyPageUtils.pageMap(newShopQuery.getPage(), newShopQuery.getRows(), newShopHotDtos);
         return hotDtoPageInfo;
     }

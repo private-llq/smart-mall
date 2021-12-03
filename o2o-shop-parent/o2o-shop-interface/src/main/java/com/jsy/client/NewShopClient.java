@@ -1,9 +1,12 @@
 package com.jsy.client;
 
 import com.jsy.FeignConfiguration;
+import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.domain.NewShop;
 import com.jsy.dto.NewShopDto;
+import com.jsy.dto.NewShopRecommendDto;
+import com.jsy.query.NewShopQuery;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
@@ -24,5 +27,7 @@ public interface NewShopClient {
     @PostMapping("/newShop/batchIds")
     CommonResult<List<NewShopDto>> batchIds(@RequestBody List<Long> ids);
 
+    @RequestMapping(value = "/getShopAllList",method = RequestMethod.POST)
+    CommonResult<PageInfo<NewShopRecommendDto>> getShopAllList(@RequestBody NewShopQuery shopQuery);
 
 }
