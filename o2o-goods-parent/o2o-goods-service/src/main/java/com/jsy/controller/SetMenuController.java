@@ -93,8 +93,8 @@ public class SetMenuController {
      * @return
      */
     @GetMapping(value = "/SetMenuList")
-    public SetMenuDto SetMenuList(@RequestParam("shopId") Long shopId,Long id){
-        return setMenuService.getSetMenulist(shopId,id);
+    public SetMenuDto SetMenuList(@RequestParam("id")Long id){
+        return setMenuService.getSetMenulist(id);
     }
 
     /**

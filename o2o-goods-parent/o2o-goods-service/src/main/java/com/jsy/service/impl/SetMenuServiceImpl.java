@@ -90,8 +90,8 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
     }
 
     @Override
-    public SetMenuDto getSetMenulist(Long shopId,Long id) {
-        SetMenu setMenu = setMenuMapper.selectOne(new QueryWrapper<SetMenu>().eq("shop_id", shopId).eq("id", id));
+    public SetMenuDto getSetMenulist(Long id) {
+        SetMenu setMenu = setMenuMapper.selectOne(new QueryWrapper<SetMenu>().eq("id", id));
         //套餐访问量+1
         setMenu.setPvNum(setMenu.getPvNum()+1);
         setMenuMapper.updateById(setMenu);
