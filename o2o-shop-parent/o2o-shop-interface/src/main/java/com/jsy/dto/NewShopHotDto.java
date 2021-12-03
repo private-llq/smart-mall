@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NewShopHotDto implements Serializable {
+    private Long id;
     @ApiModelProperty(value = "商家id")
     private Long shopId;
 

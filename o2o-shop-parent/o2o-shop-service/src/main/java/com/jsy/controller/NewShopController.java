@@ -256,10 +256,6 @@ public class NewShopController {
      }
 
 
-
-
-
-
     /**************************************C端店铺的数据展示****************************************************************************/
     @ApiOperation("C端分类店铺列表")
     @RequestMapping(value = "/getShopAllList",method = RequestMethod.POST)
@@ -274,17 +270,7 @@ public class NewShopController {
     }
 
 
-    @ApiOperation("热门推荐")
-    @RequestMapping(value = "/getHot",method = RequestMethod.POST)
-    public CommonResult<PageInfo<NewShopHotDto>> getHot(@RequestBody NewShopQuery newShopQuery){
-        PageInfo<NewShopHotDto> hotDtoPageInfo = newShopService.getHot(newShopQuery);
-        if (hotDtoPageInfo!=null){
-            return CommonResult.ok(hotDtoPageInfo);
-        }
-        else {
-            return new  CommonResult(-1,"失败",null);
-        }
-    }
+
 
 
 

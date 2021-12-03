@@ -101,9 +101,10 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         //数组
         try {
             String[] split = treeId.split(",");
-            Long aLong = Long.valueOf(split[1]);
+            Long aLong = Long.valueOf(split[0]);
             System.out.println(aLong);
             Tree tree = treeClient.getTree(aLong).getData();
+            newShop.setShopTreeId(tree.getParentId()+","+newShop.getShopTreeId());
             //1是服务行业  0 套餐行业
             if (tree.getParentId() == 1) {
                 newShop.setType(1);
