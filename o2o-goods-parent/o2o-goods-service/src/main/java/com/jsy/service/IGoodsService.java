@@ -3,6 +3,7 @@ package com.jsy.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.utils.BeansCopyUtils;
+import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.domain.Goods;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jsy.domain.Tree;
@@ -128,4 +129,8 @@ public interface IGoodsService extends IService<Goods> {
     void showGoods(Long id);
 
 
+    /**
+     * 医疗端：附近的服务
+     */
+    List<GoodsServiceDto> NearTheService(String latitude, String longitude);
 }

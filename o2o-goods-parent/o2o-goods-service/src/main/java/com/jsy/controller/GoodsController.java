@@ -236,6 +236,14 @@ public class GoodsController {
     }
 
 
+    /**
+     * 医疗端：附近的服务
+     */
+    @GetMapping
+    public CommonResult<List<GoodsServiceDto>> NearTheService(@RequestParam("longitude") String  longitude,@RequestParam("longitude")String latitude){
+        List<GoodsServiceDto> list= goodsService.NearTheService(latitude,longitude);
+        return CommonResult.ok(list);
+    }
 
 }
 

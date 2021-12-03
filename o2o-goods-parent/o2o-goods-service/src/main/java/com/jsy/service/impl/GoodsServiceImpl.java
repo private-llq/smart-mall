@@ -354,6 +354,14 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         goodsMapper.update(null,new UpdateWrapper<Goods>().eq("id",id).set("state",0));
     }
 
+    /**
+     * 医疗端：附近的服务
+     */
+    @Override
+    public List<GoodsServiceDto> NearTheService(String latitude, String longitude) {
+        return null;
+    }
+
 
     /**
      * 上架商品/服务

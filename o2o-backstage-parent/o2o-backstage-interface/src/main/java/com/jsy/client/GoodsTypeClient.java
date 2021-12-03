@@ -15,6 +15,6 @@ public interface GoodsTypeClient {
      * 根据id查询一条
      * @param id
      */
-    @GetMapping(value = "/industryCategory/{id}")
-    CommonResult<GoodsTypeDto> get(@PathVariable("id")Long id);
+    @GetMapping(value = "/industryCategory/get")
+    CommonResult<GoodsTypeDto> get(@RequestParam("id")Long id);
 }
