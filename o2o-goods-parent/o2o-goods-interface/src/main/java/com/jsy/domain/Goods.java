@@ -23,7 +23,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 @TableName("w_goods")
 @ApiModel(value="Goods对象", description=" 商品表")
-public class Goods extends BaseEntity implements Serializable {
+public class Goods extends BaseEntity  {
 
     private static final long serialVersionUID = 1L;
 

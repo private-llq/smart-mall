@@ -17,11 +17,11 @@ import java.util.List;
 public interface NewShopClient {
     /**
      * 根据id查询一条
-     * @param id
+     * @param shopId
      */
     //todo 网络http请求路径
-    @GetMapping(value = "/newShop/get/")
-    CommonResult<NewShop> get(@RequestParam("id")Long id);
+    @GetMapping(value = "/newShop/get")
+    CommonResult<NewShopDto> get(@RequestParam("shopId")Long shopId);
 
 
     @PostMapping("/newShop/batchIds")

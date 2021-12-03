@@ -68,7 +68,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     public void saveGoods(GoodsParam goodsParam) {
         Goods goods = new Goods();
         if (Objects.nonNull(goodsParam.getShopId())){
-            NewShop newShop = shopClient.get(goodsParam.getShopId()).getData();
+            NewShopDto newShop = shopClient.get(goodsParam.getShopId()).getData();
             if (Objects.nonNull(newShop)){
                 goods.setShopName(newShop.getShopName());
             }
@@ -115,7 +115,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
 
         Goods goods = new Goods();
         if (Objects.nonNull(goodsServiceParam.getShopId())){
-            NewShop newShop = shopClient.get(goodsServiceParam.getShopId()).getData();
+            NewShopDto newShop = shopClient.get(goodsServiceParam.getShopId()).getData();
             if (Objects.isNull(newShop)){
                 throw new JSYException(-1,"商家不存在！");
             }
@@ -166,7 +166,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
      */
     @Override
     public List<Tree> selectServiceType(Long shopId) {
-        NewShop newShop = shopClient.get(shopId).getData();
+        NewShopDto newShop = shopClient.get(shopId).getData();
         if (Objects.nonNull(newShop)){
             String[] ids = newShop.getShopTreeId().split(",");
             Tree tree = treeClient.getTree(Long.valueOf(ids[ids.length - 1])).getData();
