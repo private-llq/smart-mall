@@ -31,3 +31,5 @@
 hs_err_pid*
 /.txlcn/shop-service-backstage-7010.mv.db
 /.txlcn/shop-service-goods-7005.mv.db
+/.txlcn/shop-service-order-7003.mv.db
+/.txlcn/shop-service-user-7004.mv.db
