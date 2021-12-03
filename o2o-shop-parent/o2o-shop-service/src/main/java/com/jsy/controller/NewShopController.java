@@ -128,7 +128,7 @@ public class NewShopController {
       * @description 预览门店基本信息
       **/
     @PostMapping(value = "/selectBasic")
-    public CommonResult<NewShopBasicDto> selectBasic(@RequestParam(" ") Long shopId){
+    public CommonResult<NewShopBasicDto> selectBasic(@RequestParam("shopId") Long shopId){
        NewShopBasicDto basicDto =  newShopService.selectBasic(shopId);
         return CommonResult.ok(basicDto);
     }
@@ -237,6 +237,28 @@ public class NewShopController {
             return  CommonResult.error(-1,"修改失败！");
         }
     }
+
+     /**
+      * @author Tian
+      * @since 2021/12/3-9:57
+      * @description 查询店铺支持
+      **/
+     @ApiOperation("查询店铺支持")
+     @RequestMapping(value = "/getSupport",method = RequestMethod.GET)
+     public CommonResult getSupport(@RequestParam("shopId") Long shopId){
+         try {
+             NewShopSupportDto suportDto = newShopService.getSupport(shopId);
+             return CommonResult.ok(suportDto);
+         } catch (Exception e) {
+             e.printStackTrace();
+             return  CommonResult.error(-1,"修改失败！");
+         }
+     }
+
+
+
+
+
 
     /**************************************C端店铺的数据展示****************************************************************************/
     @ApiOperation("C端分类店铺列表")
