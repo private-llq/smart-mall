@@ -1,31 +1,25 @@
-package com.jsy.domain;
+package com.jsy.dto;
 
-import java.math.BigDecimal;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.IdType;
-import java.time.LocalDateTime;
-import com.baomidou.mybatisplus.annotation.TableId;
-import java.io.Serializable;
-
-import com.jsy.BaseEntity;
-import io.swagger.annotations.ApiModel;
+import com.jsy.query.CreationOrderGoodsParam;
+import com.jsy.query.CreationOrderMenuParam;
+import com.jsy.query.CreationOrderServiceParam;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * <p>
- * 订单表
- * </p>
- *
- * @author arli
- * @since 2021-11-15
+ * @className（类名称）: SelectUserOrderDTO
+ * @description（类描述）: this is the SelectUserOrderDTO class
+ * @author（创建人）: ${arli}
+ * @createDate（创建时间）: 2021/11/16
+ * @version（版本）: v1.0
  */
 @Data
-@EqualsAndHashCode(callSuper = false)
-@TableName("w_new_order")
-@ApiModel(value="NewOrder对象", description="订单表")
-public class NewOrder extends BaseEntity implements Serializable {
+public class SelectUserOrderDto {
 
     private static final long serialVersionUID = 1L;
 
@@ -95,10 +89,14 @@ public class NewOrder extends BaseEntity implements Serializable {
 
     @ApiModelProperty(value = "验卷码")
     private String serveCode;
-    @ApiModelProperty(value = "验卷状态")//验卷状态0未验卷，1验卷成功
-    private Integer serverCodeStatus;
-
-
+    @ApiModelProperty(value = "创建时间")
+    private LocalDateTime createTime;
+    @ApiModelProperty(value = "如果是商品的添加到商品详情")
+    private List<SelectUserOrderGoodsDto> OrderGoodsDtos=new ArrayList<>();
+    @ApiModelProperty(value = "如果是服务的添加到服务详情")
+    private   List<SelectUserOrderServiceDto> OrderServiceDtos=new ArrayList<>();
+    @ApiModelProperty(value = "如果是套餐的添加到套餐详情")
+    private  List<SelectUserOrderMenuDto> OrderMenuDtos=new ArrayList<>();
 
 
 }

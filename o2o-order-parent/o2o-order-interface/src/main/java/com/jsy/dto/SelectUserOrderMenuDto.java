@@ -25,8 +25,15 @@ public class SelectUserOrderMenuDto {
     @ApiModelProperty(value = "店铺id")
     private Long shopId;
 
+    @ApiModelProperty(value = "数量")
+    private Integer amount;
+
 //    @ApiModelProperty(value = "服务特点表集合")
 //    private List<ServiceCharacteristicsDto> ServiceCharacteristicsDtos;
+
+
+    @ApiModelProperty(value = "套餐id")
+    private Long menuId;
 
     @ApiModelProperty(value = "原价")
     private BigDecimal realPrice;
@@ -50,7 +57,6 @@ public class SelectUserOrderMenuDto {
     private String menuExplain;
 
     @ApiModelProperty(value = "套餐详情dto")
-    private  List<SelectUserOrderMenuGoodsDto> OrderMenuGoodsDtos;
-
+    private  List<SelectUserOrderMenuGoodsDto> orderMenuGoodsDtos;
 
 }

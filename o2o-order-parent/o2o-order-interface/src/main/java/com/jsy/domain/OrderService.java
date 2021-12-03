@@ -29,8 +29,6 @@ public class OrderService  extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-
-
     @ApiModelProperty(value = "订单id")
     private Long orderId;
 
@@ -73,7 +71,8 @@ public class OrderService  extends BaseEntity implements Serializable {
     @ApiModelProperty(value = "服务数量")
     private Integer amount;
 
-
+    @ApiModelProperty(value = "服务id")
+    private Long serviceId;
 
 
 }

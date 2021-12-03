@@ -62,6 +62,8 @@ public class OrderSetMenuGoods extends BaseEntity implements Serializable {
     @ApiModelProperty(value = "服务特点表ids 逗号隔开")
     private String serviceCharacteristicsIds;
 
+    @ApiModelProperty(value = "商品id")
+    private Long goodsId;
 
 
 
