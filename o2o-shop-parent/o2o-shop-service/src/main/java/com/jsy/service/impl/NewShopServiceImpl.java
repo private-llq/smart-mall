@@ -1,9 +1,11 @@
 package com.jsy.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jsy.basic.util.MyPageUtils;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.utils.*;
+import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.clent.CommentClent;
 import com.jsy.client.GoodsClient;
 import com.jsy.client.SetMenuClient;
@@ -134,7 +136,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
                 String treeId = newShop.getShopTreeId();
 
                 String[] split = treeId.split(",");
-                String shopTreeIdName = getString(split);
+                String shopTreeIdName = getShopTreeIdName(split);
                 newShopPreviewDto.setShopTreeIdName(shopTreeIdName);
             }
         } catch (Exception e) {
@@ -278,7 +280,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         BigDecimal longitude =  new BigDecimal((shopQuery.getLongitude()));
         BigDecimal latitude = new BigDecimal((shopQuery.getLatitude()));
 
-        List<NewShop> newShopList = shopMapper.selectAddress(longitude,latitude);
+        List<NewShop> newShopList = shopMapper.selectAddress(longitude,latitude,shopQuery.getTreeId());
         List<NewShopRecommendDto> shopList = new ArrayList<>();
 //        long byAddress = 0;
         for (NewShop newShop : newShopList) {
@@ -294,9 +296,10 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
                         recommendDto.setShopName(newShop.getShopName());
 
                         String[] ids = newShop.getShopTreeId().split(",");
-                        Tree tree = treeClient.getTree(Long.valueOf(ids[ids.length - 1])).getData();
-                        if (Objects.nonNull(tree)){
-                            recommendDto.setShopTreeIdName(tree.getName());
+                        String treeName = getShopTreeIdName(ids);
+//            Tree tree = treeClient.getTree(Long.valueOf(ids[ids.length - 1])).getData();
+                        if (Objects.nonNull(treeName)){
+                            recommendDto.setShopTreeIdName(treeName);
                         }
             System.out.println("评分");
                         //评分
@@ -317,15 +320,29 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         return pageInfo;
     }
 
-    private String getString(String[] split) {
+    private String getShopTreeIdName(String[] split) {
         String shopTreeIdName = "";
-        for (String s : split) {
-            Tree tree = treeClient.getTree(Long.valueOf(s)).getData();
-            shopTreeIdName = shopTreeIdName + "-" + tree.getName();
+        if (split.length<=2){
+            //医疗
+            Tree data = treeClient.getTree(Long.valueOf(split[split.length-1])).getData();
+            System.out.println("医疗");
+            return data.getName();
+        }else {
+            //其他
+            String id = split[split.length-1];
+            Tree data1= treeClient.getTree(Long.valueOf(split[split.length-1])).getData();
+            Tree data2= treeClient.getTree(Long.valueOf(split[split.length-2])).getData();
+            System.out.println("其他");
+            return data2.getName()+"-"+data1.getName();
+
         }
+//        for (String s : split) {
+//            Tree tree = treeClient.getTree(Long.valueOf(s)).getData();
+//            shopTreeIdName = shopTreeIdName + "-" + tree.getName();
+//        }
         //截取  第二个-  开始
-        String s1= shopTreeIdName.substring(shopTreeIdName.indexOf("-", shopTreeIdName.indexOf("-") + 1));
-        return s1.substring(1);
+//        String s1= shopTreeIdName.substring(shopTreeIdName.indexOf("-", shopTreeIdName.indexOf("-") + 1));
+//        return s1.substring(1);
 
     }
     /**
@@ -401,7 +418,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
                     String treeId = newShop.getShopTreeId();
 
                     String[] split = treeId.split(",");
-                    String shopTreeIdName = getString(split);
+                    String shopTreeIdName = getShopTreeIdName(split);
                     newShopDto.setShopTreeIdName(shopTreeIdName);
                 }
             } catch (Exception e) {
@@ -461,7 +478,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
                 String treeId = newShop.getShopTreeId();
 
                 String[] split = treeId.split(",");
-                String shopTreeIdName = getString(split);
+                String shopTreeIdName = getShopTreeIdName(split);
                 basicDto.setShopTreeIdName(shopTreeIdName);
             }
         } catch (Exception e) {
@@ -540,6 +557,16 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         String endDate = format.format(date)+"-01";
         Integer count  = shopMapper.newShopAudit(startDate,endDate,state);
         return count;
+    }
+
+    @Override
+    public NewShopSupportDto getSupport(Long shopId) {
+        NewShop newShop = shopMapper.selectOne(new QueryWrapper<NewShop>().eq("id", shopId));
+        NewShopSupportDto suportDto = new NewShopSupportDto();
+        suportDto.setIsVirtualShop(newShop.getIsVirtualShop());
+        suportDto.setIsVisitingService(newShop.getIsVisitingService());
+        suportDto.setShopId(shopId);
+        return suportDto;
     }
 
 }

@@ -90,6 +90,7 @@
         &lt;3000
         AND t1.state=1
         AND t1.shielding=0
+        AND locate(#{treeId}, t1.shop_tree_id) > 0;
 
     </select>
     <select id="selecctNewShopPage" resultType="com.jsy.domain.NewShop">

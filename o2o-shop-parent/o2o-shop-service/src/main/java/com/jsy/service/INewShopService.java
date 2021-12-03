@@ -88,4 +88,10 @@ public interface INewShopService extends IService<NewShop> {
   * @description 本月入驻商家数量
   **/
     Integer newShopAudit();
+ /**
+  * @author Tian
+  * @since 2021/12/3-10:00
+  * @description 查询店铺支持
+  **/
+ NewShopSupportDto getSupport(Long shopId);
 }

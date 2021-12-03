@@ -22,7 +22,7 @@ public interface NewShopMapper extends BaseMapper<NewShop> {
     List<NewShop> mainSearch(@Param("keyword") String keyword);
 
     //查询地理位置里用户位置3km以内的商家
-    List<NewShop> selectAddress(@Param("longitude") BigDecimal longitude, @Param("latitude") BigDecimal latitude);
+    List<NewShop> selectAddress(@Param("longitude") BigDecimal longitude, @Param("latitude") BigDecimal latitude, @Param("treeId") Long treeId);
     //大后台商家分页
     List<NewShop> selecctNewShopPage(@Param("shopQuery") NewShopQuery shopQuery);
 //热门推荐
