@@ -1,6 +1,10 @@
 package com.jsy.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.jsy.basic.util.MyPageUtils;
+import com.jsy.basic.util.PageInfo;
+import com.jsy.parameter.NewShopBackstageDto;
+import com.jsy.query.ShopAuditQuery;
 import com.jsy.util.RedisUtils;
 import com.jsy.domain.HotGoods;
 import com.jsy.domain.NewShop;
@@ -127,6 +131,20 @@ public class ShopAuditServiceImpl extends ServiceImpl<ShopAuditMapper, ShopAudit
         }
         shopMapper.updateById(newShop);
         return true;
+    }
+
+    @Override
+    public PageInfo<NewShopBackstageDto> selectList(ShopAuditQuery auditQuery) {
+        List<NewShopBackstageDto> backstageDtoList = shopMapper.selectAuitPage(auditQuery);
+        PageInfo<NewShopBackstageDto> shopAuditPageInfo = MyPageUtils.pageMap(auditQuery.getPage(), auditQuery.getRows(), backstageDtoList);
+        return shopAuditPageInfo;
+    }
+
+    @Override
+    public PageInfo<NewShopBackstageDto> selectListPage(ShopAuditQuery auditQuery) {
+        List<NewShopBackstageDto> backstageDtoList = shopMapper.selectNewShopPage(auditQuery);
+        PageInfo<NewShopBackstageDto> shopAuditPageInfo = MyPageUtils.pageMap(auditQuery.getPage(), auditQuery.getRows(), backstageDtoList);
+        return shopAuditPageInfo;
     }
 
 }

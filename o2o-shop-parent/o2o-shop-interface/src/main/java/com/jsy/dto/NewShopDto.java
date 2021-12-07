@@ -26,6 +26,7 @@ import java.time.LocalDateTime;
 @ApiModel(value="NewShop对象", description="店铺返回参数对象")
 public class NewShopDto implements Serializable {
 
+
     private Long id;
 
     @ApiModelProperty(value = "店铺拥有者uuid")

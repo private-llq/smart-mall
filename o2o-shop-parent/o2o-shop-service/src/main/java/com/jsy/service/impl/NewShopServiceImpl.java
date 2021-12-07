@@ -422,30 +422,30 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
   **/
     @Override
     public PageInfo<NewShopDto> newShopPage(NewShopQuery shopQuery) {
-        List<NewShop> shopList = shopMapper.selecctNewShopPage(shopQuery);
-        List<NewShopDto> dtoList = new ArrayList<>();
-        for (NewShop newShop : shopList) {
-            NewShopDto newShopDto = new NewShopDto();
-            try {
-                if (newShop.getShopTreeId()!=null){
-                    String treeId = newShop.getShopTreeId();
-
-                    String[] split = treeId.split(",");
-                    String shopTreeIdName = getShopTreeIdName(split);
-                    newShopDto.setShopTreeIdName(shopTreeIdName);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new JSYException(-1,"店铺分类错误");
-            }
-
-            BeanUtils.copyProperties(newShop,newShopDto);
-            dtoList.add(newShopDto);
-        }
-
-
-        PageInfo<NewShopDto> newShopDtoPageInfo = MyPageUtils.pageMap(shopQuery.getPage(), shopQuery.getRows(), dtoList);
-        return newShopDtoPageInfo;
+//        List<NewShop> shopList = shopMapper.selecctNewShopPage(shopQuery);
+//        List<NewShopDto> dtoList = new ArrayList<>();
+//        for (NewShop newShop : shopList) {
+//            NewShopDto newShopDto = new NewShopDto();
+//            try {
+//                if (newShop.getShopTreeId()!=null){
+//                    String treeId = newShop.getShopTreeId();
+//
+//                    String[] split = treeId.split(",");
+//                    String shopTreeIdName = getShopTreeIdName(split);
+//                    newShopDto.setShopTreeIdName(shopTreeIdName);
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                throw new JSYException(-1,"店铺分类错误");
+//            }
+//
+//            BeanUtils.copyProperties(newShop,newShopDto);
+//            dtoList.add(newShopDto);
+//        }
+//
+//
+//        PageInfo<NewShopDto> newShopDtoPageInfo = MyPageUtils.pageMap(shopQuery.getPage(), shopQuery.getRows(), dtoList);
+        return null;
     }
 
     @Override

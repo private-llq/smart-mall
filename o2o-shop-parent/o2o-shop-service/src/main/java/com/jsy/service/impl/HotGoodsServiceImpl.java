@@ -69,6 +69,7 @@ public class HotGoodsServiceImpl extends ServiceImpl<HotGoodsMapper, HotGoods> i
                 hotGoods.setDiscountPrice(newShopHotDto.getDiscountPrice());
                 hotGoods.setPvNum(newShopHotDto.getPvNum());
                 hotGoods.setGoodsId(newShopHotDto.getId());
+                hotGoods.setType(newShopHotDto.getType());
                 hotGoodsMapper.insert(hotGoods);
             }
             List<HotGoods> hotGoods = hotGoodsMapper.selectList(null);
@@ -77,13 +78,5 @@ public class HotGoodsServiceImpl extends ServiceImpl<HotGoodsMapper, HotGoods> i
             PageInfo<HotGoods> hotDtoPageInfo = MyPageUtils.pageMap(newShopQuery.getPage(), newShopQuery.getRows(), hotGoods);
             return hotDtoPageInfo;
         }
-
-
-
-
-    }
-
-    public static void main(String[] args) {
-
     }
 }
