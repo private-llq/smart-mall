@@ -1,5 +1,7 @@
 package com.jsy.dto;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -21,6 +23,7 @@ import java.io.Serializable;
 public class ServiceCharacteristicsDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    @JSONField(serializeUsing = ToStringSerializer.class)
     @ApiModelProperty(value = "服务特点ID",name = "ID")
     private Long id;
 

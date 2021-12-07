@@ -2,6 +2,8 @@ package com.jsy.domain;
 
 import java.math.BigDecimal;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
@@ -38,6 +40,7 @@ public class SetMenu  extends BaseEntity {
     private String name;
 
     @ApiModelProperty(value = "店铺id")
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long shopId;
 
 //    @ApiModelProperty(value = "服务特点表ids 逗号隔开")

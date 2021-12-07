@@ -1,5 +1,7 @@
 package com.jsy.dto;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -23,6 +25,7 @@ import java.time.LocalDateTime;
 public class FeedbackDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long id;
     @ApiModelProperty(value = "投诉图片")
     private String images;

@@ -1,5 +1,7 @@
 package com.jsy.dto;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.jsy.parameter.NewShopParam;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -11,6 +13,7 @@ import java.util.List;
 
 @Data
 public class NewShopBasicDto implements Serializable {
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long id;
     @NotBlank(groups = {NewShopParam.newShopValidatedGroup.class},message = "所在城市不能为空")
     @ApiModelProperty(name = "city", value = "所在城市")

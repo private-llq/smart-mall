@@ -1,6 +1,7 @@
 package com.jsy.domain;
 import java.math.BigDecimal;
 import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.time.LocalDateTime;
 import java.io.Serializable;
@@ -31,6 +32,7 @@ public class Goods extends BaseEntity  {
     private String goodsNumber;
 
     @ApiModelProperty(value = "商家id")
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long shopId;
 
     @ApiModelProperty(value = "商家name")

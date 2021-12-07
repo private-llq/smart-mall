@@ -1,7 +1,9 @@
 package com.jsy.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
+
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -20,7 +22,8 @@ public class NewShopRecommendDto implements Serializable {
     @ApiModelProperty(name = "shopTreeIdName", value = "门店类型名称")
     private String shopTreeIdName;
 
-    @JsonSerialize(using = ToStringSerializer.class)
+
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long id;
 
     @ApiModelProperty(value = "商品名称/服务标题")

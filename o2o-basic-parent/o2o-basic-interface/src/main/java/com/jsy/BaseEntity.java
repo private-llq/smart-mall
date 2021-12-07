@@ -1,6 +1,7 @@
 package com.jsy;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 public class BaseEntity implements Serializable {
 
     @TableId(value = "id",type = IdType.ASSIGN_ID)
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long id;
 
     @TableLogic

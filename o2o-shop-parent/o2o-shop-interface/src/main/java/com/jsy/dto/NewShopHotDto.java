@@ -1,5 +1,7 @@
 package com.jsy.dto;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,8 +14,11 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NewShopHotDto implements Serializable {
+    @JSONField(serializeUsing = ToStringSerializer.class)
     @ApiModelProperty(value = "商品id")
     private Long id;
+
+    @JSONField(serializeUsing = ToStringSerializer.class)
     @ApiModelProperty(value = "商家id")
     private Long shopId;
 
