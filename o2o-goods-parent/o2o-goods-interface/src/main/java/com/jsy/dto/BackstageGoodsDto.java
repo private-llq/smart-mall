@@ -1,5 +1,6 @@
 package com.jsy.dto;
 import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -8,6 +9,7 @@ import java.time.LocalDateTime;
 @Data
 public class BackstageGoodsDto implements Serializable {
 
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long id;
 
     /**

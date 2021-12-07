@@ -6,16 +6,15 @@ import com.jsy.domain.Tree;
 import com.jsy.dto.*;
 import com.jsy.parameter.GoodsParam;
 import com.jsy.parameter.GoodsServiceParam;
-import com.jsy.query.BackstageGoodsQuery;
-import com.jsy.query.BackstageServiceQuery;
-import com.jsy.query.GoodsBackstageQuery;
-import com.jsy.query.GoodsPageQuery;
+import com.jsy.query.*;
 import com.jsy.service.IGoodsService;
 import com.jsy.domain.Goods;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.jsy.basic.util.vo.CommonResult;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -115,31 +114,56 @@ public class GoodsController {
             return  CommonResult.error(-1,"删除失败！");
         }
     }
-
     /**
-     * 查看一条商品/服务的详细信息 B端+C端
+     * 查看一条商品的所有详细信息 B端+C端
      * @param id
      *
      */
-    @ApiOperation("查看一条商品/服务的详细信息")
-    @GetMapping("getGoodsService")
-    public CommonResult<Goods> getGoodsService(@RequestParam("id") Long id)
+    @ApiOperation("查看一条商品的详细信息")
+    @GetMapping("getGoods")
+    public CommonResult<GoodsDto> getGoods(@RequestParam("id") Long id)
     {
-        Goods goods= goodsService.getGoodsService(id);
-        return CommonResult.ok(goods);
+        GoodsDto goodsDto= goodsService.getGoods(id);
+        return CommonResult.ok(goodsDto);
+    }
+    /**
+     * 查看一条服务的所有详细信息 B端+C端
+     * @param id
+     *
+     */
+    @ApiOperation("查看一条服务的详细信息")
+    @GetMapping("getGoodsService")
+    public CommonResult<GoodsServiceDto> getGoodsService(@RequestParam("id") Long id)
+    {
+        GoodsServiceDto goodsServiceDto= goodsService.getGoodsService(id);
+        return CommonResult.ok(goodsServiceDto);
     }
 
+
+
     /**
-     * 查询店铺下面的商品+服务 B端+端
+     * 查询店铺下面的商品 B端+C端
      * @param goodsPageQuery
      * @return
      */
-    //todo c端用户查询需要传 shopId=?  type=? (state=0，isPutaway=1) ; b端店主查询只需要shopId=?,type=?,isPutaway=?;
     @ApiOperation("查询店铺下面的商品")
     @PostMapping("getGoodsAll")
-    public CommonResult<PageInfo<Goods>> getGoodsAll(@RequestBody GoodsPageQuery goodsPageQuery)
+    public CommonResult<PageInfo<GoodsDto>> getGoodsAll(@RequestBody GoodsPageQuery goodsPageQuery)
     {
-        PageInfo<Goods> pageInfo = goodsService.getGoodsAll(goodsPageQuery);
+        PageInfo<GoodsDto> pageInfo = goodsService.getGoodsAll(goodsPageQuery);
+        return CommonResult.ok(pageInfo);
+    }
+
+    /**
+     * 查询店铺下面的服务 B端+C端
+     * @param goodsPageQuery
+     * @return
+     */
+    @ApiOperation("查询店铺下面的服务")
+    @PostMapping("getGoodsServiceAll")
+    public CommonResult<PageInfo<GoodsServiceDto>> getGoodsServiceAll(@RequestBody GoodsPageQuery goodsPageQuery)
+    {
+        PageInfo<GoodsServiceDto> pageInfo = goodsService.getGoodsServiceAll(goodsPageQuery);
         return CommonResult.ok(pageInfo);
     }
 
@@ -239,11 +263,10 @@ public class GoodsController {
     /**
      * 医疗端：附近的服务
      */
-    @GetMapping
-    public CommonResult<List<GoodsServiceDto>> NearTheService(@RequestParam("longitude") String  longitude,@RequestParam("longitude")String latitude){
-        List<GoodsServiceDto> list= goodsService.NearTheService(latitude,longitude);
-        return CommonResult.ok(list);
+    @PostMapping("/NearTheService")
+    public CommonResult<PageInfo<GoodsServiceDto>> NearTheService(@RequestBody NearTheServiceQuery nearTheServiceQuery){
+        PageInfo<GoodsServiceDto> pageInfo= goodsService.NearTheService(nearTheServiceQuery);
+        return CommonResult.ok(pageInfo);
     }
-
 }
 

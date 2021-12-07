@@ -1,6 +1,8 @@
 package com.jsy.dto;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -12,14 +14,31 @@ import java.time.LocalDateTime;
 
 public class GoodsServiceDto {
 
+    /**
+     * 服务的id
+     */
+    @JSONField(serializeUsing = ToStringSerializer.class)
+    private Long id;
+
     @ApiModelProperty(value = "商家id")
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long shopId;
+    /**
+     * 商店名称
+     */
+    private String shopName;
 
     @ApiModelProperty(value = "商品/服务 - 图片1-3张")
     private String images;
 
     @ApiModelProperty(value = "商品/服务 分类id")
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long goodsTypeId;
+
+    /**
+     * 商品分类名称
+     */
+    private String goodsTypeName;
 
     @ApiModelProperty(value = "商品名称/服务标题")
     private String title;
@@ -61,4 +80,12 @@ public class GoodsServiceDto {
 
    /* @ApiModelProperty(value = "是否支持上门服务 0 不支持 1 支持")
     private Integer isVisitingService;*/
+
+    @ApiModelProperty(value = "销量")
+    private Long sums=0L;
+
+    /**
+     * 访问量
+     */
+    private Long pvNum;
 }

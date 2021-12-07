@@ -1,11 +1,16 @@
 package com.jsy.domain;
 
 import java.math.BigDecimal;
+
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
+
+import com.jsy.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -23,23 +28,24 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 @TableName("w_shopping_cart")
 @ApiModel(value="ShoppingCart对象", description="")
-public class ShoppingCart implements Serializable {
+public class ShoppingCart extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "id")
-    @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
 
+    @JSONField(serializeUsing = ToStringSerializer.class)
     @ApiModelProperty(value = "用户id")
     private Long userId;
 
+    @JSONField(serializeUsing = ToStringSerializer.class)
     @ApiModelProperty(value = "商家id")
     private Long shopId;
 
+    @JSONField(serializeUsing = ToStringSerializer.class)
     @ApiModelProperty(value = "商品id")
     private Long goodsId;
 
+    @JSONField(serializeUsing = ToStringSerializer.class)
     @ApiModelProperty(value = "套餐id")
     private Long setMenuId;
 
@@ -48,15 +54,6 @@ public class ShoppingCart implements Serializable {
 
     @ApiModelProperty(value = "商品名称/服务标题")
     private String title;
-
-    @ApiModelProperty(value = "创建时间")
-    private LocalDateTime createTime;
-
-    @ApiModelProperty(value = "修改时间")
-    private LocalDateTime updateTime;
-
-    @ApiModelProperty(value = "逻辑删除")
-    private Integer deleted;
 
     @ApiModelProperty(value = "商品价格")
     private BigDecimal price;

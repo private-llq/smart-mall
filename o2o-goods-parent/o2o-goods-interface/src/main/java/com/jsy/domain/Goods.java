@@ -1,9 +1,9 @@
 package com.jsy.domain;
 import java.math.BigDecimal;
 import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.time.LocalDateTime;
-import java.io.Serializable;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.jsy.BaseEntity;
 import io.swagger.annotations.ApiModel;
@@ -30,6 +30,7 @@ public class Goods extends BaseEntity  {
     @ApiModelProperty(value = "商品编号")
     private String goodsNumber;
 
+    @JSONField(serializeUsing = ToStringSerializer.class)
     @ApiModelProperty(value = "商家id")
     private Long shopId;
 
@@ -40,6 +41,7 @@ public class Goods extends BaseEntity  {
     private String images;
 
     @ApiModelProperty(value = "商品/服务 分类id")
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long goodsTypeId;
 
     @ApiModelProperty(value = "商品/服务 分类name")
@@ -91,7 +93,6 @@ public class Goods extends BaseEntity  {
 
     @ApiModelProperty(value = "访问量")
     private Long pvNum;
-
 
     @ApiModelProperty(value = "大后台：商品状态 0 启用 1禁用")
     private Integer state;

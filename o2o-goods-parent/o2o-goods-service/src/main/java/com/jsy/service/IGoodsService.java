@@ -10,10 +10,7 @@ import com.jsy.domain.Tree;
 import com.jsy.dto.*;
 import com.jsy.parameter.GoodsParam;
 import com.jsy.parameter.GoodsServiceParam;
-import com.jsy.query.BackstageGoodsQuery;
-import com.jsy.query.BackstageServiceQuery;
-import com.jsy.query.GoodsBackstageQuery;
-import com.jsy.query.GoodsPageQuery;
+import com.jsy.query.*;
 
 import java.util.List;
 
@@ -40,18 +37,33 @@ public interface IGoodsService extends IService<Goods> {
 
 
     /**
-     * 查看一条商品/服务的所有信息
-     *
+     * 查看一条商品的所有详细信息 B端+C端
      * @param id
+     *
      */
-    Goods getGoodsService(Long id);
+    GoodsDto getGoods(Long id);
+
+    /**
+     * 查看一条服务的所有详细信息 B端+C端
+     * @param id
+     *
+     */
+    GoodsServiceDto getGoodsService(Long id);
 
     /**
      * 查询店铺下面的商品+服务 B端
      * @param goodsPageQuery   0:普通商品 1：服务类商品
      * @return
      */
-    PageInfo<Goods> getGoodsAll(GoodsPageQuery goodsPageQuery);
+    PageInfo<GoodsDto> getGoodsAll(GoodsPageQuery goodsPageQuery);
+
+
+    /**
+     * 查询店铺下面的服务 B端+C端
+     * @param goodsPageQuery
+     * @return
+     */
+    PageInfo<GoodsServiceDto> getGoodsServiceAll(GoodsPageQuery goodsPageQuery);
 
 
     /**
@@ -132,5 +144,7 @@ public interface IGoodsService extends IService<Goods> {
     /**
      * 医疗端：附近的服务
      */
-    List<GoodsServiceDto> NearTheService(String latitude, String longitude);
+    PageInfo<GoodsServiceDto> NearTheService(NearTheServiceQuery nearTheServiceQuery);
+
+
 }

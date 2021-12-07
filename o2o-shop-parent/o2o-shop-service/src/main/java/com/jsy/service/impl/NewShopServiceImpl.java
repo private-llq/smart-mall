@@ -197,7 +197,6 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
             throw new JSYException(-1,"店铺分类错误");
         }
         newShop.setState(0);
-
         shopMapper.updateById(newShop);
     }
 
@@ -574,5 +573,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         suportDto.setShopId(shopId);
         return suportDto;
     }
+
+
 
 }
