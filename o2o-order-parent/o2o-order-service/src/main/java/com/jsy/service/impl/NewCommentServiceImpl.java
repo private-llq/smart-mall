@@ -12,10 +12,12 @@ import com.jsy.service.INewCommentService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jsy.utils.MyPage;
 import com.jsy.vo.SelectCommentAndReplyVo;
+import com.zhsj.base.api.constant.RpcConst;
 import com.zhsj.base.api.entity.UserDetail;
 import com.zhsj.base.api.rpc.IBaseUserInfoRpcService;
 import com.zhsj.baseweb.support.ContextHolder;
 import com.zhsj.baseweb.support.LoginUser;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,6 +43,8 @@ public class NewCommentServiceImpl extends ServiceImpl<NewCommentMapper, NewComm
     @Resource
     private NewCommentMapper newCommentMapper;
 
+    @DubboReference(version = RpcConst.Rpc.VERSION, group=RpcConst.Rpc.Group.GROUP_BASE_USER,  check = false)
+    private IBaseUserInfoRpcService iBaseUserInfoRpcService;
 
      //新增一条评论
     @Override
@@ -112,16 +116,14 @@ public class NewCommentServiceImpl extends ServiceImpl<NewCommentMapper, NewComm
         selectCommentAndReplyVos.forEach(a->{
             SelectCommentAndReplyDto selectCommentAndReplyDto=new SelectCommentAndReplyDto();
             BeanUtils.copyProperties(a,selectCommentAndReplyDto);
-//        IBaseUserInfoRpcService infoRpcService=new IBaseUserInfoRpcService();
-//        LoginUser loginUser = ContextHolder.getContext().getLoginUser();
-//        System.out.println("id***************************"+loginUser.getId());
-//        UserDetail userDetail = infoRpcService.getUserDetail(loginUser.getId());
-//        String avatarThumbnail = userDetail.getAvatarThumbnail();
-//        System.out.println("头像****************************************"+avatarThumbnail);
-            selectCommentAndReplyDto.setHeadpPhoto("用户头像");
+
+            UserDetail userDetail = iBaseUserInfoRpcService.getUserDetail(a.getUserId());//获取用户的头像
+            String avatarThumbnail = userDetail.getAvatarThumbnail();
+            System.out.println("头像****************************************"+avatarThumbnail);
+            selectCommentAndReplyDto.setHeadpPhoto(avatarThumbnail);
+            selectCommentAndReplyDto.setName(userDetail.getNickName());
             list.add(selectCommentAndReplyDto);
         });
-
         myPage.setRecords(list);//数据
         myPage.setTotal(total);//总数
         myPage.setSize(amount);//每页数量

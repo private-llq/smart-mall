@@ -28,8 +28,6 @@ public class SelectUserOrderMenuDto {
     @ApiModelProperty(value = "数量")
     private Integer amount;
 
-//    @ApiModelProperty(value = "服务特点表集合")
-//    private List<ServiceCharacteristicsDto> ServiceCharacteristicsDtos;
 
 
     @ApiModelProperty(value = "套餐id")

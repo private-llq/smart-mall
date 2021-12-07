@@ -53,8 +53,7 @@ public class OrderService  extends BaseEntity implements Serializable {
     @ApiModelProperty(value = "是否开启折扣：0未开启 1开启")
     private Integer discountState;
 
-    @ApiModelProperty(value = "服务特点表ids 逗号隔开")
-    private String serviceCharacteristicsIds;
+
 
     @ApiModelProperty(value = "服务的备注")
     private String textDescription;

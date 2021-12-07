@@ -22,8 +22,6 @@ import java.util.List;
 public class CreationOrderParam implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @ApiModelProperty(value = "c端用户id")
-    private Long userId;
     @ApiModelProperty(value = "b端商家id")
     private Long shopId;
     @ApiModelProperty(value = "订单类型（0-服务类(只有服务)，1-普通类（套餐，单品集合））")
@@ -38,7 +36,7 @@ public class CreationOrderParam implements Serializable {
     private String linkman;
     @ApiModelProperty(value = "性别    0  男  |  1 女")
     private Integer sex;
-    @ApiModelProperty(value = "电话")
+    @ApiModelProperty(value = "用户电话")
     private String telepone;
     @ApiModelProperty(value = "地区")
     private String district;

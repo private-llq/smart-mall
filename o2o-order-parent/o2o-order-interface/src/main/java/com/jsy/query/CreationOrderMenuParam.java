@@ -28,11 +28,7 @@ public class CreationOrderMenuParam implements Serializable {
     @ApiModelProperty(value = "套餐id")
     private Long menuId;
 
-    @ApiModelProperty(value = "店铺id")
-    private Long shopId;
 
-//    @ApiModelProperty(value = "服务特点表ids 逗号隔开")
-//    private String serviceCharacteristicsIds;
 
     @ApiModelProperty(value = "原价")
     private BigDecimal realPrice;
@@ -43,15 +39,6 @@ public class CreationOrderMenuParam implements Serializable {
     @ApiModelProperty(value = "图片（最大三张）")
     private String images;
 
-    @ApiModelProperty(value = "开始有效期")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
-    private LocalDateTime indateStart;
-
-    @ApiModelProperty(value = "截止有效期")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
-    private LocalDateTime indateEnd;
 
     @ApiModelProperty(value = "使用规则")
     private String rule;
