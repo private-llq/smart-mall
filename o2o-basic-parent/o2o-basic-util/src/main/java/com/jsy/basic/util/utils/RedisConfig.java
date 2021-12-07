@@ -1,4 +1,4 @@
-package com.jsy.config;
+package com.jsy.basic.util.utils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -18,6 +18,7 @@ public class RedisConfig {
 	@Bean
 	public RedisTemplate<String, Object> redisTemplate() {
 		RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+		System.out.println("redis111111111111111****************************************************************************************************");
 		redisTemplate.setKeySerializer(new StringRedisSerializer());
 		redisTemplate.setHashKeySerializer(new StringRedisSerializer());
 		redisTemplate.setHashValueSerializer(new StringRedisSerializer());
@@ -25,7 +26,17 @@ public class RedisConfig {
 		redisTemplate.setConnectionFactory(factory);
 		return redisTemplate;
 	}
-	
+	@Bean
+	public StringRedisTemplate stringRedisTemplate() {
+		StringRedisTemplate stringRedisTemplate = new StringRedisTemplate();
+		System.out.println("redis****************************************************************************************************");
+		stringRedisTemplate.setKeySerializer(new StringRedisSerializer());
+		stringRedisTemplate.setHashKeySerializer(new StringRedisSerializer());
+		stringRedisTemplate.setHashValueSerializer(new StringRedisSerializer());
+		stringRedisTemplate.setValueSerializer(new StringRedisSerializer());
+		stringRedisTemplate.setConnectionFactory(factory);
+		return stringRedisTemplate;
+	}
 	@Bean
 	public HashOperations<String, String, Object> hashOperations(RedisTemplate<String, Object> redisTemplate) {
 		return redisTemplate.opsForHash();

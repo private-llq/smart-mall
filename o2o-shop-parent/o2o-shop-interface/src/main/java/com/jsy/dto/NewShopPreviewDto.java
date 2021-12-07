@@ -1,5 +1,7 @@
 package com.jsy.dto;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -20,8 +22,10 @@ import java.io.Serializable;
 @ApiModel(value="店铺预览对象", description="店铺预览对象返回参数对象")
 public class NewShopPreviewDto implements Serializable {
 
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long id;
 
+    @JSONField(serializeUsing = ToStringSerializer.class)
     @ApiModelProperty(value = "店铺拥有者uuid")
     private Long ownerUuid;
 

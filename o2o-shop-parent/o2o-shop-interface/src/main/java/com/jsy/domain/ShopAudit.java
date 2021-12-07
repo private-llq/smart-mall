@@ -1,5 +1,7 @@
 package com.jsy.domain;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import java.time.LocalDateTime;
@@ -30,6 +32,7 @@ public class ShopAudit extends BaseEntity {
 //
 
     @ApiModelProperty(value = "店铺id")
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long shopId;
 
     @ApiModelProperty(value = "审核人员id")

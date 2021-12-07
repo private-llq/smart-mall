@@ -1,6 +1,8 @@
 package com.jsy.dto;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -31,8 +33,10 @@ import java.time.LocalDateTime;
 @ApiModel(value="NewShop对象", description="店铺返回参数对象")
 public class NewShopDto implements Serializable {
 
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long id;
 
+    @JSONField(serializeUsing = ToStringSerializer.class)
     @ApiModelProperty(value = "店铺拥有者uuid")
     private Long ownerUuid;
 

@@ -1,5 +1,7 @@
 package com.jsy.domain;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -42,6 +44,7 @@ public class NewShop extends BaseEntity  {
 
 
     @ApiModelProperty(value = "店铺拥有者uuid")
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long ownerUuid;
 
     @ApiModelProperty(value = "店铺所在城市")

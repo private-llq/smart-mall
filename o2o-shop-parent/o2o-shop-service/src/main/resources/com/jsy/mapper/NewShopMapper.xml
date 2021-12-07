@@ -89,22 +89,42 @@
         )
         &lt;3000
         AND t1.state=1
+        AND t1.deleted=0
         AND t1.shielding=0
         AND locate(#{treeId}, t1.shop_tree_id) > 0;
 
     </select>
-    <select id="selecctNewShopPage" resultType="com.jsy.domain.NewShop">
+
+
+
+    <select id="selectNewShopPage" resultType="com.jsy.parameter.NewShopBackstageDto">
         select * from w_new_shop s where deleted=0
         <if test="shopQuery.state !=null and shopQuery.state !=''">
             AND s.state= #{shopQuery.state,jdbcType=INTEGER}
+        </if>
+        <if test="shopQuery.shielding !=null and shopQuery.shielding !=''">
+            AND s.shielding= #{shopQuery.shielding,jdbcType=INTEGER}
+        </if>
+        <if test="shopQuery.keyword !=null and shopQuery.keyword!=''">
+            AND s.shop_name LIKE CONCAT('%',#{shopQuery.keyword,jdbcType=VARCHAR},'%')
+        </if>
+    </select>
+    <select id="selectHot" resultType="com.jsy.dto.NewShopHotDto">
+        SELECT * FROM pv_num WHERE id IN(SELECT id FROM sv_num)
+    </select>
+<!--店铺名称和法人姓名-->
+    <select id="selectAuitPage" resultType="com.jsy.parameter.NewShopBackstageDto">
+        select * from w_new_shop s where deleted=0
+        <if test="shopQuery.state !=null and shopQuery.state !=''">
+            AND s.state= #{shopQuery.state,jdbcType=INTEGER}
+        </if>
+        <if test="shopQuery.shielding !=null and shopQuery.shielding !=''">
+            AND s.shielding= #{shopQuery.shielding,jdbcType=INTEGER}
         </if>
         <if test="shopQuery.keyword !=null and shopQuery.keyword!=''">
             AND s.shop_name LIKE CONCAT('%',#{shopQuery.keyword,jdbcType=VARCHAR},'%')
             OR s.shop_username LIKE CONCAT('%',#{shopQuery.keyword,jdbcType=VARCHAR},'%')
         </if>
-    </select>
-    <select id="selectHot" resultType="com.jsy.dto.NewShopHotDto">
-        SELECT * FROM sv_num WHERE id in(SELECT id FROM pv_num)
     </select>
 
 </mapper>

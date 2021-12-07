@@ -1,5 +1,7 @@
 package com.jsy.dto;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -27,6 +29,7 @@ public class RecordDto implements Serializable {
 
 
     @ApiModelProperty(value = "档案分类id")
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long id;
 
     @ApiModelProperty(value = "档案分类名称")

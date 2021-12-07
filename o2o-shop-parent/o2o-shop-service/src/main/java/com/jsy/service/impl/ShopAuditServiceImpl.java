@@ -1,21 +1,28 @@
 package com.jsy.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.jsy.basic.util.MyPageUtils;
+import com.jsy.basic.util.PageInfo;
+import com.jsy.parameter.NewShopBackstageDto;
+import com.jsy.query.ShopAuditQuery;
+import com.jsy.util.RedisUtils;
+import com.jsy.domain.HotGoods;
 import com.jsy.domain.NewShop;
 import com.jsy.domain.ShopAudit;
+import com.jsy.mapper.HotGoodsMapper;
 import com.jsy.mapper.NewShopMapper;
 import com.jsy.mapper.ShopAuditMapper;
 import com.jsy.parameter.NewShopAuditParam;
 import com.jsy.service.IShopAuditService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhsj.baseweb.support.ContextHolder;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
@@ -31,6 +38,12 @@ public class ShopAuditServiceImpl extends ServiceImpl<ShopAuditMapper, ShopAudit
     private NewShopMapper shopMapper;
     @Resource
     private ShopAuditMapper auditMapper;
+    @Resource
+    private HotGoodsMapper hotGoodsMapper;
+    @Autowired
+    private RedisUtils redisUtils;
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
     @Override
     public boolean addAudit(NewShopAuditParam auditParam) {
         NewShop newShop = shopMapper.selectById(auditParam.getShopId());
@@ -79,8 +92,18 @@ public class ShopAuditServiceImpl extends ServiceImpl<ShopAuditMapper, ShopAudit
                 .last("limit 1")
         );
         System.out.println(shopAudit);
+        if (auditParam.getShielding()==1){
+            Long time = stringRedisTemplate.getExpire("hotGoods", TimeUnit.HOURS);
+            System.out.println("剩余时间"+time);
+            //去掉热门数据里屏蔽店铺的数据
+            hotGoodsMapper.delete(new QueryWrapper<HotGoods>().eq("shop_id",auditParam.getShopId()));
+            //删除缓存
+            stringRedisTemplate.delete("hootGoods");
+            //重新设置缓存
+            List<HotGoods> hotGoodsList = hotGoodsMapper.selectList(null);
+            redisUtils.setHotGoods(hotGoodsList,time);
+        }
         if (shopAudit==null||shopAudit!=null&&shopAudit.getShieldingReason()!=null){
-            System.out.println("新增");
             //屏蔽状态 0未屏蔽  1已屏蔽
             if (auditParam.getShielding()==0){
                 newShop.setShielding(0);
@@ -94,7 +117,6 @@ public class ShopAuditServiceImpl extends ServiceImpl<ShopAuditMapper, ShopAudit
                 auditMapper.insert(shopAudit1);
             }
         }else {
-            System.out.println("修改");
             //屏蔽状态 0未屏蔽  1已屏蔽
             if (auditParam.getShielding()==0){
                 newShop.setState(0);
@@ -110,4 +132,19 @@ public class ShopAuditServiceImpl extends ServiceImpl<ShopAuditMapper, ShopAudit
         shopMapper.updateById(newShop);
         return true;
     }
+
+    @Override
+    public PageInfo<NewShopBackstageDto> selectList(ShopAuditQuery auditQuery) {
+        List<NewShopBackstageDto> backstageDtoList = shopMapper.selectAuitPage(auditQuery);
+        PageInfo<NewShopBackstageDto> shopAuditPageInfo = MyPageUtils.pageMap(auditQuery.getPage(), auditQuery.getRows(), backstageDtoList);
+        return shopAuditPageInfo;
+    }
+
+    @Override
+    public PageInfo<NewShopBackstageDto> selectListPage(ShopAuditQuery auditQuery) {
+        List<NewShopBackstageDto> backstageDtoList = shopMapper.selectNewShopPage(auditQuery);
+        PageInfo<NewShopBackstageDto> shopAuditPageInfo = MyPageUtils.pageMap(auditQuery.getPage(), auditQuery.getRows(), backstageDtoList);
+        return shopAuditPageInfo;
+    }
+
 }

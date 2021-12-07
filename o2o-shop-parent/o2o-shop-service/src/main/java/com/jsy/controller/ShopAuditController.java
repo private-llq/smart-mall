@@ -1,6 +1,9 @@
 package com.jsy.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.jsy.basic.util.PageInfo;
 import com.jsy.parameter.NewShopAuditParam;
+import com.jsy.parameter.NewShopBackstageDto;
+import com.jsy.query.NewShopQuery;
 import com.jsy.service.INewShopService;
 import com.jsy.service.IShopAuditService;
 import com.jsy.domain.ShopAudit;
@@ -41,26 +44,43 @@ public class ShopAuditController {
         return CommonResult.ok();
     }
 
-     /**
-      * @author Tian
-      * @since 2021/12/1-18:03
-      * @description 查询审核不通过理由
-      **/
+    /**
+     * @author Tian
+     * @since 2021/12/1-18:03
+     * @description 查询审核不通过理由
+     **/
 
-     @GetMapping(value = "/getRejected")
-     public CommonResult getRejected(@RequestParam("shopId")Long shopId){
-         ShopAudit shopAudit = shopAuditService.getOne(new QueryWrapper<ShopAudit>()
-                         .eq("shop_id", shopId)
-                         .orderByDesc("create_time")
-                         .last("limit 1")
-         );
-         return CommonResult.ok(shopAudit);
-     }
+    @GetMapping(value = "/getRejected")
+    public CommonResult getRejected(@RequestParam("shopId")Long shopId){
+        ShopAudit shopAudit = shopAuditService.getOne(new QueryWrapper<ShopAudit>()
+                .eq("shop_id", shopId)
+                .orderByDesc("create_time")
+                .last("limit 1")
+        );
+        return CommonResult.ok(shopAudit);
+    }
+    /**
+     * @author Tian
+     * @since 2021/12/1-18:03
+     * @description 查询审核是否通过的商家   店铺名称和法人姓名
+     **/
 
-      /**
-       * @author Tian
-       * @since 2021/12/1-18:04
-       * @description 查询屏蔽理由
-       **/
+    @PostMapping(value = "/selectList")
+    public CommonResult<PageInfo<NewShopBackstageDto>> selectList(@RequestBody ShopAuditQuery auditQuery){
+       PageInfo<NewShopBackstageDto> pageInfo = shopAuditService.selectList(auditQuery);
+         return CommonResult.ok(pageInfo);
+    }
+
+    /**
+     * @author Tian
+     * @since 2021/12/1-18:03
+     * @description 查询审核是否通过的商家   店铺名称和法人姓名
+     **/
+
+    @PostMapping(value = "/selectListPage")
+    public CommonResult<PageInfo<NewShopBackstageDto>> selectListPage(@RequestBody ShopAuditQuery auditQuery){
+        PageInfo<NewShopBackstageDto> pageInfo = shopAuditService.selectListPage(auditQuery);
+        return CommonResult.ok(pageInfo);
+    }
 
 }

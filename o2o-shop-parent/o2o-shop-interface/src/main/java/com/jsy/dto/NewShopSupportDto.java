@@ -1,5 +1,7 @@
 package com.jsy.dto;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -13,5 +15,6 @@ public class NewShopSupportDto implements Serializable {
     @ApiModelProperty(value = "是否是虚拟店铺  0不是 1是")
     private Integer isVirtualShop;
 
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long shopId;
 }

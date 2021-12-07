@@ -23,6 +23,7 @@ import java.io.Serializable;
 public class ServiceCharacteristicsDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    @JSONField(serializeUsing = ToStringSerializer.class)
     @ApiModelProperty(value = "服务特点ID",name = "ID")
     @JSONField(serializeUsing = ToStringSerializer.class)
     private Long id;

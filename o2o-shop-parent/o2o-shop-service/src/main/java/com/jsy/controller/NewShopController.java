@@ -270,11 +270,6 @@ public class NewShopController {
     }
 
 
-
-
-
-
-
     /**
      * 首页搜索
      * @param mainSearchQuery
@@ -298,17 +293,17 @@ public class NewShopController {
 
 
     /**************************************大后台数据展示****************************************************************************/
-    @ApiOperation("店铺展示列表")
-    @RequestMapping(value = "/newShopPage",method = RequestMethod.POST)
-    public CommonResult<PageInfo<NewShopDto>> newShopPage(@RequestBody NewShopQuery shopQuery){
-        PageInfo<NewShopDto> shopAllList = newShopService.newShopPage(shopQuery);
-        if (shopAllList!=null){
-            return CommonResult.ok(shopAllList);
-        }
-        else {
-            return new  CommonResult(-1,"失败",null);
-        }
-    }
+//    @ApiOperation("店铺展示列表")
+//    @RequestMapping(value = "/newShopPage",method = RequestMethod.POST)
+//    public CommonResult<PageInfo<NewShopDto>> newShopPage(@RequestBody NewShopQuery shopQuery){
+//        PageInfo<NewShopDto> shopAllList = newShopService.newShopPage(shopQuery);
+//        if (shopAllList!=null){
+//            return CommonResult.ok(shopAllList);
+//        }
+//        else {
+//            return new  CommonResult(-1,"失败",null);
+//        }
+//    }
 //    @ApiOperation("店铺审核")
 //    @RequestMapping(value = "/newShopState",method = RequestMethod.POST)
 //    public CommonResult newShopState(@RequestParam("shopId") Long shopId,@RequestParam("state") Integer state){
