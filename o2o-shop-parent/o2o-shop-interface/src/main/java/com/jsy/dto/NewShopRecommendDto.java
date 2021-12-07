@@ -31,4 +31,6 @@ public class NewShopRecommendDto implements Serializable {
 
     @ApiModelProperty(value = "距离多远")
     private BigDecimal distance;
+    @ApiModelProperty
+    private String images;
 }

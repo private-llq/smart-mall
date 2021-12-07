@@ -89,6 +89,7 @@
         )
         &lt;3000
         AND t1.state=1
+        AND t1.deleted=0
         AND t1.shielding=0
         AND locate(#{treeId}, t1.shop_tree_id) > 0;
 
@@ -104,7 +105,7 @@
         </if>
     </select>
     <select id="selectHot" resultType="com.jsy.dto.NewShopHotDto">
-        SELECT * FROM sv_num WHERE id in(SELECT id FROM pv_num)
+        SELECT * FROM pv_num WHERE id IN(SELECT id FROM sv_num)
     </select>
 
 </mapper>

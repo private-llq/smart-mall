@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NewShopHotDto implements Serializable {
+    @ApiModelProperty(value = "商品id")
     private Long id;
     @ApiModelProperty(value = "商家id")
     private Long shopId;
@@ -28,12 +29,10 @@ public class NewShopHotDto implements Serializable {
     @ApiModelProperty(value = "商品价格")
     private BigDecimal price;
 
+    @ApiModelProperty(value = "访问量")
+    private Long pvNum;
+    @ApiModelProperty(value = "类型  类型2套餐   服务和商品是0")
+    private Integer type;
 
-//    @ApiModelProperty(value = "服务/商品 特点表ids 逗号隔开")
-//    private String serviceCharacteristicsIds;
-
-
-    @ApiModelProperty(value = "售卖数量")
-    private String amount;
 
 }

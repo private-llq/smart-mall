@@ -314,6 +314,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
                             recommendDto.setTitle(goods.getTitle());
                             recommendDto.setPrice(goods.getPrice());
                             shopList.add(recommendDto);
+                            recommendDto.setImages(newShop.getShopLogo());
                         }
         }
         PageInfo<NewShopRecommendDto> pageInfo = MyPageUtils.pageMap(shopQuery.getPage(), shopQuery.getRows(), shopList);
@@ -372,11 +373,18 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
             myNewShopDto.setShopName(newShop.getShopName());
             myNewShopDto.setGrade(5.0f);
             //查询
-            Goods goods = goodsClient.latelyGoods(newShop.getId()).getData();
-            if (Objects.nonNull(goods)){
-                myNewShopDto.setTitle(goods.getTitle());
-                myNewShopDto.setPrice(goods.getPrice());
+
+            try {
+                Goods goods = goodsClient.latelyGoods(newShop.getId()).getData();
+                if (Objects.nonNull(goods)){
+                    myNewShopDto.setTitle(goods.getTitle());
+                    myNewShopDto.setPrice(goods.getPrice());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new JSYException(-1,"商品fenc错误");
             }
+
             String l1= newShop.getLongitude()+","+newShop.getLatitude();
             String l2= mainSearchQuery.getLongitude()+","+mainSearchQuery.getLatitude();
             long addr = GouldUtil.getApiDistance(l1, l2);
