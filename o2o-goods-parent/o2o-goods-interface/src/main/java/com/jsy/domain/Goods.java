@@ -32,7 +32,6 @@ public class Goods extends BaseEntity  {
 
     @JSONField(serializeUsing = ToStringSerializer.class)
     @ApiModelProperty(value = "商家id")
-    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long shopId;
 
     @ApiModelProperty(value = "商家name")
