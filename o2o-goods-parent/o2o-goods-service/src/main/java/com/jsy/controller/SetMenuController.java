@@ -73,9 +73,10 @@ public class SetMenuController {
     * @param id
     */
     @GetMapping(value = "/get")
-    public SetMenu get(@RequestParam("id")Long id)
+    public CommonResult<SetMenu> get(@RequestParam("id")Long id)
     {
-        return setMenuService.getById(id);
+        SetMenu setMenu = setMenuService.getById(id);
+        return CommonResult.ok(setMenu);
     }
 
 
@@ -85,16 +86,19 @@ public class SetMenuController {
     */
     @ApiOperation("根据套餐id套餐详情")
     @GetMapping(value = "/getMenuId")
-    public Map<String,List<SetMenuGoodsDto>> getMenuId(@RequestParam("setMenuId")Long setMenuId){
-        return setMenuService.getMenuId(setMenuId);
+    public CommonResult<Map<String,List<SetMenuGoodsDto>>> getMenuId(@RequestParam("setMenuId")Long setMenuId){
+        Map<String, List<SetMenuGoodsDto>> listMap = setMenuService.getMenuId(setMenuId);
+        return  CommonResult.ok(listMap);
+
     }
     /**
      * 据id查询套餐和套餐详情
      * @return
      */
     @GetMapping(value = "/SetMenuList")
-    public SetMenuDto SetMenuList(@RequestParam("id")Long id){
-        return setMenuService.getSetMenulist(id);
+    public CommonResult<SetMenuDto> SetMenuList(@RequestParam("id")Long id){
+        SetMenuDto setMenulist = setMenuService.getSetMenulist(id);
+        return CommonResult.ok(setMenulist);
     }
 
     /**
