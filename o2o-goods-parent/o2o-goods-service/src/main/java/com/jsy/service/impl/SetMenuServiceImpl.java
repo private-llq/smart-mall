@@ -249,6 +249,10 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
         List<SetMenuGoods> setMenuGoodsList = setMenu.getSetMenuGoodsList();
         SetMenu menu = new SetMenu();
         BeanUtils.copyProperties(setMenu,menu);
+        //开启折扣价格
+        if (setMenu.getSellingPrice()!=null){
+            menu.setDiscountState(1);
+        }
         setMenuMapper.updateById(menu);
         Long menuId = setMenu.getId();
         for (SetMenuGoods setMenuGoods : setMenuGoodsList) {
