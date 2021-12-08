@@ -30,4 +30,10 @@ public interface IUserCollectService extends IService<UserCollect> {
      * @return PageList 分页对象
      */
     userCollectDto userCollectPageList(UserCollectQuery userCollectQuery);
+
+
+    /**
+     * 收藏按钮状态 亮(已收藏)：true   灰色 ：false
+     */
+    Boolean userCollectState(Integer type, Long id);
 }

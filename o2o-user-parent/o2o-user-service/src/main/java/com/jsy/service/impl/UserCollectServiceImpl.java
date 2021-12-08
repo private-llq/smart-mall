@@ -168,4 +168,26 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
         }
         return userCollectDto;
     }
+
+    /**
+     * 收藏按钮状态 亮(已收藏)：true   灰色 ：false
+     */
+    @Override
+    public Boolean userCollectState(Integer type, Long id) {
+        if (Objects.isNull(type)){
+            throw new JSYException(-1,"收藏类型不能为空！");
+        }
+        if (Objects.isNull(id)){
+            throw new JSYException(-1,"id不能为空！");
+        }
+        /**
+         * 收藏类型 0 商品、服务 1 套餐 2 商店 3 服务
+         */
+        if (type==0){
+
+        }
+        UserCollect userCollect = userCollectMapper.selectOne(new QueryWrapper<UserCollect>().eq("id", id).eq("type", type));
+
+        return null;
+    }
 }

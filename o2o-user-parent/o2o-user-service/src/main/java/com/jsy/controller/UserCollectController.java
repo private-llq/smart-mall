@@ -25,12 +25,12 @@ public class UserCollectController {
     }
 
     /**
-     * 收藏按钮状态
+     * 收藏按钮状态 亮(已收藏)：true   灰色 ：false
      */
-    @PostMapping(value="/addUserCollect")
-    public CommonResult userCollect(@RequestBody UserCollectParam userCollectParam){
-        userCollectService.addUserCollect(userCollectParam);
-        return CommonResult.ok();
+    @PostMapping(value="/userCollectState")
+    public CommonResult userCollectState(@RequestParam("type") Integer type,@RequestParam("id") Long id){
+        Boolean state= userCollectService.userCollectState(type,id);
+        return CommonResult.ok(state);
     }
 
     /**
