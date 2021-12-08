@@ -1,14 +1,17 @@
 package com.jsy.service.impl;
 
+import cn.hutool.core.lang.Tuple;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsy.basic.util.MyPageUtils;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.vo.CommonResult;
+import com.jsy.clent.CommentClent;
 import com.jsy.client.GoodsClient;
 import com.jsy.client.NewShopClient;
 import com.jsy.client.SetMenuClient;
+import com.jsy.domain.Goods;
 import com.jsy.domain.NewShop;
 import com.jsy.domain.UserCollect;
 import com.jsy.dto.*;
@@ -23,10 +26,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * <p>
@@ -51,10 +51,14 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
     @Autowired
     private NewShopClient newShopClient;
 
+    @Autowired
+    private CommentClent commentClent;
+
+
 
 
     /**
-     * 收藏商品\服务\套餐\店铺
+     * 收藏商品\服务  \套餐\店铺
      * @param userCollectParam
      * @return
      */
@@ -65,28 +69,51 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
             new JSYException(-1,"用户认证失败！");
         }
         Long userId = loginUser.getId();//用户id
+        Integer type = userCollectParam.getType();
+        Long goodsId = userCollectParam.getGoodsId();
+        Long shopId = userCollectParam.getShopId();
+        Long menuId = userCollectParam.getMenuId();
 
-        //查询是否收藏过
-        if (userCollectParam.getType()==0){
-            UserCollect userCollect = userCollectMapper.selectOne(new QueryWrapper<UserCollect>()
+
+        UserCollect userCollect = new UserCollect();
+
+        if (userCollectParam.getType()==0){//商品、服务
+
+            UserCollect rult = userCollectMapper.selectOne(new QueryWrapper<UserCollect>()
                     .eq("user_id", userId)
                     .eq("goods_id", userCollectParam.getGoodsId())
             );
-            if (Objects.nonNull(userCollect)){
+            if (Objects.nonNull(rult)){
                 throw new JSYException(-1,"该商品或服务已经收藏");
             }
+
+            Goods data = goodsClient.getByGoods(userCollectParam.getGoodsId()).getData();
+            if (Objects.nonNull(data)){
+                userCollect.setUserId(userId);
+                userCollect.setGoodsId(goodsId);
+                userCollect.setImage(data.getImages().split(",")[0]);
+                userCollect.setTitle(data.getTitle());
+                userCollect.setPrice(data.getPrice());
+                userCollect.setDiscountState(data.getDiscountState());
+                userCollect.setDiscountPrice(data.getDiscountPrice());
+               /* SelectShopCommentScoreDto rut = commentClent.selectShopCommentScore(data.getShopId()).getData();
+                userCollect.setShopScore(Objects.isNull(rut)?5:rut.getScore());*/
+            }
+
         }
-        if (userCollectParam.getType()==1){
-            UserCollect userCollect = userCollectMapper.selectOne(new QueryWrapper<UserCollect>()
+        if (userCollectParam.getType()==1){//套餐
+            UserCollect rult = userCollectMapper.selectOne(new QueryWrapper<UserCollect>()
                     .eq("user_id", userId)
                     .eq("menu_id", userCollectParam.getMenuId())
             );
-            if (Objects.nonNull(userCollect)){
+            if (Objects.nonNull(rult)){
                 throw new JSYException(-1,"该套餐已经收藏");
             }
+
+
         }
-        if (userCollectParam.getType()==2){
-            UserCollect userCollect = userCollectMapper.selectOne(new QueryWrapper<UserCollect>()
+        if (userCollectParam.getType()==2){//店铺
+            UserCollect rult = userCollectMapper.selectOne(new QueryWrapper<UserCollect>()
                     .eq("user_id", userId)
                     .eq("shop_id", userCollectParam.getMenuId())
             );
@@ -94,7 +121,7 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
                 throw new JSYException(-1,"该商店已经收藏");
             }
         }
-        UserCollect userCollect = new UserCollect();
+
         userCollect.setUserId(userId);
         BeanUtils.copyProperties(userCollectParam,userCollect);
         userCollectMapper.insert(userCollect);
@@ -107,7 +134,7 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
      * @return PageList 分页对象
      */
     @Override
-    public userCollectDto userCollectPageList(UserCollectQuery userCollectQuery) {
+    public PageInfo<Object> userCollectPageList(UserCollectQuery userCollectQuery) {
         LoginUser loginUser = ContextHolder.getContext().getLoginUser();
         if (Objects.isNull(loginUser)){
             new JSYException(-1,"用户认证失败！");
@@ -134,39 +161,28 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
 
         });
 
-
         userCollectDto userCollectDto = new userCollectDto();
-
-        if (userCollectQuery.getType()==0 ){//商品
+        if (goodsCollect.size()!=0){
             List<GoodsDto> goodsDtos = goodsClient.batchGoods(goodsCollect).getData();
-            if (Objects.nonNull(goodsDtos)){
-                PageInfo<GoodsDto> goodsDtoPageInfo = MyPageUtils.pageMap(userCollectQuery.getPage(), userCollectQuery.getRows(), goodsDtos);
-                userCollectDto.setGoodsDto(goodsDtoPageInfo);
-            }
-        }
-        if (userCollectQuery.getType()==3 ){//服务
-            List<GoodsServiceDto> goodsServiceDtos = goodsClient.batchGoodsService(goodsServiceCollect).getData();
-            if (Objects.nonNull(goodsServiceDtos)){
-                PageInfo<GoodsServiceDto> goodsServiceDtoPageInfo = MyPageUtils.pageMap(userCollectQuery.getPage(), userCollectQuery.getRows(), goodsServiceDtos);
-                userCollectDto.setGoodsServiceDto(goodsServiceDtoPageInfo);
-            }
+            userCollectDto.setGoodsDto(goodsDtos);
         }
 
-        if (userCollectQuery.getType()==1){//套餐
+        if (goodsServiceCollect.size()!=0){
+            List<GoodsServiceDto> goodsServiceDtos = goodsClient.batchGoodsService(goodsServiceCollect).getData();
+            userCollectDto.setGoodsServiceDto(goodsServiceDtos);
+        }
+        if (setMenuCollect.size()!=0){
             List<SetMenuDto> setMenuDtos = setMenuClient.batchIds(setMenuCollect).getData();
-            if (Objects.nonNull(setMenuDtos)){
-                PageInfo<SetMenuDto> setMenuDtoPageInfo = MyPageUtils.pageMap(userCollectQuery.getPage(), userCollectQuery.getRows(), setMenuDtos);
-                userCollectDto.setSetMenuDto(setMenuDtoPageInfo);
-            }
+            userCollectDto.setSetMenuDto(setMenuDtos);
         }
-        if (userCollectQuery.getType()==2){//店铺
+        if (shopCollect.size()!=0){
             List<NewShopDto> newShopDtos = newShopClient.batchIds(shopCollect).getData();
-            if (Objects.nonNull(newShopDtos)){
-                PageInfo<NewShopDto> newShopDtoPageInfo = MyPageUtils.pageMap(userCollectQuery.getPage(), userCollectQuery.getRows(), newShopDtos);
-                userCollectDto.setNewShopDto(newShopDtoPageInfo);
-            }
+            userCollectDto.setNewShopDto(newShopDtos);
         }
-        return userCollectDto;
+        Tuple tuple = new Tuple(userCollectDto.getGoodsDto(),userCollectDto.getGoodsServiceDto(),userCollectDto.getNewShopDto(),userCollectDto.getSetMenuDto());
+        Object[] members = tuple.getMembers();
+        PageInfo<Object> pageInfo = MyPageUtils.pageMap(userCollectQuery.getPage(), userCollectQuery.getRows(), Arrays.asList(members));
+        return pageInfo;
     }
 
     /**
@@ -181,13 +197,32 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
             throw new JSYException(-1,"id不能为空！");
         }
         /**
-         * 收藏类型 0 商品、服务 1 套餐 2 商店 3 服务
+         * 收藏类型：0 商品、服务 1：套餐 2：商店
          */
         if (type==0){
-
+            UserCollect goodsService = userCollectMapper.selectOne(new QueryWrapper<UserCollect>().eq("goods_id", id));
+            if (Objects.nonNull(goodsService)){//已收藏
+                return true;
+            }else {
+                return false;
+            }
         }
-        UserCollect userCollect = userCollectMapper.selectOne(new QueryWrapper<UserCollect>().eq("id", id).eq("type", type));
-
+        if (type==1){
+            UserCollect menu = userCollectMapper.selectOne(new QueryWrapper<UserCollect>().eq("menu_id", id));
+            if (Objects.nonNull(menu)){
+                return true;
+            }else {
+                return false;
+            }
+        }
+        if (type==2){
+            UserCollect menu = userCollectMapper.selectOne(new QueryWrapper<UserCollect>().eq("shop_id", id));
+            if (Objects.nonNull(menu)){
+                return true;
+            }else {
+                return false;
+            }
+        }
         return null;
     }
 }

@@ -120,7 +120,7 @@ public class GoodsController {
      *
      */
     @ApiOperation("查看一条商品的详细信息")
-    @GetMapping("getGoods")
+    @GetMapping("/getGoods")
     public CommonResult<GoodsDto> getGoods(@RequestParam("id") Long id)
     {
         GoodsDto goodsDto= goodsService.getGoods(id);
@@ -132,11 +132,24 @@ public class GoodsController {
      *
      */
     @ApiOperation("查看一条服务的详细信息")
-    @GetMapping("getGoodsService")
+    @GetMapping("/getGoodsService")
     public CommonResult<GoodsServiceDto> getGoodsService(@RequestParam("id") Long id)
     {
         GoodsServiceDto goodsServiceDto= goodsService.getGoodsService(id);
         return CommonResult.ok(goodsServiceDto);
+    }
+
+    /**
+     * 查看一条商品或者服务的所有详细信息 B端+C端
+     * @param id
+     *
+     */
+    @ApiOperation("查看一条商品或者服务的详细信息")
+    @GetMapping("/getByGoods")
+    public CommonResult<Goods> getByGoods(@RequestParam("id") Long id)
+    {
+        Goods goods = goodsService.getById(id);
+        return CommonResult.ok(goods);
     }
 
 

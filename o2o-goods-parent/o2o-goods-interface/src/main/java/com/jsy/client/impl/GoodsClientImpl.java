@@ -30,4 +30,19 @@ public class GoodsClientImpl implements GoodsClient {
     public CommonResult<List<GoodsServiceDto>> batchGoodsService(List<Long> goodsServiceList) {
         return null;
     }
+
+    @Override
+    public CommonResult<GoodsDto> getGoods(Long id) {
+        return null;
+    }
+
+    @Override
+    public CommonResult<GoodsServiceDto> getGoodsService(Long id) {
+        return null;
+    }
+
+    @Override
+    public CommonResult<Goods> getByGoods(Long id) {
+        return null;
+    }
 }

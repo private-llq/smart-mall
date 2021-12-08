@@ -3,6 +3,7 @@ import com.jsy.basic.util.PageInfo;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -11,23 +12,23 @@ public class userCollectDto implements Serializable {
     /**
      * 商品返回对象
      */
-    private PageInfo<GoodsDto> goodsDto;
+    private List<GoodsDto> goodsDto=new ArrayList<>();
 
 
     /**
      * 服务返回对象
      */
-    private PageInfo<GoodsServiceDto> goodsServiceDto;
+    private List<GoodsServiceDto> goodsServiceDto=new ArrayList<>();
 
     /**
      * 套餐返回对象
      */
-    private PageInfo<SetMenuDto> setMenuDto;
+    private List<SetMenuDto> setMenuDto=new ArrayList<>();
 
     /**
      * 商家返回对象
      */
-    private PageInfo<NewShopDto> newShopDto;
+    private List<NewShopDto> newShopDto=new ArrayList<>();
 
 
 }

@@ -29,7 +29,7 @@ public interface IUserCollectService extends IService<UserCollect> {
      * @param userCollectQuery 查询对象
      * @return PageList 分页对象
      */
-    userCollectDto userCollectPageList(UserCollectQuery userCollectQuery);
+    PageInfo<Object> userCollectPageList(UserCollectQuery userCollectQuery);
 
 
     /**

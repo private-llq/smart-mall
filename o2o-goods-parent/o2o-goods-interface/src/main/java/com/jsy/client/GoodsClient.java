@@ -6,6 +6,7 @@ import com.jsy.client.impl.GoodsClientImpl;
 import com.jsy.domain.Goods;
 import com.jsy.dto.GoodsDto;
 import com.jsy.dto.GoodsServiceDto;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +35,35 @@ public interface GoodsClient {
     /**
      * 批量查询 服务
      */
-    @PostMapping("goods/batchGoodsService")
+    @PostMapping("/goods/batchGoodsService")
     CommonResult<List<GoodsServiceDto>> batchGoodsService(@RequestBody List<Long> goodsServiceList);
+
+
+    /**
+     * 查看一条商品的详细信息 B端+C端
+     * @param id
+     * @return
+     */
+    @GetMapping("/goods/getGoods")
+    CommonResult<GoodsDto> getGoods(@RequestParam("id") Long id);
+
+
+    /**
+     * 查看一条服务的所有详细信息 B端+C端
+     * @param id
+     *
+     */
+    @GetMapping("/goods/getGoodsService")
+    CommonResult<GoodsServiceDto> getGoodsService(@RequestParam("id") Long id);
+
+
+    /**
+     * 查看一条商品或者服务的所有详细信息 B端+C端
+     * @param id
+     *
+     */
+    @ApiOperation("查看一条商品或者服务的详细信息")
+    @GetMapping("/goods/getByGoods")
+   CommonResult<Goods> getByGoods(@RequestParam("id") Long id);
 
 }

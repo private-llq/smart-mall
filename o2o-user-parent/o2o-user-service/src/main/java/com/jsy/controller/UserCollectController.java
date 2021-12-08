@@ -1,4 +1,5 @@
 package com.jsy.controller;
+import com.jsy.basic.util.PageInfo;
 import com.jsy.dto.userCollectDto;
 import com.jsy.param.UserCollectParam;
 import com.jsy.service.IUserCollectService;
@@ -50,9 +51,9 @@ public class UserCollectController {
     * @return PageList 分页对象
     */
     @PostMapping(value = "/userCollectPageList")
-    public CommonResult<userCollectDto> userCollectPageList(@RequestBody UserCollectQuery userCollectQuery)
+    public CommonResult<PageInfo<Object>> userCollectPageList(@RequestBody UserCollectQuery userCollectQuery)
     {
-        userCollectDto userCollectDto= userCollectService.userCollectPageList(userCollectQuery);
+        PageInfo<Object> userCollectDto= userCollectService.userCollectPageList(userCollectQuery);
         return CommonResult.ok(userCollectDto);
     }
 }
