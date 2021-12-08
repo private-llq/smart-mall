@@ -18,8 +18,8 @@ public class NewShopHotDto implements Serializable {
     @ApiModelProperty(value = "商品id")
     private Long id;
 
-    @JSONField(serializeUsing = ToStringSerializer.class)
     @ApiModelProperty(value = "商家id")
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long shopId;
 
     @ApiModelProperty(value = "商品/服务 - 图片1-3张")
@@ -36,7 +36,7 @@ public class NewShopHotDto implements Serializable {
 
     @ApiModelProperty(value = "访问量")
     private Long pvNum;
-    @ApiModelProperty(value = "类型  类型2套餐   服务和商品是0")
+    @ApiModelProperty(value = "服务行业：1是服务行业  0 套餐行业")
     private Integer type;
 
 

@@ -39,5 +39,7 @@ public class NewShopRecommendDto implements Serializable {
     private BigDecimal distance;
     @ApiModelProperty
     private String images;
+    @ApiModelProperty(value = "服务行业：1是服务行业  0 套餐行业")
+    private Integer type;
 
 }

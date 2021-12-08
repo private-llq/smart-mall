@@ -21,8 +21,6 @@ public class ShopTypeController {
 
 
 
-
-
     @RequestMapping(value="/selectShopType",method= RequestMethod.GET)
     @ApiOperation("根据门店类型uuid查询所属类型层级系")
     public CommonResult <String>selectShopType(String uuid){
