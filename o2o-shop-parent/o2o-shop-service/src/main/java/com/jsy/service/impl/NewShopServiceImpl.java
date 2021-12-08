@@ -15,16 +15,14 @@ import com.jsy.domain.NewShop;
 import com.jsy.domain.Tree;
 import com.jsy.dto.*;
 import com.jsy.mapper.NewShopMapper;
-import com.jsy.parameter.NewShopModifyParam;
-import com.jsy.parameter.NewShopParam;
-import com.jsy.parameter.NewShopQualificationParam;
-import com.jsy.parameter.NewShopSetParam;
+import com.jsy.parameter.*;
 import com.jsy.query.MainSearchQuery;
 import com.jsy.query.NewShopQuery;
 import com.jsy.service.INewShopService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhsj.baseweb.support.ContextHolder;
 import com.zhsj.baseweb.support.LoginUser;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -584,7 +582,25 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         suportDto.setShopId(shopId);
         return suportDto;
     }
-
+ /**
+  * @author Tian
+  * @since 2021/12/8-11:42
+  * @description C端查询店铺的距离多远
+  **/
+    @Override
+    public NewShopDistanceDto getDistance(NewShopDistanceParam distanceParam) {
+        if (distanceParam.getLongitude()==null&&distanceParam.getLatitude()==null){
+            throw new JSYException(-1,"用户位置不能为空");
+        }
+        NewShop newShop = shopMapper.selectById(distanceParam.getId());
+        String startLonLat =newShop.getLongitude()+","+newShop.getLatitude();
+        String endLonLat = distanceParam.getLongitude()+","+distanceParam.getLatitude();
+        long distance = GouldUtil.getApiDistance(startLonLat, endLonLat);
+        NewShopDistanceDto distanceDto = new NewShopDistanceDto();
+        BeanUtils.copyProperties(newShop,distanceDto);
+        distanceDto.setDistance((distance/1000)+"km");
+        return distanceDto;
+    }
 
 
 }

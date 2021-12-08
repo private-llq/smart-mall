@@ -7,10 +7,7 @@ import com.jsy.basic.util.utils.ValidatorUtils;
 import com.jsy.clent.CommentClent;
 import com.jsy.domain.Goods;
 import com.jsy.dto.*;
-import com.jsy.parameter.NewShopModifyParam;
-import com.jsy.parameter.NewShopParam;
-import com.jsy.parameter.NewShopQualificationParam;
-import com.jsy.parameter.NewShopSetParam;
+import com.jsy.parameter.*;
 import com.jsy.query.MainSearchQuery;
 import com.jsy.service.INewShopService;
 import com.jsy.domain.NewShop;
@@ -168,6 +165,9 @@ public class NewShopController {
     public CommonResult<NewShopDto> get(@RequestParam("shopId") Long shopId)
     {
         NewShop newShop = newShopService.getById(shopId);
+        if (newShop==null){
+            return  new CommonResult(-1,"店铺为空",null);
+        }
         NewShopDto newShopDto = new NewShopDto();
         BeanUtils.copyProperties(newShop,newShopDto);
         return CommonResult.ok(newShopDto);
@@ -195,10 +195,8 @@ public class NewShopController {
     @ApiOperation("通过店铺id预览店铺基本信息")
     @RequestMapping(value = "/getPreviewDto",method = RequestMethod.GET)
     public CommonResult<NewShopPreviewDto> getPreviewDto(@RequestParam("shopId") Long shopId){
-
-   NewShopPreviewDto newShopPreviewDto = newShopService.getPreviewDto(shopId);
-
-  return CommonResult.ok(newShopPreviewDto);
+        NewShopPreviewDto newShopPreviewDto = newShopService.getPreviewDto(shopId);
+        return CommonResult.ok(newShopPreviewDto);
 
     }
 
@@ -269,6 +267,13 @@ public class NewShopController {
             }
     }
 
+    @ApiOperation("C端查询店铺的距离多远")
+    @PostMapping("/getDistance")
+    public CommonResult<NewShopDistanceDto> getDistance(@RequestBody NewShopDistanceParam distanceParam){
+        NewShopDistanceDto distanceDto =  newShopService.getDistance(distanceParam);
+        return CommonResult.ok(distanceDto);
+    }
+
 
     /**
      * 首页搜索
@@ -289,6 +294,8 @@ public class NewShopController {
         List<NewShopDto> dtoList = newShopService.batchIds(ids);
         return CommonResult.ok(dtoList);
     }
+
+
 
 
 

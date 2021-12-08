@@ -4,10 +4,7 @@ import com.jsy.basic.util.PageInfo;
 import com.jsy.domain.NewShop;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jsy.dto.*;
-import com.jsy.parameter.NewShopModifyParam;
-import com.jsy.parameter.NewShopParam;
-import com.jsy.parameter.NewShopQualificationParam;
-import com.jsy.parameter.NewShopSetParam;
+import com.jsy.parameter.*;
 import com.jsy.query.MainSearchQuery;
 import com.jsy.query.NewShopQuery;
 
@@ -94,4 +91,10 @@ public interface INewShopService extends IService<NewShop> {
   * @description 查询店铺支持
   **/
  NewShopSupportDto getSupport(Long shopId);
+ /**
+  * @author Tian
+  * @since 2021/12/8-11:41
+  * @description C端查询店铺的距离多远
+  **/
+ NewShopDistanceDto getDistance(NewShopDistanceParam distanceParam);
 }
