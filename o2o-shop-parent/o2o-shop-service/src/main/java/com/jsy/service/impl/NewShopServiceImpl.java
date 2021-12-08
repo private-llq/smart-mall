@@ -575,6 +575,9 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
     @Override
     public NewShopSupportDto getSupport(Long shopId) {
         NewShop newShop = shopMapper.selectOne(new QueryWrapper<NewShop>().eq("id", shopId));
+        if (newShop==null){
+            throw new JSYException(-1,"店铺不存在");
+        }
         NewShopSupportDto suportDto = new NewShopSupportDto();
         suportDto.setIsVirtualShop(newShop.getIsVirtualShop());
         suportDto.setIsVisitingService(newShop.getIsVisitingService());

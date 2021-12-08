@@ -4,6 +4,7 @@ import com.jsy.basic.util.PageInfo;
 import com.jsy.domain.Goods;
 import com.jsy.dto.SetMenuDto;
 import com.jsy.dto.SetMenuGoodsDto;
+import com.jsy.dto.SetMenuListDto;
 import com.jsy.parameter.SetMenuParam;
 import com.jsy.service.ISetMenuService;
 import com.jsy.domain.SetMenu;
@@ -86,9 +87,9 @@ public class SetMenuController {
     */
     @ApiOperation("根据套餐id套餐详情")
     @GetMapping(value = "/getMenuId")
-    public CommonResult<Map<String,List<SetMenuGoodsDto>>> getMenuId(@RequestParam("setMenuId")Long setMenuId){
-        Map<String, List<SetMenuGoodsDto>> listMap = setMenuService.getMenuId(setMenuId);
-        return  CommonResult.ok(listMap);
+    public CommonResult<List<SetMenuListDto>> getMenuId(@RequestParam("setMenuId")Long setMenuId){
+        List<SetMenuListDto> setMenuListDto = setMenuService.getMenuId(setMenuId);
+        return  CommonResult.ok(setMenuListDto);
 
     }
     /**

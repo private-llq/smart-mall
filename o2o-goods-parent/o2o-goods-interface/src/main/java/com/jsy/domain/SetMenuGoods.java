@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.jsy.BaseEntity;
+import com.jsy.dto.SetMenuListDto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -64,7 +65,7 @@ public class SetMenuGoods extends BaseEntity {
     private BigDecimal price;
 
     @TableField(exist = false)
-    private  Map<String, List<SetMenuGoods>> map;
+    private List<SetMenuListDto>  map;
 
 
 }
