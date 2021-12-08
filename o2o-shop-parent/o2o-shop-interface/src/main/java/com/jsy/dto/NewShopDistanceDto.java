@@ -26,4 +26,6 @@ public class NewShopDistanceDto implements Serializable {
 
     @ApiModelProperty(name = "businessAddress", value = "请填写营业执照上面的地址")
     private String businessAddress;
+    @ApiModelProperty(value = "服务行业：1是服务行业  0 套餐行业")
+    private Integer type;
 }

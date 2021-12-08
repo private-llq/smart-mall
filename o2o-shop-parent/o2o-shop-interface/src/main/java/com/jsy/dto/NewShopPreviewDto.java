@@ -58,6 +58,8 @@ public class NewShopPreviewDto implements Serializable {
     private Integer isVisitingService;
     @ApiModelProperty(value = "是否是虚拟店铺  0不是 1是")
     private Integer isVirtualShop;
+    @ApiModelProperty(value = "服务行业：1是服务行业  0 套餐行业")
+    private Integer type;
 
 
 
