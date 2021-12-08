@@ -307,17 +307,21 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
                     .eq("type", 0)
                     .eq(Objects.nonNull(state),"state",state)
             );
-            List<Goods> records = goodsPage.getRecords();
+        List<Goods> records = goodsPage.getRecords();
 
         ArrayList<GoodsDto> goodsDtos = new ArrayList<>();
         records.forEach(x->{
             GoodsDto goods = new GoodsDto();
             BeanUtils.copyProperties(x,goods);
-            Long aLong = goodsMapper.sumGoodsSales(x.getId());
-            if (Objects.nonNull(aLong)){
-                goods.setSums(aLong);
-            }else {
-                goods.setSums(0L);
+            if (x.getVirtualState()==1){//开启虚拟销量
+                  goods.setSums(x.getVirtualSales());
+            }else {//未开启虚拟销量，按订单统计
+                Long aLong = goodsMapper.sumGoodsSales(x.getId());
+                if (Objects.nonNull(aLong)){
+                    goods.setSums(aLong);
+                }else {
+                    goods.setSums(0L);
+                }
             }
             goodsDtos.add(goods);
         });
@@ -353,11 +357,15 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         records.forEach(x->{
                 GoodsServiceDto goods = new GoodsServiceDto();
                 BeanUtils.copyProperties(x,goods);
-                Long aLong = goodsMapper.sumServiceSales(x.getId());
-                if (Objects.nonNull(aLong)){
-                    goods.setSums(aLong);
-                }else {
-                    goods.setSums(0L);
+                if (x.getVirtualState()==1){//开启虚拟销量
+                    goods.setSums(x.getVirtualSales());
+                }else {//未开启虚拟销量，按订单统计
+                    Long aLong = goodsMapper.sumServiceSales(x.getId());
+                    if (Objects.nonNull(aLong)){
+                        goods.setSums(aLong);
+                    }else {
+                        goods.setSums(0L);
+                    }
                 }
             goodsServiceDtos.add(goods);
             });
@@ -450,7 +458,16 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         goodsMapper.update(null,new UpdateWrapper<Goods>().eq("id",id).set("state",0));
     }
 
-
+    /**
+     * 大后台设置商品+服务的虚拟销量
+     * @param id
+     */
+    @Override
+    public void virtualSales(Long id, Long num) {
+        if (Objects.nonNull(num)){
+            goodsMapper.update(null,new UpdateWrapper<Goods>().eq("id",id).set("virtual_state",1).set("virtual_sales",num));
+        }
+    }
 
 
     /**
@@ -502,6 +519,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         pageInfo.setSize(pageInfo.getSize());
         return  pageInfo;
     }
+
 
 
 

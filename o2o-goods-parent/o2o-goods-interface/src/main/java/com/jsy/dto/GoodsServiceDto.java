@@ -2,7 +2,6 @@ package com.jsy.dto;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.alibaba.fastjson.serializer.ToStringSerializer;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -11,7 +10,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
-
 public class GoodsServiceDto {
 
     /**

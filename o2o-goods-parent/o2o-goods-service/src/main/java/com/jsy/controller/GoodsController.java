@@ -213,6 +213,17 @@ public class GoodsController {
        return CommonResult.ok();
     }
 
+    /**
+     * 大后台设置商品+服务的虚拟销量
+     * @param id
+     */
+    @GetMapping("setVirtualSales")
+    public CommonResult setVirtualSales(@RequestParam("id") Long id,@RequestParam ("num") Long num) {
+        goodsService.virtualSales(id,num);
+        return CommonResult.ok();
+    }
+
+
     @ApiOperation("查询商家最新发布的商品或在服务")
     @GetMapping("/getShopIdGoods")
     public CommonResult<Goods> getShopIdGoods(@RequestParam("shopId") Long shopId)

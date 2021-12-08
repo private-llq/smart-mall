@@ -25,6 +25,15 @@ public class UserCollectController {
     }
 
     /**
+     * 收藏按钮状态
+     */
+    @PostMapping(value="/addUserCollect")
+    public CommonResult userCollect(@RequestBody UserCollectParam userCollectParam){
+        userCollectService.addUserCollect(userCollectParam);
+        return CommonResult.ok();
+    }
+
+    /**
     * 删除一条收藏记录
     * @param id
     * @return

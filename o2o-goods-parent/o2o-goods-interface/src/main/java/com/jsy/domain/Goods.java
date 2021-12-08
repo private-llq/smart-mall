@@ -97,6 +97,16 @@ public class Goods extends BaseEntity  {
     @ApiModelProperty(value = "大后台：商品状态 0 启用 1禁用")
     private Integer state;
 
+    /**
+     * 虚拟销量状态 0：关闭 1：开启
+     */
+    private Integer virtualState;
+
+    /**
+     * 虚拟销量
+     */
+    private Long virtualSales;
+
 
 
 }

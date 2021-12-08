@@ -147,4 +147,9 @@ public interface IGoodsService extends IService<Goods> {
     PageInfo<GoodsServiceDto> NearTheService(NearTheServiceQuery nearTheServiceQuery);
 
 
+    /**
+     * 大后台设置商品+服务的虚拟销量
+     * @param id
+     */
+    void virtualSales(Long id, Long num);
 }
