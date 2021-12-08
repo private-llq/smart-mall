@@ -48,6 +48,5 @@ public class SelectUserOrderGoodsDto {
     @ApiModelProperty(value = "商品/服务 - 图片1-3张")
     private String images;
 
-//    @ApiModelProperty(value = "服务特点表集合")
-//    private List<ServiceCharacteristicsDto> ServiceCharacteristicsDtos;
+
 }

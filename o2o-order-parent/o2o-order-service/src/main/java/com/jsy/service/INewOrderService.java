@@ -1,5 +1,6 @@
 package com.jsy.service;
 
+import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.domain.NewOrder;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jsy.dto.SelectShopOrderDto;
@@ -30,9 +31,11 @@ public interface INewOrderService extends IService<NewOrder> {
     //用户支付后调用的接口
     public Boolean completionPay(CompletionPayParam param);
     //商家验卷接口
-    public boolean acceptanceCheck(Long shopId, String code);
+    public boolean acceptanceCheck(Long shopId, String code,Long orderId);
     //商家根据验证码查询订单
     SelectShopOrderDto shopConsentOrder(ShopConsentOrderParam param);
-
-
+    //根据订单id查询订单详情
+    SelectShopOrderDto  selectOrderByOrderId(Long orderId);
+    //支付宝支付
+    CommonResult alipay(Long orderId);
 }

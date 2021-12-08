@@ -5,13 +5,12 @@ import com.jsy.basic.util.MyPageUtils;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.utils.BeansCopyUtils;
-import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.client.BrowseClient;
 import com.jsy.client.ServiceCharacteristicsClient;
 import com.jsy.domain.*;
-import com.jsy.dto.ServiceCharacteristicsDto;
 import com.jsy.dto.SetMenuDto;
 import com.jsy.dto.SetMenuGoodsDto;
+import com.jsy.dto.SetMenuListDto;
 import com.jsy.mapper.GoodsMapper;
 import com.jsy.mapper.SetMenuGoodsMapper;
 import com.jsy.mapper.SetMenuMapper;
@@ -26,10 +25,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -103,16 +99,7 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
                     .eq("set_menu_id", setMenu.getId())
             );
         List<SetMenuGoodsDto> menuGoodsDtoList = new ArrayList<>();
-        //查询服务特点
-//        String characteristicsIds = setMenu.getServiceCharacteristicsIds();
-//        String[] strings = characteristicsIds.split(",");
-//        List<ServiceCharacteristicsDto> serviceCharacteristicsDtoList = new ArrayList<>();
-//        for (String s : strings) {
-//            ServiceCharacteristics serviceCharacteristics = characteristicsClient.get(Long.valueOf(s)).getData();
-//            ServiceCharacteristicsDto serviceCharacteristicsDto = new ServiceCharacteristicsDto();
-//            BeanUtils.copyProperties(serviceCharacteristics,serviceCharacteristicsDto);
-//            serviceCharacteristicsDtoList.add(serviceCharacteristicsDto);
-//        }
+
 
         for (SetMenuGoods setMenuGoods : setMenuGoodsList) {
                 Goods goods = goodsMapper.selectOne(new QueryWrapper<Goods>().eq("id", setMenuGoods.getGoodsIds()));
@@ -126,10 +113,23 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
                 BeanUtils.copyProperties(setMenuGoods,setMenuGoodsDto);
                 menuGoodsDtoList.add(setMenuGoodsDto);
             }
+
         Map<String, List<SetMenuGoodsDto>> map = menuGoodsDtoList.stream().collect(Collectors.groupingBy(SetMenuGoodsDto::getTitle));
+
+
+
+        List<SetMenuListDto> setMenuListDtos = new ArrayList<>();
+        Set<Map.Entry<String, List<SetMenuGoodsDto>>> entries = map.entrySet();
+        for (Map.Entry entry:entries){
+            SetMenuListDto setMenuListDto = new SetMenuListDto();
+            setMenuListDto.setTitle((String) entry.getKey());
+            setMenuListDto.setDtoList((List<SetMenuGoodsDto>) entry.getValue());
+            setMenuListDtos.add(setMenuListDto);
+        }
+
         SetMenuDto setMenuDto = new SetMenuDto();
         BeanUtils.copyProperties(setMenu,setMenuDto);
-        setMenuDto.setMap(map);
+        setMenuDto.setMap(setMenuListDtos);
 //        setMenuDto.setServiceCharacteristicsIds(serviceCharacteristicsDtoList);
 
 
@@ -194,7 +194,7 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
     }
 
     @Override
-    public Map<String,List<SetMenuGoodsDto>> getMenuId(Long setMenuId) {
+    public List<SetMenuListDto> getMenuId(Long setMenuId) {
         List<SetMenuGoods> menuGoods = menuGoodsMapper.selectList(new QueryWrapper<SetMenuGoods>().eq("set_menu_id", setMenuId));
         for (SetMenuGoods setMenuGoods : menuGoods) {
             Goods goods = goodsMapper.selectOne(new QueryWrapper<Goods>().eq("id", setMenuGoods.getGoodsIds()));
@@ -205,7 +205,16 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
         }
         List<SetMenuGoodsDto> menuGoodsDtoList = BeansCopyUtils.copyListProperties(menuGoods, SetMenuGoodsDto::new);
         Map<String,List<SetMenuGoodsDto>> map = menuGoodsDtoList.stream().collect(Collectors.groupingBy(SetMenuGoodsDto::getTitle));
-        return map;
+        List<SetMenuListDto> setMenuListDtos = new ArrayList<>();
+        Set<Map.Entry<String, List<SetMenuGoodsDto>>> entries = map.entrySet();
+        for (Map.Entry entry:entries){
+            SetMenuListDto setMenuListDto = new SetMenuListDto();
+            setMenuListDto.setTitle((String) entry.getKey());
+            setMenuListDto.setDtoList((List<SetMenuGoodsDto>) entry.getValue());
+            setMenuListDtos.add(setMenuListDto);
+        }
+
+        return setMenuListDtos;
 
 
     }

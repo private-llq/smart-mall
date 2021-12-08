@@ -15,4 +15,5 @@ import java.io.Serializable;
 public class AcceptanceCheckParam implements Serializable {
     private   Long shopId;
     private  String code;
+    private  Long orderId;
 }

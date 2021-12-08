@@ -1,6 +1,7 @@
 package com.jsy.controller;
 
 import com.jsy.basic.util.utils.PagerUtils;
+import com.jsy.config.HttpClientHelper;
 import com.jsy.dto.SelectShopOrderDto;
 import com.jsy.dto.SelectUserOrderDto;
 import com.jsy.query.*;
@@ -8,12 +9,20 @@ import com.jsy.service.INewOrderService;
 import com.jsy.domain.NewOrder;
 import com.jsy.basic.util.PageList;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.jsy.utils.AliAppPayQO;
 import com.zhsj.baseweb.support.ContextHolder;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.jsy.basic.util.vo.CommonResult;
+
+import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/newOrder")
@@ -107,11 +116,10 @@ public class NewOrderController {
     }
 
 
-
     @ApiOperation("用户根据转态查询订单")
     @RequestMapping(value = "/selectUserOrder", method = RequestMethod.POST)
     public CommonResult<PagerUtils> selectUserOrder(@RequestBody SelectUserOrderParam param) {
-        Long id= ContextHolder.getContext().getLoginUser().getId();//获取用户id
+        Long id = ContextHolder.getContext().getLoginUser().getId();//获取用户id
         List<SelectUserOrderDto> list = newOrderService.selectUserOrder(id, param);
         PagerUtils pagerUtils = new PagerUtils<SelectUserOrderDto>();
         PagerUtils pagerUtils1 = pagerUtils.queryPage(param.getPage(), param.getSize(), list);
@@ -121,13 +129,13 @@ public class NewOrderController {
 
     @ApiOperation("商家根据转态查询订单")
     @RequestMapping(value = "/selectShopOrder", method = RequestMethod.POST)
-    public CommonResult<List<SelectShopOrderDto>> selectShopOrder(@RequestBody SelectShopOrderParam param) {
+    public CommonResult<PagerUtils> selectShopOrder(@RequestBody SelectShopOrderParam param) {
         List<SelectShopOrderDto> list = newOrderService.selectShopOrder(param);
-        return new CommonResult<>(200, "查询成功", list);
+        PagerUtils pagerUtils = new PagerUtils<SelectUserOrderDto>();
+        PagerUtils pagerUtils1 = pagerUtils.queryPage(param.getPage(), param.getSize(), list);
+
+        return new CommonResult<>(200, "查询成功", pagerUtils1);
     }
-
-
-
 
 
     @ApiOperation("用户删除订单")
@@ -141,10 +149,9 @@ public class NewOrderController {
     @ApiOperation("商家根据验证码查询订单")
     @RequestMapping(value = "/shopConsentOrder", method = RequestMethod.POST)
     public CommonResult<SelectShopOrderDto> shopConsentOrder(@RequestBody ShopConsentOrderParam param) {
-        SelectShopOrderDto value=newOrderService.shopConsentOrder(param);
+        SelectShopOrderDto value = newOrderService.shopConsentOrder(param);
         return CommonResult.ok(value);
     }
-
 
 
     @ApiOperation("商家同意预约订单")
@@ -158,10 +165,6 @@ public class NewOrderController {
     }
 
 
-
-
-
-
     @ApiOperation("测试支付回调")
     @RequestMapping(value = "/testPay", method = RequestMethod.POST)
     public CommonResult<Boolean> testPay(@RequestBody CompletionPayParam param) {
@@ -172,15 +175,28 @@ public class NewOrderController {
 
     @ApiOperation("商家验卷接口")
     @RequestMapping(value = "/acceptanceCheck", method = RequestMethod.POST)
-    public CommonResult<Boolean> acceptanceCheck(@RequestBody AcceptanceCheckParam param){
-        boolean b = newOrderService.acceptanceCheck(param.getShopId(), param.getCode());
-        if (b){
+    public CommonResult<Boolean> acceptanceCheck(@RequestBody AcceptanceCheckParam param) {
+        boolean b = newOrderService.acceptanceCheck(param.getShopId(), param.getCode(), param.getOrderId());
+        if (b) {
             return new CommonResult<>(200, "验证成功", b);
         }
         return new CommonResult<>(500, "验证失败", b);
     }
 
+    @ApiOperation("根据订单id查询订单详情")
+    @RequestMapping(value = "/selectOrderByOrderId", method = RequestMethod.GET)
+    public CommonResult<SelectShopOrderDto> selectOrderByOrderId(@RequestParam("orderId") Long orderId) {
+        SelectShopOrderDto shopOrderDto = newOrderService.selectOrderByOrderId(orderId);
+        return new CommonResult<>(200, "查询成功", shopOrderDto);
+    }
 
+
+    @ApiOperation("支付宝支付接口")
+    @RequestMapping(value = "/alipay", method = RequestMethod.GET)
+    public CommonResult<String> pay(@RequestParam("orderId") Long orderId) {
+        CommonResult value=newOrderService.alipay(orderId);
+        return value;
+    }
 
 
 }

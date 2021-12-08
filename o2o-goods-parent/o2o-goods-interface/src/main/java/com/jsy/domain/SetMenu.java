@@ -15,6 +15,7 @@ import java.util.Map;
 
 import com.jsy.BaseEntity;
 import com.jsy.dto.SetMenuGoodsDto;
+import com.jsy.dto.SetMenuListDto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -63,7 +64,7 @@ public class SetMenu  extends BaseEntity {
 
     @ApiModelProperty(value = "套餐详情")
     @TableField(exist = false)
-    private  Map<String, List<SetMenuGoodsDto>> map;
+    private List<SetMenuListDto>  map;
 
 
     @ApiModelProperty(value = "套餐说明")

@@ -1,5 +1,7 @@
 package com.jsy.dto;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.jsy.BaseEntity;
@@ -31,6 +33,7 @@ public class SetMenuDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long id;
     @ApiModelProperty(value = "套餐名称")
     private String name;
@@ -50,7 +53,7 @@ public class SetMenuDto implements Serializable {
 
     @ApiModelProperty(value = "套餐详情")
     @TableField(exist = false)
-    private  Map<String, List<SetMenuGoodsDto>> map;
+    private List<SetMenuListDto>  map;
 
     @ApiModelProperty(value = "套餐说明")
     private String menuExplain;
@@ -62,6 +65,7 @@ public class SetMenuDto implements Serializable {
     @ApiModelProperty(value = "套餐访问量")
     private Long pvNum;
 
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long shopId;
 
 }
