@@ -58,6 +58,8 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
         //开启折扣价格
         if (setMenu.getSellingPrice()!=null){
             menu.setDiscountState(1);
+        }else {
+            menu.setDiscountState(0);
         }
 //        String[] ids = setMenu.getServiceCharacteristicsIds().split(",");//服务特点ids
 //
@@ -252,6 +254,8 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
         //开启折扣价格
         if (setMenu.getSellingPrice()!=null){
             menu.setDiscountState(1);
+        }else {
+            menu.setDiscountState(0);
         }
         setMenuMapper.updateById(menu);
         Long menuId = setMenu.getId();
