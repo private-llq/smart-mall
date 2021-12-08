@@ -17,4 +17,9 @@ public class SetMenuClientImpl implements SetMenuClient {
     public CommonResult<List<SetMenuDto>> batchIds(List<Long> ids) {
         return null;
     }
+
+    @Override
+    public CommonResult<SetMenuDto> SetMenuList(Long id) {
+        return null;
+    }
 }

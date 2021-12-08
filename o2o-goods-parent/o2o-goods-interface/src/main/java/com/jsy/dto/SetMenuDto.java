@@ -67,5 +67,7 @@ public class SetMenuDto implements Serializable {
 
     @JSONField(serializeUsing = ToStringSerializer.class)
     private Long shopId;
+    @ApiModelProperty(value = "是否开启折扣：0未开启 1开启")
+    private Integer discountState;
 
 }
