@@ -1,5 +1,7 @@
 package com.jsy.dto;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -9,6 +11,23 @@ import java.math.BigDecimal;
 
 @Data
 public class ShoppingCartListDto {
+
+    @JSONField(serializeUsing = ToStringSerializer.class)
+    @ApiModelProperty(value = "用户id")
+    private Long userId;
+
+    @JSONField(serializeUsing = ToStringSerializer.class)
+    @ApiModelProperty(value = "商家id")
+    private Long shopId;
+
+    @JSONField(serializeUsing = ToStringSerializer.class)
+    @ApiModelProperty(value = "商品id")
+    private Long goodsId;
+
+    @JSONField(serializeUsing = ToStringSerializer.class)
+    @ApiModelProperty(value = "套餐id")
+    private Long setMenuId;
+
     @ApiModelProperty(value = "商品图片1-3张/服务宣传图、视频")
     private String images;
 
@@ -27,14 +46,14 @@ public class ShoppingCartListDto {
     @ApiModelProperty(value = "购物车数量")
     private Integer num;
 
-    @ApiModelProperty(value = "1：是套餐 0：不是套餐")
-    private Integer isSetMenu;
-
-    /*@ApiModelProperty(value = "1：支持上门 0：不支持上门")
-    private Integer isVisitingService;*/
-
     /**
      * 该商品状态：true 正常 false 不正常（大后台禁用、商家下架）
      */
     private Boolean state;
+
+
+    @ApiModelProperty(value = "0：商品 1：服务  2：套餐")
+    private Integer Type;
+
+
 }

@@ -58,7 +58,7 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
     private NewShopClient shopClient;
 
     /**
-     * 添加商品进入购物车
+     * 添加商品/服务进入购物车
      * @param shoppingCartParam
      * @return
      */
@@ -96,7 +96,7 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
             cartEntity.setDiscountPrice(goods.getDiscountPrice());
             cartEntity.setImages(goods.getImages());
             cartEntity.setDiscountState(goods.getDiscountState());
-            cartEntity.setIsSetMenu(0);//商品和服务
+            cartEntity.setType(goods.getType()==0?0:1);
             //cartEntity.setIsVisitingService(goods.getIsVisitingService());//是否支持上门服务
             shoppingCartMapper.insert(cartEntity);
         }else {
@@ -143,7 +143,7 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
             cartEntity.setDiscountPrice(setMenu.getSellingPrice());
             cartEntity.setImages(setMenu.getImages());
             cartEntity.setDiscountState(1);//套餐默认开启折扣
-            cartEntity.setIsSetMenu(1);//套餐
+            cartEntity.setType(2);
             //cartEntity.setIsVisitingService(setMenu.getIsVisitingService());//是否支持上门服务
             shoppingCartMapper.insert(cartEntity);
         }else {
@@ -209,8 +209,6 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
         //商品支付价格
         BigDecimal payPrice=BigDecimal.ZERO;
 
-
-
         //返回对象
         ShoppingCartDto shoppingCartDto = new ShoppingCartDto();
 
@@ -242,7 +240,8 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
                     cartListDto.setState(false);
                 }
             }
-            cartList    .add(cartListDto);
+
+            cartList.add(cartListDto);
             //按商品原价格算总价
             sumPrice= sumPrice.add(cart.getPrice().multiply(BigDecimal.valueOf(cart.getNum())));
 
@@ -256,6 +255,7 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
         NewShopDto newShop = shopClient.get(shopId).getData();//http://127.0.0.1:7006/newShop/get/1457644731467661314
         if (Objects.nonNull(newShop)){
             shoppingCartDto.setShopName(newShop.getShopName());//商店名称
+            shoppingCartDto.setShopType(newShop.getType());
         }
         shoppingCartDto.setSumGoods(sumGoods);//商品总数
         shoppingCartDto.setPayPrice(payPrice);//商品支付价格

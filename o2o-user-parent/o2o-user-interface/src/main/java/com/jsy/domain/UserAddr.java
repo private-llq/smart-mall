@@ -1,5 +1,7 @@
 package com.jsy.domain;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -29,6 +31,7 @@ public class UserAddr extends BaseEntity implements Serializable  {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "用户id")
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long userId;
 
     @ApiModelProperty(value = "联系人")

@@ -46,5 +46,10 @@ public class ShoppingCartDto implements Serializable {
      */
     private String shopName;
 
+    /**
+     * 商店类型 服务行业：1是服务行业  0 套餐行业
+     */
+    private Integer shopType;
+
 
 }
