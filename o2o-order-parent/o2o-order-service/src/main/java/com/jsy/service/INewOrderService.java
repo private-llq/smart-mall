@@ -40,4 +40,6 @@ public interface INewOrderService extends IService<NewOrder> {
     CommonResult alipay(Long orderId);
     //微信支付
     CommonResult WeChatPay(Long orderId);
+    //创建订单接口返回订单编号
+    Long insterOrder(InsterOrderParam param);
 }

@@ -49,6 +49,7 @@ public class ShoppingCartListDto {
     /**
      * 该商品状态：true 正常 false 不正常（大后台禁用、商家下架）
      */
+
     private Boolean state;
 
 
