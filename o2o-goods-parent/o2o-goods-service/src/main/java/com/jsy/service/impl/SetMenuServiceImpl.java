@@ -6,6 +6,7 @@ import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.utils.BeansCopyUtils;
 import com.jsy.client.BrowseClient;
+import com.jsy.client.HotClient;
 import com.jsy.client.ServiceCharacteristicsClient;
 import com.jsy.domain.*;
 import com.jsy.dto.SetMenuDto;
@@ -18,10 +19,12 @@ import com.jsy.parameter.SetMenuParam;
 import com.jsy.query.SetMenuQuery;
 import com.jsy.service.ISetMenuService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.jsy.util.RedisUtils;
 import com.zhsj.baseweb.support.ContextHolder;
 import com.zhsj.baseweb.support.LoginUser;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -49,6 +52,8 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
     private ServiceCharacteristicsClient characteristicsClient;
     @Resource
     private BrowseClient browseClient;
+    @Autowired
+    private HotClient hotClient;
 
     @Override
     public void addSetMenu(SetMenuParam setMenu) {
@@ -244,6 +249,10 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
     @Override
     public void setState(Long id,Integer state) {
         SetMenu setMenu = setMenuMapper.selectOne(new QueryWrapper<SetMenu>().eq("id", id));
+        //下架套餐时  更新热门商品数据
+        if (state==0){
+            hotClient.getHotGoods(id);
+        }
         setMenu.setState(state);
         setMenuMapper.updateById(setMenu);
     }

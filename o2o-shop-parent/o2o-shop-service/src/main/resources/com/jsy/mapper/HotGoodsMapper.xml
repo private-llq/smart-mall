@@ -17,5 +17,11 @@
     <delete id="deleteId">
         DELETE FROM w_hot_goods;
     </delete>
+    <delete id="delHotGoods">
+        DELETE FROM w_hot_goods w where w.goods_id=#{goodsId};
+    </delete>
+    <delete id="delHotShop">
+        DELETE FROM w_hot_goods w where w.shop_id=#{shopId};
+    </delete>
 
 </mapper>

@@ -1,6 +1,7 @@
 package com.jsy.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jsy.basic.util.MyPageUtils;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.domain.NewShop;
@@ -78,5 +79,73 @@ public class HotGoodsServiceImpl extends ServiceImpl<HotGoodsMapper, HotGoods> i
             PageInfo<HotGoods> hotDtoPageInfo = MyPageUtils.pageMap(newShopQuery.getPage(), newShopQuery.getRows(), hotGoods);
             return hotDtoPageInfo;
         }
+    }
+
+    @Override
+    public Boolean delHotGoods(Long goodsId) {
+        try {
+            hotGoodsMapper.delHotGoods(goodsId);
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+    }
+
+    @Override
+    public Boolean delHotShop(Long shopId) {
+        try {
+            hotGoodsMapper.delHotShop(shopId);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public HotGoods getHotGoods(Long goodsId) {
+        HotGoods hotGoods = hotGoodsMapper.selectOne(new QueryWrapper<HotGoods>().eq("goods_id", goodsId));
+        if (hotGoods!=null){
+            //获取热门数据过期时间
+            Long time = stringRedisTemplate.getExpire("hotGoods", TimeUnit.HOURS);
+            System.out.println("剩余时间"+time);
+            //删除缓存
+            stringRedisTemplate.delete("hootGoods");
+            //去掉热门数据里商品的数据
+            hotGoodsMapper.delHotGoods(goodsId);
+            //查询最新的热门数据
+            List<HotGoods> hotGoodsList = hotGoodsMapper.selectList(null);
+            //设置新的缓存热门数据
+            redisUtils.setHotGoods(hotGoodsList,time);
+        }
+        return hotGoods;
+    }
+
+    @Override
+    public HotGoods getHotShop(Long shopId) {
+        HotGoods hotGoods = hotGoodsMapper.selectOne(new QueryWrapper<HotGoods>().eq("shop_id", shopId));
+        if (hotGoods!=null){
+            //获取热门数据过期时间
+            Long time = stringRedisTemplate.getExpire("hotGoods", TimeUnit.HOURS);
+            System.out.println("剩余时间"+time);
+            //删除缓存
+            stringRedisTemplate.delete("hootGoods");
+            //去掉热门数据里商品的数据
+            hotGoodsMapper.delHotShop(shopId);
+            //查询最新的热门数据
+            List<HotGoods> hotGoodsList = hotGoodsMapper.selectList(null);
+            //设置新的缓存热门数据
+            redisUtils.setHotGoods(hotGoodsList,time);
+        }
+        return hotGoods;
+    }
+
+    @Override
+    public List<HotGoods> getHotList() {
+        List<HotGoods> hotGoodsList = hotGoodsMapper.selectList(null);
+        return hotGoodsList;
     }
 }

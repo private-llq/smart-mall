@@ -5,6 +5,7 @@ import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.RestUtils;
 import com.jsy.basic.util.utils.ValidatorUtils;
 import com.jsy.clent.CommentClent;
+import com.jsy.client.HotClient;
 import com.jsy.domain.Goods;
 import com.jsy.dto.*;
 import com.jsy.parameter.*;
@@ -40,7 +41,7 @@ public class NewShopController {
     @Autowired
     public INewShopService newShopService;
     @Autowired
-    private RestTemplate restTemplate;
+    private HotClient hotClient;
     @Resource
     private CommentClent commentClent;
 
@@ -149,6 +150,8 @@ public class NewShopController {
     public CommonResult delete(@RequestParam("shopId") Long shopId){
         try {
             newShopService.removeById(shopId);
+            //更新热门数据
+            hotClient.getHotShop(shopId);
             return CommonResult.ok();
         } catch (Exception e) {
         e.printStackTrace();
