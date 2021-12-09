@@ -111,6 +111,7 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
         List<SetMenuGoods> setMenuGoodsList = menuGoodsMapper.selectList(new QueryWrapper<SetMenuGoods>()
                     .eq("set_menu_id", setMenu.getId())
             );
+
         List<SetMenuGoodsDto> menuGoodsDtoList = new ArrayList<>();
 
 
@@ -136,6 +137,7 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
         for (Map.Entry entry:entries){
             SetMenuListDto setMenuListDto = new SetMenuListDto();
             setMenuListDto.setTitle((String) entry.getKey());
+
             setMenuListDto.setDtoList((List<SetMenuGoodsDto>) entry.getValue());
             setMenuListDtos.add(setMenuListDto);
         }

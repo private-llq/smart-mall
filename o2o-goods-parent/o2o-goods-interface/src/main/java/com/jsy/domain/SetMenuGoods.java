@@ -68,4 +68,5 @@ public class SetMenuGoods extends BaseEntity {
     private List<SetMenuListDto>  map;
 
 
+
 }

@@ -271,6 +271,7 @@ public class NewShopController {
     }
 
     @ApiOperation("医疗-救助机构")
+    @LoginIgnore
     @RequestMapping(value = "/getMedicalShop",method = RequestMethod.POST)
     public CommonResult<PageInfo<NewShopRecommendDto>> getMedicalShop(@RequestBody NewShopQuery shopQuery){
         PageInfo<NewShopRecommendDto> recommendDtoList = newShopService.getMedicalShop(shopQuery);
