@@ -59,7 +59,7 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
 
     /**
      * 收藏商品\服务\套餐\店铺
-     * @param userCollectParam 收藏类型：0 商品  1:服务  2：套餐   3：商店
+     * @param userCollectParam 收藏类型：0 商品  1:服务  2：套餐  3：商店
      * @return
      */
     @Override
@@ -78,19 +78,19 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
 
         UserCollect userCollect = new UserCollect();
 
-        if (type==0) {//商品、服务
+        if (type==0) {//商品
 
             UserCollect rult = userCollectMapper.selectOne(new QueryWrapper<UserCollect>()
                     .eq("user_id", userId)
                     .eq("goods_id", userCollectParam.getGoodsId())
             );
             if (Objects.nonNull(rult)) {
-                throw new JSYException(-1, "该商品或服务已经收藏");
+                throw new JSYException(-1, "该商品已经收藏");
             }
 
             Goods data = goodsClient.getByGoods(userCollectParam.getGoodsId()).getData();
             if (Objects.isNull(data)) {
-               throw new JSYException(-1,"未找到该商品或服务！");
+               throw new JSYException(-1,"未找到该商品！");
             }
             userCollect.setUserId(userId);
             userCollect.setGoodsId(goodsId);
@@ -102,7 +102,31 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
             userCollect.setDiscountState(data.getDiscountState());
             userCollect.setDiscountPrice(data.getDiscountPrice());
         }
-        if (type==1){//套餐
+        if (type==1) {//服务
+
+            UserCollect rult = userCollectMapper.selectOne(new QueryWrapper<UserCollect>()
+                    .eq("user_id", userId)
+                    .eq("goods_id", userCollectParam.getGoodsId())
+            );
+            if (Objects.nonNull(rult)) {
+                throw new JSYException(-1, "该服务已经收藏");
+            }
+
+            Goods data = goodsClient.getByGoods(userCollectParam.getGoodsId()).getData();
+            if (Objects.isNull(data)) {
+                throw new JSYException(-1,"未找到该服务！");
+            }
+            userCollect.setUserId(userId);
+            userCollect.setGoodsId(goodsId);
+            userCollect.setType(1);
+            userCollect.setShopId(data.getShopId());
+            userCollect.setImage(data.getImages().split(",")[0]);
+            userCollect.setTitle(data.getTitle());
+            userCollect.setPrice(data.getPrice());
+            userCollect.setDiscountState(data.getDiscountState());
+            userCollect.setDiscountPrice(data.getDiscountPrice());
+        }
+        if (type==2){//套餐
             UserCollect rult = userCollectMapper.selectOne(new QueryWrapper<UserCollect>()
                     .eq("user_id", userId)
                     .eq("menu_id", userCollectParam.getMenuId())
@@ -114,7 +138,7 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
             if (Objects.isNull(data)){
                 throw new JSYException(-1,"未找到该套餐！");
             }
-            userCollect.setType(1);
+            userCollect.setType(2);
             userCollect.setUserId(userId);
             userCollect.setShopId(data.getShopId());
             userCollect.setMenuId(menuId);
@@ -125,7 +149,7 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
             userCollect.setDiscountPrice(data.getSellingPrice());
 
         }
-        if (type==2){//店铺
+        if (type==3){//店铺
             UserCollect rult = userCollectMapper.selectOne(new QueryWrapper<UserCollect>()
                     .eq("user_id", userId)
                     .eq("shop_id", userCollectParam.getMenuId())
@@ -138,7 +162,7 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
             if (Objects.isNull(data)){
                 throw new JSYException(-1,"未找到该店铺！");
             }
-            userCollect.setType(2);
+            userCollect.setType(3);
             userCollect.setUserId(userId);
             userCollect.setShopId(shopId);
             userCollect.setImage(data.getShopLogo());
@@ -200,7 +224,7 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
             throw new JSYException(-1,"id不能为空！");
         }
         /**
-         * 收藏类型：0 商品、服务 1：套餐 2：商店
+         * 收藏类型：0 商品  1:服务  2：套餐  3：商店
          */
         if (type==0){
             UserCollect goodsService = userCollectMapper.selectOne(new QueryWrapper<UserCollect>().eq("goods_id", id).eq("user_id",userId));
@@ -211,14 +235,24 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
             }
         }
         if (type==1){
+            UserCollect goodsService = userCollectMapper.selectOne(new QueryWrapper<UserCollect>().eq("goods_id", id).eq("user_id",userId));
+            if (Objects.nonNull(goodsService)){//已收藏
+                return true;
+            }else {
+                return false;
+            }
+
+        }
+        if (type==2){
             UserCollect menu = userCollectMapper.selectOne(new QueryWrapper<UserCollect>().eq("menu_id", id).eq("user_id",userId));
             if (Objects.nonNull(menu)){
                 return true;
             }else {
                 return false;
             }
+
         }
-        if (type==2){
+        if (type==3){
             UserCollect shop = userCollectMapper.selectOne(new QueryWrapper<UserCollect>().eq("shop_id", id).eq("user_id",userId));
             if (Objects.nonNull(shop)){
                 return true;
@@ -244,17 +278,21 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
         Long userId = loginUser.getId();//用户id
 
         /**
-         * 收藏类型：0 商品、服务 1：套餐 2：商店
+         * 收藏类型：0 商品  1:服务  2：套餐  3：商店
          */
         if (type==0){
             userCollectMapper.delete(new QueryWrapper<UserCollect>().eq("goods_id",id).eq("user_id",userId));
 
         }
         if (type==1){
-            userCollectMapper.delete(new QueryWrapper<UserCollect>().eq("menu_id",id).eq("user_id",userId));
+            userCollectMapper.delete(new QueryWrapper<UserCollect>().eq("goods_id",id).eq("user_id",userId));
 
         }
         if (type==2){
+            userCollectMapper.delete(new QueryWrapper<UserCollect>().eq("menu_id",id).eq("user_id",userId));
+
+        }
+        if (type==3){
             userCollectMapper.delete(new QueryWrapper<UserCollect>().eq("shop_id",id).eq("user_id",userId));
         }
     }
