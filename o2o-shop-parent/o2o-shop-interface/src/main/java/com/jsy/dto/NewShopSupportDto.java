@@ -21,4 +21,7 @@ public class NewShopSupportDto implements Serializable {
 
     @JSONField(serializeUsing = ToStringSerializer.class)
     private Long shopId;
+
+    @ApiModelProperty(value = "店铺名称")
+    private String shopName;
 }
