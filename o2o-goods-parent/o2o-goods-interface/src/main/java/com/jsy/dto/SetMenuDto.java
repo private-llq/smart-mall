@@ -69,5 +69,7 @@ public class SetMenuDto implements Serializable {
     private Long shopId;
     @ApiModelProperty(value = "是否开启折扣：0未开启 1开启")
     private Integer discountState;
+    @ApiModelProperty(value = "商品 类型（2服务套餐）")
+    private Integer type;
 
 }

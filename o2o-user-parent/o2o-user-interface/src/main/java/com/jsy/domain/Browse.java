@@ -22,7 +22,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("w_browse")
+@TableName("w_user_browse")
 @ApiModel(value="Browse对象", description="用户个人最近浏览记录")
 public class Browse extends BaseEntity {
 

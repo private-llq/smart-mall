@@ -581,6 +581,8 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         NewShopSupportDto suportDto = new NewShopSupportDto();
         suportDto.setIsVirtualShop(newShop.getIsVirtualShop());
         suportDto.setIsVisitingService(newShop.getIsVisitingService());
+        suportDto.setMobile(newShop.getMobile());
+        suportDto.setShopPhone(newShop.getShopPhone());
         suportDto.setShopId(shopId);
         return suportDto;
     }
