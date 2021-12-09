@@ -48,6 +48,10 @@ public class OrderSetMenu extends BaseEntity implements Serializable {
     @ApiModelProperty(value = "折扣价")
     private BigDecimal sellingPrice;
 
+    @ApiModelProperty(value = "折扣状态0未开启1是开启")
+    private Integer discountState;
+
+
     @ApiModelProperty(value = "图片（最大三张）")
     private String images;
 

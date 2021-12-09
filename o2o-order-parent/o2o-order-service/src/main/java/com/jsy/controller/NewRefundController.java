@@ -1,9 +1,14 @@
 package com.jsy.controller;
+import com.jsy.dto.SelectRefundByoderDto;
+import com.jsy.query.AgreeRefundParam;
+import com.jsy.query.ApplyRefundParam;
+import com.jsy.query.ShopWhetherRefundParam;
 import com.jsy.service.INewRefundService;
 import com.jsy.domain.NewRefund;
 import com.jsy.query.NewRefundQuery;
 import com.jsy.basic.util.PageList;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.jsy.basic.util.vo.CommonResult;
@@ -15,75 +20,42 @@ public class NewRefundController {
     @Autowired
     public INewRefundService newRefundService;
 
-    /**
-    * 保存和修改公用的
-    * @param newRefund  传递的实体
-    * @return Ajaxresult转换结果
-    */
-    @PostMapping(value="/save")
-    public CommonResult save(@RequestBody NewRefund newRefund){
-        try {
-            if(newRefund.getId()!=null){
-                newRefundService.updateById(newRefund);
-            }else{
-                newRefundService.save(newRefund);
-            }
-            return CommonResult.ok();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return CommonResult.error(-1,"操作失败！");
+    @ApiOperation("申请退款")
+    @RequestMapping(value = "/applyRefund", method = RequestMethod.POST)
+    public CommonResult<Boolean>  applyRefund(@RequestBody ApplyRefundParam param){
+        Boolean   b= newRefundService.applyRefund(param);
+        if(b){
+            return new CommonResult<>(200, "操作成功", b);
         }
+        return new CommonResult<>(500, "操作失败", b);
     }
 
-    /**
-    * 删除对象信息
-    * @param id
-    * @return
-    */
-    @DeleteMapping(value="/{id}")
-    public CommonResult delete(@PathVariable("id") Long id){
-        try {
-            newRefundService.removeById(id);
-            return CommonResult.ok();
-        } catch (Exception e) {
-        e.printStackTrace();
-            return  CommonResult.error(-1,"删除失败！");
+    @ApiOperation("根据订单号查询退款信息")
+    @RequestMapping(value = "/selectRefundByoder", method = RequestMethod.GET)
+    public CommonResult<SelectRefundByoderDto>  selectRefundByoder(@RequestParam("orderId") Long orderId){
+        SelectRefundByoderDto dto =  newRefundService.selectRefundByoder(orderId);
+        return new CommonResult<>(500, "操作成功",dto);
+    }
+
+    @ApiOperation("拒绝退款")
+    @RequestMapping(value = "/refuseRefund", method = RequestMethod.POST)
+    public CommonResult<Boolean>  refuseRefund(@RequestBody ShopWhetherRefundParam param){
+        Boolean b  =newRefundService.refuseRefund(param);
+        if(b){
+            return new CommonResult<>(200, "操作成功",b);
         }
+        return new CommonResult<>(500, "操作失败",b);
     }
 
-    /**
-    * 根据id查询一条
-    * @param id
-    */
-    @GetMapping(value = "/{id}")
-    public NewRefund get(@PathVariable("id")Long id)
-    {
-        return newRefundService.getById(id);
-    }
-
-
-    /**
-    * 返回list列表
-    * @return
-    */
-    @GetMapping(value = "/list")
-    public List<NewRefund> list(){
-
-        return newRefundService.list(null);
+    @ApiOperation("同意退款")
+    @RequestMapping(value = "/agreeRefund", method = RequestMethod.POST)
+    public CommonResult<Boolean>  agreeRefund(@RequestBody AgreeRefundParam param){
+        Boolean   b= newRefundService.agreeRefund(param);
+        if(b){
+            return new CommonResult<>(200, "操作成功",b);
+        }
+        return new CommonResult<>(500, "操作失败",b);
     }
 
 
-    /**
-    * 分页查询数据
-    *
-    * @param query 查询对象
-    * @return PageList 分页对象
-    */
-    @PostMapping(value = "/pagelist")
-    public PageList<NewRefund> json(@RequestBody NewRefundQuery query)
-    {
-        Page<NewRefund> page = new Page<NewRefund>(query.getPage(),query.getRows());
-        page = newRefundService.page(page);
-        return new PageList<NewRefund>(page.getTotal(),page.getRecords());
-    }
 }

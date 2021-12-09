@@ -31,81 +31,6 @@ public class NewOrderController {
     public INewOrderService newOrderService;
 
 
-    /**
-     * 保存和修改公用的
-     *
-     * @param newOrder 传递的实体
-     * @return Ajaxresult转换结果
-     */
-    @PostMapping(value = "/save")
-    public CommonResult save(@RequestBody NewOrder newOrder) {
-        try {
-            if (newOrder.getId() != null) {
-                newOrderService.updateById(newOrder);
-            } else {
-                newOrderService.save(newOrder);
-            }
-            return CommonResult.ok();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return CommonResult.error(-1, "操作失败！");
-        }
-    }
-
-    /**
-     * 删除对象信息
-     *
-     * @param id
-     * @return
-     */
-    @DeleteMapping(value = "/{id}")
-    public CommonResult delete(@PathVariable("id") Long id) {
-        try {
-            newOrderService.removeById(id);
-            return CommonResult.ok();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return CommonResult.error(-1, "删除失败！");
-        }
-    }
-
-    /**
-     * 根据id查询一条
-     *
-     * @param id
-     */
-    @GetMapping(value = "/{id}")
-    public NewOrder get(@PathVariable("id") Long id) {
-        return newOrderService.getById(id);
-    }
-
-
-    /**
-     * 返回list列表
-     *
-     * @return
-     */
-    @GetMapping(value = "/list")
-    public List<NewOrder> list() {
-
-        return newOrderService.list(null);
-    }
-
-
-    /**
-     * 分页查询数据
-     *
-     * @param query 查询对象
-     * @return PageList 分页对象
-     */
-    @PostMapping(value = "/pagelist")
-    public PageList<NewOrder> json(@RequestBody NewOrderQuery query) {
-        Page<NewOrder> page = new Page<NewOrder>(query.getPage(), query.getRows());
-        page = newOrderService.page(page);
-        return new PageList<NewOrder>(page.getTotal(), page.getRecords());
-
-    }
-
     /**********************************************arli***************************************/
 
     @ApiOperation("新增订单")
@@ -114,12 +39,19 @@ public class NewOrderController {
         Boolean b = newOrderService.creationOrder(creationOrderParam);
         return new CommonResult<Boolean>(200, "新增订单成功", b);
     }
+    @ApiOperation("创建订单接口")
+    @RequestMapping(value = "/insterOrder", method = RequestMethod.POST)
+    public CommonResult<Long> insterOrder(InsterOrderParam param) {
+      Long  orderId =123456789L;
 
+        return new CommonResult<Long>(200, "新增订单成功", orderId);
+    }
 
     @ApiOperation("用户根据转态查询订单")
     @RequestMapping(value = "/selectUserOrder", method = RequestMethod.POST)
     public CommonResult<PagerUtils> selectUserOrder(@RequestBody SelectUserOrderParam param) {
         Long id = ContextHolder.getContext().getLoginUser().getId();//获取用户id
+        System.out.println("用户id"+id);
         List<SelectUserOrderDto> list = newOrderService.selectUserOrder(id, param);
         PagerUtils pagerUtils = new PagerUtils<SelectUserOrderDto>();
         PagerUtils pagerUtils1 = pagerUtils.queryPage(param.getPage(), param.getSize(), list);
@@ -133,7 +65,6 @@ public class NewOrderController {
         List<SelectShopOrderDto> list = newOrderService.selectShopOrder(param);
         PagerUtils pagerUtils = new PagerUtils<SelectUserOrderDto>();
         PagerUtils pagerUtils1 = pagerUtils.queryPage(param.getPage(), param.getSize(), list);
-
         return new CommonResult<>(200, "查询成功", pagerUtils1);
     }
 
@@ -145,15 +76,12 @@ public class NewOrderController {
         return new CommonResult<>(200, "删除成功", b);
     }
 
-
     @ApiOperation("商家根据验证码查询订单")
     @RequestMapping(value = "/shopConsentOrder", method = RequestMethod.POST)
     public CommonResult<SelectShopOrderDto> shopConsentOrder(@RequestBody ShopConsentOrderParam param) {
         SelectShopOrderDto value = newOrderService.shopConsentOrder(param);
         return CommonResult.ok(value);
     }
-
-
     @ApiOperation("商家同意预约订单")
     @RequestMapping(value = "/consentOrder", method = RequestMethod.POST)
     public CommonResult<Boolean> consentOrder(@RequestBody ConsentOrderParam param) {
@@ -164,15 +92,6 @@ public class NewOrderController {
         return new CommonResult<>(500, "未成功", b);
     }
 
-
-    @ApiOperation("测试支付回调")
-    @RequestMapping(value = "/testPay", method = RequestMethod.POST)
-    public CommonResult<Boolean> testPay(@RequestBody CompletionPayParam param) {
-        Boolean b = newOrderService.completionPay(param);
-        return new CommonResult<>(200, "支付完成", b);
-    }
-
-
     @ApiOperation("商家验卷接口")
     @RequestMapping(value = "/acceptanceCheck", method = RequestMethod.POST)
     public CommonResult<Boolean> acceptanceCheck(@RequestBody AcceptanceCheckParam param) {
@@ -182,7 +101,6 @@ public class NewOrderController {
         }
         return new CommonResult<>(500, "验证失败", b);
     }
-
     @ApiOperation("根据订单id查询订单详情")
     @RequestMapping(value = "/selectOrderByOrderId", method = RequestMethod.GET)
     public CommonResult<SelectShopOrderDto> selectOrderByOrderId(@RequestParam("orderId") Long orderId) {
@@ -190,13 +108,26 @@ public class NewOrderController {
         return new CommonResult<>(200, "查询成功", shopOrderDto);
     }
 
-
     @ApiOperation("支付宝支付接口")
     @RequestMapping(value = "/alipay", method = RequestMethod.GET)
-    public CommonResult<String> pay(@RequestParam("orderId") Long orderId) {
+    public CommonResult<String> alipay(@RequestParam("orderId") Long orderId) {
         CommonResult value=newOrderService.alipay(orderId);
         return value;
     }
+    @ApiOperation("微信支付接口")
+    @RequestMapping(value = "/WeChatPay", method = RequestMethod.GET)
+    public CommonResult<String> WeChatPay(@RequestParam("orderId") Long orderId) {
+        CommonResult value=newOrderService.WeChatPay(orderId);
+        return value;
+    }
 
-
+    @ApiOperation("测试支付回调")
+    @RequestMapping(value = "/replyPay", method = RequestMethod.POST)
+    public CommonResult<Boolean> testPay(@RequestBody CompletionPayParam param) {
+        Boolean b = newOrderService.completionPay(param);
+        if(b){
+            return new CommonResult<>(200, "回调成功", b);
+        }
+        return new CommonResult<>(10005, "失败", b);
+    }
 }

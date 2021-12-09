@@ -25,7 +25,7 @@ public interface INewCommentService extends IService<NewComment> {
     Boolean createComment(CreateCommentParam param);
     //查询店铺评分
     SelectShopCommentScoreDto selectShopCommentScore(Long shopId);
-
+    //分页查询店铺的评论
     Page<NewComment> selectShopCommentPage(SelectShopCommentPageParam param);
    //查询评论和商家回复
    MyPage selectCommentAndReply(SelectShopCommentPageParam param);

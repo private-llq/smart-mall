@@ -28,8 +28,6 @@ public class SelectUserOrderMenuDto {
     @ApiModelProperty(value = "数量")
     private Integer amount;
 
-
-
     @ApiModelProperty(value = "套餐id")
     private Long menuId;
 
@@ -39,14 +37,11 @@ public class SelectUserOrderMenuDto {
     @ApiModelProperty(value = "折扣价")
     private BigDecimal sellingPrice;
 
+    @ApiModelProperty(value = "是否开启折扣：0未开启 1开启")
+    private Integer discountState;
+
     @ApiModelProperty(value = "图片（最大三张）")
     private String images;
-
-    @ApiModelProperty(value = "开始有效期")
-    private LocalDateTime indateStart;
-
-    @ApiModelProperty(value = "截止有效期")
-    private LocalDateTime indateEnd;
 
     @ApiModelProperty(value = "使用规则")
     private String rule;

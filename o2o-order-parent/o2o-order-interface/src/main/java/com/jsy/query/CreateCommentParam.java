@@ -19,7 +19,7 @@ public class CreateCommentParam {
     @ApiModelProperty(value = "订单id")
     private Long orderId;
 
-    @ApiModelProperty(value = "图片用;隔开")
+    @ApiModelProperty(value = "图片用,隔开")
     private String images;
 
     @ApiModelProperty(value = "评价信息")

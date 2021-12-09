@@ -97,4 +97,10 @@ public interface INewShopService extends IService<NewShop> {
   * @description C端查询店铺的距离多远
   **/
  NewShopDistanceDto getDistance(NewShopDistanceParam distanceParam);
+ /**
+  * @author Tian
+  * @since 2021/12/9-10:08
+  * @description 医疗---的救助机构
+  **/
+ PageInfo<NewShopRecommendDto> getMedicalShop(NewShopQuery shopQuery);
 }

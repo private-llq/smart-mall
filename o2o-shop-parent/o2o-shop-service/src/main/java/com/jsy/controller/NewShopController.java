@@ -267,6 +267,18 @@ public class NewShopController {
             }
     }
 
+    @ApiOperation("医疗-救助机构")
+    @RequestMapping(value = "/getMedicalShop",method = RequestMethod.POST)
+    public CommonResult<PageInfo<NewShopRecommendDto>> getMedicalShop(@RequestBody NewShopQuery shopQuery){
+        PageInfo<NewShopRecommendDto> recommendDtoList = newShopService.getMedicalShop(shopQuery);
+        if (recommendDtoList!=null){
+            return CommonResult.ok(recommendDtoList);
+        }
+        else {
+            return new  CommonResult(-1,"失败",null);
+        }
+    }
+
     @ApiOperation("C端查询店铺的距离多远")
     @PostMapping("/getDistance")
     public CommonResult<NewShopDistanceDto> getDistance(@RequestBody NewShopDistanceParam distanceParam){

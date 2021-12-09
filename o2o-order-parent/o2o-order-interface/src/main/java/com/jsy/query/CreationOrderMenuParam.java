@@ -1,15 +1,9 @@
 package com.jsy.query;
-import com.alibaba.fastjson.annotation.JSONField;
-import com.alibaba.fastjson.serializer.ToStringSerializer;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -28,17 +22,17 @@ public class CreationOrderMenuParam implements Serializable {
     @ApiModelProperty(value = "套餐id")
     private Long menuId;
 
-
-
     @ApiModelProperty(value = "原价")
     private BigDecimal realPrice;
 
     @ApiModelProperty(value = "折扣价")
     private BigDecimal sellingPrice;
 
+    @ApiModelProperty(value = "是否开启折扣0未开启,1是开启")
+    private Integer discountState;
+
     @ApiModelProperty(value = "图片（最大三张）")
     private String images;
-
 
     @ApiModelProperty(value = "使用规则")
     private String rule;
@@ -51,7 +45,5 @@ public class CreationOrderMenuParam implements Serializable {
 
     @ApiModelProperty(value = "套餐的详情")
     private List<CreationOrderMenuGoodsParam> creationOrderMenuGoodsParams;
-
-
 
 }

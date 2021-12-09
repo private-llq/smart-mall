@@ -38,4 +38,6 @@ public interface INewOrderService extends IService<NewOrder> {
     SelectShopOrderDto  selectOrderByOrderId(Long orderId);
     //支付宝支付
     CommonResult alipay(Long orderId);
+    //微信支付
+    CommonResult WeChatPay(Long orderId);
 }

@@ -25,6 +25,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -60,6 +61,7 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
             menu.setDiscountState(1);
         }else {
             menu.setDiscountState(0);
+            menu.setMenuExplain(null);
         }
 //        String[] ids = setMenu.getServiceCharacteristicsIds().split(",");//服务特点ids
 //
@@ -248,6 +250,7 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
 
     @Override
     public void updateSetMenu(SetMenuParam setMenu) {
+        System.out.println("修改");
         List<SetMenuGoods> setMenuGoodsList = setMenu.getSetMenuGoodsList();
         SetMenu menu = new SetMenu();
         BeanUtils.copyProperties(setMenu,menu);
@@ -256,6 +259,7 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
             menu.setDiscountState(1);
         }else {
             menu.setDiscountState(0);
+            menu.setSellingPrice(null);
         }
         setMenuMapper.updateById(menu);
         Long menuId = setMenu.getId();
@@ -278,14 +282,5 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
         return dtoList;
     }
 
-
-    public static void main(String[] args) {
-        List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
-        numbers.forEach(x-> {
-            if (x == 3) {
-                System.out.println(x);
-            }
-        });
-    }
 }
 
