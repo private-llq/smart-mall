@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -97,10 +98,17 @@ public class UserAddrServiceImpl extends ServiceImpl<UserAddrMapper, UserAddr> i
         Page<UserAddr> page = new Page<>(userAddrQuery.getPage(),userAddrQuery.getRows());
         Page<UserAddr> userAddrPage = useraddrmapper.selectPage(page, new QueryWrapper<UserAddr>().eq("user_id",loginUser.getId()));
         List<UserAddr> records = userAddrPage.getRecords();
-        List<UserAddrDto> userAddrDtos = BeansCopyUtils.listCopy(records, UserAddrDto.class);
+
+        ArrayList<UserAddrDto> addrDtos = new ArrayList<>();
+        records.forEach(x->{
+            UserAddrDto userAddrDto = new UserAddrDto();
+            BeanUtils.copyProperties(x,userAddrDto);
+            userAddrDto.setId(String.valueOf(x.getId()));
+            addrDtos.add(userAddrDto);
+        });
         PageInfo<UserAddrDto> pageInfo = new PageInfo<>();
         pageInfo.setSize(userAddrPage.getSize());
-        pageInfo.setRecords(userAddrDtos);
+        pageInfo.setRecords(addrDtos);
         pageInfo.setCurrent(userAddrPage.getCurrent());
         pageInfo.setTotal(userAddrPage.getTotal());
         return pageInfo;

@@ -34,7 +34,7 @@ public class UserCollect extends BaseEntity implements Serializable {
     @ApiModelProperty(value = "套餐id")
     private Long menuId;
     /**
-     * 收藏类型：0 商品、服务 1：套餐 2：商店 3：服务
+     * 收藏类型：收藏类型：0 商品  1:服务  2：套餐  3：商店
      */
     private Integer type;
 

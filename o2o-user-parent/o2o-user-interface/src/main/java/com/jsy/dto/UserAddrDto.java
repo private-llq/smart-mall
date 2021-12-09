@@ -15,9 +15,10 @@ public class UserAddrDto implements Serializable {
 
     @ApiModelProperty(value = "id")
     @JSONField(serializeUsing = ToStringSerializer.class)
-    private Long id;
+    private String id;
 
     @ApiModelProperty(value = "用户id")
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private String userId;
 
     @ApiModelProperty(value = "联系人")

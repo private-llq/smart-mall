@@ -19,7 +19,7 @@ public class UserCollectParam implements Serializable {
     private Long menuId;
 
     /**
-     * 收藏类型：0 商品、服务 1：套餐 2：商店
+     * 收藏类型：0 商品  1:服务  2：套餐  3：商店
      */
     private Integer type;
 

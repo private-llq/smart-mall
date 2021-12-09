@@ -9,6 +9,7 @@ import com.jsy.parameter.GoodsServiceParam;
 import com.jsy.query.*;
 import com.jsy.service.IGoodsService;
 import com.jsy.domain.Goods;
+import com.zhsj.baseweb.annotation.LoginIgnore;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -133,6 +134,7 @@ public class GoodsController {
      */
     @ApiOperation("查看一条服务的详细信息")
     @GetMapping("/getGoodsService")
+    @LoginIgnore
     public CommonResult<GoodsServiceDto> getGoodsService(@RequestParam("id") Long id)
     {
         GoodsServiceDto goodsServiceDto= goodsService.getGoodsService(id);

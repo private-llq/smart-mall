@@ -59,7 +59,7 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
 
     /**
      * 收藏商品\服务\套餐\店铺
-     * @param userCollectParam 收藏类型：0 商品、服务 1：套餐 2：商店
+     * @param userCollectParam 收藏类型：0 商品  1:服务  2：套餐   3：商店
      * @return
      */
     @Override
