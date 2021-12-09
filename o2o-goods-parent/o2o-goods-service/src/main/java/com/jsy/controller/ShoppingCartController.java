@@ -77,7 +77,7 @@ public class ShoppingCartController {
 
 
     /**
-     * 查询购物车(店铺)
+     * 查询购物车(店铺)  店铺id+token
      */
     @PostMapping("queryCart")
     public CommonResult<ShoppingCartDto> queryCart(@RequestBody ShoppingCartParam shoppingCartParam){
@@ -86,7 +86,7 @@ public class ShoppingCartController {
     }
 
     /**
-     * 查询购物车(用户)
+     * 查询购物车(用户)  token
      */
     @PostMapping("queryCartAll")
     public CommonResult<PageInfo<ShoppingCartDto>> queryCartAll(@RequestBody ShoppingCartParam shoppingCartParam){

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.alibaba.fastjson.serializer.ToStringSerializer;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import java.time.LocalDateTime;
@@ -72,6 +73,8 @@ public class ShoppingCart extends BaseEntity implements Serializable {
 
   /*  @ApiModelProperty(value = "是否支持上门服务 1：支持 0： 不支持")
     private Integer isVisitingService;*/
+
+
 
 
 }

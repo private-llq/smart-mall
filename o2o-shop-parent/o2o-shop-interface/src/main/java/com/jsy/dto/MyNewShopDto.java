@@ -22,6 +22,10 @@ public class MyNewShopDto implements Serializable {
      * 店铺名称
      */
     private String shopName;
+    /**
+     * 店铺图片
+     */
+    private String image;
 
     /**
      * 门店类型名称

@@ -288,6 +288,42 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         return goodsServiceDto;
     }
 
+
+
+    /**
+     * 查看一条商品或者服务的详细信息
+     * @param id
+     * @return
+     */
+    @Override
+    public Goods getByGoods(Long id) {
+        LoginUser loginUser = ContextHolder.getContext().getLoginUser();
+        Goods goods = goodsMapper.selectOne(new QueryWrapper<Goods>().eq("id", id).eq("type",1));
+        if (Objects.isNull(goods)){
+            throw new JSYException(-1,"没有找到该服务！");
+        }
+        //添加服务访问量
+        long pvNum = goods.getPvNum() + 1;
+        goodsMapper.update(null,new UpdateWrapper<Goods>().eq("id",id).set("pv_num",pvNum));
+        //添加一条用户的浏览记录
+        Browse browse = new Browse();
+        browse.setShopId(goods.getShopId());
+        browse.setUserId(loginUser.getId());
+        browse.setName(goods.getTitle());
+        browse.setTextDescription(goods.getTextDescription());
+        browse.setRealPrice(goods.getPrice());
+        browse.setSellingPrice(goods.getDiscountPrice());
+        //browse.setIsVisitingService(goods.getIsVisitingService());
+        browseClient.save(browse);
+        Goods twoGoods = goodsMapper.selectOne(new QueryWrapper<Goods>().eq("id", id));
+        Long aLong = goodsMapper.sumServiceSales(twoGoods.getId());
+        twoGoods.setSums(Objects.isNull(aLong)?0:aLong);
+        return twoGoods;
+
+    }
+
+
+
     /**
      * 查询店铺下面的商品 B端+C端
      * @param goodsPageQuery
@@ -379,6 +415,9 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     }
 
 
+
+
+
     /**
      * 大后台查询商品列表
      * @param backstageGoodsQuery
@@ -468,6 +507,8 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
             goodsMapper.update(null,new UpdateWrapper<Goods>().eq("id",id).set("virtual_state",1).set("virtual_sales",num));
         }
     }
+
+
 
 
     /**

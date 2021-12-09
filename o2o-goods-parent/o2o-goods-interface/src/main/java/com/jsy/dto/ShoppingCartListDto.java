@@ -1,5 +1,6 @@
 package com.jsy.dto;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -31,4 +32,9 @@ public class ShoppingCartListDto {
 
     /*@ApiModelProperty(value = "1：支持上门 0：不支持上门")
     private Integer isVisitingService;*/
+
+    /**
+     * 该商品状态：true 正常 false 不正常（大后台禁用、商家下架）
+     */
+    private Boolean state;
 }

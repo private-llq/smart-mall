@@ -148,7 +148,7 @@ public class GoodsController {
     @GetMapping("/getByGoods")
     public CommonResult<Goods> getByGoods(@RequestParam("id") Long id)
     {
-        Goods goods = goodsService.getById(id);
+        Goods goods = goodsService.getByGoods(id);
         return CommonResult.ok(goods);
     }
 

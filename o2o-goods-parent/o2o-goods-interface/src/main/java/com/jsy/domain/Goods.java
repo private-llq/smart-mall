@@ -2,6 +2,7 @@ package com.jsy.domain;
 import java.math.BigDecimal;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.alibaba.fastjson.serializer.ToStringSerializer;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -106,6 +107,11 @@ public class Goods extends BaseEntity  {
      * 虚拟销量
      */
     private Long virtualSales;
+
+
+    @TableField(exist = false)
+    @ApiModelProperty(value = "销量")
+    private Long sums=0L;
 
 
 

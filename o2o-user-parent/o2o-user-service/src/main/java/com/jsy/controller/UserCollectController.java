@@ -36,7 +36,7 @@ public class UserCollectController {
     }
 
     /**
-    * 删除一条收藏记录
+    * 列表删除一条收藏记录
     * @param id
     * @return
     */
@@ -47,14 +47,23 @@ public class UserCollectController {
     }
 
     /**
+     * 取消收藏
+     */
+    @DeleteMapping(value="/cancelUserCollect")
+    public CommonResult cancelUserCollect(@RequestParam("type") Integer type,@RequestParam("id") Long id){
+        userCollectService.cancelUserCollect(type,id);
+        return CommonResult.ok();
+    }
+
+    /**
     * 分页查询收藏的商品、服务、套餐、店铺
     * @param userCollectQuery 查询对象
     * @return PageList 分页对象
     */
     @PostMapping(value = "/userCollectPageList")
-    public CommonResult<PageInfo<Object>> userCollectPageList(@RequestBody UserCollectQuery userCollectQuery)
+    public CommonResult<PageInfo<UserCollect>> userCollectPageList(@RequestBody UserCollectQuery userCollectQuery)
     {
-        PageInfo<Object> userCollectDto= userCollectService.userCollectPageList(userCollectQuery);
-        return CommonResult.ok(userCollectDto);
+        PageInfo<UserCollect> pageInfo=userCollectService.userCollectPageList(userCollectQuery);
+        return CommonResult.ok(pageInfo);
     }
 }

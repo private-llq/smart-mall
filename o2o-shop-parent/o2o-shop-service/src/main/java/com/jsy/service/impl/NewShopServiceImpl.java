@@ -369,6 +369,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
             myNewShopDto.setId(newShop.getId());
             myNewShopDto.setShopName(newShop.getShopName());
             myNewShopDto.setGrade(5.0f);
+            myNewShopDto.setImage(newShop.getShopLogo());
             //查询
 
             try {

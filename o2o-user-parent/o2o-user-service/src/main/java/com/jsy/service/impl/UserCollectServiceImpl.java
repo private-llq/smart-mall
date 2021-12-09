@@ -59,7 +59,7 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
 
     /**
      * 收藏商品\服务\套餐\店铺
-     * @param userCollectParam
+     * @param userCollectParam 收藏类型：0 商品、服务 1：套餐 2：商店
      * @return
      */
     @Override
@@ -94,6 +94,7 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
             }
             userCollect.setUserId(userId);
             userCollect.setGoodsId(goodsId);
+            userCollect.setType(0);
             userCollect.setShopId(data.getShopId());
             userCollect.setImage(data.getImages().split(",")[0]);
             userCollect.setTitle(data.getTitle());
@@ -113,6 +114,7 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
             if (Objects.isNull(data)){
                 throw new JSYException(-1,"未找到该套餐！");
             }
+            userCollect.setType(1);
             userCollect.setUserId(userId);
             userCollect.setShopId(data.getShopId());
             userCollect.setMenuId(menuId);
@@ -136,6 +138,7 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
             if (Objects.isNull(data)){
                 throw new JSYException(-1,"未找到该店铺！");
             }
+            userCollect.setType(2);
             userCollect.setUserId(userId);
             userCollect.setShopId(shopId);
             userCollect.setImage(data.getShopLogo());
@@ -164,54 +167,19 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
      * @return PageList 分页对象
      */
     @Override
-    public PageInfo<Object> userCollectPageList(UserCollectQuery userCollectQuery) {
+    public PageInfo<UserCollect>  userCollectPageList(UserCollectQuery userCollectQuery) {
         LoginUser loginUser = ContextHolder.getContext().getLoginUser();
         if (Objects.isNull(loginUser)){
             new JSYException(-1,"用户认证失败！");
         }
         Long userId = loginUser.getId();//用户id
-        List<UserCollect> list = userCollectMapper.selectList(new QueryWrapper<UserCollect>().eq("user_id", userId));
-        List<Long> goodsCollect = new ArrayList<>();
-        List<Long> goodsServiceCollect = new ArrayList<>();
-        List<Long> setMenuCollect = new ArrayList<>();
-        List<Long> shopCollect = new ArrayList<>();
-        list.stream().forEach(x->{
-            if (x.getType()==0){
-                goodsCollect.add(x.getGoodsId());
-            }
-            if (x.getType()==1){
-                setMenuCollect.add(x.getMenuId());
-            }
-            if (x.getType()==2){
-                shopCollect.add(x.getShopId());
-            }
-            if (x.getType()==3){
-                goodsServiceCollect.add(x.getGoodsId());
-            }
-
-        });
-
-        userCollectDto userCollectDto = new userCollectDto();
-        if (goodsCollect.size()!=0){
-            List<GoodsDto> goodsDtos = goodsClient.batchGoods(goodsCollect).getData();
-            userCollectDto.setGoodsDto(goodsDtos);
-        }
-
-        if (goodsServiceCollect.size()!=0){
-            List<GoodsServiceDto> goodsServiceDtos = goodsClient.batchGoodsService(goodsServiceCollect).getData();
-            userCollectDto.setGoodsServiceDto(goodsServiceDtos);
-        }
-        if (setMenuCollect.size()!=0){
-            List<SetMenuDto> setMenuDtos = setMenuClient.batchIds(setMenuCollect).getData();
-            userCollectDto.setSetMenuDto(setMenuDtos);
-        }
-        if (shopCollect.size()!=0){
-            List<NewShopDto> newShopDtos = newShopClient.batchIds(shopCollect).getData();
-            userCollectDto.setNewShopDto(newShopDtos);
-        }
-        Tuple tuple = new Tuple(userCollectDto.getGoodsDto(),userCollectDto.getGoodsServiceDto(),userCollectDto.getNewShopDto(),userCollectDto.getSetMenuDto());
-        Object[] members = tuple.getMembers();
-        PageInfo<Object> pageInfo = MyPageUtils.pageMap(userCollectQuery.getPage(), userCollectQuery.getRows(), Arrays.asList(members));
+        Page<UserCollect> page = new Page<>(userCollectQuery.getPage(), userCollectQuery.getRows());
+        Page<UserCollect> selectPage = userCollectMapper.selectPage(page, new QueryWrapper<UserCollect>().eq("user_id", userId));
+        PageInfo<UserCollect> pageInfo = new PageInfo<>();
+        pageInfo.setSize(selectPage.getSize());
+        pageInfo.setTotal(selectPage.getTotal());
+        pageInfo.setCurrent(selectPage.getCurrent());
+        pageInfo.setRecords(selectPage.getRecords());
         return pageInfo;
     }
 
@@ -220,6 +188,11 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
      */
     @Override
     public Boolean userCollectState(Integer type, Long id) {
+        LoginUser loginUser = ContextHolder.getContext().getLoginUser();
+        if (Objects.isNull(loginUser)){
+            new JSYException(-1,"用户认证失败！");
+        }
+        Long userId = loginUser.getId();//用户id
         if (Objects.isNull(type)){
             throw new JSYException(-1,"收藏类型不能为空！");
         }
@@ -230,7 +203,7 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
          * 收藏类型：0 商品、服务 1：套餐 2：商店
          */
         if (type==0){
-            UserCollect goodsService = userCollectMapper.selectOne(new QueryWrapper<UserCollect>().eq("goods_id", id));
+            UserCollect goodsService = userCollectMapper.selectOne(new QueryWrapper<UserCollect>().eq("goods_id", id).eq("user_id",userId));
             if (Objects.nonNull(goodsService)){//已收藏
                 return true;
             }else {
@@ -238,7 +211,7 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
             }
         }
         if (type==1){
-            UserCollect menu = userCollectMapper.selectOne(new QueryWrapper<UserCollect>().eq("menu_id", id));
+            UserCollect menu = userCollectMapper.selectOne(new QueryWrapper<UserCollect>().eq("menu_id", id).eq("user_id",userId));
             if (Objects.nonNull(menu)){
                 return true;
             }else {
@@ -246,14 +219,44 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
             }
         }
         if (type==2){
-            UserCollect menu = userCollectMapper.selectOne(new QueryWrapper<UserCollect>().eq("shop_id", id));
-            if (Objects.nonNull(menu)){
+            UserCollect shop = userCollectMapper.selectOne(new QueryWrapper<UserCollect>().eq("shop_id", id).eq("user_id",userId));
+            if (Objects.nonNull(shop)){
                 return true;
             }else {
                 return false;
             }
         }
         return null;
+    }
+
+    /**
+     * 取消收藏
+     * @param type
+     * @param id
+     */
+    @Override
+    @Transactional
+    public void cancelUserCollect(Integer type, Long id) {
+        LoginUser loginUser = ContextHolder.getContext().getLoginUser();
+        if (Objects.isNull(loginUser)){
+            new JSYException(-1,"用户认证失败！");
+        }
+        Long userId = loginUser.getId();//用户id
+
+        /**
+         * 收藏类型：0 商品、服务 1：套餐 2：商店
+         */
+        if (type==0){
+            userCollectMapper.delete(new QueryWrapper<UserCollect>().eq("goods_id",id).eq("user_id",userId));
+
+        }
+        if (type==1){
+            userCollectMapper.delete(new QueryWrapper<UserCollect>().eq("menu_id",id).eq("user_id",userId));
+
+        }
+        if (type==2){
+            userCollectMapper.delete(new QueryWrapper<UserCollect>().eq("shop_id",id).eq("user_id",userId));
+        }
     }
 
     private String getShopTreeIdName(String[] split) {
@@ -272,13 +275,5 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
             return data2.getName()+"-"+data1.getName();
 
         }
-//        for (String s : split) {
-//            Tree tree = treeClient.getTree(Long.valueOf(s)).getData();
-//            shopTreeIdName = shopTreeIdName + "-" + tree.getName();
-//        }
-        //截取  第二个-  开始
-//        String s1= shopTreeIdName.substring(shopTreeIdName.indexOf("-", shopTreeIdName.indexOf("-") + 1));
-//        return s1.substring(1);
-
     }
 }

@@ -22,6 +22,7 @@ import com.jsy.service.IShoppingCartService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhsj.baseweb.support.ContextHolder;
 import com.zhsj.baseweb.support.LoginUser;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -208,8 +209,7 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
         //商品支付价格
         BigDecimal payPrice=BigDecimal.ZERO;
 
-        //购物车篮子
-        List<ShoppingCartListDto> cartList;
+
 
         //返回对象
         ShoppingCartDto shoppingCartDto = new ShoppingCartDto();
@@ -217,13 +217,32 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
         //查询某一个用户在某一个店 购物车列表
         List<ShoppingCart> carts = shoppingCartMapper.selectList(new QueryWrapper<ShoppingCart>().eq("user_id",userId).eq("shop_id", shopId));
 
-        //对象转换
-        cartList=BeansCopyUtils.listCopy(carts,ShoppingCartListDto.class);
+        //购物车篮子
+        ArrayList<ShoppingCartListDto> cartList = new ArrayList<>();
 
         //商品总数
         sumGoods = carts.stream().mapToInt(ShoppingCart::getNum).sum();
-
         for (ShoppingCart cart : carts) {
+            ShoppingCartListDto cartListDto = new ShoppingCartListDto();
+            BeanUtils.copyProperties(cart,cartListDto);
+            //验证商品是否被大后台禁用、商家下架
+            if (Objects.nonNull(cart.getGoodsId())){//商品、服务
+                Goods goods = goodsMapper.selectOne(new QueryWrapper<Goods>().eq("id",cart.getGoodsId()).eq("state",0).eq("is_putaway",1));
+                if (Objects.nonNull(goods)){
+                    cartListDto.setState(true);
+                }else {
+                    cartListDto.setState(false);
+                }
+            }
+            if (Objects.nonNull(cart.getSetMenuId())){//套餐
+                SetMenu setMenu = setMenuMapper.selectOne(new QueryWrapper<SetMenu>().eq("id",cart.getSetMenuId()).eq("state", 1));
+                if (Objects.nonNull(setMenu)){
+                    cartListDto.setState(true);
+                }else {
+                    cartListDto.setState(false);
+                }
+            }
+            cartList    .add(cartListDto);
             //按商品原价格算总价
             sumPrice= sumPrice.add(cart.getPrice().multiply(BigDecimal.valueOf(cart.getNum())));
 

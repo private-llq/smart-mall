@@ -29,11 +29,18 @@ public interface IUserCollectService extends IService<UserCollect> {
      * @param userCollectQuery 查询对象
      * @return PageList 分页对象
      */
-    PageInfo<Object> userCollectPageList(UserCollectQuery userCollectQuery);
+    PageInfo<UserCollect>  userCollectPageList(UserCollectQuery userCollectQuery);
 
 
     /**
      * 收藏按钮状态 亮(已收藏)：true   灰色 ：false
      */
     Boolean userCollectState(Integer type, Long id);
+
+    /**
+     * 取消收藏
+     * @param type
+     * @param id
+     */
+    void cancelUserCollect(Integer type, Long id);
 }

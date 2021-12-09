@@ -152,4 +152,11 @@ public interface IGoodsService extends IService<Goods> {
      * @param id
      */
     void virtualSales(Long id, Long num);
+
+    /**
+     * 查看一条商品或者服务的详细信息
+     * @param id
+     * @return
+     */
+    Goods getByGoods(Long id);
 }
