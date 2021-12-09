@@ -1,6 +1,7 @@
 package com.jsy.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jsy.basic.util.PageInfo;
+import com.jsy.client.HotClient;
 import com.jsy.domain.Goods;
 import com.jsy.dto.SetMenuDto;
 import com.jsy.dto.SetMenuGoodsDto;
@@ -11,6 +12,7 @@ import com.jsy.domain.SetMenu;
 import com.jsy.query.SetMenuQuery;
 import com.jsy.basic.util.PageList;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.jsy.util.RedisUtils;
 import com.zhsj.baseweb.annotation.LoginIgnore;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -19,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.jsy.basic.util.vo.CommonResult;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -31,7 +34,8 @@ import java.util.stream.Stream;
 public class SetMenuController {
     @Autowired
     public ISetMenuService setMenuService;
-
+    @Autowired
+    public HotClient hotClient;
     /**
     * 保存和修改公用的
     * @param setMenu  传递的实体
@@ -62,6 +66,8 @@ public class SetMenuController {
     public CommonResult delete(@PathVariable("id") Long id){
         try {
             setMenuService.removeById(id);
+            //更新热门数据
+            hotClient.getHotGoods(id);
             return CommonResult.ok();
         } catch (Exception e) {
         e.printStackTrace();

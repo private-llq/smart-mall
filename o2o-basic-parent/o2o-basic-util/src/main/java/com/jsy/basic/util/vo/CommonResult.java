@@ -2,8 +2,6 @@ package com.jsy.basic.util.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.jsy.basic.util.exception.JSYError;
-import com.zhsj.basecommon.enums.ErrorEnum;
-import com.zhsj.basecommon.vo.R;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
