@@ -311,7 +311,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
                             recommendDto.setTitle(goods.getTitle());
                             recommendDto.setPrice(goods.getPrice());
                             shopList.add(recommendDto);
-                            recommendDto.setImages(newShop.getShopLogo());
+                            recommendDto.setShopLogo(newShop.getShopLogo());
                         }
         }
         PageInfo<NewShopRecommendDto> pageInfo = MyPageUtils.pageMap(shopQuery.getPage(), shopQuery.getRows(), shopList);
@@ -601,6 +601,27 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         BeanUtils.copyProperties(newShop,distanceDto);
         distanceDto.setDistance((distance/1000)+"km");
         return distanceDto;
+    }
+
+    @Override
+    public PageInfo<NewShopRecommendDto> getMedicalShop(NewShopQuery shopQuery) {
+        if(shopQuery.getTreeId()==null){
+            shopQuery.setTreeId(6L);
+        }
+        List<NewShop> newShops= shopMapper.getMedicalShop(shopQuery);
+        if (newShops.size()==0){
+            return new PageInfo<>();
+        }
+        List<NewShopRecommendDto> recommendDtoList = new ArrayList<>();
+        for (NewShop newShop : newShops) {
+            NewShopRecommendDto recommendDto = new NewShopRecommendDto();
+            BeanUtils.copyProperties(newShop,recommendDto);
+            //.divide(new BigDecimal(1000)
+            recommendDto.setDistance(newShop.getDistance());
+            recommendDtoList.add(recommendDto);
+        }
+        PageInfo<NewShopRecommendDto> dtoPageInfo = MyPageUtils.pageMap(shopQuery.getPage(), shopQuery.getRows(), recommendDtoList);
+        return dtoPageInfo;
     }
 
 

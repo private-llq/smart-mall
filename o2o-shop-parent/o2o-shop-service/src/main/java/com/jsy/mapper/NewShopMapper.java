@@ -34,5 +34,10 @@ public interface NewShopMapper extends BaseMapper<NewShop> {
 
     //大后台商家分页
     List<NewShopBackstageDto> selectAuitPage(@Param("shopQuery") ShopAuditQuery shopQuery);
-
+ /**
+  * @author Tian
+  * @since 2021/12/9-10:16
+  * @description 医疗---救助机构搜索
+  **/
+    List<NewShop> getMedicalShop(@Param("shopQuery") NewShopQuery shopQuery);
 }

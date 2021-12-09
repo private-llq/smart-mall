@@ -126,5 +126,33 @@
             OR s.shop_username LIKE CONCAT('%',#{shopQuery.keyword,jdbcType=VARCHAR},'%')
         </if>
     </select>
+    <select id="getMedicalShop" resultType="com.jsy.domain.NewShop">
+        SELECT
+            *,
+            round (
+                    (
+                            6378.138 * 2 * ASIN(
+                                SQRT(
+                                            POW(
+                                                    SIN( ( #{shopQuery.latitude} * PI( ) / 180 - t1.latitude * PI( ) / 180 ) / 2 ),
+                                                    2
+                                                ) + COS( #{shopQuery.latitude} * PI( ) / 180 ) * COS( t1.latitude * PI( ) / 180 ) * POW(
+                                                SIN( ( #{shopQuery.longitude} * PI( ) / 180 - t1.longitude * PI( ) / 180 ) / 2 ),
+                                                2
+                                            )
+                                    )
+                            ) * 1000
+                        )
+                )  as distance
+        from  w_new_shop t1
+        WHERE  t1.state=1
+            AND t1.deleted=0
+            AND t1.shielding=0
+            AND locate(#{shopQuery.treeId}, t1.shop_tree_id) > 0
+        <if test="shopQuery.shopName !=null and shopQuery.shopName !=''">
+            AND t1.shop_name LIKE CONCAT('%',#{shopQuery.shopName,jdbcType=VARCHAR},'%')
+        </if>
+        order by distance
+    </select>
 
 </mapper>
