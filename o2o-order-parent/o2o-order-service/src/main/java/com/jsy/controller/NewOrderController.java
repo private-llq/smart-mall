@@ -41,9 +41,8 @@ public class NewOrderController {
     }
     @ApiOperation("创建订单接口")
     @RequestMapping(value = "/insterOrder", method = RequestMethod.POST)
-    public CommonResult<Long> insterOrder(InsterOrderParam param) {
-      Long  orderId =123456789L;
-
+    public CommonResult<Long> insterOrder(@RequestBody InsterOrderParam param) {
+           Long orderId =  newOrderService.insterOrder(param);
         return new CommonResult<Long>(200, "新增订单成功", orderId);
     }
 
@@ -114,6 +113,7 @@ public class NewOrderController {
         CommonResult value=newOrderService.alipay(orderId);
         return value;
     }
+
     @ApiOperation("微信支付接口")
     @RequestMapping(value = "/WeChatPay", method = RequestMethod.GET)
     public CommonResult<String> WeChatPay(@RequestParam("orderId") Long orderId) {
@@ -130,4 +130,5 @@ public class NewOrderController {
         }
         return new CommonResult<>(10005, "失败", b);
     }
+
 }

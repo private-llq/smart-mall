@@ -6,11 +6,15 @@ import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.utils.CodeUtils;
 import com.jsy.basic.util.utils.OrderNoUtil;
 import com.jsy.basic.util.vo.CommonResult;
+import com.jsy.client.GoodsClient;
 import com.jsy.client.ServiceCharacteristicsClient;
+import com.jsy.client.SetMenuClient;
+import com.jsy.client.ShoppingCartClient;
 import com.jsy.config.HttpClientHelper;
 import com.jsy.domain.*;
 import com.jsy.dto.*;
 import com.jsy.mapper.*;
+import com.jsy.parameter.ShoppingCartParam;
 import com.jsy.query.*;
 import com.jsy.service.INewOrderService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -56,7 +60,12 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
     private OrderSetMenuMapper orderSetMenuMapper;
     @Resource
     private OrderSetMenuGoodsMapper orderSetMenuGoodsMapper;
-
+    @Resource
+    private SetMenuClient setMenuClient;
+    @Resource
+    private GoodsClient goodsClient;
+    @Resource
+    private ShoppingCartClient shoppingCartClient;
     @Autowired
     private ServiceCharacteristicsClient characteristicsClient;
 
@@ -152,6 +161,191 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
 
     }
 
+    //创建订单接口返回订单编号
+    @Override
+    @Transactional
+    public Long insterOrder(InsterOrderParam param) {
+        Long shopId = param.getShopId();//店铺id
+        LoginUser loginUser = ContextHolder.getContext().getLoginUser();
+        Long userId = loginUser.getId();//获取用户id
+        NewOrder newOrder = new NewOrder();//订单创建对象
+        newOrder.setOrderNum(OrderNoUtil.getOrder());//订单号
+        if (param.getConsumptionWay() == 1) {//消费方式（1商家上门)
+            newOrder.setAppointmentStatus(0);//预约状态（0预约中，1预约成功，2预约失败）
+            BeanUtils.copyProperties(param, newOrder);
+        }
+        if (param.getConsumptionWay() == 0) {//消费方式（0用户到店)
+            newOrder.setAppointmentStatus(1);//预约状态（0预约中，1预约成功，2预约失败）
+            BeanUtils.copyProperties(param, newOrder);
+            newOrder.setTelepone(loginUser.getPhone());//用户电话
+        }
+        newOrder.setUserId(userId);//用户id
+        newOrder.setOrderStatus(1);//订单状态（[1待上门、待配送、待发货]，2、完成）
+        newOrder.setPayStatus(0);//支付状态（0未支付，1支付成功,2退款中，3退款成功，4拒绝退款）
+        newOrder.setCommentStatus(0);//是否评价0未评价，1评价（评价完成为订单完成）
+        newOrder.setServerCodeStatus(0);//验卷状态0未验卷，1验卷成功
+
+
+        ShoppingCartParam shoppingCartParam = new ShoppingCartParam();//查询购物的参数对象
+        shoppingCartParam.setShopId(shopId);//店铺id
+        shoppingCartParam.setUserId(userId);//用户id
+        ShoppingCartDto cartData = shoppingCartClient.queryCart(shoppingCartParam).getData();//查询购物车信息
+
+        //验证最终金额
+        BigDecimal payPrice = cartData.getPayPrice();//支付价格
+        BigDecimal orderAllPrice = param.getOrderAllPrice();//订单总价
+        if(payPrice!=orderAllPrice){
+            throw new JSYException(500,"总计不符");
+        }
+
+        if (cartData==null) {
+            throw new JSYException(500,"没有购物车信息");
+        }
+       // BigDecimal sumPrice = cartData.getSumPrice();// 商品原价
+        newOrder.setOrderAllPrice(payPrice);//订单的最终价格(购物车的支付价格)
+        Integer shopType = cartData.getShopType();// 商店类型 服务行业：1是服务行业  0 套餐行业
+        if (shopType==1) {
+            newOrder.setOrderType(0);//订单类型（0-服务类(只有服务)
+        }else if(shopType==0){
+            newOrder.setOrderType(1);//订单类型（1-普通类（套餐，单品集合）
+        }
+
+        int insert = newOrderMapper.insert(newOrder);
+
+        Long orderId = newOrder.getId();//订单id
+
+
+        List<ShoppingCartListDto> cartList = cartData.getCartList();//购物车详情
+
+
+        //添加订单的详情
+        try {
+            for (ShoppingCartListDto cartListDto : cartList) {
+
+                if ( cartListDto.getState()==false) {
+                    throw  new JSYException(500,"商品处于不正常状态");
+                }
+
+                Integer type = cartListDto.getType();//0：商品 1：服务  2：套餐
+                Long goodsId = cartListDto.getGoodsId();//获取商品的id
+
+                if(type==0){//商品
+                    GoodsDto goodsDto = goodsClient.getGoods(goodsId).getData();////根据服务(商品)id查询商品详情
+                    if (goodsDto==null) {
+                        throw  new JSYException(500,"无商品详情信息");
+                    }
+                    //将商品添加进订单详情
+                    OrderGoods orderGoods = new OrderGoods();
+                    orderGoods.setOrderId(orderId);//订单id回填
+                    orderGoods.setShopId(shopId);//设置shopid
+
+                    orderGoods.setGoodsTypeId(goodsDto.getGoodsTypeId());//商品的类型id
+                    orderGoods.setTextDescription(goodsDto.getTextDescription());//商品描述
+
+                    orderGoods.setAmount(cartListDto.getNum());//商品的数量
+                    orderGoods.setGoodsId(cartListDto.getGoodsId());//商品id
+                    orderGoods.setDiscountPrice(cartListDto.getDiscountPrice());//折扣价格
+                    orderGoods.setDiscountState(cartListDto.getDiscountState());//折扣状态
+                    orderGoods.setImages(cartListDto.getImages());//图片
+                    orderGoods.setTitle(cartListDto.getTitle());//商品名称
+                    orderGoods.setPrice(cartListDto.getPrice());//原价
+
+                    int insert1 = orderGoodsMapper.insert(orderGoods);
+
+
+                }
+                if(type==1){//服务
+
+                    GoodsServiceDto data = goodsClient.getGoodsService(goodsId).getData();//根据服务(商品)id查询服务详情
+                    if (data==null) {
+                        throw  new JSYException(500,"无服务详情信息");
+                    }
+
+                    OrderService orderService = new OrderService();
+                    orderService.setOrderId(orderId);//订单id回填
+                    orderService.setShopId(shopId);//设置shopid
+
+                    orderService.setAmount(cartListDto.getNum());//数量
+                    orderService.setPrice(cartListDto.getPrice());//价格
+                    orderService.setImages(cartListDto.getImages());//图片
+                    orderService.setServiceId(cartListDto.getGoodsId());//服务id
+                    orderService.setDiscountState(cartListDto.getDiscountState());//折扣状态
+                    orderService.setDiscountPrice(cartListDto.getDiscountPrice());//折扣价
+
+                    orderService.setGoodsTypeId(data.getGoodsTypeId());//服务分类id
+                    orderService.setServiceRegulations(data.getServiceRegulations());//使用规则
+                    orderService.setPhone(data.getServiceCall());//服务电话
+                    orderService.setTitle(data.getTitle());//标题
+                    orderService.setTextDescription(data.getTextDescription());//服务备注
+                    orderService.setValidUntilTime(data.getValidUntilTime());//服务有效期
+
+                    int insert1 = orderServiceMapper.insert(orderService);
+
+
+
+                }
+                if(type==2){//套餐
+                    Long setMenuId = cartListDto.getSetMenuId();//获取套餐的id
+                    SetMenu menuData = setMenuClient.getShopIdMenus(setMenuId).getData(); //根据套餐id查询套餐详情
+                    if (menuData==null) {
+                        throw  new JSYException(500,"无套餐详情信息");
+                    }
+                    OrderSetMenu orderSetMenu = new OrderSetMenu();
+                    orderSetMenu.setOrderId(orderId);//订单id回填
+                    orderSetMenu.setShopId(shopId);//店铺id
+
+
+                    orderSetMenu.setMenuId(cartListDto.getSetMenuId());//套餐id
+                    orderSetMenu.setAmount(cartListDto.getNum());//套餐数量
+                    orderSetMenu.setRealPrice(cartListDto.getPrice());//原价
+                    orderSetMenu.setSellingPrice(cartListDto.getDiscountPrice());//折扣价格
+                    orderSetMenu.setDiscountState(cartListDto.getDiscountState());//折扣状态
+
+                    orderSetMenu.setMenuExplain(menuData.getMenuExplain());//规则说明
+                    orderSetMenu.setName(menuData.getName());//套餐名称
+                    orderSetMenu.setImages(menuData.getImages());//套餐图片
+                    int insert1 = orderSetMenuMapper.insert(orderSetMenu);
+
+                    List<SetMenuListDto> map = menuData.getMap();//套餐详情
+
+                    for (SetMenuListDto setMenuListDto : map) {//循环套餐详情
+                        List<SetMenuGoodsDto> goods = setMenuListDto.getDtoList();
+                        for (SetMenuGoodsDto good : goods) {
+
+                            OrderSetMenuGoods orderSetMenuGoods = new OrderSetMenuGoods();
+                            orderSetMenuGoods.setGoodsId(good.getId());
+                            orderSetMenuGoods.setShopId(shopId);//设置shopid
+                            orderSetMenuGoods.setOrderMenuId(orderSetMenu.getId());//套餐id回填
+                            orderSetMenuGoods.setAmount(good.getAmount());//数量
+                            // orderSetMenuGoods.setGoodsTypeId();无
+                            //orderSetMenuGoods.setImages();无
+                            orderSetMenuGoods.setPrice(good.getPrice());//价格
+                            orderSetMenuGoods.setTitle(good.getName());//商品的名称
+                            int insert2 = orderSetMenuGoodsMapper.insert(orderSetMenuGoods);
+                        }
+                    }
+
+                }
+
+            }
+        } catch (JSYException e) {
+            e.printStackTrace();
+        } catch (BeansException e) {
+            e.printStackTrace();
+        }
+
+
+        int code = shoppingCartClient.clearCart(shoppingCartParam).getCode();//0代表清除成功
+        if (code!=0) {
+            throw  new JSYException(500,"购物车清除失败");
+        }
+
+
+
+
+        return orderId;
+    }
+
     //用户根据转态查询订单
     @Override
     public List<SelectUserOrderDto> selectUserOrder(Long id, SelectUserOrderParam param) {
@@ -193,9 +387,7 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
                     .eq("pay_status", 4);//支付状态（0未支付，1支付成功,2退款申请中，3退款成功，4拒绝退款）
         }
 
-
         List<NewOrder> newOrders = newOrderMapper.selectList(queryWrapper);//根据状态查询用户的所有订单
-
 
         for (NewOrder newOrder : newOrders) {
             SelectUserOrderDto userOrderDTO = new SelectUserOrderDto();//单个订单返回对象
@@ -743,6 +935,7 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
         CommonResult commonResult = HttpClientHelper.sendPost(urlParam, weChatPayQO, token, CommonResult.class);
         return commonResult;
     }
+
 
     //根据查询的数据支付组合订单详情
     public HashMap<String, Object> createOrderData(SelectShopOrderDto shopOrderDto) {

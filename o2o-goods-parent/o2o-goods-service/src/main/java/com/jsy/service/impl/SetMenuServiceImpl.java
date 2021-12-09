@@ -160,6 +160,8 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
         LoginUser loginUser = ContextHolder.getContext().getLoginUser();
         System.out.println(loginUser);
         browse.setUserId(loginUser.getId());
+        //套餐为2
+        browse.setType(2);
         browseClient.save(browse);
 
 

@@ -49,5 +49,9 @@ public class Browse extends BaseEntity {
 //    @ApiModelProperty(value = "是否支持上门服务   0不支持  1支持")
 //    private Integer isVisitingService;
 
+    @ApiModelProperty(value = "0 商品  1:服务  2：套餐   3：商店")
+    private Integer type;
+
+
 
 }

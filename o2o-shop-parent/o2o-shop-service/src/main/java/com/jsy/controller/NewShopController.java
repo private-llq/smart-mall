@@ -245,6 +245,7 @@ public class NewShopController {
       * @description 查询店铺支持
       **/
      @ApiOperation("查询店铺支持")
+     @LoginIgnore
      @RequestMapping(value = "/getSupport",method = RequestMethod.GET)
      public CommonResult getSupport(@RequestParam("shopId") Long shopId){
          try {
