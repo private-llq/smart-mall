@@ -24,80 +24,8 @@ public class NewCommentController {
     @Autowired
     public INewCommentService newCommentService;
 
-    /**
-     * 保存和修改公用的
-     *
-     * @param newComment 传递的实体
-     * @return Ajaxresult转换结果
-     */
-    @PostMapping(value = "/save")
-    public CommonResult save(@RequestBody NewComment newComment) {
-        try {
-            if (newComment.getId() != null) {
-                newCommentService.updateById(newComment);
-            } else {
-                newCommentService.save(newComment);
-            }
-            return CommonResult.ok();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return CommonResult.error(-1, "操作失败！");
-        }
-    }
 
-    /**
-     * 删除对象信息
-     *
-     * @param id
-     * @return
-     */
-    @DeleteMapping(value = "/{id}")
-    public CommonResult delete(@PathVariable("id") Long id) {
-        try {
-            newCommentService.removeById(id);
-            return CommonResult.ok();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return CommonResult.error(-1, "删除失败！");
-        }
-    }
-
-    /**
-     * 根据id查询一条
-     *
-     * @param id
-     */
-    @GetMapping(value = "/{id}")
-    public NewComment get(@PathVariable("id") Long id) {
-        return newCommentService.getById(id);
-    }
-
-
-    /**
-     * 返回list列表
-     *
-     * @return
-     */
-    @GetMapping(value = "/list")
-    public List<NewComment> list() {
-
-        return newCommentService.list(null);
-    }
-
-
-    /**
-     * 分页查询数据
-     *
-     * @param query 查询对象
-     * @return PageList 分页对象
-     */
-    @PostMapping(value = "/pagelist")
-    public PageList<NewComment> json(@RequestBody NewCommentQuery query) {
-        Page<NewComment> page = new Page<NewComment>(query.getPage(), query.getRows());
-        page = newCommentService.page(page);
-        return new PageList<NewComment>(page.getTotal(), page.getRecords());
-    }
-/**************************************arli**********************************/
+    /**************************************arli**********************************/
     //新增一条评论
     @RequestMapping(value = "/createComment",method =RequestMethod.POST)
     public CommonResult<Boolean> createComment(@RequestBody CreateCommentParam param) {

@@ -1,6 +1,7 @@
 package com.jsy.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.utils.CodeUtils;
 import com.jsy.basic.util.utils.OrderNoUtil;
@@ -14,6 +15,8 @@ import com.jsy.query.*;
 import com.jsy.service.INewOrderService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jsy.utils.AliAppPayQO;
+import com.jsy.utils.Random8;
+import com.jsy.utils.WeChatPayQO;
 import com.zhsj.baseweb.support.ContextHolder;
 import com.zhsj.baseweb.support.LoginUser;
 import io.swagger.annotations.ApiModelProperty;
@@ -30,6 +33,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -187,7 +191,6 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
                     .eq("pay_status", 3)
                     .or()
                     .eq("pay_status", 4);//支付状态（0未支付，1支付成功,2退款申请中，3退款成功，4拒绝退款）
-
         }
 
 
@@ -492,16 +495,19 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
     @Override
     public Boolean completionPay(CompletionPayParam param) {
         NewOrder newOrder = new NewOrder();
-        //newOrder.setOrderStatus(1);//订单状态（[1待上门、待配送、待发货]，2、完成）
-        newOrder.setId(param.getId());//订单id
+//        newOrder.setId(param.getId());//订单id
         newOrder.setPayStatus(1);//支付状态（0未支付，1支付成功,2退款中，3退款成功，4拒绝退款）
         newOrder.setBillMonth(param.getBillMonth());//账单月份
         newOrder.setBillNum(param.getBillNum());//账单号
         newOrder.setBillRise(param.getBillRise());//账单抬头
         newOrder.setPayTime(param.getPayTime());//支付时间
         newOrder.setPayType(param.getPayType());//支付方式
-        //   newOrder.setServeCode(CodeUtils.getRandomNumberByNum(11));//生成验劵码转成大写
-        int update = newOrderMapper.updateById(newOrder);
+        newOrder.setServeCode(Random8.getNumber8());//生成验劵码转成大写8位
+
+
+        UpdateWrapper<NewOrder> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("order_num",param.getOrderNumber());
+        int update = newOrderMapper.update(newOrder, updateWrapper);
         if (update > 0) {
             return true;
         }
@@ -717,11 +723,29 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
         CommonResult commonResult = HttpClientHelper.sendPost(urlParam, aliAppPayQO, token, CommonResult.class);
         return commonResult;
     }
+    //微信支付接口
+    @Override
+    public CommonResult WeChatPay(Long orderId) {
+        String token = ContextHolder.getContext().getLoginUser().getToken();//获取用户token
+        SelectShopOrderDto shopOrderDto = selectOrderByOrderId(orderId);
+        String orderNum = shopOrderDto.getOrderNum();//订单编号
+        BigDecimal orderAllPrice = shopOrderDto.getOrderAllPrice();//订单的最终价格
+        HashMap<String, Object> orderData = createOrderData(shopOrderDto);
+        WeChatPayQO weChatPayQO=new WeChatPayQO();
+       //weChatPayQO.setServiceOrderNo();其他服务id
+        weChatPayQO.setTradeFrom(3);//商城购物3
+        weChatPayQO.setAmount(new BigDecimal(0.01));
+        weChatPayQO.setOrderData(orderData);
+        weChatPayQO.setCommunityId(1L);//社区id
+        weChatPayQO.setDescriptionStr("商城购物");//支付描述
 
+        String urlParam = "http://192.168.12.49:8090/api/v1/payment/wxPay";
+        CommonResult commonResult = HttpClientHelper.sendPost(urlParam, weChatPayQO, token, CommonResult.class);
+        return commonResult;
+    }
 
     //根据查询的数据支付组合订单详情
     public HashMap<String, Object> createOrderData(SelectShopOrderDto shopOrderDto) {
-
         HashMap<String, Object> orderData = new HashMap<>();
         Integer orderType1 = shopOrderDto.getOrderType();//订单类型（0-服务类(只有服务)，1-普通类（套餐，单品集合））
         if (orderType1 == 0) {//服务类
@@ -733,8 +757,6 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
                             "数量" + value.getAmount() +
                                     ";单价" + (value.getDiscountState() == 1 ? value.getDiscountPrice() : value.getPrice()));
                 }
-
-
             }
             List<SelectUserOrderGoodsDto> orderGoodsDtos = shopOrderDto.getOrderGoodsDtos();//商品详情
             System.out.println("商品" + orderGoodsDtos.size());
@@ -761,12 +783,9 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
                     }
                     details.substring(0, details.length() - 2);
                     orderData.put(value.getName(), "数量" + value.getAmount() +
-                            ";单价" + value.getSellingPrice() + ";套餐详情【" + details + "】");
+                            ";单价" + (value.getDiscountState() == 1 ?value.getSellingPrice():value.getRealPrice()) + ";套餐详情【" + details + "】");
                 }
-
-
             }
-
 
             List<SelectUserOrderGoodsDto> orderGoodsDtos = shopOrderDto.getOrderGoodsDtos();//商品详情
             System.out.println("商品" + orderGoodsDtos.size());
@@ -776,10 +795,7 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
                     orderData.put(value.getTitle(), "数量" + value.getAmount() +
                             ";单价" + (value.getDiscountState() == 1 ? value.getDiscountPrice() : value.getPrice()));
                 });
-
             }
-
-
         }
         return orderData;
     }

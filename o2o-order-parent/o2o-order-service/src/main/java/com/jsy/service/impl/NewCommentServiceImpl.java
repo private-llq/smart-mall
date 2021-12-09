@@ -37,8 +37,6 @@ import java.util.List;
  */
 @Service
 public class NewCommentServiceImpl extends ServiceImpl<NewCommentMapper, NewComment> implements INewCommentService {
-  /* @Resource
-   private IBaseUserInfoRpcService infoRpcService;*/
 
     @Resource
     private NewCommentMapper newCommentMapper;
@@ -83,10 +81,9 @@ public class NewCommentServiceImpl extends ServiceImpl<NewCommentMapper, NewComm
 
         return scoreDto;
     }
-
+    //分页查询店铺的评论
     @Override
     public Page<NewComment> selectShopCommentPage(SelectShopCommentPageParam param) {
-
         QueryWrapper<NewComment> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("shop_id",param.getShopId());
         queryWrapper.orderByDesc("create_time");
@@ -119,7 +116,7 @@ public class NewCommentServiceImpl extends ServiceImpl<NewCommentMapper, NewComm
 
             UserDetail userDetail = iBaseUserInfoRpcService.getUserDetail(a.getUserId());//获取用户的头像
             String avatarThumbnail = userDetail.getAvatarThumbnail();
-            System.out.println("头像****************************************"+avatarThumbnail);
+            System.out.println("用户头像"+avatarThumbnail);
             selectCommentAndReplyDto.setHeadpPhoto(avatarThumbnail);
             selectCommentAndReplyDto.setName(userDetail.getNickName());
             list.add(selectCommentAndReplyDto);

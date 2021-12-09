@@ -21,15 +21,13 @@ public class CreationOrderGoodsParam implements Serializable {
     @ApiModelProperty(value = "数量")
     private Integer amount;
 
-
-
     @ApiModelProperty(value = "商品分类id")
     private Long goodsTypeId;
 
     @ApiModelProperty(value = "商品名称")
     private String title;
 
-    @ApiModelProperty(value = "商品/服务 价格")
+    @ApiModelProperty(value = "商品价格")
     private BigDecimal price;
 
     @ApiModelProperty(value = "商品 折扣价格")
@@ -41,7 +39,7 @@ public class CreationOrderGoodsParam implements Serializable {
     @ApiModelProperty(value = "商品 是否开启折扣：0未开启 1开启")
     private Integer discountState;
 
-    @ApiModelProperty(value = "商品/服务 - 图片1-3张")
+    @ApiModelProperty(value = "商品- 图片1-3张")
     private String images;
 
     @ApiModelProperty(value = "商品id")
