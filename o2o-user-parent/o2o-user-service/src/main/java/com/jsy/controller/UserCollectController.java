@@ -1,5 +1,6 @@
 package com.jsy.controller;
 import com.jsy.basic.util.PageInfo;
+import com.jsy.domain.UserCollect;
 import com.jsy.dto.userCollectDto;
 import com.jsy.param.UserCollectParam;
 import com.jsy.service.IUserCollectService;
@@ -20,9 +21,9 @@ public class UserCollectController {
      * @return
      */
     @PostMapping(value="/addUserCollect")
-    public CommonResult addUserCollect(@RequestBody UserCollectParam userCollectParam){
-        userCollectService.addUserCollect(userCollectParam);
-        return CommonResult.ok();
+    public CommonResult<UserCollect> addUserCollect(@RequestBody UserCollectParam userCollectParam){
+        UserCollect userCollect = userCollectService.addUserCollect(userCollectParam);
+        return CommonResult.ok(userCollect);
     }
 
     /**

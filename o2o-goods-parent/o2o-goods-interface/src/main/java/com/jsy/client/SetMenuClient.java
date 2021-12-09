@@ -19,6 +19,7 @@ public interface SetMenuClient {
     @GetMapping("/setMenu/getShopIdMenus")
     CommonResult<SetMenu> getShopIdMenus(@RequestParam("shopId") Long shopId);
 
+
     @PostMapping("/setMenu/batchIds")
     CommonResult<List<SetMenuDto>> batchIds(@RequestBody List<Long> ids);
 
@@ -26,6 +27,6 @@ public interface SetMenuClient {
      * 据id查询套餐和套餐详情
      * @return
      */
-    @GetMapping(value = "/SetMenuList")
+    @GetMapping(value = "/setMenu/SetMenuList")
     CommonResult<SetMenuDto> SetMenuList(@RequestParam("id")Long id);
 }

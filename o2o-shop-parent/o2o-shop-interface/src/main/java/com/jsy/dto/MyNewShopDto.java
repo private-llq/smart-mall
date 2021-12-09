@@ -1,6 +1,8 @@
 package com.jsy.dto;
 
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -13,6 +15,7 @@ public class MyNewShopDto implements Serializable {
     /**
      * 商店id
      */
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long id;
 
     /**

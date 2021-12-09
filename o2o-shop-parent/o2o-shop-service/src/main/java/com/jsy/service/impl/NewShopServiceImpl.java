@@ -381,7 +381,6 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
                 e.printStackTrace();
                 throw new JSYException(-1,"商品fenc错误");
             }
-
             String l1= newShop.getLongitude()+","+newShop.getLatitude();
             String l2= mainSearchQuery.getLongitude()+","+mainSearchQuery.getLatitude();
             long addr = GouldUtil.getApiDistance(l1, l2);
@@ -397,6 +396,8 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
 
         }
         PageInfo<MyNewShopDto> pageInfo = MyPageUtils.pageMap(mainSearchQuery.getPage(), mainSearchQuery.getRows(), list);
+
+
         return pageInfo;
 
     }

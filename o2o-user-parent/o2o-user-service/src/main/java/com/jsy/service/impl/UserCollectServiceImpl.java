@@ -8,11 +8,10 @@ import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.clent.CommentClent;
-import com.jsy.client.GoodsClient;
-import com.jsy.client.NewShopClient;
-import com.jsy.client.SetMenuClient;
+import com.jsy.client.*;
 import com.jsy.domain.Goods;
 import com.jsy.domain.NewShop;
+import com.jsy.domain.Tree;
 import com.jsy.domain.UserCollect;
 import com.jsy.dto.*;
 import com.jsy.mapper.UserCollectMapper;
@@ -25,6 +24,7 @@ import com.zhsj.baseweb.support.LoginUser;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -54,16 +54,17 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
     @Autowired
     private CommentClent commentClent;
 
-
-
+    @Autowired
+    private TreeClient treeClient;
 
     /**
-     * 收藏商品\服务  \套餐\店铺
+     * 收藏商品\服务\套餐\店铺
      * @param userCollectParam
      * @return
      */
     @Override
-    public void addUserCollect(UserCollectParam userCollectParam) {
+    @Transactional
+    public UserCollect addUserCollect(UserCollectParam userCollectParam) {
         LoginUser loginUser = ContextHolder.getContext().getLoginUser();
         if (Objects.isNull(loginUser)){
             new JSYException(-1,"用户认证失败！");
@@ -77,31 +78,30 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
 
         UserCollect userCollect = new UserCollect();
 
-        if (userCollectParam.getType()==0){//商品、服务
+        if (type==0) {//商品、服务
 
             UserCollect rult = userCollectMapper.selectOne(new QueryWrapper<UserCollect>()
                     .eq("user_id", userId)
                     .eq("goods_id", userCollectParam.getGoodsId())
             );
-            if (Objects.nonNull(rult)){
-                throw new JSYException(-1,"该商品或服务已经收藏");
+            if (Objects.nonNull(rult)) {
+                throw new JSYException(-1, "该商品或服务已经收藏");
             }
 
             Goods data = goodsClient.getByGoods(userCollectParam.getGoodsId()).getData();
-            if (Objects.nonNull(data)){
-                userCollect.setUserId(userId);
-                userCollect.setGoodsId(goodsId);
-                userCollect.setImage(data.getImages().split(",")[0]);
-                userCollect.setTitle(data.getTitle());
-                userCollect.setPrice(data.getPrice());
-                userCollect.setDiscountState(data.getDiscountState());
-                userCollect.setDiscountPrice(data.getDiscountPrice());
-               /* SelectShopCommentScoreDto rut = commentClent.selectShopCommentScore(data.getShopId()).getData();
-                userCollect.setShopScore(Objects.isNull(rut)?5:rut.getScore());*/
+            if (Objects.isNull(data)) {
+               throw new JSYException(-1,"未找到该商品或服务！");
             }
-
+            userCollect.setUserId(userId);
+            userCollect.setGoodsId(goodsId);
+            userCollect.setShopId(data.getShopId());
+            userCollect.setImage(data.getImages().split(",")[0]);
+            userCollect.setTitle(data.getTitle());
+            userCollect.setPrice(data.getPrice());
+            userCollect.setDiscountState(data.getDiscountState());
+            userCollect.setDiscountPrice(data.getDiscountPrice());
         }
-        if (userCollectParam.getType()==1){//套餐
+        if (type==1){//套餐
             UserCollect rult = userCollectMapper.selectOne(new QueryWrapper<UserCollect>()
                     .eq("user_id", userId)
                     .eq("menu_id", userCollectParam.getMenuId())
@@ -109,22 +109,52 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
             if (Objects.nonNull(rult)){
                 throw new JSYException(-1,"该套餐已经收藏");
             }
-
+            SetMenuDto data = setMenuClient.SetMenuList(menuId).getData();
+            if (Objects.isNull(data)){
+                throw new JSYException(-1,"未找到该套餐！");
+            }
+            userCollect.setUserId(userId);
+            userCollect.setShopId(data.getShopId());
+            userCollect.setMenuId(menuId);
+            userCollect.setImage(data.getImages().split(",")[0]);
+            userCollect.setTitle(data.getName());
+            userCollect.setPrice(data.getRealPrice());
+            userCollect.setDiscountState(data.getDiscountState());
+            userCollect.setDiscountPrice(data.getSellingPrice());
 
         }
-        if (userCollectParam.getType()==2){//店铺
+        if (type==2){//店铺
             UserCollect rult = userCollectMapper.selectOne(new QueryWrapper<UserCollect>()
                     .eq("user_id", userId)
                     .eq("shop_id", userCollectParam.getMenuId())
             );
-            if (Objects.nonNull(userCollect)){
-                throw new JSYException(-1,"该商店已经收藏");
+            if (Objects.nonNull(rult)){
+                throw new JSYException(-1,"该商店已经收藏！");
+            }
+
+            NewShopDto data = newShopClient.get(shopId).getData();
+            if (Objects.isNull(data)){
+                throw new JSYException(-1,"未找到该店铺！");
+            }
+            userCollect.setUserId(userId);
+            userCollect.setShopId(shopId);
+            userCollect.setImage(data.getShopLogo());
+            SelectShopCommentScoreDto rut = commentClent.selectShopCommentScore(shopId).getData();
+            userCollect.setShopScore(Objects.isNull(rut)?5:rut.getScore());
+            userCollect.setTitle(data.getShopName());
+            String shopTreeId = data.getShopTreeId();
+            if (Objects.nonNull(shopTreeId)){
+                String shopTreeIdName = getShopTreeIdName(shopTreeId.split(","));
+                userCollect.setShopTypeName(shopTreeIdName);
             }
         }
-
-        userCollect.setUserId(userId);
-        BeanUtils.copyProperties(userCollectParam,userCollect);
-        userCollectMapper.insert(userCollect);
+        int insert = userCollectMapper.insert(userCollect);
+        if (insert!=0){
+            Long id = userCollect.getId();
+            UserCollect rultUserCollect = userCollectMapper.selectById(id);
+            return rultUserCollect;
+        }
+        return null;
     }
 
 
@@ -224,5 +254,31 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
             }
         }
         return null;
+    }
+
+    private String getShopTreeIdName(String[] split) {
+        String shopTreeIdName = "";
+        if (split.length<=2){
+            //医疗
+            Tree data = treeClient.getTree(Long.valueOf(split[split.length-1])).getData();
+            System.out.println("医疗");
+            return data.getName();
+        }else {
+            //其他
+            String id = split[split.length-1];
+            Tree data1= treeClient.getTree(Long.valueOf(split[split.length-1])).getData();
+            Tree data2= treeClient.getTree(Long.valueOf(split[split.length-2])).getData();
+            System.out.println("其他");
+            return data2.getName()+"-"+data1.getName();
+
+        }
+//        for (String s : split) {
+//            Tree tree = treeClient.getTree(Long.valueOf(s)).getData();
+//            shopTreeIdName = shopTreeIdName + "-" + tree.getName();
+//        }
+        //截取  第二个-  开始
+//        String s1= shopTreeIdName.substring(shopTreeIdName.indexOf("-", shopTreeIdName.indexOf("-") + 1));
+//        return s1.substring(1);
+
     }
 }
