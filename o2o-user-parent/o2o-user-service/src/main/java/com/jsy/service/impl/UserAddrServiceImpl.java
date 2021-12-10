@@ -5,8 +5,10 @@ import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.utils.BeansCopyUtils;
 import com.jsy.basic.util.utils.GouldUtil;
+import com.jsy.client.NewShopClient;
 import com.jsy.domain.Goods;
 import com.jsy.domain.UserAddr;
+import com.jsy.dto.NewShopDto;
 import com.jsy.dto.UserAddrDto;
 import com.jsy.mapper.UserAddrMapper;
 import com.jsy.param.UserAddrParam;
@@ -38,6 +40,9 @@ public class UserAddrServiceImpl extends ServiceImpl<UserAddrMapper, UserAddr> i
 
     @Autowired
     private UserAddrMapper useraddrmapper;
+
+    @Autowired
+    private NewShopClient newShopClient;
 
 
     /**
@@ -94,6 +99,9 @@ public class UserAddrServiceImpl extends ServiceImpl<UserAddrMapper, UserAddr> i
         useraddrmapper.deleteById(id);
     }
 
+
+
+
     /**
      * 地址分页列表
      * @param userAddrQuery 查询对象
@@ -103,8 +111,9 @@ public class UserAddrServiceImpl extends ServiceImpl<UserAddrMapper, UserAddr> i
     public PageInfo<UserAddrDto> UserAddrPageList(UserAddrQuery userAddrQuery) {
         LoginUser loginUser = ContextHolder.getContext().getLoginUser();
         if (Objects.isNull(loginUser)){
-            new JSYException(-1,"用户认证失败！");
+            throw new JSYException(-1,"用户认证失败！");
         }
+
         Page<UserAddr> page = new Page<>(userAddrQuery.getPage(),userAddrQuery.getRows());
         Page<UserAddr> userAddrPage = useraddrmapper.selectPage(page, new QueryWrapper<UserAddr>().eq("user_id",loginUser.getId()));
         List<UserAddr> records = userAddrPage.getRecords();
@@ -114,10 +123,6 @@ public class UserAddrServiceImpl extends ServiceImpl<UserAddrMapper, UserAddr> i
             UserAddrDto userAddrDto = new UserAddrDto();
             BeanUtils.copyProperties(x,userAddrDto);
             userAddrDto.setId(String.valueOf(x.getId()));
-            BigDecimal longitude = x.getLongitude();
-            BigDecimal latitude = x.getLatitude();
-            long apiDistance = GouldUtil.getApiDistance(longitude + "," + latitude, userAddrQuery.getLongitude() + "," + userAddrQuery.getLatitude());
-            userAddrDto.setDistance(apiDistance/1000+"km");
             addrDtos.add(userAddrDto);
         });
         PageInfo<UserAddrDto> pageInfo = new PageInfo<>();
@@ -129,5 +134,27 @@ public class UserAddrServiceImpl extends ServiceImpl<UserAddrMapper, UserAddr> i
     }
 
 
+    /**
+     * 查询店铺到用户所在位置的距离
+     * @param shopId
+     * @return
+     */
+    @Override
+    public String getDistance(Long shopId, BigDecimal userLongitude, BigDecimal userLatitude) {
+        NewShopDto data = newShopClient.get(shopId).getData();
+        if (Objects.isNull(data)){
+            throw new JSYException(-1,"店铺信息异常！");
+        }
+        if (Objects.isNull(userLatitude)){
+            throw new JSYException(-1,"经度不能为空！");
+        }
+        if (Objects.isNull(userLatitude)){
+            throw new JSYException(-1,"维度不能为空！");
+        }
+        BigDecimal longitude = data.getLongitude();
+        BigDecimal latitude = data.getLatitude();
+        GouldUtil.getApiDistance()
+        return null;
+    }
 
 }

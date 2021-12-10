@@ -12,13 +12,6 @@ import java.math.BigDecimal;
  */
 @Data
 public class UserAddrQuery extends BaseQuery{
-    /**
-     * 经度
-     */
-    private BigDecimal longitude;
-    /**
-     * 维度
-     */
-    private BigDecimal latitude;
+
 
 }

@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.jsy.basic.util.vo.CommonResult;
 
+import java.math.BigDecimal;
+
 @RestController
 @RequestMapping("/userAddr")
 public class UserAddrController {
@@ -62,5 +64,19 @@ public class UserAddrController {
         PageInfo<UserAddrDto> pageInfo= userAddrService.UserAddrPageList(userAddrQuery);
         return CommonResult.ok(pageInfo);
 
+    }
+
+
+    /**
+     * 查询店铺到用户所在位置的距离
+     * @param shopId
+     * @return
+     */
+    @GetMapping("/getDistance")
+    public CommonResult<String> getDistance(@RequestParam("shopId") Long shopId,
+                              @RequestParam("userLongitude") BigDecimal userLongitude,
+                              @RequestParam("userLatitude") BigDecimal userLatitude){
+        String distance =userAddrService.getDistance(shopId,userLongitude,userLatitude);
+        return CommonResult.ok(distance);
     }
 }

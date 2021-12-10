@@ -9,6 +9,8 @@ import com.jsy.param.UserAddrParam;
 import com.jsy.query.UserAddrQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigDecimal;
+
 /**
  * <p>
  * 用户地址管理表	 服务类
@@ -48,4 +50,13 @@ public interface IUserAddrService extends IService<UserAddr> {
      * @param id
      */
     void deleteUserAddr(Long id);
+
+
+    /**
+     * 查询店铺到用户所在位置的距离
+     * @param shopId
+     * @return
+     */
+    String getDistance(Long shopId, BigDecimal userLongitude, BigDecimal userLatitude);
+
 }
