@@ -12,7 +12,6 @@ import com.jsy.domain.SetMenu;
 import com.jsy.query.SetMenuQuery;
 import com.jsy.basic.util.PageList;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.jsy.util.RedisUtils;
 import com.zhsj.baseweb.annotation.LoginIgnore;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
