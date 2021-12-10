@@ -37,9 +37,9 @@ public class HotGoodsServiceImpl extends ServiceImpl<HotGoodsMapper, HotGoods> i
     private NewShopMapper shopMapper;
     @Resource
     private HotGoodsMapper hotGoodsMapper;
-    @Autowired
+    @Resource
     private StringRedisTemplate stringRedisTemplate;
-    @Autowired
+    @Resource
     private RedisUtils redisUtils;
     @Override
     public PageInfo<HotGoods> getHot(NewShopQuery newShopQuery) {
