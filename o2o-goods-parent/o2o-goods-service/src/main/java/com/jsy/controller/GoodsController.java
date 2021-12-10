@@ -2,6 +2,7 @@ package com.jsy.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsy.basic.util.PageInfo;
+import com.jsy.client.HotClient;
 import com.jsy.domain.Tree;
 import com.jsy.dto.*;
 import com.jsy.parameter.GoodsParam;
@@ -22,7 +23,10 @@ import java.util.List;
 @RequestMapping("/goods")
 public class GoodsController {
     @Autowired
-    public IGoodsService goodsService;
+    private IGoodsService goodsService;
+
+    @Autowired
+    private HotClient hotClient;
 
 
 
@@ -108,7 +112,10 @@ public class GoodsController {
     @DeleteMapping("delete")
     public CommonResult delete(@RequestParam("id") Long id){
         try {
-            goodsService.removeById(id);
+            boolean deleted = goodsService.removeById(id);
+            if (deleted==true){
+                hotClient.getHotGoods(id);//更新热门数据
+            }
             return CommonResult.ok();
         } catch (Exception e) {
         e.printStackTrace();

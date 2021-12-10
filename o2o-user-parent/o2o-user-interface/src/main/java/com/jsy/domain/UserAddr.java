@@ -5,6 +5,8 @@ import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.io.Serializable;
 
@@ -54,5 +56,14 @@ public class UserAddr extends BaseEntity implements Serializable  {
 
     @ApiModelProperty(value = "默认地址 1 是 0 否")
     private Integer defaultAddress;
+    /**
+     * 经度
+     */
+    private BigDecimal longitude;
+    /**
+     * 维度
+     */
+    private BigDecimal latitude;
+
 
 }

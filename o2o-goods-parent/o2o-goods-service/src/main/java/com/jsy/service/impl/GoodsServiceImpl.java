@@ -58,6 +58,9 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     @Autowired
     private GoodsTypeClient goodsTypeClient;
 
+    @Autowired
+    private HotClient hotClient;
+
 
 
     /**
@@ -229,7 +232,6 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         if (Objects.isNull(goods)){
             throw new JSYException(-1,"没有找到该商品！");
         }
-
             //添加商品访问量
             long pvNum = goods.getPvNum() + 1;
             goodsMapper.update(null,new UpdateWrapper<Goods>().eq("id",id).set("pv_num",pvNum));
@@ -242,6 +244,9 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
             browse.setRealPrice(goods.getPrice());
             browse.setSellingPrice(goods.getDiscountPrice());
             browse.setType(0);
+            browse.setGoodsId(goods.getId());
+            browse.setImages(goods.getImages());
+            browse.setDiscountState(goods.getDiscountState());
             //browse.setIsVisitingService(goods.getIsVisitingService());
             browseClient.save(browse);
 
@@ -279,6 +284,9 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
             browse.setRealPrice(goods.getPrice());
             browse.setSellingPrice(goods.getDiscountPrice());
             browse.setType(1);
+            browse.setGoodsId(goods.getId());
+            browse.setImages(goods.getImages());
+            browse.setDiscountState(goods.getDiscountState());
             //browse.setIsVisitingService(goods.getIsVisitingService());
             browseClient.save(browse);
 
@@ -315,6 +323,10 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         browse.setTextDescription(goods.getTextDescription());
         browse.setRealPrice(goods.getPrice());
         browse.setSellingPrice(goods.getDiscountPrice());
+        //browse.setType();无法识别商品和服务
+        browse.setGoodsId(goods.getId());
+        browse.setImages(goods.getImages());
+        browse.setDiscountState(goods.getDiscountState());
         //browse.setIsVisitingService(goods.getIsVisitingService());
         browseClient.save(browse);
         Goods twoGoods = goodsMapper.selectOne(new QueryWrapper<Goods>().eq("id", id));
@@ -487,7 +499,10 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     @Override
     @Transactional
     public void shieldGoods(Long id) {
-        goodsMapper.update(null,new UpdateWrapper<Goods>().eq("id",id).set("state",1));
+        int update = goodsMapper.update(null, new UpdateWrapper<Goods>().eq("id", id).set("state", 1));
+        if (update>=0){
+            hotClient.getHotGoods(id);
+        }
     }
 
     /**
@@ -533,7 +548,10 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     public void outaway(Long id) {
         Goods goods = new Goods();
         goods.setIsPutaway(0);
-        goodsMapper.update(goods,new QueryWrapper<Goods>().eq("id",id));
+        int update = goodsMapper.update(goods, new QueryWrapper<Goods>().eq("id", id));
+        if (update>=0){
+            hotClient.getHotGoods(id);//更新热门数据！
+        }
     }
 
 

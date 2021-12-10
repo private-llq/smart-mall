@@ -63,7 +63,7 @@ public class BackstageGoodsServiceImpl extends ServiceImpl<BackstageGoodsMapper,
     public void updateBackstageGoods(BackstageGoodsParam backstageGoodsParam) {
         BackstageGoods backstageGoods = new BackstageGoods();
         BeanUtils.copyProperties(backstageGoodsParam,backstageGoods);
-        backstageGoodsMapper.updateById(backstageGoods);
+        int i = backstageGoodsMapper.updateById(backstageGoods);
     }
 
     @Override

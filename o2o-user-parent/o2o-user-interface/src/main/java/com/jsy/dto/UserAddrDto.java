@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 @Data
 public class UserAddrDto implements Serializable {
@@ -41,4 +42,9 @@ public class UserAddrDto implements Serializable {
 
     @ApiModelProperty(value = "默认地址 1 是 0 否")
     private Integer defaultAddress;
+
+    /**
+     * 距离 单位：km
+     */
+    private String distance;
 }

@@ -6,6 +6,7 @@ import com.jsy.basic.util.MyPageUtils;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.utils.BeansCopyUtils;
+import com.jsy.client.HotClient;
 import com.jsy.client.NewShopClient;
 import com.jsy.domain.Goods;
 import com.jsy.domain.NewShop;
@@ -26,6 +27,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.yaml.snakeyaml.events.Event;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -57,6 +59,9 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
     @Autowired
     private NewShopClient shopClient;
 
+    @Autowired
+    private HotClient hotClient;
+
     /**
      * 添加商品/服务进入购物车
      * @param shoppingCartParam
@@ -66,6 +71,7 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
     @Transactional
     public void addShoppingCart(ShoppingCartParam shoppingCartParam) {
 
+
         LoginUser loginUser = ContextHolder.getContext().getLoginUser();
         if (Objects.isNull(loginUser)){
             new JSYException(-1,"用户认证失败！");
@@ -74,6 +80,16 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
         Long userId = loginUser.getId();//用户id
         Long shopId = shoppingCartParam.getShopId();//商店id
         Long goodsId = shoppingCartParam.getGoodsId();//商品id
+
+
+        if (Objects.nonNull(shopId)){
+            throw new JSYException(-1,"商家ID不能为空！");
+        }
+        if (Objects.nonNull(goodsId)){
+            throw new JSYException(-1,"商品ID不能为空！");
+        }
+
+
         //查询购物车
         ShoppingCart userCart = shoppingCartMapper.selectOne(new QueryWrapper<ShoppingCart>()
                 .eq("user_id", userId)
@@ -114,6 +130,9 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
      */
     @Override
     public void addSetMenu(ShoppingCartParam shoppingCartParam) {
+
+
+
         LoginUser loginUser = ContextHolder.getContext().getLoginUser();
         if (Objects.isNull(loginUser)){
             new JSYException(-1,"用户认证失败！");
@@ -121,6 +140,15 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
         Long userId = loginUser.getId();//用户id
         Long shopId = shoppingCartParam.getShopId();//商店id
         Long setMenuId = shoppingCartParam.getSetMenuId();//套餐id
+
+
+        if (Objects.nonNull(shopId)){
+            throw new JSYException(-1,"商家ID不能为空！");
+        }
+        if (Objects.nonNull(setMenuId)){
+            throw new JSYException(-1,"套餐ID不能为空！");
+        }
+
         //查询购物车
         ShoppingCart userCart = shoppingCartMapper.selectOne(new QueryWrapper<ShoppingCart>()
                 .eq("user_id", userId)
@@ -254,6 +282,7 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
         }
         NewShopDto newShop = shopClient.get(shopId).getData();//http://127.0.0.1:7006/newShop/get/1457644731467661314
         if (Objects.nonNull(newShop)){
+            shoppingCartDto.setShopId(newShop.getId());//商店id
             shoppingCartDto.setShopName(newShop.getShopName());//商店名称
             shoppingCartDto.setShopType(newShop.getType());
         }

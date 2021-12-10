@@ -1,4 +1,6 @@
 package com.jsy.dto;
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.jsy.domain.ShoppingCart;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -40,6 +42,12 @@ public class ShoppingCartDto implements Serializable {
      * 购物车
      */
     private List<ShoppingCartListDto> cartList=new ArrayList<>();
+
+    /**
+     * 店铺id
+     */
+    @JSONField(serializeUsing = ToStringSerializer.class)
+    private Long shopId;
 
     /**
      * 店铺名称

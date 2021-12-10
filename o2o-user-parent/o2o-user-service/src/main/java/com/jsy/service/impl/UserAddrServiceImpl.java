@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.utils.BeansCopyUtils;
+import com.jsy.basic.util.utils.GouldUtil;
+import com.jsy.domain.Goods;
 import com.jsy.domain.UserAddr;
 import com.jsy.dto.UserAddrDto;
 import com.jsy.mapper.UserAddrMapper;
@@ -18,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -49,7 +52,14 @@ public class UserAddrServiceImpl extends ServiceImpl<UserAddrMapper, UserAddr> i
         if (Objects.isNull(loginUser)){
             new JSYException(-1,"用户认证失败！");
         }
+
         UserAddr userAddr = new UserAddr();
+        String lonLat = GouldUtil.getLonLat(userAddrParam.getDistrict() + userAddrParam.getDetailedAddress());
+        if (Objects.nonNull(lonLat)){
+            String[] split = lonLat.split(",");
+            userAddr.setLongitude(BigDecimal.valueOf(Long.parseLong(split[0])));
+            userAddr.setLatitude(BigDecimal.valueOf(Long.parseLong(split[1])));
+        }
         userAddr.setUserId(loginUser.getId());
         BeanUtils.copyProperties(userAddrParam,userAddr);
         useraddrmapper.insert(userAddr);
@@ -104,6 +114,10 @@ public class UserAddrServiceImpl extends ServiceImpl<UserAddrMapper, UserAddr> i
             UserAddrDto userAddrDto = new UserAddrDto();
             BeanUtils.copyProperties(x,userAddrDto);
             userAddrDto.setId(String.valueOf(x.getId()));
+            BigDecimal longitude = x.getLongitude();
+            BigDecimal latitude = x.getLatitude();
+            long apiDistance = GouldUtil.getApiDistance(longitude + "," + latitude, userAddrQuery.getLongitude() + "," + userAddrQuery.getLatitude());
+            userAddrDto.setDistance(apiDistance/1000+"km");
             addrDtos.add(userAddrDto);
         });
         PageInfo<UserAddrDto> pageInfo = new PageInfo<>();
