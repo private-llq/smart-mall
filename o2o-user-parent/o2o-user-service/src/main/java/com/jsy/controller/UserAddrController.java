@@ -43,8 +43,8 @@ public class UserAddrController {
      * @param id
      * @return
      */
-    @DeleteMapping(value="/deleteUserAddr")
-    public CommonResult deleteUserAddr(@RequestParam Long id){
+    @GetMapping(value="/deleteUserAddr")
+    public CommonResult deleteUserAddr(@RequestParam("id") Long id){
         userAddrService.deleteUserAddr(id);
         return CommonResult.ok();
     }

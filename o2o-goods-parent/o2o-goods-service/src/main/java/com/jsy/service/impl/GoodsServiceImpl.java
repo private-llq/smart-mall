@@ -241,6 +241,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
             browse.setTextDescription(goods.getTextDescription());
             browse.setRealPrice(goods.getPrice());
             browse.setSellingPrice(goods.getDiscountPrice());
+            browse.setType(0);
             //browse.setIsVisitingService(goods.getIsVisitingService());
             browseClient.save(browse);
 
@@ -277,6 +278,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
             browse.setTextDescription(goods.getTextDescription());
             browse.setRealPrice(goods.getPrice());
             browse.setSellingPrice(goods.getDiscountPrice());
+            browse.setType(1);
             //browse.setIsVisitingService(goods.getIsVisitingService());
             browseClient.save(browse);
 
