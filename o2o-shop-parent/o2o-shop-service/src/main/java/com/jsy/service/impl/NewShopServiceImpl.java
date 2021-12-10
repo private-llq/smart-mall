@@ -20,10 +20,12 @@ import com.jsy.query.MainSearchQuery;
 import com.jsy.query.NewShopQuery;
 import com.jsy.service.INewShopService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.jsy.util.RedisUtils;
 import com.zhsj.baseweb.support.ContextHolder;
 import com.zhsj.baseweb.support.LoginUser;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -54,6 +56,10 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
 
     @Resource
     private CommentClent commentClent;
+    @Resource
+    private StringRedisTemplate redisTemplate;
+    @Resource
+    private RedisUtils redisUtils;
 
     /**
      * @param shopPacketParam
@@ -585,6 +591,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         suportDto.setShopPhone(newShop.getShopPhone());
         suportDto.setShopId(shopId);
         suportDto.setShopName(newShop.getShopName());
+        suportDto.setShopLogo(newShop.getShopLogo());
         return suportDto;
     }
  /**
@@ -626,6 +633,26 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         }
         PageInfo<NewShopRecommendDto> dtoPageInfo = MyPageUtils.pageMap(shopQuery.getPage(), shopQuery.getRows(), recommendDtoList);
         return dtoPageInfo;
+    }
+
+    public int addSearchHistoryByUserId(String userId,String searchkey){
+        String shistory = redisUtils.getSearchHistoryKey(userId);
+        boolean b = redisTemplate.hasKey(shistory);
+        if (b) {
+            Object hk = redisTemplate.opsForHash().get(shistory, searchkey);
+            if (hk != null) {
+                return 1;
+            }else{
+                redisTemplate.opsForHash().put(shistory, searchkey, "1");
+            }
+        }else{
+            redisTemplate.opsForHash().put(shistory, searchkey, "1");
+        }
+        return 1;
+    }
+    public Long delSearchHistoryByUserId(String userid, String searchkey) {
+        String shistory = redisUtils.getSearchHistoryKey(userid);
+        return 1l;
     }
 
 

@@ -34,6 +34,9 @@ public class Browse extends BaseEntity {
     @ApiModelProperty(value = "用户id")
     private Long userId;
 
+    @ApiModelProperty(value = "商品id")
+    private Long goodsId;
+
     @ApiModelProperty(value = "商品、服务、套餐名称")
     private String name;
 
@@ -51,6 +54,11 @@ public class Browse extends BaseEntity {
 
     @ApiModelProperty(value = "0 商品  1:服务  2：套餐   3：商店")
     private Integer type;
+    @ApiModelProperty(value = "是否开启折扣：0未开启 1开启")
+    private Integer discountState;
+
+    @ApiModelProperty(value = "图片（最大三张）")
+    private String images;
 
 
 

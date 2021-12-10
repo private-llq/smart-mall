@@ -13,6 +13,7 @@ import com.jsy.domain.Browse;
 import com.jsy.query.BrowseQuery;
 import com.jsy.basic.util.PageList;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zhsj.baseweb.support.ContextHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.jsy.basic.util.vo.CommonResult;
@@ -46,12 +47,13 @@ public class BrowseController {
 
     /**
     * 删除对象信息
-    * @param id
+    * @param
     * @return
     */
-    @DeleteMapping(value="/{id}")
-    public CommonResult delete(@RequestParam("id") Long id){
+    @DeleteMapping(value="/del")
+    public CommonResult delete(){
         try {
+            Long id = ContextHolder.getContext().getLoginUser().getId();
             browseService.removeById(id);
             return CommonResult.ok();
         } catch (Exception e) {
@@ -64,13 +66,13 @@ public class BrowseController {
     * 分页返回list列表
     * @return
     */
-    @GetMapping(value = "/list")
+    @PostMapping(value = "/list")
     public CommonResult<PageInfo<BrowseDto>> list(@RequestBody BrowseQuery browseQuery){
-        List<Browse> list = browseService.list(new QueryWrapper<Browse>().eq("user_id",browseQuery.getUserId()));
+        Long id = ContextHolder.getContext().getLoginUser().getId();
+        List<Browse> list = browseService.list(new QueryWrapper<Browse>().eq("user_id",id));
+
         List<BrowseDto> dtoList = BeansCopyUtils.copyListProperties(list, BrowseDto::new);
         PageInfo<BrowseDto> browsePageInfo = MyPageUtils.pageMap(browseQuery.getPage(), browseQuery.getRows(), dtoList);
-        Object parse = JSONUtils.parse("");
-
         return CommonResult.ok(browsePageInfo);
 
     }

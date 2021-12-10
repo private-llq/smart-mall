@@ -53,6 +53,11 @@ public class RedisUtils {
         stringRedisTemplate.opsForValue().set("hotGoods", hotGoodsList.toString(), hour, TimeUnit.HOURS);
     }
 
+    public String getSearchHistoryKey(String userId) {
+        String shistory = "historyKey"+userId;
+        return shistory;
+    }
+
 //    public void setGoods(Long goodsId){
 //        //获取热门数据过期时间
 //        Long time = stringRedisTemplate.getExpire("hotGoods", TimeUnit.HOURS);
