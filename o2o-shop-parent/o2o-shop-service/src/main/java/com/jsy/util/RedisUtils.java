@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -24,7 +25,7 @@ public class RedisUtils {
     public static final String HOT_GOODS = "hotGoods";
     private long loginExpireHour = 168;
 
-    @Autowired
+    @Resource
     private StringRedisTemplate stringRedisTemplate;
 //    @Autowired
 //    private HotClient hotClient;
@@ -53,7 +54,7 @@ public class RedisUtils {
         stringRedisTemplate.opsForValue().set("hotGoods", hotGoodsList.toString(), hour, TimeUnit.HOURS);
     }
 
-    public String getSearchHistoryKey(String userId) {
+    public String getSearchHistoryKey(Long userId) {
         String shistory = "historyKey"+userId;
         return shistory;
     }

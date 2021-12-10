@@ -13,6 +13,7 @@ import com.jsy.client.TreeClient;
 import com.jsy.domain.Goods;
 import com.jsy.domain.NewShop;
 import com.jsy.domain.Tree;
+import com.jsy.domain.UserSearchHistory;
 import com.jsy.dto.*;
 import com.jsy.mapper.NewShopMapper;
 import com.jsy.parameter.*;
@@ -25,6 +26,8 @@ import com.zhsj.baseweb.support.ContextHolder;
 import com.zhsj.baseweb.support.LoginUser;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -56,10 +59,10 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
 
     @Resource
     private CommentClent commentClent;
-    @Resource
-    private StringRedisTemplate redisTemplate;
-    @Resource
-    private RedisUtils redisUtils;
+//    @Resource
+//    private StringRedisTemplate redisTemplate;
+//    @Resource
+//    private RedisUtils redisUtils;
 
     /**
      * @param shopPacketParam
@@ -635,25 +638,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         return dtoPageInfo;
     }
 
-    public int addSearchHistoryByUserId(String userId,String searchkey){
-        String shistory = redisUtils.getSearchHistoryKey(userId);
-        boolean b = redisTemplate.hasKey(shistory);
-        if (b) {
-            Object hk = redisTemplate.opsForHash().get(shistory, searchkey);
-            if (hk != null) {
-                return 1;
-            }else{
-                redisTemplate.opsForHash().put(shistory, searchkey, "1");
-            }
-        }else{
-            redisTemplate.opsForHash().put(shistory, searchkey, "1");
-        }
-        return 1;
-    }
-    public Long delSearchHistoryByUserId(String userid, String searchkey) {
-        String shistory = redisUtils.getSearchHistoryKey(userid);
-        return 1l;
-    }
+
 
 
 }

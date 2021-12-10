@@ -19,7 +19,6 @@ import com.jsy.parameter.SetMenuParam;
 import com.jsy.query.SetMenuQuery;
 import com.jsy.service.ISetMenuService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.jsy.util.RedisUtils;
 import com.zhsj.baseweb.support.ContextHolder;
 import com.zhsj.baseweb.support.LoginUser;
 import org.apache.commons.lang3.StringUtils;
