@@ -10,12 +10,9 @@ import com.jsy.parameter.SetMenuParam;
 import com.jsy.service.ISetMenuService;
 import com.jsy.domain.SetMenu;
 import com.jsy.query.SetMenuQuery;
-import com.jsy.basic.util.PageList;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.zhsj.baseweb.annotation.LoginIgnore;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.BeanUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.jsy.basic.util.vo.CommonResult;

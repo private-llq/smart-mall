@@ -21,6 +21,7 @@ import com.jsy.query.MainSearchQuery;
 import com.jsy.query.NewShopQuery;
 import com.jsy.service.INewShopService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.jsy.service.IUserSearchHistoryService;
 import com.jsy.util.RedisUtils;
 import com.zhsj.baseweb.support.ContextHolder;
 import com.zhsj.baseweb.support.LoginUser;
@@ -56,6 +57,8 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
     private GoodsClient goodsClient;
     @Resource
     private SetMenuClient setMenuClient;
+    @Resource
+    private IUserSearchHistoryService searchHistoryService;
 
     @Resource
     private CommentClent commentClent;
@@ -362,7 +365,9 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
      */
     @Override
     public PageInfo<MyNewShopDto> mainSearch(MainSearchQuery mainSearchQuery) {
-
+        Long userId = ContextHolder.getContext().getLoginUser().getId();
+        searchHistoryService.addSearchKey(userId,mainSearchQuery.getKeyword());
+        System.out.println("ddd");
         String keyword = mainSearchQuery.getKeyword();
 //        String location = mainSearchQuery.getLocation();
 
@@ -406,7 +411,6 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
 
         }
         PageInfo<MyNewShopDto> pageInfo = MyPageUtils.pageMap(mainSearchQuery.getPage(), mainSearchQuery.getRows(), list);
-
 
         return pageInfo;
 

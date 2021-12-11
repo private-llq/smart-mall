@@ -20,4 +20,8 @@ public interface IUserSearchHistoryService  {
     List<String> getHotList(String searchkey);
     //每次点击给相关词searchkey热度+1
     Boolean incrementScore(String searchkey);
+    //查询搜索历史
+    List<String> selectSearchResultList(Long userId);
+    //新增搜索记录
+    Boolean addSearchKey(Long userId,String searchkey);
 }

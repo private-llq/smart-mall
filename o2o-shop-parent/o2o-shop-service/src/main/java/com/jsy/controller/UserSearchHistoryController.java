@@ -71,10 +71,31 @@ public class UserSearchHistoryController {
     }
 
     @PostMapping("/incrementScore")
-    @ApiOperation("次点击给相关词searchkey热度 +1")
+    @ApiOperation("每次点击给相关词searchkey热度 +1")
     public CommonResult<Boolean> incrementScore(@RequestParam("searchkey") String searchkey) {
         Long userId = ContextHolder.getContext().getLoginUser().getId();
-        Boolean b = searchHistoryService.incrementScore(searchkey);
+//        Boolean b = searchHistoryService.incrementScore(searchkey);
+        Boolean b= true;
+        if (b){
+            return CommonResult.ok(b);
+        }else {
+            return CommonResult.ok(b);
+        }
+    }
+
+    @PostMapping("/selectSearchResultList")
+    @ApiOperation(" 查询搜索历史")
+    public CommonResult<List<String>> selectSearchResultList() {
+        Long userId = ContextHolder.getContext().getLoginUser().getId();
+        List<String> list = searchHistoryService.selectSearchResultList(userId);
+        return CommonResult.ok(list);
+    }
+
+    @PostMapping("/addSearchKey")
+    @ApiOperation(" 查询搜索历史")
+    public CommonResult<Boolean> addSearchKey(@RequestParam("searchkey") String searchkey) {
+        Long userId = ContextHolder.getContext().getLoginUser().getId();
+       Boolean b = searchHistoryService.addSearchKey(userId,searchkey);
         if (b){
             return CommonResult.ok(b);
         }else {
