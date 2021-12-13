@@ -659,7 +659,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
             NewShopRecommendDto recommendDto = new NewShopRecommendDto();
             BeanUtils.copyProperties(newShop,recommendDto);
             //.divide(new BigDecimal(1000)
-            recommendDto.setDistance(newShop.getDistance());
+            recommendDto.setDistance(newShop.getDistance().divide(new BigDecimal(1000)));
             recommendDtoList.add(recommendDto);
         }
         serviceDto.setShopList(recommendDtoList);

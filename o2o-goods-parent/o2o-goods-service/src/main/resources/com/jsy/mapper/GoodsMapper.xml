@@ -63,7 +63,7 @@
         (
         6378.138 * 2 * ASIN(
         SQRT(
-        POW( SIN( ( #{query.latitude} * PI( ) / 180 - t1.latitude * PI( ) / 180 ) / 2 ), 2 ) + COS( #{query.latitude}  * PI( ) / 180 ) * COS( t1.latitude * PI( ) / 180 ) * POW( SIN( ( #{query.longitude} * PI( ) / 180 - t1.longitude * PI( ) / 180 ) / 2 ), 2 )
+        POW( SIN( ( #{shopQuery.latitude} * PI( ) / 180 - t1.latitude * PI( ) / 180 ) / 2 ), 2 ) + COS( #{shopQuery.latitude}  * PI( ) / 180 ) * COS( t1.latitude * PI( ) / 180 ) * POW( SIN( ( #{shopQuery.longitude} * PI( ) / 180 - t1.longitude * PI( ) / 180 ) / 2 ), 2 )
         )
         ) * 1000
         )
@@ -71,8 +71,8 @@
         ) as distance
 
         FROM w_goods s WHERE type=1 AND deleted=0 AND is_putaway=1 AND state=0
-        <if test="shopQuery.shopName !=null and shopQuery.shopName !=''">
-            AND t1.shop_name LIKE CONCAT('%',#{shopQuery.shopName,jdbcType=VARCHAR},'%')
+        <if test="shopQuery.keyword !=null and shopQuery.keyword !=''">
+            AND s.title LIKE CONCAT('%',#{shopQuery.keyword,jdbcType=VARCHAR},'%')
         </if>
         ORDER BY distance limit 0,5
     </select>
