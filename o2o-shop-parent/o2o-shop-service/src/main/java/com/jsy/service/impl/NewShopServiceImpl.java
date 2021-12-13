@@ -557,7 +557,6 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
                 newShop.setType(0);
             }
         } catch (NumberFormatException e) {
-            e.printStackTrace();
             throw new JSYException(-1,"店铺创建分类错误");
         }
         shopMapper.updateById(newShop);

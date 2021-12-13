@@ -24,4 +24,6 @@ public interface IUserSearchHistoryService  {
     List<String> selectSearchResultList(Long userId);
     //新增搜索记录
     Boolean addSearchKey(Long userId,String searchkey);
+    //删除个人所有历史数据
+    Boolean delAllSearchHistoryByUserId(Long userId);
 }

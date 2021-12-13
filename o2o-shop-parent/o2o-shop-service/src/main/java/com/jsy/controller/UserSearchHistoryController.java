@@ -35,10 +35,18 @@ public class UserSearchHistoryController {
     }
 
     @PostMapping("/delSearchHistoryByUserId")
-    @ApiOperation("删除个人历史数据")
+    @ApiOperation("删除个人单个历史数据")
     public CommonResult delSearchHistoryByUserId(@RequestParam("searchkey") String searchkey) {
         Long userId = ContextHolder.getContext().getLoginUser().getId();
         Long b = searchHistoryService.delSearchHistoryByUserId(userId,searchkey);
+        return CommonResult.ok();
+    }
+
+    @PostMapping("/delAllSearchHistoryByUserId")
+    @ApiOperation("删除个人所有历史数据")
+    public CommonResult delAllSearchHistoryByUserId() {
+        Long userId = ContextHolder.getContext().getLoginUser().getId();
+        Boolean b = searchHistoryService.delAllSearchHistoryByUserId(userId);
         return CommonResult.ok();
     }
 
