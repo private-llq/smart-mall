@@ -283,6 +283,14 @@ public class NewShopController {
             return new  CommonResult(-1,"失败",null);
         }
     }
+    @ApiOperation("C端-通过关键词搜索店铺和服务名称")
+    @PostMapping("/getShopService")
+    public CommonResult<NewShopServiceDto> getShopService(@RequestBody NewShopQuery shopQuery){
+        NewShopServiceDto serviceDto =  newShopService.getShopService(shopQuery);
+        return CommonResult.ok(serviceDto);
+    }
+
+
 
     @ApiOperation("C端查询店铺的距离多远")
     @PostMapping("/getDistance")

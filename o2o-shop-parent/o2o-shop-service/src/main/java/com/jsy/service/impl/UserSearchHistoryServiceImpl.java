@@ -55,6 +55,7 @@ public class UserSearchHistoryServiceImpl implements IUserSearchHistoryService {
      @Override
     public Long delSearchHistoryByUserId(Long userId, String searchkey) {
         String shistory = redisUtils.getSearchHistoryKey(userId);
+         System.out.println("删除进来了");
          //删除shistory 的map里面searchkey这个键   searchkey---searchkey
         Long aLong = stringRedisTemplate.opsForZSet().remove(shistory, searchkey);
         System.out.println(aLong);
