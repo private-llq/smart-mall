@@ -557,7 +557,6 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
                 newShop.setType(0);
             }
         } catch (NumberFormatException e) {
-            e.printStackTrace();
             throw new JSYException(-1,"店铺创建分类错误");
         }
         shopMapper.updateById(newShop);
@@ -642,7 +641,30 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         return dtoPageInfo;
     }
 
+    @Override
+    public NewShopServiceDto getShopService(NewShopQuery shopQuery) {
+        NewShopServiceDto serviceDto = new NewShopServiceDto();
+        if(shopQuery.getTreeId()==null){
+            shopQuery.setTreeId(6L);
+        }
+        List<NewShop> newShops= shopMapper.getMedicalShop(shopQuery);
+        List<NewShopRecommendDto> recommendDtoList = new ArrayList<>();
+        Integer number = 0;
+        for (NewShop newShop : newShops) {
+            if (number>=5){
+                break;
+            }
+            number++;
+            NewShopRecommendDto recommendDto = new NewShopRecommendDto();
+            BeanUtils.copyProperties(newShop,recommendDto);
+            //.divide(new BigDecimal(1000)
+            recommendDto.setDistance(newShop.getDistance());
+            recommendDtoList.add(recommendDto);
+        }
+        serviceDto.setShopList(recommendDtoList);
 
+        return serviceDto;
+    }
 
 
 }

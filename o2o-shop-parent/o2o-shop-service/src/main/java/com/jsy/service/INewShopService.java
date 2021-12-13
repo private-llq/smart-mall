@@ -103,4 +103,10 @@ public interface INewShopService extends IService<NewShop> {
   * @description 医疗---的救助机构
   **/
  PageInfo<NewShopRecommendDto> getMedicalShop(NewShopQuery shopQuery);
+  /**
+   * @author Tian
+   * @since 2021/12/13-10:30
+   * @description 通过关键词搜索店铺和服务名称
+   **/
+ NewShopServiceDto getShopService(NewShopQuery shopQuery);
 }

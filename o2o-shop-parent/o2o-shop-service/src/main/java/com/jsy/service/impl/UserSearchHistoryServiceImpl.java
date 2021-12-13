@@ -1,5 +1,6 @@
 package com.jsy.service.impl;
 
+import com.jsy.basic.util.exception.JSYException;
 import com.jsy.service.IUserSearchHistoryService;
 import com.jsy.util.RedisUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -54,6 +55,7 @@ public class UserSearchHistoryServiceImpl implements IUserSearchHistoryService {
      @Override
     public Long delSearchHistoryByUserId(Long userId, String searchkey) {
         String shistory = redisUtils.getSearchHistoryKey(userId);
+         System.out.println("删除进来了");
          //删除shistory 的map里面searchkey这个键   searchkey---searchkey
         Long aLong = stringRedisTemplate.opsForZSet().remove(shistory, searchkey);
         System.out.println(aLong);
@@ -202,9 +204,24 @@ public class UserSearchHistoryServiceImpl implements IUserSearchHistoryService {
         //存入reids之后对用户所有的搜索词要做处理   用户最多是个历史搜索词 根据时间来
         insertSearchSort(userIdKey,historyKey);
         incrementScore(historyKey);
-
         return true;
     }
+
+    @Override
+    public Boolean delAllSearchHistoryByUserId(Long userId) {
+        try {
+            String userIdKey = redisUtils.getSearchHistoryKey(userId);
+            System.out.println(userIdKey);
+            Long aLong = stringRedisTemplate.opsForZSet().zCard(userIdKey);
+            //全部删除
+            System.out.println("条数"+aLong);
+            stringRedisTemplate.opsForZSet().removeRange(userIdKey,0,aLong);
+            return true;
+        }catch (Exception e){
+            throw new JSYException(-1,"删除用户历史记录失败");
+        }
+    }
+
     public void insertSearchSort(String userIdKey,String historyKey){
          Integer number = 10;
         Double score = stringRedisTemplate.opsForZSet().score(userIdKey, historyKey);

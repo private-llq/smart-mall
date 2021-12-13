@@ -14,4 +14,10 @@ public class NewShopDistanceParam implements Serializable {
 
     @ApiModelProperty(value = "维度")
     private BigDecimal latitude;
+    /**
+     * @author Tian
+     * @since 2021/11/29-9:15
+     * @description  店铺名称
+     **/
+    private String shopName;
 }
