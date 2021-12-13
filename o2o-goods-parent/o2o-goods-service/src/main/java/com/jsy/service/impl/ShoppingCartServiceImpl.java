@@ -9,13 +9,8 @@ import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.utils.BeansCopyUtils;
 import com.jsy.client.HotClient;
 import com.jsy.client.NewShopClient;
-import com.jsy.domain.Goods;
-import com.jsy.domain.NewShop;
-import com.jsy.domain.SetMenu;
-import com.jsy.domain.ShoppingCart;
-import com.jsy.dto.NewShopDto;
-import com.jsy.dto.ShoppingCartDto;
-import com.jsy.dto.ShoppingCartListDto;
+import com.jsy.domain.*;
+import com.jsy.dto.*;
 import com.jsy.mapper.GoodsMapper;
 import com.jsy.mapper.SetMenuMapper;
 import com.jsy.mapper.ShoppingCartMapper;
@@ -353,7 +348,7 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
      * 查询购物车用户的商品和店铺
      */
     @Override
-    public Tuple queryUserCart(List<Long> shopIds) {
+    public QueryUserCartDto queryUserCart(List<Long> shopIds) {
         LoginUser loginUser = ContextHolder.getContext().getLoginUser();
         if (Objects.isNull(loginUser)){
             new JSYException(-1,"用户认证失败！");
@@ -363,8 +358,8 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
             throw new JSYException(-1,"传入的商店id不能为空！");
         }
 
-        HashMap<String, Object> hashMap = new HashMap<>();
-       //查商家信息
+        QueryUserCartDto queryUserCartDto = new QueryUserCartDto();
+        //查商家信息
         List<NewShopDto> shopDtoList = shopClient.batchIds(shopIds).getData();
         if (shopDtoList.size()==0){
             throw new JSYException(-1,"收藏失败！选中的商家可能已不存在！");
@@ -378,8 +373,10 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
             list.add(goods);
 
         });
-        Tuple tuple = new Tuple(shopDtoList, list);
-        return tuple;
+        List<NewShopInfo> shopInfos = BeansCopyUtils.listCopy(shopDtoList, NewShopInfo.class);
+        queryUserCartDto.setNewShopDtoList(shopInfos);
+        queryUserCartDto.setGoodsList(list);
+        return queryUserCartDto;
     }
 
 }

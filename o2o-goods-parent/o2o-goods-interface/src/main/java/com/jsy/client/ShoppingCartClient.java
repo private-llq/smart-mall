@@ -6,6 +6,7 @@ import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.client.impl.SetMenuClientImpl;
 import com.jsy.client.impl.ShoppingCartClientImpl;
+import com.jsy.dto.QueryUserCartDto;
 import com.jsy.dto.ShoppingCartDto;
 import com.jsy.parameter.ShoppingCartParam;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -71,5 +72,5 @@ public interface ShoppingCartClient {
      * 查询购物车用户的商品和店铺
      */
     @PostMapping("/shoppingCart/queryUserCart")
-    CommonResult<Tuple> queryUserCart(@RequestBody List<Long> shopIds);
+    CommonResult<QueryUserCartDto> queryUserCart(@RequestBody List<Long> shopIds);
 }

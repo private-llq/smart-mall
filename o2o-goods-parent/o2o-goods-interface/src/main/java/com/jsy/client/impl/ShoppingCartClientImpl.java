@@ -4,6 +4,7 @@ import cn.hutool.core.lang.Tuple;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.client.ShoppingCartClient;
+import com.jsy.dto.QueryUserCartDto;
 import com.jsy.dto.ShoppingCartDto;
 import com.jsy.parameter.ShoppingCartParam;
 
@@ -47,7 +48,9 @@ public class ShoppingCartClientImpl implements ShoppingCartClient {
     }
 
     @Override
-    public CommonResult<Tuple> queryUserCart(List<Long> shopIds) {
+    public CommonResult<QueryUserCartDto> queryUserCart(List<Long> shopIds) {
         return null;
     }
+
+
 }

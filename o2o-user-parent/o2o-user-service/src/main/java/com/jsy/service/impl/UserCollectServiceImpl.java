@@ -305,6 +305,7 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
      * 购物车移入收藏
      */
     @Override
+    @Transactional
     public void userCartToCollect(List<Long> shopIds) {
         LoginUser loginUser = ContextHolder.getContext().getLoginUser();
         if (Objects.isNull(loginUser)){
@@ -314,9 +315,9 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
         if (shopIds.size()==0){
             throw new JSYException(-1,"传入的商店id不能为空！");
         }
-        Tuple data = shoppingCartClient.queryUserCart(shopIds).getData();
-        List<NewShopDto> shopDtoList = data.get(0);
-        for (NewShopDto newShopDto : shopDtoList) {
+        QueryUserCartDto data = shoppingCartClient.queryUserCart(shopIds).getData();
+        List<NewShopInfo> shopDtoList = data.getNewShopDtoList();
+        for (NewShopInfo newShopDto : shopDtoList) {
             UserCollect userCollect = new UserCollect();
             userCollect.setType(3);
             userCollect.setShopId(newShopDto.getId());
@@ -332,12 +333,12 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
             userCollect.setShopScore(Objects.isNull(rut)?5:rut.getScore());
             userCollectMapper.insert(userCollect);
         }
-        List<Goods> goodsList = data.get(1);
-
-
-
-
-
+        List<Goods> goodsList = data.getGoodsList();
+        for (Goods goods : goodsList) {
+            UserCollect userCollect = new UserCollect();
+            BeanUtils.copyProperties(goods,userCollect);
+            userCollectMapper.insert(userCollect);
+        }
     }
 
 

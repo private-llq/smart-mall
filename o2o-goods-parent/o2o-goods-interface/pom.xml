@@ -72,6 +72,25 @@
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
+       <!-- <dependency>
+            <groupId>com.zhsj</groupId>
+            <artifactId>o2o-shop-interface</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.zhsj</groupId>
+                    <artifactId>o2o-shop-interface</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.zhsj</groupId>
+                    <artifactId>o2o-goods-interface</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.zhsj</groupId>
+                    <artifactId>o2o-order-interface</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>-->
 
     </dependencies>
 

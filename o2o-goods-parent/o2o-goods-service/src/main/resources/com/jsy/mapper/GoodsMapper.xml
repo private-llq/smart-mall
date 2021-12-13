@@ -65,37 +65,38 @@
         6378.138 * 2 * ASIN(
         SQRT(
         POW(
-        SIN( ( #{shopQuery.latitude} * PI( ) / 180 - t1.latitude * PI( ) / 180 ) / 2 ),
+        SIN( ( #{query.latitude} * PI( ) / 180 - t1.latitude * PI( ) / 180 ) / 2 ),
         2
-        ) + COS( #{shopQuery.latitude} * PI( ) / 180 ) * COS( t1.latitude * PI( ) / 180 ) * POW(
-        SIN( ( #{shopQuery.longitude} * PI( ) / 180 - t1.longitude * PI( ) / 180 ) / 2 ),
+        ) + COS( #{query.latitude} * PI( ) / 180 ) * COS( t1.latitude * PI( ) / 180 ) * POW(
+        SIN( ( #{query.longitude} * PI( ) / 180 - t1.longitude * PI( ) / 180 ) / 2 ),
         2
         )
         )
         ) * 1000
         )
         )  as distance
-         FROM w_goods  WHERE
-        <if test="query.keyword !=null and query.keyword !=''">
-            AND title LIKE CONCAT('%',#{query.keyword,jdbcType=VARCHAR},'%')
-        </if>
-
-        type=1 AND deleted=0 AND is_putaway=1 AND state=0 AND shop_id IN (
-        SELECT
-        id
-        FROM
-        w_new_shop t1
-        WHERE
-        round (
-        (
-        6378.138 * 2 * ASIN(
-        SQRT(
-        POW( SIN( ( #{query.latitude} * PI( ) / 180 - t1.latitude * PI( ) / 180 ) / 2 ), 2 ) + COS( #{query.latitude}  * PI( ) / 180 ) * COS( t1.latitude * PI( ) / 180 ) * POW( SIN( ( #{query.longitude} * PI( ) / 180 - t1.longitude * PI( ) / 180 ) / 2 ), 2 )
-        )
-        ) * 1000
-        )
-        )  t1.deleted=0 AND t1.state = 1 AND t1.shielding = 0 AND locate( 6, t1.shop_tree_id ) > 0
-        )
+         FROM w_goods
+         <where>
+             <if test="query.keyword !=null and query.keyword !=''">
+                 AND title LIKE CONCAT('%',#{query.keyword,jdbcType=VARCHAR},'%')
+             </if>
+             AND type=1 AND deleted=0 AND is_putaway=1 AND state=0 AND shop_id IN (
+             SELECT
+             id
+             FROM
+             w_new_shop t1
+             WHERE
+             round (
+             (
+             6378.138 * 2 * ASIN(
+             SQRT(
+             POW( SIN( ( #{query.latitude} * PI( ) / 180 - t1.latitude * PI( ) / 180 ) / 2 ), 2 ) + COS( #{query.latitude}  * PI( ) / 180 ) * COS( t1.latitude * PI( ) / 180 ) * POW( SIN( ( #{query.longitude} * PI( ) / 180 - t1.longitude * PI( ) / 180 ) / 2 ), 2 )
+             )
+             ) * 1000
+             )
+             )  t1.deleted=0 AND t1.state = 1 AND t1.shielding = 0 AND locate( 6, t1.shop_tree_id ) > 0
+             )
+         </where>
         order by distance limit 0,5
     </select>
     <select id="sumGoodsSales" resultType="java.lang.Long">
