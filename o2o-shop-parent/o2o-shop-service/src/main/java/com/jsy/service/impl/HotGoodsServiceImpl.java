@@ -71,6 +71,7 @@ public class HotGoodsServiceImpl extends ServiceImpl<HotGoodsMapper, HotGoods> i
                 hotGoods.setPvNum(newShopHotDto.getPvNum());
                 hotGoods.setGoodsId(newShopHotDto.getId());
                 hotGoods.setType(newShopHotDto.getType());
+                hotGoods.setDiscountState(newShopHotDto.getDiscountState());
                 hotGoodsMapper.insert(hotGoods);
             }
             List<HotGoods> hotGoods = hotGoodsMapper.selectList(null);

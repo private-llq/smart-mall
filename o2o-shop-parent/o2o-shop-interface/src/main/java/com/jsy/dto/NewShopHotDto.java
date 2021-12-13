@@ -39,5 +39,6 @@ public class NewShopHotDto implements Serializable {
     @ApiModelProperty(value = "服务行业：1是服务行业  0 套餐行业")
     private Integer type;
 
-
+    @ApiModelProperty(value = "是否开启折扣：0未开启 1开启")
+    private Integer discountState;
 }

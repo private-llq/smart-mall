@@ -18,6 +18,7 @@ import com.jsy.dto.*;
 import com.jsy.mapper.NewShopMapper;
 import com.jsy.parameter.*;
 import com.jsy.query.MainSearchQuery;
+import com.jsy.query.NearTheServiceQuery;
 import com.jsy.query.NewShopQuery;
 import com.jsy.service.INewShopService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -662,7 +663,12 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
             recommendDtoList.add(recommendDto);
         }
         serviceDto.setShopList(recommendDtoList);
-
+        NearTheServiceQuery serviceQuery = new NearTheServiceQuery();
+        serviceQuery.setLatitude(shopQuery.getLatitude());
+        serviceQuery.setLongitude(serviceQuery.getLongitude());
+        serviceQuery.setKeyword(shopQuery.getShopName());
+        List<GoodsServiceDto> goodsList = goodsClient.NearTheService2(serviceQuery).getData();
+        serviceDto.setGoodsList(goodsList);
         return serviceDto;
     }
 

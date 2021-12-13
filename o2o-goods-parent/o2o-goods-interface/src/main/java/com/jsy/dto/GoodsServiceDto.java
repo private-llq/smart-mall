@@ -90,5 +90,5 @@ public class GoodsServiceDto {
     /**
      * 返回距离
      */
-    private Integer distance;
+    private String distance;
 }
