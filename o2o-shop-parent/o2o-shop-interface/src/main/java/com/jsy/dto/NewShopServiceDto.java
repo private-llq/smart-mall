@@ -15,5 +15,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NewShopServiceDto implements Serializable {
-    List<NewShopRecommendDto> ShopList;
+    List<NewShopRecommendDto> shopList;
+    List<GoodsServiceDto> goodsList;
 }

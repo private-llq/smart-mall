@@ -6,6 +6,7 @@ import com.jsy.client.impl.GoodsClientImpl;
 import com.jsy.domain.Goods;
 import com.jsy.dto.GoodsDto;
 import com.jsy.dto.GoodsServiceDto;
+import com.jsy.query.NearTheServiceQuery;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
@@ -65,5 +66,9 @@ public interface GoodsClient {
     @ApiOperation("查看一条商品或者服务的详细信息")
     @GetMapping("/goods/getByGoods")
    CommonResult<Goods> getByGoods(@RequestParam("id") Long id);
-
+    /**
+     * 医疗端：附近的服务2
+     */
+    @PostMapping("/goods/NearTheService2")
+    CommonResult<List<GoodsServiceDto>> NearTheService2(@RequestBody NearTheServiceQuery nearTheServiceQuery);
 }

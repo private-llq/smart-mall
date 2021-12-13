@@ -59,5 +59,8 @@ public class HotGoods extends BaseEntity {
     @ApiModelProperty(value = "类型 类型2套餐   服务和商品是0 ")
     private Integer type;
 
+    @ApiModelProperty(value = "是否开启折扣：0未开启 1开启")
+    private Integer discountState;
+
 
 }

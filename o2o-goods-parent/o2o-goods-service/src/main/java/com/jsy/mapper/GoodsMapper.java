@@ -37,5 +37,5 @@ public interface GoodsMapper extends BaseMapper<Goods> {
      */
     Long sumServiceSales(@Param("serviceId") Long serviceId);
 
-    List<GoodsServiceDto> NearTheService2(@Param("query") NearTheServiceQuery nearTheServiceQuery);
+    List<GoodsServiceDto> NearTheService2(@Param("shopQuery") NearTheServiceQuery nearTheServiceQuery);
 }
