@@ -665,10 +665,17 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         serviceDto.setShopList(recommendDtoList);
         NearTheServiceQuery serviceQuery = new NearTheServiceQuery();
         serviceQuery.setLatitude(shopQuery.getLatitude());
-        serviceQuery.setLongitude(serviceQuery.getLongitude());
+        serviceQuery.setLongitude(shopQuery.getLongitude());
         serviceQuery.setKeyword(shopQuery.getShopName());
         List<GoodsServiceDto> goodsList = goodsClient.NearTheService2(serviceQuery).getData();
+        if (goodsList.size()>0){
+            for (GoodsServiceDto goodsServiceDto : goodsList) {
+                Float aFloat = Float.parseFloat(goodsServiceDto.getDistance())/1000;
+                goodsServiceDto.setDistance(aFloat.toString());
+            }
+        }
         serviceDto.setGoodsList(goodsList);
+
         return serviceDto;
     }
 
