@@ -335,6 +335,7 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
         for (ShoppingCart cart : goodsList) {
             UserCollect userCollect = new UserCollect();
             BeanUtils.copyProperties(cart,userCollect);
+            userCollect.setMenuId(cart.getSetMenuId());
             userCollectMapper.insert(userCollect);
         }
     }
