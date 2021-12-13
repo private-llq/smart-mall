@@ -59,4 +59,8 @@ public interface IUserAddrService extends IService<UserAddr> {
      */
     String getDistance(Long shopId, BigDecimal userLongitude, BigDecimal userLatitude);
 
+    /**
+     * 用户的设置默认地址  默认地址 1 默认 0 否
+     */
+    void setUserAddr(Long id, Integer state);
 }

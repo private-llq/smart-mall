@@ -1,5 +1,6 @@
 package com.jsy.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.exception.JSYException;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -58,15 +60,19 @@ public class UserAddrServiceImpl extends ServiceImpl<UserAddrMapper, UserAddr> i
             new JSYException(-1,"用户认证失败！");
         }
 
-        UserAddr userAddr = new UserAddr();
-        String lonLat = GouldUtil.getLonLat(userAddrParam.getDistrict() + userAddrParam.getDetailedAddress());
-        if (Objects.nonNull(lonLat)){
-            String[] split = lonLat.split(",");
-            userAddr.setLongitude(BigDecimal.valueOf(Long.parseLong(split[0])));
-            userAddr.setLatitude(BigDecimal.valueOf(Long.parseLong(split[1])));
+        Integer integer = userAddrParam.getDefaultAddress();
+        if (Objects.isNull(integer)){
+            throw new JSYException(-1,"默认地址参数不能为空！");
         }
+
+        UserAddr userAddr = new UserAddr();
         userAddr.setUserId(loginUser.getId());
         BeanUtils.copyProperties(userAddrParam,userAddr);
+
+        if (integer==1){
+            int update = useraddrmapper.update(null, new UpdateWrapper<UserAddr>().set("default_address", 0));//把之前的默认地址全部重置为0
+        }
+
         useraddrmapper.insert(userAddr);
 
     }
@@ -83,9 +89,19 @@ public class UserAddrServiceImpl extends ServiceImpl<UserAddrMapper, UserAddr> i
         if (Objects.isNull(loginUser)){
             new JSYException(-1,"用户认证失败！");
         }
+        Integer integer = userAddrParam.getDefaultAddress();
+
+        if (Objects.isNull(integer)){
+            throw new JSYException(-1,"默认地址参数不能为空！");
+        }
         UserAddr userAddr = new UserAddr();
         userAddr.setUserId(loginUser.getId());
         BeanUtils.copyProperties(userAddrParam,userAddr);
+
+        if (integer==1){
+            int update = useraddrmapper.update(null, new UpdateWrapper<UserAddr>().set("default_address", 0));//把之前的默认地址全部重置为0
+        }
+
         useraddrmapper.updateById(userAddr);
     }
 
@@ -117,7 +133,6 @@ public class UserAddrServiceImpl extends ServiceImpl<UserAddrMapper, UserAddr> i
         Page<UserAddr> page = new Page<>(userAddrQuery.getPage(),userAddrQuery.getRows());
         Page<UserAddr> userAddrPage = useraddrmapper.selectPage(page, new QueryWrapper<UserAddr>().eq("user_id",loginUser.getId()));
         List<UserAddr> records = userAddrPage.getRecords();
-
         ArrayList<UserAddrDto> addrDtos = new ArrayList<>();
         records.forEach(x->{
             UserAddrDto userAddrDto = new UserAddrDto();
@@ -125,6 +140,17 @@ public class UserAddrServiceImpl extends ServiceImpl<UserAddrMapper, UserAddr> i
             userAddrDto.setId(String.valueOf(x.getId()));
             addrDtos.add(userAddrDto);
         });
+
+        Integer index=null;
+        for (UserAddrDto addrDto : addrDtos) {
+            if (addrDto.getDefaultAddress()==1){
+               index= addrDtos.indexOf(addrDto);
+            }
+        }
+        if (Objects.nonNull(index)){
+            Collections.swap(addrDtos,index,0);
+
+        }
         PageInfo<UserAddrDto> pageInfo = new PageInfo<>();
         pageInfo.setSize(userAddrPage.getSize());
         pageInfo.setRecords(addrDtos);
@@ -153,8 +179,25 @@ public class UserAddrServiceImpl extends ServiceImpl<UserAddrMapper, UserAddr> i
         }
         BigDecimal longitude = data.getLongitude();
         BigDecimal latitude = data.getLatitude();
-        GouldUtil.getApiDistance()
-        return null;
+        long distance = GouldUtil.getApiDistance(longitude + "," + latitude, userLongitude + "," + userLatitude);
+        return distance/1000+"km";
+    }
+
+
+    /**
+     * 用户的设置默认地址  默认地址 1 默认 0 否
+     */
+    @Override
+    public void setUserAddr(Long id, Integer state) {
+        if (state==1){
+            int update = useraddrmapper.update(null, new UpdateWrapper<UserAddr>().set("default_address", 0));
+            if (update>=0){
+                useraddrmapper.update(null, new UpdateWrapper<UserAddr>().eq("id", id).set("default_address", 1));
+            }
+        }
+        if (state==0){
+            useraddrmapper.update(null,new UpdateWrapper<UserAddr>().eq("id",id).set("default_address",0));
+        }
     }
 
 }

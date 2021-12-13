@@ -12,6 +12,9 @@ import java.math.BigDecimal;
 @Data
 public class ShoppingCartListDto {
 
+    @ApiModelProperty(value = "id")
+    @JSONField(serializeUsing = ToStringSerializer.class)
+    private Long Id;
     @JSONField(serializeUsing = ToStringSerializer.class)
     @ApiModelProperty(value = "用户id")
     private Long userId;

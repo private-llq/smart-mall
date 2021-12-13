@@ -214,6 +214,26 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
         }
     }
 
+    @Override
+    public void additionShoppingCart(Long id) {
+        ShoppingCart cart = shoppingCartMapper.selectOne(new QueryWrapper<ShoppingCart>().eq("id", id));
+        Integer num = cart.getNum();
+        num++;
+        shoppingCartMapper.update(null,new UpdateWrapper<ShoppingCart>().eq("id",id).set("num",num));
+        if(num<=0){
+            shoppingCartMapper.deleteById(id);
+        }
+    }
+    // 修改购物车数量
+    @Override
+    public void updateShoppingCart(Long id, Integer number) {
+        int update = shoppingCartMapper.update(null, new UpdateWrapper<ShoppingCart>().eq("id", id).set("num", number));
+        if(update!=1){
+            throw  new JSYException(500,"修改失败");
+        }
+
+
+    }
 
     /**
      * 查询购物车（店铺）
@@ -326,4 +346,6 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
         PageInfo<ShoppingCartDto> pageInfo = MyPageUtils.pageMap(shoppingCartParam.getPage(), shoppingCartParam.getSize(), shoppingCartDtos);
         return pageInfo;
     }
+
+
 }

@@ -56,14 +56,6 @@ public class UserAddr extends BaseEntity implements Serializable  {
 
     @ApiModelProperty(value = "默认地址 1 是 0 否")
     private Integer defaultAddress;
-    /**
-     * 经度
-     */
-    private BigDecimal longitude;
-    /**
-     * 维度
-     */
-    private BigDecimal latitude;
 
 
 }

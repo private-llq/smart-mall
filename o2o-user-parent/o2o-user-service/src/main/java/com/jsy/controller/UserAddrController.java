@@ -41,6 +41,15 @@ public class UserAddrController {
     }
 
     /**
+     * 用户的设置默认地址  默认地址 1 默认 0 否
+     */
+    @GetMapping(value="/setUserAddr")
+    public CommonResult setUserAddr(@RequestParam ("id") Long id,@RequestParam ("state") Integer state){
+        userAddrService.setUserAddr(id,state);
+        return CommonResult.ok();
+    }
+
+    /**
      * 用户删除地址
      * @param id
      * @return

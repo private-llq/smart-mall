@@ -75,7 +75,24 @@ public class ShoppingCartController {
         return CommonResult.ok("success");
     }
 
-
+    /**
+     * 累加购物车
+     * @param id
+     */
+    @DeleteMapping("additionShoppingCart")
+    public CommonResult additionShoppingCart(@RequestParam("id") Long id) {
+        shoppingCartService.additionShoppingCart(id);
+        return CommonResult.ok("success");
+    }
+    /**
+     *  修改购物车数量
+     * @param id
+     */
+    @GetMapping ("updateShoppingCart")
+    public CommonResult updateShoppingCart(@RequestParam("id") Long id,@RequestParam("number") Integer number) {
+        shoppingCartService.updateShoppingCart(id,number);
+        return CommonResult.ok("success");
+    }
     /**
      * 查询购物车(店铺)  店铺id+token
      */

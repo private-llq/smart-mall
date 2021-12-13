@@ -308,9 +308,9 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     @Override
     public Goods getByGoods(Long id) {
         LoginUser loginUser = ContextHolder.getContext().getLoginUser();
-        Goods goods = goodsMapper.selectOne(new QueryWrapper<Goods>().eq("id", id).eq("type",1));
+        Goods goods = goodsMapper.selectOne(new QueryWrapper<Goods>().eq("id", id));/*.eq("type",1));*/
         if (Objects.isNull(goods)){
-            throw new JSYException(-1,"没有找到该服务！");
+            throw new JSYException(-1,"没有找到该商品！");
         }
         //添加服务访问量
         long pvNum = goods.getPvNum() + 1;

@@ -60,4 +60,8 @@ public interface IShoppingCartService extends IService<ShoppingCart> {
      * @return
      */
     PageInfo<ShoppingCartDto> queryCartAll(ShoppingCartParam shoppingCartParam);
+     //累减
+    void additionShoppingCart(Long id);
+   // 修改购物车数量
+    void updateShoppingCart(Long id, Integer number);
 }
