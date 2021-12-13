@@ -1,10 +1,14 @@
 package com.jsy.client.impl;
 
+import cn.hutool.core.lang.Tuple;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.client.ShoppingCartClient;
 import com.jsy.dto.ShoppingCartDto;
 import com.jsy.parameter.ShoppingCartParam;
+
+import java.util.List;
+import java.util.Map;
 
 public class ShoppingCartClientImpl implements ShoppingCartClient {
     @Override
@@ -39,6 +43,11 @@ public class ShoppingCartClientImpl implements ShoppingCartClient {
 
     @Override
     public CommonResult<PageInfo<ShoppingCartDto>> queryCartAll(ShoppingCartParam shoppingCartParam) {
+        return null;
+    }
+
+    @Override
+    public CommonResult<Tuple> queryUserCart(List<Long> shopIds) {
         return null;
     }
 }

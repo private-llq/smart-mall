@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsy.basic.util.MyPageUtils;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.exception.JSYException;
+import com.jsy.basic.util.utils.BeansCopyUtils;
 import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.clent.CommentClent;
 import com.jsy.client.*;
@@ -56,6 +57,9 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
 
     @Autowired
     private TreeClient treeClient;
+
+    @Autowired
+    private ShoppingCartClient shoppingCartClient;
 
     /**
      * 收藏商品\服务\套餐\店铺
@@ -296,6 +300,46 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
             userCollectMapper.delete(new QueryWrapper<UserCollect>().eq("shop_id",id).eq("user_id",userId));
         }
     }
+
+    /**
+     * 购物车移入收藏
+     */
+    @Override
+    public void userCartToCollect(List<Long> shopIds) {
+        LoginUser loginUser = ContextHolder.getContext().getLoginUser();
+        if (Objects.isNull(loginUser)){
+            new JSYException(-1,"用户认证失败！");
+        }
+
+        if (shopIds.size()==0){
+            throw new JSYException(-1,"传入的商店id不能为空！");
+        }
+        Tuple data = shoppingCartClient.queryUserCart(shopIds).getData();
+        List<NewShopDto> shopDtoList = data.get(0);
+        for (NewShopDto newShopDto : shopDtoList) {
+            UserCollect userCollect = new UserCollect();
+            userCollect.setType(3);
+            userCollect.setShopId(newShopDto.getId());
+            userCollect.setTitle(newShopDto.getShopName());
+            userCollect.setImage(newShopDto.getShopLogo());
+            userCollect.setUserId(loginUser.getId());
+            String shopTreeId = newShopDto.getShopTreeId();
+            if (Objects.nonNull(shopTreeId)){
+                String shopTreeIdName = getShopTreeIdName(shopTreeId.split(","));
+                userCollect.setShopTypeName(Objects.isNull(shopTreeIdName)?null:shopTreeIdName);
+            }
+            SelectShopCommentScoreDto rut = commentClent.selectShopCommentScore(newShopDto.getId()).getData();
+            userCollect.setShopScore(Objects.isNull(rut)?5:rut.getScore());
+            userCollectMapper.insert(userCollect);
+        }
+        List<Goods> goodsList = data.get(1);
+
+
+
+
+
+    }
+
 
     private String getShopTreeIdName(String[] split) {
         String shopTreeIdName = "";

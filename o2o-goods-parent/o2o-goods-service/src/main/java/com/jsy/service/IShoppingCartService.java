@@ -1,5 +1,6 @@
 package com.jsy.service;
 
+import cn.hutool.core.lang.Tuple;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.domain.ShoppingCart;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -7,6 +8,7 @@ import com.jsy.dto.ShoppingCartDto;
 import com.jsy.parameter.ShoppingCartParam;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -64,4 +66,9 @@ public interface IShoppingCartService extends IService<ShoppingCart> {
     void additionShoppingCart(Long id);
    // 修改购物车数量
     void updateShoppingCart(Long id, Integer number);
+
+    /**
+     * 查询购物车用户的商品和店铺
+     */
+    Tuple queryUserCart(List<Long> shopIds);
 }

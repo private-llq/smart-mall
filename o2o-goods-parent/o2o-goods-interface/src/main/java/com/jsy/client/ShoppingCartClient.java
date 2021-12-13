@@ -1,5 +1,6 @@
 package com.jsy.client;
 
+import cn.hutool.core.lang.Tuple;
 import com.jsy.FeignConfiguration;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.vo.CommonResult;
@@ -12,6 +13,9 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
+import java.util.Map;
 
 @FeignClient(value = "shop-service-goods",fallback = ShoppingCartClientImpl.class,configuration = FeignConfiguration.class)
 public interface ShoppingCartClient {
@@ -62,4 +66,10 @@ public interface ShoppingCartClient {
      */
     @PostMapping("/shoppingCart/queryCartAll")
     CommonResult<PageInfo<ShoppingCartDto>> queryCartAll(@RequestBody ShoppingCartParam shoppingCartParam);
+
+    /**
+     * 查询购物车用户的商品和店铺
+     */
+    @PostMapping("/shoppingCart/queryUserCart")
+    CommonResult<Tuple> queryUserCart(@RequestBody List<Long> shopIds);
 }

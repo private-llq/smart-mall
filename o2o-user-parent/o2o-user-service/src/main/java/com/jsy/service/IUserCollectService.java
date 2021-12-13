@@ -7,6 +7,8 @@ import com.jsy.dto.userCollectDto;
 import com.jsy.param.UserCollectParam;
 import com.jsy.query.UserCollectQuery;
 
+import java.util.List;
+
 /**
  * <p>
  *  服务类
@@ -43,4 +45,9 @@ public interface IUserCollectService extends IService<UserCollect> {
      * @param id
      */
     void cancelUserCollect(Integer type, Long id);
+
+    /**
+     * 购物车移入收藏
+     */
+    void userCartToCollect(List<Long> shopIds);
 }

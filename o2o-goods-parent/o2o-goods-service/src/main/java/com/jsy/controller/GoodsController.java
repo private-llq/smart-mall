@@ -301,5 +301,14 @@ public class GoodsController {
         PageInfo<GoodsServiceDto> pageInfo= goodsService.NearTheService(nearTheServiceQuery);
         return CommonResult.ok(pageInfo);
     }
+
+    /**
+     * 医疗端：附近的服务2
+     */
+    @PostMapping("/NearTheService2")
+    public CommonResult<List<GoodsServiceDto>> NearTheService2(@RequestBody NearTheServiceQuery nearTheServiceQuery){
+        List<GoodsServiceDto> list= goodsService.NearTheService2(nearTheServiceQuery);
+        return CommonResult.ok(list);
+    }
 }
 

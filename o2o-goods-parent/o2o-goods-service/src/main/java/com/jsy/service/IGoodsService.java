@@ -159,4 +159,9 @@ public interface IGoodsService extends IService<Goods> {
      * @return
      */
     Goods getByGoods(Long id);
+
+    /**
+     * 医疗端：附近的服务2
+     */
+    List<GoodsServiceDto> NearTheService2(NearTheServiceQuery nearTheServiceQuery);
 }

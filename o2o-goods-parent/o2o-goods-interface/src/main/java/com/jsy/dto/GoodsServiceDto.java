@@ -86,4 +86,9 @@ public class GoodsServiceDto {
      * 访问量
      */
     private Long pvNum;
+
+    /**
+     * 返回距离
+     */
+    private Integer distance;
 }

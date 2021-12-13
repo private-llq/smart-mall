@@ -1,4 +1,5 @@
 package com.jsy.controller;
+import cn.hutool.core.lang.Tuple;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.dto.ShoppingCartDto;
 import com.jsy.parameter.ShoppingCartParam;
@@ -14,6 +15,7 @@ import com.jsy.basic.util.vo.CommonResult;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.jsy.basic.util.utils.CurrentUserHolder.getUserEntity;
 
@@ -109,5 +111,13 @@ public class ShoppingCartController {
     public CommonResult<PageInfo<ShoppingCartDto>> queryCartAll(@RequestBody ShoppingCartParam shoppingCartParam){
         PageInfo<ShoppingCartDto> pageInfo= shoppingCartService.queryCartAll(shoppingCartParam);
         return CommonResult.ok(pageInfo);
+    }
+    /**
+     * 查询购物车用户的商品和店铺
+     */
+    @PostMapping("queryUserCart")
+    public CommonResult<Tuple> queryUserCart(@RequestBody List<Long> shopIds){
+        Tuple map= shoppingCartService.queryUserCart(shopIds);
+        return CommonResult.ok(map);
     }
 }

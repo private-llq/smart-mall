@@ -10,6 +10,8 @@ import com.jsy.query.NearTheServiceQuery;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * <p>
  *  商品表 Mapper 接口
@@ -34,4 +36,6 @@ public interface GoodsMapper extends BaseMapper<Goods> {
      * 统计一个服务的销量
      */
     Long sumServiceSales(@Param("serviceId") Long serviceId);
+
+    List<GoodsServiceDto> NearTheService2(@Param("query") NearTheServiceQuery nearTheServiceQuery);
 }

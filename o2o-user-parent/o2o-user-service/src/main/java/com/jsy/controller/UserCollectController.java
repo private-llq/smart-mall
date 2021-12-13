@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.jsy.basic.util.vo.CommonResult;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/userCollect")
 public class UserCollectController {
@@ -66,4 +68,16 @@ public class UserCollectController {
         PageInfo<UserCollect> pageInfo=userCollectService.userCollectPageList(userCollectQuery);
         return CommonResult.ok(pageInfo);
     }
+
+    /**
+     * 购物车移入收藏
+     */
+    @PostMapping(value = "/userCartToCollect")
+    public CommonResult userCartToCollect(@RequestBody List<Long> shopIds)
+    {
+        userCollectService.userCartToCollect(shopIds);
+        return CommonResult.ok();
+    }
+
+
 }

@@ -338,6 +338,8 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
 
 
 
+
+
     /**
      * 查询店铺下面的商品 B端+C端
      * @param goodsPageQuery
@@ -579,6 +581,15 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         pageInfo.setTotal(iPage.getTotal());
         pageInfo.setSize(pageInfo.getSize());
         return  pageInfo;
+    }
+
+    /**
+     * 医疗端：附近的服务2
+     */
+    @Override
+    public List<GoodsServiceDto> NearTheService2(NearTheServiceQuery nearTheServiceQuery) {
+        List<GoodsServiceDto> goodsServiceDtos=goodsMapper.NearTheService2(nearTheServiceQuery);
+        return goodsServiceDtos;
     }
 
 

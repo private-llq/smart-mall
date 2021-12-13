@@ -1,5 +1,6 @@
 package com.jsy.service.impl;
 import cn.hutool.core.lang.Dict;
+import cn.hutool.core.lang.Tuple;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.jsy.basic.util.MyPageUtils;
@@ -30,10 +31,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.yaml.snakeyaml.events.Event;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+
 /**
  * <p>
  *  服务实现类
@@ -82,10 +81,10 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
         Long goodsId = shoppingCartParam.getGoodsId();//商品id
 
 
-        if (Objects.nonNull(shopId)){
+        if (Objects.isNull(shopId)){
             throw new JSYException(-1,"商家ID不能为空！");
         }
-        if (Objects.nonNull(goodsId)){
+        if (Objects.isNull(goodsId)){
             throw new JSYException(-1,"商品ID不能为空！");
         }
 
@@ -142,10 +141,10 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
         Long setMenuId = shoppingCartParam.getSetMenuId();//套餐id
 
 
-        if (Objects.nonNull(shopId)){
+        if (Objects.isNull(shopId)){
             throw new JSYException(-1,"商家ID不能为空！");
         }
-        if (Objects.nonNull(setMenuId)){
+        if (Objects.isNull(setMenuId)){
             throw new JSYException(-1,"套餐ID不能为空！");
         }
 
@@ -234,6 +233,8 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
 
 
     }
+
+
 
     /**
      * 查询购物车（店铺）
@@ -347,5 +348,38 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
         return pageInfo;
     }
 
+
+    /**
+     * 查询购物车用户的商品和店铺
+     */
+    @Override
+    public Tuple queryUserCart(List<Long> shopIds) {
+        LoginUser loginUser = ContextHolder.getContext().getLoginUser();
+        if (Objects.isNull(loginUser)){
+            new JSYException(-1,"用户认证失败！");
+        }
+
+        if (shopIds.size()==0){
+            throw new JSYException(-1,"传入的商店id不能为空！");
+        }
+
+        HashMap<String, Object> hashMap = new HashMap<>();
+       //查商家信息
+        List<NewShopDto> shopDtoList = shopClient.batchIds(shopIds).getData();
+        if (shopDtoList.size()==0){
+            throw new JSYException(-1,"收藏失败！选中的商家可能已不存在！");
+        }
+        //查商品信息
+        ArrayList<Goods> list = new ArrayList<>();
+        List<ShoppingCart> cartList = shoppingCartMapper.selectList(new QueryWrapper<ShoppingCart>().eq("user_id", loginUser.getId()).in("shop_id", shopIds));
+        cartList.forEach(x->{
+            Goods goods = new Goods();
+            BeanUtils.copyProperties(x,goods);
+            list.add(goods);
+
+        });
+        Tuple tuple = new Tuple(shopDtoList, list);
+        return tuple;
+    }
 
 }
