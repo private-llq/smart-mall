@@ -5,6 +5,7 @@ import com.jsy.client.GoodsClient;
 import com.jsy.domain.Goods;
 import com.jsy.dto.GoodsDto;
 import com.jsy.dto.GoodsServiceDto;
+import com.jsy.query.NearTheServiceQuery;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
@@ -43,6 +44,11 @@ public class GoodsClientImpl implements GoodsClient {
 
     @Override
     public CommonResult<Goods> getByGoods(Long id) {
+        return null;
+    }
+
+    @Override
+    public CommonResult<List<GoodsServiceDto>> NearTheService2(NearTheServiceQuery nearTheServiceQuery) {
         return null;
     }
 }

@@ -58,7 +58,7 @@
 
 
     <select id="NearTheService2" resultType="com.jsy.dto.GoodsServiceDto">
-        SELECT top(5)*,(
+        SELECT *,(
         SELECT round (
         (
         6378.138 * 2 * ASIN(

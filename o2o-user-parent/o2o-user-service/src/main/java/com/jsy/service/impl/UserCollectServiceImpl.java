@@ -10,10 +10,7 @@ import com.jsy.basic.util.utils.BeansCopyUtils;
 import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.clent.CommentClent;
 import com.jsy.client.*;
-import com.jsy.domain.Goods;
-import com.jsy.domain.NewShop;
-import com.jsy.domain.Tree;
-import com.jsy.domain.UserCollect;
+import com.jsy.domain.*;
 import com.jsy.dto.*;
 import com.jsy.mapper.UserCollectMapper;
 import com.jsy.param.UserCollectParam;
@@ -316,6 +313,7 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
             throw new JSYException(-1,"传入的商店id不能为空！");
         }
         QueryUserCartDto data = shoppingCartClient.queryUserCart(shopIds).getData();
+
         List<NewShopInfo> shopDtoList = data.getNewShopDtoList();
         for (NewShopInfo newShopDto : shopDtoList) {
             UserCollect userCollect = new UserCollect();
@@ -333,10 +331,11 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
             userCollect.setShopScore(Objects.isNull(rut)?5:rut.getScore());
             userCollectMapper.insert(userCollect);
         }
-        List<Goods> goodsList = data.getGoodsList();
-        for (Goods goods : goodsList) {
+        List<ShoppingCart> goodsList = data.getGoodsList();
+        for (ShoppingCart cart : goodsList) {
             UserCollect userCollect = new UserCollect();
-            BeanUtils.copyProperties(goods,userCollect);
+            BeanUtils.copyProperties(cart,userCollect);
+
             userCollectMapper.insert(userCollect);
         }
     }

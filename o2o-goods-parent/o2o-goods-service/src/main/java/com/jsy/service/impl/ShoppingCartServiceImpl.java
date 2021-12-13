@@ -364,18 +364,11 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
         if (shopDtoList.size()==0){
             throw new JSYException(-1,"收藏失败！选中的商家可能已不存在！");
         }
-        //查商品信息
-        ArrayList<Goods> list = new ArrayList<>();
+        //查购物车里面商品信息
         List<ShoppingCart> cartList = shoppingCartMapper.selectList(new QueryWrapper<ShoppingCart>().eq("user_id", loginUser.getId()).in("shop_id", shopIds));
-        cartList.forEach(x->{
-            Goods goods = new Goods();
-            BeanUtils.copyProperties(x,goods);
-            list.add(goods);
-
-        });
         List<NewShopInfo> shopInfos = BeansCopyUtils.listCopy(shopDtoList, NewShopInfo.class);
         queryUserCartDto.setNewShopDtoList(shopInfos);
-        queryUserCartDto.setGoodsList(list);
+        queryUserCartDto.setGoodsList(cartList);
         return queryUserCartDto;
     }
 
