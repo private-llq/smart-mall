@@ -95,8 +95,6 @@
 
     </select>
 
-
-
     <select id="selectNewShopPage" resultType="com.jsy.parameter.NewShopBackstageDto">
         select * from w_new_shop s where deleted=0
         <if test="shopQuery.state !=null and shopQuery.state !=''">
@@ -113,7 +111,7 @@
         SELECT * FROM pv_num WHERE id IN(SELECT id FROM sv_num)
     </select>
 <!--店铺名称和法人姓名-->
-    <select id="selectAuitPage" resultType="com.jsy.parameter.NewShopBackstageDto">
+      <select id="selectAuitPage" resultType="com.jsy.parameter.NewShopBackstageDto">
         select * from w_new_shop s where deleted=0
         <if test="shopQuery.state !=null and shopQuery.state !=''">
             AND s.state= #{shopQuery.state,jdbcType=INTEGER}
