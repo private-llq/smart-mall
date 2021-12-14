@@ -338,20 +338,14 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
   **/
     private String getShopTreeIdName(String[] split) {
         String shopTreeIdName = "";
-        if (split.length<=2){
-            //医疗
-            Tree data = treeClient.getTree(Long.valueOf(split[split.length-1])).getData();
-            System.out.println("医疗");
-            return data.getName();
+        if (split.length >= 0) {
+            String name = treeClient.getTree(Long.valueOf(split[split.length - 1])).getData().getName();
+            return name;
         }else {
-            //其他
-            String id = split[split.length-1];
-            Tree data1= treeClient.getTree(Long.valueOf(split[split.length-1])).getData();
-            Tree data2= treeClient.getTree(Long.valueOf(split[split.length-2])).getData();
-            System.out.println("其他");
-            return data2.getName()+"-"+data1.getName();
-
+            throw new JSYException(-1,"商品分类错误");
         }
+
+
 //        for (String s : split) {
 //            Tree tree = treeClient.getTree(Long.valueOf(s)).getData();
 //            shopTreeIdName = shopTreeIdName + "-" + tree.getName();
@@ -361,6 +355,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
 //        return s1.substring(1);
 
     }
+
     /**
      * 首页搜索
      */
@@ -660,15 +655,26 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
             BeanUtils.copyProperties(newShop,recommendDto);
             //.divide(new BigDecimal(1000)
             recommendDto.setDistance(newShop.getDistance().divide(new BigDecimal(1000)));
+            String[] spilt = newShop.getShopTreeId().split(",");
+            String shopTreeIdName = getShopTreeIdName(spilt);
+            recommendDto.setShopTreeIdName(shopTreeIdName);
+
             recommendDtoList.add(recommendDto);
         }
         serviceDto.setShopList(recommendDtoList);
         NearTheServiceQuery serviceQuery = new NearTheServiceQuery();
         serviceQuery.setLatitude(shopQuery.getLatitude());
-        serviceQuery.setLongitude(serviceQuery.getLongitude());
+        serviceQuery.setLongitude(shopQuery.getLongitude());
         serviceQuery.setKeyword(shopQuery.getShopName());
         List<GoodsServiceDto> goodsList = goodsClient.NearTheService2(serviceQuery).getData();
+        if (goodsList.size()>0){
+            for (GoodsServiceDto goodsServiceDto : goodsList) {
+                Float aFloat = Float.parseFloat(goodsServiceDto.getDistance())/1000;
+                goodsServiceDto.setDistance(aFloat.toString());
+            }
+        }
         serviceDto.setGoodsList(goodsList);
+
         return serviceDto;
     }
 

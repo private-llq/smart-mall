@@ -3,6 +3,8 @@ package com.jsy.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jsy.basic.util.MyPageUtils;
 import com.jsy.basic.util.PageInfo;
+import com.jsy.client.TreeClient;
+import com.jsy.domain.Tree;
 import com.jsy.parameter.NewShopBackstageDto;
 import com.jsy.query.ShopAuditQuery;
 import com.jsy.util.RedisUtils;
@@ -44,6 +46,8 @@ public class ShopAuditServiceImpl extends ServiceImpl<ShopAuditMapper, ShopAudit
     private RedisUtils redisUtils;
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+    @Resource
+    private TreeClient treeClient;
     @Override
     public boolean addAudit(NewShopAuditParam auditParam) {
         NewShop newShop = shopMapper.selectById(auditParam.getShopId());
@@ -136,6 +140,11 @@ public class ShopAuditServiceImpl extends ServiceImpl<ShopAuditMapper, ShopAudit
     @Override
     public PageInfo<NewShopBackstageDto> selectList(ShopAuditQuery auditQuery) {
         List<NewShopBackstageDto> backstageDtoList = shopMapper.selectAuitPage(auditQuery);
+        for (NewShopBackstageDto newShopBackstageDto : backstageDtoList) {
+            String[] split = newShopBackstageDto.getShopTreeId().split(",");
+            String shopTreeIdName = getShopTreeIdName2(split);
+            newShopBackstageDto.setShopTreeIdName(shopTreeIdName);
+        }
         PageInfo<NewShopBackstageDto> shopAuditPageInfo = MyPageUtils.pageMap(auditQuery.getPage(), auditQuery.getRows(), backstageDtoList);
         return shopAuditPageInfo;
     }
@@ -143,8 +152,31 @@ public class ShopAuditServiceImpl extends ServiceImpl<ShopAuditMapper, ShopAudit
     @Override
     public PageInfo<NewShopBackstageDto> selectListPage(ShopAuditQuery auditQuery) {
         List<NewShopBackstageDto> backstageDtoList = shopMapper.selectNewShopPage(auditQuery);
+        for (NewShopBackstageDto newShopBackstageDto : backstageDtoList) {
+            String[] split = newShopBackstageDto.getShopTreeId().split(",");
+            String shopTreeIdName = getShopTreeIdName2(split);
+            newShopBackstageDto.setShopTreeIdName(shopTreeIdName);
+        }
         PageInfo<NewShopBackstageDto> shopAuditPageInfo = MyPageUtils.pageMap(auditQuery.getPage(), auditQuery.getRows(), backstageDtoList);
         return shopAuditPageInfo;
+    }
+    private String getShopTreeIdName2(String[] split) {
+        String shopTreeIdName = "";
+        if (split.length<=2){
+            //医疗
+            Tree data = treeClient.getTree(Long.valueOf(split[split.length-1])).getData();
+            System.out.println("医疗");
+            return data.getName();
+        }else {
+            //其他
+            String id = split[split.length-1];
+            Tree data1= treeClient.getTree(Long.valueOf(split[split.length-1])).getData();
+            Tree data2= treeClient.getTree(Long.valueOf(split[split.length-2])).getData();
+            System.out.println("其他");
+            return data2.getName()+"-"+data1.getName();
+        }
+
+
     }
 
 }
