@@ -1,13 +1,8 @@
 package com.jsy.service.impl;
-
-import cn.hutool.core.lang.Tuple;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.jsy.basic.util.MyPageUtils;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.exception.JSYException;
-import com.jsy.basic.util.utils.BeansCopyUtils;
-import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.clent.CommentClent;
 import com.jsy.client.*;
 import com.jsy.domain.*;
@@ -65,7 +60,7 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
      */
     @Override
     @Transactional
-    public UserCollect addUserCollect(UserCollectParam userCollectParam) {
+    public void addorDelUserCollect(UserCollectParam userCollectParam) {
         LoginUser loginUser = ContextHolder.getContext().getLoginUser();
         if (Objects.isNull(loginUser)){
             new JSYException(-1,"用户认证失败！");
@@ -75,21 +70,35 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
         Long goodsId = userCollectParam.getGoodsId();
         Long shopId = userCollectParam.getShopId();
         Long menuId = userCollectParam.getMenuId();
+        Boolean state = userCollectParam.getState();
 
-
+        if (state){//取消收藏
+            if (type==0){//商品
+                this.cancelUserCollect(0,goodsId);
+            }
+            if (type==1){//服务
+                this.cancelUserCollect(1,goodsId);
+            }
+            if (type==2){//套餐
+                this.cancelUserCollect(2,menuId);
+            }
+            if (type==3){//商家
+                this.cancelUserCollect(3,shopId);
+            }
+            return ;
+        }
         UserCollect userCollect = new UserCollect();
-
         if (type==0) {//商品
 
             UserCollect rult = userCollectMapper.selectOne(new QueryWrapper<UserCollect>()
                     .eq("user_id", userId)
-                    .eq("goods_id", userCollectParam.getGoodsId())
+                    .eq("goods_id", goodsId)
             );
             if (Objects.nonNull(rult)) {
                 throw new JSYException(-1, "该商品已经收藏");
             }
 
-            Goods data = goodsClient.getByGoods(userCollectParam.getGoodsId()).getData();
+            Goods data = goodsClient.getByGoods(goodsId).getData();
             if (Objects.isNull(data)) {
                throw new JSYException(-1,"未找到该商品！");
             }
@@ -107,7 +116,7 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
 
             UserCollect rult = userCollectMapper.selectOne(new QueryWrapper<UserCollect>()
                     .eq("user_id", userId)
-                    .eq("goods_id", userCollectParam.getGoodsId())
+                    .eq("goods_id", goodsId)
             );
             if (Objects.nonNull(rult)) {
                 throw new JSYException(-1, "该服务已经收藏");
@@ -130,7 +139,7 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
         if (type==2){//套餐
             UserCollect rult = userCollectMapper.selectOne(new QueryWrapper<UserCollect>()
                     .eq("user_id", userId)
-                    .eq("menu_id", userCollectParam.getMenuId())
+                    .eq("menu_id", menuId)
             );
             if (Objects.nonNull(rult)){
                 throw new JSYException(-1,"该套餐已经收藏");
@@ -153,7 +162,7 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
         if (type==3){//店铺
             UserCollect rult = userCollectMapper.selectOne(new QueryWrapper<UserCollect>()
                     .eq("user_id", userId)
-                    .eq("shop_id", userCollectParam.getMenuId())
+                    .eq("shop_id", shopId)
             );
             if (Objects.nonNull(rult)){
                 throw new JSYException(-1,"该商店已经收藏！");
@@ -176,13 +185,7 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
                 userCollect.setShopTypeName(shopTreeIdName);
             }
         }
-        int insert = userCollectMapper.insert(userCollect);
-        if (insert!=0){
-            Long id = userCollect.getId();
-            UserCollect rultUserCollect = userCollectMapper.selectById(id);
-            return rultUserCollect;
-        }
-        return null;
+        userCollectMapper.insert(userCollect);
     }
 
 

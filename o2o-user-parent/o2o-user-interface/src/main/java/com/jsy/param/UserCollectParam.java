@@ -23,5 +23,10 @@ public class UserCollectParam implements Serializable {
      */
     private Integer type;
 
+    /**
+     * 收藏状态 true 收藏  false 未收藏
+     */
+    private Boolean state;
+
 
 }

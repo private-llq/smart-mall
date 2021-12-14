@@ -24,7 +24,7 @@ public interface IUserCollectService extends IService<UserCollect> {
      * @param userCollectParam
      * @return
      */
-    UserCollect addUserCollect(UserCollectParam userCollectParam);
+    void addorDelUserCollect(UserCollectParam userCollectParam);
 
     /**
      * 分页查询收藏的商品、服务、套餐、店铺

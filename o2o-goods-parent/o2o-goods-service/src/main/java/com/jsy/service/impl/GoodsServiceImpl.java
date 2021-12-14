@@ -512,6 +512,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
      * @param id
      */
     @Override
+    @Transactional
     public void showGoods(Long id) {
         goodsMapper.update(null,new UpdateWrapper<Goods>().eq("id",id).set("state",0));
     }
@@ -521,6 +522,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
      * @param id
      */
     @Override
+    @Transactional
     public void virtualSales(Long id, Long num) {
         if (Objects.nonNull(num)){
             goodsMapper.update(null,new UpdateWrapper<Goods>().eq("id",id).set("virtual_state",1).set("virtual_sales",num));
@@ -535,6 +537,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
      * @param id
      */
     @Override
+    @Transactional
     public void putaway(Long id) {
         Goods goods = new Goods();
         goods.setIsPutaway(1);
@@ -547,6 +550,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
      * @param id
      */
     @Override
+    @Transactional
     public void outaway(Long id) {
         Goods goods = new Goods();
         goods.setIsPutaway(0);
@@ -561,6 +565,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
      * 一键上架商品/服务
      */
     @Override
+    @Transactional
     public void putawayAll(List idList) {
         Goods goods = new Goods();
         goods.setIsPutaway(1);
@@ -579,7 +584,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         pageInfo.setRecords(iPage.getRecords());
         pageInfo.setCurrent(iPage.getCurrent());
         pageInfo.setTotal(iPage.getTotal());
-        pageInfo.setSize(pageInfo.getSize());
+        pageInfo.setSize(iPage.getSize());
         return  pageInfo;
     }
 

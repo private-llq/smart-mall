@@ -141,12 +141,12 @@ public class GoodsController {
      */
     @ApiOperation("查看一条服务的详细信息")
     @GetMapping("/getGoodsService")
-    @LoginIgnore
     public CommonResult<GoodsServiceDto> getGoodsService(@RequestParam("id") Long id)
     {
         GoodsServiceDto goodsServiceDto= goodsService.getGoodsService(id);
         return CommonResult.ok(goodsServiceDto);
     }
+
 
     /**
      * 查看一条商品或者服务的所有详细信息 B端+C端

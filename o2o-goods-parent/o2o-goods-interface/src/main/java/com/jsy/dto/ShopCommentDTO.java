@@ -3,7 +3,6 @@ package com.jsy.dto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-import java.time.LocalDateTime;
 
 // TODO: 2020/12/16 组长已做 comment无用
 @ApiModel("商家查看评论dto")

@@ -1,13 +1,10 @@
 package com.jsy.service.impl;
-import cn.hutool.core.lang.Dict;
-import cn.hutool.core.lang.Tuple;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.jsy.basic.util.MyPageUtils;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.utils.BeansCopyUtils;
-import com.jsy.client.HotClient;
 import com.jsy.client.NewShopClient;
 import com.jsy.domain.*;
 import com.jsy.dto.*;
@@ -23,8 +20,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.yaml.snakeyaml.events.Event;
-
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -52,9 +47,6 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
 
     @Autowired
     private NewShopClient shopClient;
-
-    @Autowired
-    private HotClient hotClient;
 
     /**
      * 添加商品/服务进入购物车
@@ -208,6 +200,10 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
         }
     }
 
+    /**
+     * 累加购物车
+     * @param id
+     */
     @Override
     public void additionShoppingCart(Long id) {
         ShoppingCart cart = shoppingCartMapper.selectOne(new QueryWrapper<ShoppingCart>().eq("id", id));
@@ -218,18 +214,6 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
             shoppingCartMapper.deleteById(id);
         }
     }
-    // 修改购物车数量
-    @Override
-    public void updateShoppingCart(Long id, Integer number) {
-        int update = shoppingCartMapper.update(null, new UpdateWrapper<ShoppingCart>().eq("id", id).set("num", number));
-        if(update!=1){
-            throw  new JSYException(500,"修改失败");
-        }
-
-
-    }
-
-
 
     /**
      * 查询购物车（店铺）

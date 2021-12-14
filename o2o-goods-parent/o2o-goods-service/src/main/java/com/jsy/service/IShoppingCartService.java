@@ -37,6 +37,11 @@ public interface IShoppingCartService extends IService<ShoppingCart> {
      * @param id
      */
     void reduceShoppingCart(Long id);
+    /**
+     * 累加购物车
+     * @param id
+     */
+    void additionShoppingCart(Long id);
 
 
     /**
@@ -61,10 +66,7 @@ public interface IShoppingCartService extends IService<ShoppingCart> {
      * @return
      */
     PageInfo<ShoppingCartDto> queryCartAll(ShoppingCartParam shoppingCartParam);
-     //累减
-    void additionShoppingCart(Long id);
-   // 修改购物车数量
-    void updateShoppingCart(Long id, Integer number);
+
 
     /**
      * 查询购物车用户的商品和店铺

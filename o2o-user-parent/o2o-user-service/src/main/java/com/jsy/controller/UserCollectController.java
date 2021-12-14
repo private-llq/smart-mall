@@ -22,16 +22,16 @@ public class UserCollectController {
      * @param userCollectParam
      * @return
      */
-    @PostMapping(value="/addUserCollect")
-    public CommonResult<UserCollect> addUserCollect(@RequestBody UserCollectParam userCollectParam){
-        UserCollect userCollect = userCollectService.addUserCollect(userCollectParam);
-        return CommonResult.ok(userCollect);
+    @PostMapping(value="/addorDelUserCollect")
+    public CommonResult addorDelUserCollect(@RequestBody UserCollectParam userCollectParam){
+        userCollectService.addorDelUserCollect(userCollectParam);
+        return CommonResult.ok();
     }
 
     /**
      * 收藏按钮状态 亮(已收藏)：true   灰色 ：false
      */
-    @PostMapping(value="/userCollectState")
+    @GetMapping(value="/userCollectState")
     public CommonResult userCollectState(@RequestParam("type") Integer type,@RequestParam("id") Long id){
         Boolean state= userCollectService.userCollectState(type,id);
         return CommonResult.ok(state);
