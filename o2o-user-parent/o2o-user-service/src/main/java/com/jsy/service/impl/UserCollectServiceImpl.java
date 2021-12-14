@@ -71,8 +71,11 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
         Long shopId = userCollectParam.getShopId();
         Long menuId = userCollectParam.getMenuId();
         Boolean state = userCollectParam.getState();
+        if (Objects.isNull(state)){
+            throw new JSYException(-1,"状态不能为空！");
+        }
 
-        if (state){//取消收藏
+        if (state==false){//取消收藏
             if (type==0){//商品
                 this.cancelUserCollect(0,goodsId);
             }
@@ -93,6 +96,7 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
             UserCollect rult = userCollectMapper.selectOne(new QueryWrapper<UserCollect>()
                     .eq("user_id", userId)
                     .eq("goods_id", goodsId)
+                    .eq("type",0)
             );
             if (Objects.nonNull(rult)) {
                 throw new JSYException(-1, "该商品已经收藏");
@@ -117,6 +121,7 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
             UserCollect rult = userCollectMapper.selectOne(new QueryWrapper<UserCollect>()
                     .eq("user_id", userId)
                     .eq("goods_id", goodsId)
+                    .eq("type",1)
             );
             if (Objects.nonNull(rult)) {
                 throw new JSYException(-1, "该服务已经收藏");
@@ -140,6 +145,7 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
             UserCollect rult = userCollectMapper.selectOne(new QueryWrapper<UserCollect>()
                     .eq("user_id", userId)
                     .eq("menu_id", menuId)
+                    .eq("type",2)
             );
             if (Objects.nonNull(rult)){
                 throw new JSYException(-1,"该套餐已经收藏");
@@ -163,6 +169,7 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
             UserCollect rult = userCollectMapper.selectOne(new QueryWrapper<UserCollect>()
                     .eq("user_id", userId)
                     .eq("shop_id", shopId)
+                    .eq("type",3)
             );
             if (Objects.nonNull(rult)){
                 throw new JSYException(-1,"该商店已经收藏！");
@@ -231,7 +238,10 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
          * 收藏类型：0 商品  1:服务  2：套餐  3：商店
          */
         if (type==0){
-            UserCollect goodsService = userCollectMapper.selectOne(new QueryWrapper<UserCollect>().eq("goods_id", id).eq("user_id",userId));
+            UserCollect goodsService = userCollectMapper.selectOne(new QueryWrapper<UserCollect>()
+                    .eq("goods_id", id)
+                    .eq("user_id",userId)
+                    .eq("type",0));
             if (Objects.nonNull(goodsService)){//已收藏
                 return true;
             }else {
@@ -239,7 +249,10 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
             }
         }
         if (type==1){
-            UserCollect goodsService = userCollectMapper.selectOne(new QueryWrapper<UserCollect>().eq("goods_id", id).eq("user_id",userId));
+            UserCollect goodsService = userCollectMapper.selectOne(new QueryWrapper<UserCollect>()
+                    .eq("goods_id", id)
+                    .eq("user_id",userId)
+                    .eq("type",1));
             if (Objects.nonNull(goodsService)){//已收藏
                 return true;
             }else {
@@ -248,7 +261,11 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
 
         }
         if (type==2){
-            UserCollect menu = userCollectMapper.selectOne(new QueryWrapper<UserCollect>().eq("menu_id", id).eq("user_id",userId));
+            UserCollect menu = userCollectMapper.selectOne(new QueryWrapper<UserCollect>()
+                    .eq("menu_id", id)
+                    .eq("user_id",userId)
+                    .eq("type",2)
+            );
             if (Objects.nonNull(menu)){
                 return true;
             }else {
@@ -257,7 +274,11 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
 
         }
         if (type==3){
-            UserCollect shop = userCollectMapper.selectOne(new QueryWrapper<UserCollect>().eq("shop_id", id).eq("user_id",userId));
+            UserCollect shop = userCollectMapper.selectOne(new QueryWrapper<UserCollect>()
+                    .eq("shop_id", id)
+                    .eq("user_id",userId)
+                    .eq("type",3)
+            );
             if (Objects.nonNull(shop)){
                 return true;
             }else {
@@ -285,19 +306,35 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
          * 收藏类型：0 商品  1:服务  2：套餐  3：商店
          */
         if (type==0){
-            userCollectMapper.delete(new QueryWrapper<UserCollect>().eq("goods_id",id).eq("user_id",userId));
+            userCollectMapper.delete(new QueryWrapper<UserCollect>()
+                    .eq("goods_id",id)
+                    .eq("user_id",userId)
+                    .eq("type",0)
+            );
 
         }
         if (type==1){
-            userCollectMapper.delete(new QueryWrapper<UserCollect>().eq("goods_id",id).eq("user_id",userId));
+            userCollectMapper.delete(new QueryWrapper<UserCollect>()
+                    .eq("goods_id",id)
+                    .eq("user_id",userId)
+                    .eq("type",1)
+            );
 
         }
         if (type==2){
-            userCollectMapper.delete(new QueryWrapper<UserCollect>().eq("menu_id",id).eq("user_id",userId));
+            userCollectMapper.delete(new QueryWrapper<UserCollect>()
+                    .eq("menu_id",id)
+                    .eq("user_id",userId)
+                    .eq("type",2)
+            );
 
         }
         if (type==3){
-            userCollectMapper.delete(new QueryWrapper<UserCollect>().eq("shop_id",id).eq("user_id",userId));
+            userCollectMapper.delete(new QueryWrapper<UserCollect>()
+                    .eq("shop_id",id)
+                    .eq("user_id",userId)
+                    .eq("type",3)
+            );
         }
     }
 

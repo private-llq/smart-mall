@@ -1,14 +1,17 @@
 package com.jsy.domain;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.math.BigDecimal;
-
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.jsy.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * @author yu
@@ -23,15 +26,23 @@ public class UserCollect extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "商家id")
+    @JsonSerialize(using = com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long shopId;
 
     @ApiModelProperty(value = "用户id")
+    @JsonSerialize(using = com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long userId;
 
     @ApiModelProperty(value = "商品id")
+    @JsonSerialize(using = com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long goodsId;
 
     @ApiModelProperty(value = "套餐id")
+    @JsonSerialize(using = com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long menuId;
     /**
      * 收藏类型：收藏类型：0 商品  1:服务  2：套餐  3：商店

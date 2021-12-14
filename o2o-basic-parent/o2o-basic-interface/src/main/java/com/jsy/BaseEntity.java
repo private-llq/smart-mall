@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 public class BaseEntity implements Serializable {
 
     @TableId(value = "id",type = IdType.ASSIGN_ID)
+    @JsonSerialize(using = com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
     @JSONField(serializeUsing = ToStringSerializer.class)
     private Long id;
 
