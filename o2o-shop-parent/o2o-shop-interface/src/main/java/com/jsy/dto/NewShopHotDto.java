@@ -28,8 +28,6 @@ public class NewShopHotDto implements Serializable {
     @ApiModelProperty(value = "商品名称/服务标题")
     private String title;
 
-    @ApiModelProperty(value = "商品折扣价格")
-    private BigDecimal discountPrice;
 
     @ApiModelProperty(value = "商品价格")
     private BigDecimal price;
@@ -41,4 +39,6 @@ public class NewShopHotDto implements Serializable {
 
     @ApiModelProperty(value = "是否开启折扣：0未开启 1开启")
     private Integer discountState;
+    @ApiModelProperty(value = "商品折扣价格")
+    private BigDecimal discountPrice;
 }

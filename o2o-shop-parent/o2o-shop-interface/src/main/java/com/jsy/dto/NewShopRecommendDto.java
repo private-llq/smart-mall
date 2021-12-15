@@ -48,5 +48,10 @@ public class NewShopRecommendDto implements Serializable {
     @ApiModelProperty(value = "店铺法人/经营者电话")
     private String shopPhone;
 
+    @ApiModelProperty(value = "是否开启折扣：0未开启 1开启")
+    private Integer discountState;
+    @ApiModelProperty(value = "商品折扣价格")
+    private BigDecimal discountPrice;
+
 
 }

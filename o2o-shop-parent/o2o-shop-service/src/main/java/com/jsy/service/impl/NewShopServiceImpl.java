@@ -22,6 +22,7 @@ import com.jsy.query.NearTheServiceQuery;
 import com.jsy.query.NewShopQuery;
 import com.jsy.service.INewShopService;
 import com.jsy.service.IUserSearchHistoryService;
+import com.zhsj.baseweb.annotation.LoginIgnore;
 import com.zhsj.baseweb.support.ContextHolder;
 import com.zhsj.baseweb.support.LoginUser;
 import org.springframework.beans.BeanUtils;
@@ -226,58 +227,6 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
     @Override
     public PageInfo<NewShopRecommendDto> getShopAllList(NewShopQuery shopQuery) {
         System.out.println(shopQuery);
-       /* List<NewShop> newShopList = shopMapper.selectList(null);
-        List<NewShopRecommendDto> shopList = new ArrayList<>();
-        for (NewShop newShop : newShopList) {
-            String shopTreeIdName = "";
-            String[] split = newShop.getShopTreeId().split(",");
-            for (String s : split) {
-                shopTreeIdName = getString(split);
-                //判断是否的当前分类下面的店铺
-                if (Long.valueOf(s) == treeId) {
-                    //店铺的地址名称
-                    String addressDetail = newShop.getAddressDetail();
-                    long byAddress = GouldUtil.getDistanceByAddress(addressDetail, location);
-                    //默认3km
-                    if (byAddress <= 3000) {
-                        NewShopRecommendDto recommendDto = new NewShopRecommendDto();
-                        BeanUtils.copyProperties(newShop, recommendDto);
-                        recommendDto.setDistance(String.valueOf(byAddress/1000+"km"));
-                        //把商品最近发布的东西查出来   有可能是服务又可能是商品 有可能是 套餐
-                        Goods goods = goodsClient.getShopIdGoods(newShop.getId()).getData();
-                        SetMenu menu = setMenuClient.getShopIdMenus(newShop.getId()).getData();
-                        recommendDto.setShopName(newShop.getShopName());
-                        recommendDto.setShopTreeIdName(shopTreeIdName);
-                        if (goods!=null||menu!=null){
-                            if (goods!=null&&menu!=null){
-                                if (goods.getCreateTime().compareTo(menu.getCreateTime()) < 0) {
-                                    recommendDto.setTitle(menu.getName());
-                                    recommendDto.setPrice(menu.getSellingPrice());
-                                    shopList.add(recommendDto);
-                                } else {
-                                    recommendDto.setTitle(goods.getTitle());
-                                    recommendDto.setPrice(goods.getDiscountPrice());
-                                    shopList.add(recommendDto);
-                                }
-                            }else if (goods!=null&&menu==null){
-                                        recommendDto.setTitle(goods.getTitle());
-                                        recommendDto.setPrice(goods.getDiscountPrice());
-                                        shopList.add(recommendDto);
-                                    }else {
-                                        recommendDto.setTitle(menu.getName());
-                                        recommendDto.setPrice(menu.getSellingPrice());
-                                        shopList.add(recommendDto);
-                            }
-                        }else {
-                            recommendDto.setTitle(null);
-                            recommendDto.setPrice(null);
-                        }
-                    }
-
-                }
-            }
-
-        }*/
         //用户地址
         //分类id
         Long treeId = shopQuery.getTreeId();
@@ -314,13 +263,17 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
 
                         //把商品最近发布的东西查出来   有可能是服务又可能是商品 有可能是 套餐
                         Goods goods = goodsClient.latelyGoods(newShop.getId()).getData();
+            System.out.println(goods);
                         if (goods!=null){
                             recommendDto.setTitle(goods.getTitle());
                             recommendDto.setPrice(goods.getPrice());
-                            shopList.add(recommendDto);
                             recommendDto.setShopLogo(newShop.getShopLogo());
+                            recommendDto.setDiscountPrice(goods.getDiscountPrice());
+                            recommendDto.setDiscountState(goods.getDiscountState());
+                            shopList.add(recommendDto);
                         }
         }
+        System.out.println(shopList);
         PageInfo<NewShopRecommendDto> pageInfo = MyPageUtils.pageMap(shopQuery.getPage(), shopQuery.getRows(), shopList);
 
         return pageInfo;

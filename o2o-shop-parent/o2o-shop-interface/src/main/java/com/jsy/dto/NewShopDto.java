@@ -135,6 +135,8 @@ public class NewShopDto implements Serializable {
     private Integer isVisitingService;
     @ApiModelProperty(value = "是否是虚拟店铺  0不是 1是")
     private Integer isVirtualShop;
+    @ApiModelProperty(value = "是否开启折扣：0未开启 1开启")
+    private Integer discountState;
 
 
 
