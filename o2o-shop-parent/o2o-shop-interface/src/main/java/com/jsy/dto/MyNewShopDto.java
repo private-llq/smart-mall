@@ -3,7 +3,6 @@ package com.jsy.dto;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.alibaba.fastjson.serializer.ToStringSerializer;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -35,7 +34,7 @@ public class MyNewShopDto implements Serializable {
     /**
      * 店铺评分
      */
-    private Float grade=5.0f;
+    private Double grade=5.00;
 
     /**
      * 商品名称/服务标题
@@ -47,6 +46,14 @@ public class MyNewShopDto implements Serializable {
      */
     private BigDecimal price;
 
+    /**
+     * 折扣价格
+     */
+    private BigDecimal discountPrice;
+    /**
+     * 折扣状态
+     */
+    private Integer discountState;
     /**
      * 距离
      */

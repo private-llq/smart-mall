@@ -1,11 +1,12 @@
 package com.jsy.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jsy.basic.util.MyPageUtils;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.exception.JSYException;
-import com.jsy.basic.util.utils.*;
-import com.jsy.basic.util.vo.CommonResult;
+import com.jsy.basic.util.utils.GouldUtil;
+import com.jsy.basic.util.utils.RegexUtils;
 import com.jsy.clent.CommentClent;
 import com.jsy.client.GoodsClient;
 import com.jsy.client.SetMenuClient;
@@ -13,7 +14,6 @@ import com.jsy.client.TreeClient;
 import com.jsy.domain.Goods;
 import com.jsy.domain.NewShop;
 import com.jsy.domain.Tree;
-import com.jsy.domain.UserSearchHistory;
 import com.jsy.dto.*;
 import com.jsy.mapper.NewShopMapper;
 import com.jsy.parameter.*;
@@ -21,16 +21,10 @@ import com.jsy.query.MainSearchQuery;
 import com.jsy.query.NearTheServiceQuery;
 import com.jsy.query.NewShopQuery;
 import com.jsy.service.INewShopService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jsy.service.IUserSearchHistoryService;
-import com.jsy.util.RedisUtils;
 import com.zhsj.baseweb.support.ContextHolder;
 import com.zhsj.baseweb.support.LoginUser;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -363,11 +357,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
     public PageInfo<MyNewShopDto> mainSearch(MainSearchQuery mainSearchQuery) {
         Long userId = ContextHolder.getContext().getLoginUser().getId();
         searchHistoryService.addSearchKey(userId,mainSearchQuery.getKeyword());
-        System.out.println("ddd");
         String keyword = mainSearchQuery.getKeyword();
-//        String location = mainSearchQuery.getLocation();
-
-
         List<NewShop> newShops= shopMapper.mainSearch(keyword);
         if (newShops.size()==0){
           return new PageInfo<>();
@@ -378,15 +368,19 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
             MyNewShopDto myNewShopDto = new MyNewShopDto();
             myNewShopDto.setId(newShop.getId());
             myNewShopDto.setShopName(newShop.getShopName());
-            myNewShopDto.setGrade(5.0f);
+            SelectShopCommentScoreDto data = commentClent.selectShopCommentScore(newShop.getId()).getData();
+            if (Objects.nonNull(data)){
+                myNewShopDto.setGrade(data.getScore());
+            }
             myNewShopDto.setImage(newShop.getShopLogo());
             //查询
-
             try {
                 Goods goods = goodsClient.latelyGoods(newShop.getId()).getData();
                 if (Objects.nonNull(goods)){
                     myNewShopDto.setTitle(goods.getTitle());
                     myNewShopDto.setPrice(goods.getPrice());
+                    myNewShopDto.setDiscountState(goods.getDiscountState());
+                    myNewShopDto.setDiscountPrice(goods.getDiscountPrice());
                 }
             } catch (Exception e) {
                 e.printStackTrace();
