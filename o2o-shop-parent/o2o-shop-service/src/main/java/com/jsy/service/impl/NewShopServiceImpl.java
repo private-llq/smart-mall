@@ -302,7 +302,6 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
 //        return s1.substring(1);
 
     }
-
     /**
      * 首页搜索
      */

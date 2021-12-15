@@ -3,6 +3,7 @@ package com.jsy.service;
 import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.domain.NewOrder;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.jsy.dto.OrderSizeDto;
 import com.jsy.dto.SelectShopOrderDto;
 import com.jsy.dto.SelectUserOrderDto;
 import com.jsy.query.*;
@@ -38,8 +39,17 @@ public interface INewOrderService extends IService<NewOrder> {
     SelectShopOrderDto  selectOrderByOrderId(Long orderId);
     //支付宝支付
     CommonResult alipay(Long orderId);
+    //支付宝退款接口
+    CommonResult alipayRefund(Long orderId);
     //微信支付
     CommonResult WeChatPay(Long orderId);
-    //创建订单接口返回订单编号
+    //微信退款接口
+    Boolean WeChatPayRefund(Long orderId);
+    //创建订单接口返回订单id
     Long insterOrder(InsterOrderParam param);
+    //创建订单接口返回订单id(单个商品)
+    Long insterOrderOne(InsterOrderOneParam param);
+    //查询近多少日订单量
+    OrderSizeDto orderSize(OrderSizeParam param);
+
 }

@@ -2,6 +2,8 @@ package com.jsy.query;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * @className（类名称）: SelectShopCommentPageParam
  * @description（类描述）: this is the SelectShopCommentPageParam class
@@ -10,7 +12,7 @@ import lombok.Data;
  * @version（版本）: v1.0
  */
 @Data
-public class SelectShopCommentPageParam {
+public class SelectShopCommentPageParam implements Serializable {
     private  Integer  isPicture;//0不管有没有图1是有图片的
     private Integer current;
     private  Integer amount;

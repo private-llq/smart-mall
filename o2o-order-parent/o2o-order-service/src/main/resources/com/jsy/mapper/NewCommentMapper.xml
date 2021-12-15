@@ -47,7 +47,30 @@
 
     </select>
 
+    <select id="shopSelectCommentAndReply" resultType="com.jsy.vo.SelectCommentAndReplyVo">
 
+        select  a.id ,a.shop_id,a.user_id,a.`name`,a.order_id,a.images,a.evaluate_message,evaluate_level,a.create_time as commenttime,
+        b.reply,b.create_time as replytime FROM w_new_comment as a
+        LEFT JOIN w_new_reply as b
+        on (a.id= b.comment_id and b.deleted=0) WHERE a.deleted=0  and a.shop_id=#{shopId}
+        <if test="isReply==1">
+            AND  b.reply  is not null
+        </if>
+
+        ORDER BY a.create_time DESC  LIMIT #{current},#{amount}
+
+    </select>
+
+    <select id="shopSelectCommentAndReplyTotal" resultType="Integer">
+
+        select  COUNT(1)  FROM w_new_comment as a
+        LEFT JOIN w_new_reply as b
+        on (a.id= b.comment_id and b.deleted=0) WHERE a.deleted=0  and a.shop_id=#{shopId}
+        <if test="isReply==1">
+            AND  b.reply  is not null
+        </if>
+
+    </select>
 
 
 </mapper>

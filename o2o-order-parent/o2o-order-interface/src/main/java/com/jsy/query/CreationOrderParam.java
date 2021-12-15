@@ -30,6 +30,10 @@ public class CreationOrderParam implements Serializable {
     private Integer consumptionWay;
     @ApiModelProperty(value = "订单的最终价格")
     private BigDecimal orderAllPrice;
+
+    @ApiModelProperty(value = "商家地址")//针对商家到店
+    private BigDecimal businessAddress;
+
     @ApiModelProperty(value = "用户配送地址id（针对商家上门）")
     private Long shippingAddress;
     @ApiModelProperty(value = "联系人")

@@ -30,5 +30,13 @@ public interface NewCommentMapper extends BaseMapper<NewComment> {
                                              @Param("nots") Integer nots);
 
 
+    List<SelectCommentAndReplyVo> shopSelectCommentAndReply(
+            @Param("current")Integer index,
+            @Param("amount")Integer end,
+            @Param("shopId")Long shopId,
+            @Param("isReply")int isReply);
 
+    Integer shopSelectCommentAndReplyTotal(
+            @Param("shopId")Long shopId,
+            @Param("isReply")int isReply);
 }

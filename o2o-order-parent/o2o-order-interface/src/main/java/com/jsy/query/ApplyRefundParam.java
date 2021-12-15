@@ -14,13 +14,12 @@ import lombok.Data;
 public class ApplyRefundParam {
     @ApiModelProperty(value = "退款原因")
     private String refund;
-
+    @ApiModelProperty(value = "退款描述")
+    private String describes;
     @ApiModelProperty(value = "退款的订单id")
     private Long orderId;
-
     @ApiModelProperty(value = "图片")
     private String refundPicture;
-
     @ApiModelProperty(value = "受理角色（0商家，1平台）")
     private Integer accepts;
 }
