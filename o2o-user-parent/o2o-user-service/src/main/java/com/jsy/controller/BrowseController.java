@@ -59,7 +59,7 @@ public class BrowseController {
     public CommonResult delete(){
         try {
             Long id = ContextHolder.getContext().getLoginUser().getId();
-            browseService.removeById(id);
+            browseService.del(id);
             return CommonResult.ok();
         } catch (Exception e) {
         e.printStackTrace();

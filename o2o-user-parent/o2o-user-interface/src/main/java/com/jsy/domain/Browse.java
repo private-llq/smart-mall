@@ -1,6 +1,9 @@
 package com.jsy.domain;
 
 import java.math.BigDecimal;
+
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -29,12 +32,15 @@ public class Browse extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "商家id")
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long shopId;
 
     @ApiModelProperty(value = "用户id")
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long userId;
 
     @ApiModelProperty(value = "商品id")
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long goodsId;
 
     @ApiModelProperty(value = "商品、服务、套餐名称")

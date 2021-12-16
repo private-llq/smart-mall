@@ -560,6 +560,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         long distance = GouldUtil.getApiDistance(startLonLat, endLonLat);
         NewShopDistanceDto distanceDto = new NewShopDistanceDto();
         BeanUtils.copyProperties(newShop,distanceDto);
+        System.out.println(distanceDto);
         distanceDto.setDistance((distance/1000)+"km");
         return distanceDto;
     }

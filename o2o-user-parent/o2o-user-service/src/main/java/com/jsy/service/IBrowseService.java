@@ -12,5 +12,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2021-11-22
  */
 public interface IBrowseService extends IService<Browse> {
-
+//删除浏览记录
+    void del(Long id);
 }
