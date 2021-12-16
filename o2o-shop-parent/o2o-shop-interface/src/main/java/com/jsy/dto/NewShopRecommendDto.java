@@ -52,6 +52,8 @@ public class NewShopRecommendDto implements Serializable {
     private Integer discountState;
     @ApiModelProperty(value = "商品折扣价格")
     private BigDecimal discountPrice;
+    @ApiModelProperty(value = "门店类型（与w_SHOP_TREE行业关联），用逗号分隔")
+    private String shopTreeId;
 
 
 }
