@@ -1,24 +1,14 @@
 package com.jsy.controller;
-import cn.hutool.core.lang.Tuple;
 import com.jsy.basic.util.PageInfo;
+import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.dto.QueryUserCartDto;
 import com.jsy.dto.ShoppingCartDto;
 import com.jsy.parameter.ShoppingCartParam;
 import com.jsy.service.IShoppingCartService;
-import com.jsy.domain.ShoppingCart;
-import com.jsy.query.ShoppingCartQuery;
-import com.jsy.basic.util.PageList;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import com.jsy.basic.util.vo.CommonResult;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-import static com.jsy.basic.util.utils.CurrentUserHolder.getUserEntity;
 
 @RestController
 @RequestMapping("/shoppingCart")
@@ -56,6 +46,15 @@ public class ShoppingCartController {
     @DeleteMapping("clearShoppingCart")
     public CommonResult  clearCart (@RequestBody ShoppingCartParam shoppingCartParam){
         shoppingCartService.clearCart(shoppingCartParam);
+        return CommonResult.ok("success");
+    }
+
+    /**
+     * 用户勾选 清空购物车
+     */
+    @PostMapping("optionClearCart")
+    public CommonResult  optionClearCart (@RequestBody List<Long> shopIds){
+        shoppingCartService.optionClearCart(shopIds);
         return CommonResult.ok("success");
     }
 

@@ -1,16 +1,18 @@
 package com.jsy.service.impl;
-import java.time.LocalDateTime;
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.utils.BeansCopyUtils;
 import com.jsy.basic.util.utils.SnowFlake;
 import com.jsy.client.*;
-import com.jsy.domain.*;
+import com.jsy.domain.Browse;
+import com.jsy.domain.Goods;
+import com.jsy.domain.Tree;
 import com.jsy.dto.*;
 import com.jsy.mapper.GoodsMapper;
 import com.jsy.parameter.GoodsParam;
@@ -20,7 +22,6 @@ import com.jsy.query.BackstageServiceQuery;
 import com.jsy.query.GoodsPageQuery;
 import com.jsy.query.NearTheServiceQuery;
 import com.jsy.service.IGoodsService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhsj.baseweb.support.ContextHolder;
 import com.zhsj.baseweb.support.LoginUser;
 import org.apache.commons.lang3.StringUtils;
@@ -29,7 +30,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -323,13 +327,14 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         browse.setTextDescription(goods.getTextDescription());
         browse.setRealPrice(goods.getPrice());
         browse.setSellingPrice(goods.getDiscountPrice());
-        //browse.setType();无法识别商品和服务
+        browse.setType(goods.getType());
         browse.setGoodsId(goods.getId());
         browse.setImages(goods.getImages());
         browse.setDiscountState(goods.getDiscountState());
         //browse.setIsVisitingService(goods.getIsVisitingService());
         browseClient.save(browse);
         Goods twoGoods = goodsMapper.selectOne(new QueryWrapper<Goods>().eq("id", id));
+
         Long aLong = goodsMapper.sumServiceSales(twoGoods.getId());
         twoGoods.setSums(Objects.isNull(aLong)?0:aLong);
         return twoGoods;

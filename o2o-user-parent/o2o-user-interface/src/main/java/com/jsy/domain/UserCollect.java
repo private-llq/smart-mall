@@ -2,6 +2,7 @@ package com.jsy.domain;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.alibaba.fastjson.serializer.ToStringSerializer;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.jsy.BaseEntity;
@@ -78,6 +79,13 @@ public class UserCollect extends BaseEntity implements Serializable {
      * 折扣状态
      */
    private Integer discountState;
+
+
+    /**
+     * 该条收藏记录的状态 true 正常  false 不正常
+     */
+    @TableField(exist = false)
+    private Boolean state;
 
 
 

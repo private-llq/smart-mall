@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -210,11 +211,37 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
         Long userId = loginUser.getId();//用户id
         Page<UserCollect> page = new Page<>(userCollectQuery.getPage(), userCollectQuery.getRows());
         Page<UserCollect> selectPage = userCollectMapper.selectPage(page, new QueryWrapper<UserCollect>().eq("user_id", userId));
+
+        List<UserCollect> records = selectPage.getRecords();
+        List<UserCollect> collect = records.stream().map(record -> {
+            if (record.getType() == 0 || record.getType() == 1) {
+                Goods data = goodsClient.getByGoods(record.getGoodsId()).getData();
+                if (Objects.isNull(data)) {
+                    record.setState(false);
+                }
+            }
+            if (record.getType() == 2) {
+                SetMenuDto data = setMenuClient.SetMenuList(record.getMenuId()).getData();
+                if (Objects.isNull(data)) {
+                    record.setState(false);
+                }
+            }
+            if (record.getType() == 3) {
+                NewShopDto data = newShopClient.get(record.getShopId()).getData();
+                if (Objects.isNull(data)) {
+                    record.setState(false);
+                }
+            }
+            record.setState(true);
+            return record;
+        }).collect(Collectors.toList());
+
+
         PageInfo<UserCollect> pageInfo = new PageInfo<>();
         pageInfo.setSize(selectPage.getSize());
         pageInfo.setTotal(selectPage.getTotal());
         pageInfo.setCurrent(selectPage.getCurrent());
-        pageInfo.setRecords(selectPage.getRecords());
+        pageInfo.setRecords(collect);
         return pageInfo;
     }
 
@@ -352,10 +379,22 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
         if (shopIds.size()==0){
             throw new JSYException(-1,"传入的商店id不能为空！");
         }
-        QueryUserCartDto data = shoppingCartClient.queryUserCart(shopIds).getData();
 
-        List<NewShopInfo> shopDtoList = data.getNewShopDtoList();
-        for (NewShopInfo newShopDto : shopDtoList) {
+
+        //查询用户购物车商店信息
+        QueryUserCartDto data = shoppingCartClient.queryUserCart(shopIds).getData();
+       /* List<NewShopInfo> shopDtoList = data.getNewShopDtoList();
+
+        List<NewShopInfo> shopDtoListCollect = shopDtoList.stream().filter(x -> {
+            UserCollect userCollect = userCollectMapper.selectOne(new QueryWrapper<UserCollect>().eq("type", 3).eq("shop_id", x.getId()));
+            if (Objects.isNull(userCollect)) {//没收藏过的才添加到收藏
+                return true;
+            }
+            return false;
+        }).collect(Collectors.toList());
+
+
+        for (NewShopInfo newShopDto : shopDtoListCollect) {
             UserCollect userCollect = new UserCollect();
             userCollect.setType(3);
             userCollect.setShopId(newShopDto.getId());
@@ -363,6 +402,7 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
             userCollect.setImage(newShopDto.getShopLogo());
             userCollect.setUserId(loginUser.getId());
             String shopTreeId = newShopDto.getShopTreeId();
+
             if (Objects.nonNull(shopTreeId)){
                 String shopTreeIdName = getShopTreeIdName(shopTreeId.split(","));
                 userCollect.setShopTypeName(Objects.isNull(shopTreeIdName)?null:shopTreeIdName);
@@ -370,11 +410,36 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
             SelectShopCommentScoreDto rut = commentClent.selectShopCommentScore(newShopDto.getId()).getData();
             userCollect.setShopScore(Objects.isNull(rut)?5:rut.getScore());
             userCollectMapper.insert(userCollect);
-        }
+        }*/
+
+
+        //查询用户购物车商品信息
         List<ShoppingCart> goodsList = data.getGoodsList();
-        for (ShoppingCart cart : goodsList) {
+        List<ShoppingCart> goodsListCollect = goodsList.stream().filter(x -> {
+            if (x.getType()==0 || x.getType()==1){
+                UserCollect userCollect = userCollectMapper.selectOne(new QueryWrapper<UserCollect>()
+                        .eq("type",x.getType())
+                        .eq("goods_id", x.getGoodsId())
+                );
+                if (Objects.isNull(userCollect)){//没收藏过的才添加到收藏
+                    return true;
+                }
+            }
+            if (x.getType()==2){
+                UserCollect userCollect = userCollectMapper.selectOne(new QueryWrapper<UserCollect>()
+                        .eq("type",2)
+                        .eq("menu_id", x.getSetMenuId())
+                );
+                if (Objects.isNull(userCollect)){//没收藏过的才添加到收藏
+                    return true;
+                }
+            }
+            return false;
+        }).collect(Collectors.toList());
+        for (ShoppingCart cart : goodsListCollect) {
             UserCollect userCollect = new UserCollect();
             BeanUtils.copyProperties(cart,userCollect);
+            userCollect.setImage(cart.getImages().split(",")[0]);
             userCollect.setMenuId(cart.getSetMenuId());
             userCollectMapper.insert(userCollect);
         }
