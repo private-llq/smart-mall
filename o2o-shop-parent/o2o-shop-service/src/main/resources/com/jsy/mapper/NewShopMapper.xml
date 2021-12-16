@@ -91,7 +91,7 @@
         AND t1.state=1
         AND t1.deleted=0
         AND t1.shielding=0
-        AND locate(#{treeId}, t1.shop_tree_id) > 0;
+        AND FIND_IN_SET(#{treeId},t1.shop_tree_id)
 
     </select>
 
@@ -146,7 +146,7 @@
         WHERE  t1.state=1
             AND t1.deleted=0
             AND t1.shielding=0
-            AND locate(#{shopQuery.treeId}, t1.shop_tree_id) > 0
+            AND  FIND_IN_SET(#{shopQuery.treeId},t1.shop_tree_id)
         <if test="shopQuery.shopName !=null and shopQuery.shopName !=''">
             AND t1.shop_name LIKE CONCAT('%',#{shopQuery.shopName,jdbcType=VARCHAR},'%')
         </if>

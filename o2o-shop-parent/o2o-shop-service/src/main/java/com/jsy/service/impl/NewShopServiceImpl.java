@@ -248,6 +248,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
                         NewShopRecommendDto recommendDto = new NewShopRecommendDto();
                         BeanUtils.copyProperties(newShop, recommendDto);
                         recommendDto.setShopName(newShop.getShopName());
+                        recommendDto.setShopTreeId(newShop.getShopTreeId());
 
                         String[] ids = newShop.getShopTreeId().split(",");
                         String treeName = getShopTreeIdName(ids);
