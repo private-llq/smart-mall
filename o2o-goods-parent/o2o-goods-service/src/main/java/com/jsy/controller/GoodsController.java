@@ -1,22 +1,25 @@
 package com.jsy.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsy.basic.util.PageInfo;
+import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.client.HotClient;
+import com.jsy.domain.Goods;
 import com.jsy.domain.Tree;
-import com.jsy.dto.*;
+import com.jsy.dto.BackstageGoodsDto;
+import com.jsy.dto.BackstageServiceDto;
+import com.jsy.dto.GoodsDto;
+import com.jsy.dto.GoodsServiceDto;
 import com.jsy.parameter.GoodsParam;
 import com.jsy.parameter.GoodsServiceParam;
-import com.jsy.query.*;
+import com.jsy.query.BackstageGoodsQuery;
+import com.jsy.query.BackstageServiceQuery;
+import com.jsy.query.GoodsPageQuery;
+import com.jsy.query.NearTheServiceQuery;
 import com.jsy.service.IGoodsService;
-import com.jsy.domain.Goods;
-import com.zhsj.baseweb.annotation.LoginIgnore;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import com.jsy.basic.util.vo.CommonResult;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -309,6 +312,15 @@ public class GoodsController {
     public CommonResult<List<GoodsServiceDto>> NearTheService2(@RequestBody NearTheServiceQuery nearTheServiceQuery){
         List<GoodsServiceDto> list= goodsService.NearTheService2(nearTheServiceQuery);
         return CommonResult.ok(list);
+    }
+
+    /**
+     * 商家被禁用，同步禁用商家的商品和服务
+     */
+    @GetMapping("/disableAll")
+    public CommonResult disableAll(@RequestParam("shopId") Long shopId){
+         goodsService.disableAll(shopId);
+        return CommonResult.ok();
     }
 }
 

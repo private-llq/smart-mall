@@ -602,7 +602,14 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         return goodsServiceDtos;
     }
 
-
+    /**
+     * 商家被禁用，同步禁用商家的商品和服务
+     */
+    @Override
+    @Transactional
+    public void disableAll(Long shopId) {
+        goodsMapper.update(null,new UpdateWrapper<Goods>().eq("shop_id",shopId).set("state",1));
+    }
 
 
 }
