@@ -1,17 +1,23 @@
 package com.jsy.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.clent.CommentClent;
 import com.jsy.client.*;
-import com.jsy.domain.*;
-import com.jsy.dto.*;
+import com.jsy.domain.Goods;
+import com.jsy.domain.ShoppingCart;
+import com.jsy.domain.Tree;
+import com.jsy.domain.UserCollect;
+import com.jsy.dto.NewShopDto;
+import com.jsy.dto.QueryUserCartDto;
+import com.jsy.dto.SelectShopCommentScoreDto;
+import com.jsy.dto.SetMenuDto;
 import com.jsy.mapper.UserCollectMapper;
 import com.jsy.param.UserCollectParam;
 import com.jsy.query.UserCollectQuery;
 import com.jsy.service.IUserCollectService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhsj.baseweb.support.ContextHolder;
 import com.zhsj.baseweb.support.LoginUser;
 import org.springframework.beans.BeanUtils;
@@ -19,7 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -184,6 +191,7 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
             userCollect.setUserId(userId);
             userCollect.setShopId(shopId);
             userCollect.setImage(data.getShopLogo());
+            userCollect.setPhone(data.getShopPhone());
             SelectShopCommentScoreDto rut = commentClent.selectShopCommentScore(shopId).getData();
             userCollect.setShopScore(Objects.isNull(rut)?5:rut.getScore());
             userCollect.setTitle(data.getShopName());
@@ -211,37 +219,11 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
         Long userId = loginUser.getId();//用户id
         Page<UserCollect> page = new Page<>(userCollectQuery.getPage(), userCollectQuery.getRows());
         Page<UserCollect> selectPage = userCollectMapper.selectPage(page, new QueryWrapper<UserCollect>().eq("user_id", userId));
-
-        List<UserCollect> records = selectPage.getRecords();
-        List<UserCollect> collect = records.stream().map(record -> {
-            if (record.getType() == 0 || record.getType() == 1) {
-                Goods data = goodsClient.getByGoods(record.getGoodsId()).getData();
-                if (Objects.isNull(data)) {
-                    record.setState(false);
-                }
-            }
-            if (record.getType() == 2) {
-                SetMenuDto data = setMenuClient.SetMenuList(record.getMenuId()).getData();
-                if (Objects.isNull(data)) {
-                    record.setState(false);
-                }
-            }
-            if (record.getType() == 3) {
-                NewShopDto data = newShopClient.get(record.getShopId()).getData();
-                if (Objects.isNull(data)) {
-                    record.setState(false);
-                }
-            }
-            record.setState(true);
-            return record;
-        }).collect(Collectors.toList());
-
-
         PageInfo<UserCollect> pageInfo = new PageInfo<>();
         pageInfo.setSize(selectPage.getSize());
         pageInfo.setTotal(selectPage.getTotal());
         pageInfo.setCurrent(selectPage.getCurrent());
-        pageInfo.setRecords(collect);
+        pageInfo.setRecords(selectPage.getRecords());
         return pageInfo;
     }
 

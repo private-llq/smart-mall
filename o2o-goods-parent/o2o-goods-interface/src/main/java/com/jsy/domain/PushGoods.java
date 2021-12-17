@@ -1,22 +1,17 @@
 package com.jsy.domain;
 
-import java.math.BigDecimal;
-
 import com.alibaba.fastjson.annotation.JSONField;
 import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.IdType;
-import java.time.LocalDateTime;
-import com.baomidou.mybatisplus.annotation.TableId;
-import java.io.Serializable;
-
 import com.jsy.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.springframework.data.elasticsearch.annotations.Field;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * <p>
@@ -59,6 +54,11 @@ public class PushGoods extends BaseEntity implements Serializable {
 
     @ApiModelProperty(value = "商品/服务 价格")
     private BigDecimal price;
+
+    /**
+     * 折扣状态
+     */
+    private Integer discountState;
 
     @ApiModelProperty(value = "商品/服务 折扣价格")
     private BigDecimal discountPrice;

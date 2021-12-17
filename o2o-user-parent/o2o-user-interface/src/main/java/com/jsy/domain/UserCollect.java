@@ -59,6 +59,10 @@ public class UserCollect extends BaseEntity implements Serializable {
      */
     private String shopTypeName;
     /**
+     * 店铺联系电话
+     */
+    private String phone;
+    /**
      * 商品/服务/套餐/店铺标题
      */
     private String title;

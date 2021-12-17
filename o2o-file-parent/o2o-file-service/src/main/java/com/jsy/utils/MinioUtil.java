@@ -125,11 +125,13 @@ public class MinioUtil {
             String prefix=fileName.substring(fileName.lastIndexOf(".")+1);
             // 文件存储的目录结构
             String uuid = UUID.randomUUID().toString();
-            String objectName = uuid +"-"+ fileName;
+            String objectNameTemp = uuid +"-"+ prefix.replaceAll(",","");
+            String objectName=objectNameTemp;
             // 存储文件
             minioClient.putObject(BUCKETNAME, objectName, file.getInputStream(), file.getContentType());
             String filePath =BUCKETNAME + "/" + objectName;//文件路径就是 桶名/文件名
             String download_url=ENDPOINT+":"+PROT+"/"+filePath;//下载地址
+
             return download_url;
         }catch (Exception e){
             throw new JSYException(-1,"上传失败");
