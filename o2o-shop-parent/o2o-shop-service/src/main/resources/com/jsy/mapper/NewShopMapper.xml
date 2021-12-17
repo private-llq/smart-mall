@@ -87,11 +87,12 @@
         ) * 1000
         )
         )
-        &lt;3000
+        &lt;=3000
         AND t1.state=1
         AND t1.deleted=0
         AND t1.shielding=0
         AND FIND_IN_SET(#{treeId},t1.shop_tree_id)
+        order by distance
 
     </select>
 

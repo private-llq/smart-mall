@@ -23,7 +23,7 @@ public class BrowseServiceImpl extends ServiceImpl<BrowseMapper, Browse> impleme
     private BrowseMapper browseMapper;
     @Override
     public void del(Long id) {
-        int b = browseMapper.delete(new QueryWrapper<Browse>().eq("user_id", id));
+    browseMapper.deleteBrowse(id);
 
     }
 }

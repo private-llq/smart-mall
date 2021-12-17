@@ -1,4 +1,5 @@
 package com.jsy.controller;
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jsy.basic.util.GetServiceName;
 import com.jsy.basic.util.PageInfo;
@@ -56,15 +57,8 @@ public class NewShopController {
     public CommonResult addBasic(@RequestBody NewShopParam shopPacketParam){
         log.info("入参：{}",shopPacketParam);
          ValidatorUtils.validateEntity(shopPacketParam,NewShopParam.newShopValidatedGroup.class);
-        try {
-               Long shopId =  newShopService.addNewShop(shopPacketParam);
-            return  CommonResult.ok(shopId);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return  CommonResult.error(-1,"创建失败！");
-        }
-
+         Long shopId =  newShopService.addNewShop(shopPacketParam);
+         return  CommonResult.ok(shopId);
     }
 
     /**
@@ -77,12 +71,7 @@ public class NewShopController {
     public CommonResult addQualification(@RequestBody NewShopQualificationParam qualificationParam){
         log.info("入参：{}",qualificationParam);
         ValidatorUtils.validateEntity(qualificationParam,NewShopParam.newShopValidatedGroup.class);
-        try {
             newShopService.addQualification(qualificationParam);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return  CommonResult.error(-1,"资质上传失败！");
-        }
         return  CommonResult.ok();
     }
 
@@ -220,10 +209,14 @@ public class NewShopController {
     public CommonResult<NewShopSetDto> getSetShop(@RequestParam("shopId") Long shopId){
         NewShop newShop = newShopService.getById(shopId);
         NewShopSetDto newShopSetDto = new NewShopSetDto();
+        if (ObjectUtil.isNull(newShop)){
+            return new CommonResult(-1,"店铺不存在",null);
+        }
         BeanUtils.copyProperties(newShop,newShopSetDto);
         SelectShopCommentScoreDto data = commentClent.selectShopCommentScore(shopId).getData();
         newShopSetDto.setScore(data.getScore());
         newShopSetDto.setSize(data.getSize());
+
         return CommonResult.ok(newShopSetDto);
     }
 
@@ -250,10 +243,14 @@ public class NewShopController {
      public CommonResult getSupport(@RequestParam("shopId") Long shopId){
          try {
              NewShopSupportDto suportDto = newShopService.getSupport(shopId);
-             return CommonResult.ok(suportDto);
+             if (ObjectUtil.isNull(suportDto)){
+                 return new CommonResult(-1,"店铺不存在",null);
+             }else {
+                 return CommonResult.ok(suportDto);
+             }
          } catch (Exception e) {
              e.printStackTrace();
-             return  CommonResult.error(-1,"修改失败！");
+             return  CommonResult.error(-1,"查询失败！");
          }
      }
 
@@ -284,6 +281,7 @@ public class NewShopController {
         }
     }
     @ApiOperation("C端-通过关键词搜索店铺和服务名称")
+    @LoginIgnore
     @PostMapping("/getShopService")
     public CommonResult<NewShopServiceDto> getShopService(@RequestBody NewShopQuery shopQuery){
         NewShopServiceDto serviceDto =  newShopService.getShopService(shopQuery);
@@ -293,6 +291,7 @@ public class NewShopController {
 
 
     @ApiOperation("C端查询店铺的距离多远")
+    @LoginIgnore
     @PostMapping("/getDistance")
     public CommonResult<NewShopDistanceDto> getDistance(@RequestBody NewShopDistanceParam distanceParam){
         NewShopDistanceDto distanceDto =  newShopService.getDistance(distanceParam);

@@ -1,5 +1,6 @@
 package com.jsy.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jsy.basic.util.exception.JSYException;
@@ -11,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -163,27 +161,24 @@ public class TreeServiceImpl extends ServiceImpl<TreeMapper, Tree> implements IT
     @Override
     public String getParentTreeAll(Long id) {
         List<Tree> treeList = treeMapper.selectList(null);
-        treeList.stream().filter(x->{
-            if (x.getParentId()==0){
-                return true;
+        List<Long> list = new ArrayList<>();
+        Long temp = id;
+        for (Tree tree : treeList) {
+            for (Tree tree1 : treeList) {
+                if (tree1.getId()==temp&&tree1.getParentId()!=0){
+                    list.add(tree1.getParentId());
+                    temp = tree1.getParentId();
+                }
             }
-            this.getParents(x.getId(),treeList);
-            return false;
-        }).collect(Collectors.toList());
-        return null;
-    }
+        }
+        Tree tree = treeMapper.selectById(temp);
+        if (ObjectUtil.isNotNull(tree)){
 
-   private List<Tree> getParents(Long id , List<Tree> list ){
-       List<Tree> collect = list.stream().filter(x -> {
-           if (id == x.getId()) {
-               x.getParentId();
-               return true;
-           }
-           return false;
-       }).collect(Collectors.toList());
-       return collect;
+            list.add(tree.getParentId());
+        }
+        Collections.reverse(list);
+        return list.toString();
     }
-
 
 
     /**

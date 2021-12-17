@@ -1,4 +1,5 @@
 package com.jsy.controller;
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.client.HotClient;
@@ -12,14 +13,14 @@ import com.jsy.domain.SetMenu;
 import com.jsy.query.SetMenuQuery;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.jsy.basic.util.vo.CommonResult;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -91,7 +92,11 @@ public class SetMenuController {
     @GetMapping(value = "/getMenuId")
     public CommonResult<List<SetMenuListDto>> getMenuId(@RequestParam("setMenuId")Long setMenuId){
         List<SetMenuListDto> setMenuListDto = setMenuService.getMenuId(setMenuId);
-        return  CommonResult.ok(setMenuListDto);
+        if (setMenuListDto.size()<=0){
+            return new CommonResult<>(-1,"套餐为空",null);
+        }else {
+            return  CommonResult.ok(setMenuListDto);
+        }
 
     }
     /**
@@ -101,11 +106,15 @@ public class SetMenuController {
     @GetMapping(value = "/SetMenuList")
     public CommonResult<SetMenuDto> SetMenuList(@RequestParam("id")Long id){
         SetMenuDto setMenulist = setMenuService.getSetMenulist(id);
-        return CommonResult.ok(setMenulist);
+        if (ObjectUtil.isNull(setMenulist)){
+            return new CommonResult<>(-1,"套餐为空",null);
+        }else {
+            return CommonResult.ok(setMenulist);
+        }
     }
 
     /**
-     * 查询商家 上架或下架套餐
+     * 查询商家 上架或下架套餐  禁用的套餐
      * @return
      */
     @ApiOperation("查询商家 上架或下架套餐")
@@ -120,7 +129,7 @@ public class SetMenuController {
      * 查询所有套餐列表
      * @return
      */
-    @ApiOperation("查询商家所有套餐")
+    @ApiOperation("C端查询商家所有发布的套餐")
     @PostMapping(value = "/listAll")
     public CommonResult<PageInfo<SetMenuDto>> listAll(@RequestBody SetMenuQuery setMenuQuery){
         PageInfo<SetMenuDto> dtoList = setMenuService.listAll(setMenuQuery);
@@ -129,18 +138,17 @@ public class SetMenuController {
     }
 
     /**
-     * 修改上下架套餐
+     * 修改店铺类所有套餐   上下架 或禁用套餐
      * @return
      */
-    @ApiOperation("修改上下架套餐")
+    @ApiOperation("修改所有套餐上下架、或禁用套餐")
     @PostMapping(value = "/setState")
-    public CommonResult setState(@RequestParam("id") Long id, @RequestParam("state") Integer state){
-        try {
-            setMenuService.setState(id,state);
+    public CommonResult setState(@RequestBody SetMenuQuery setMenuQuery){
+        Boolean b = setMenuService.setState(setMenuQuery);
+        if (b){
             return CommonResult.ok();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return  CommonResult.error(-1,"删除失败！");
+        }else {
+            return new CommonResult(-1,"操作失败",null);
         }
     }
 
@@ -166,5 +174,7 @@ public class SetMenuController {
         return CommonResult.ok(dtoList);
 
     }
+
+
 
 }

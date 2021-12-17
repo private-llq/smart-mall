@@ -13,5 +13,8 @@
         <result column="selling_price" property="sellingPrice" />
         <result column="is_visiting_service" property="isVisitingService" />
     </resultMap>
+    <delete id="deleteBrowse">
+        delete  from w_user_browse where user_id=#{id}
+    </delete>
 
 </mapper>

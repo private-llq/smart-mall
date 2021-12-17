@@ -61,12 +61,6 @@ public class NewShopQualificationParam implements Serializable {
     @ApiModelProperty(name = "idNumber", value = "身份证号码")
     private String idNumber;
 
-    @NotNull(groups = {NewShopParam.newShopValidatedGroup.class},message = "用户定位地址不能为空")
-    @ApiModelProperty(value = "经度")
-    private BigDecimal longitude;
 
-    @NotNull(groups = {NewShopParam.newShopValidatedGroup.class},message = "用户定位地址不能为空")
-    @ApiModelProperty(value = "维度")
-    private BigDecimal latitude;
 
 }
