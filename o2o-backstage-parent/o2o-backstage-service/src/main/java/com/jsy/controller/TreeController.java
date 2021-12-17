@@ -7,7 +7,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +27,15 @@ public class TreeController {
         return CommonResult.ok(list);
     }
     /**
-     * 查询本级下面一级子菜单（不包含本级）
+     * 查询本级上面所有父级菜单（不包含本级）
+     */
+    @GetMapping("getParentTreeAll")
+    public CommonResult<String> getParentTreeAll(@RequestParam ("id") Long id) {
+        String str= treeService.getParentTreeAll(id);
+        return CommonResult.ok(str);
+    }
+    /**
+     * 查询本级上面的所有菜单id（不包含本级）
      */
     @ApiOperation("查询本级下面一级的子菜单（不包含本级）")
     @GetMapping("getSunTree")
