@@ -281,6 +281,7 @@ public class NewShopController {
         }
     }
     @ApiOperation("C端-通过关键词搜索店铺和服务名称")
+    @LoginIgnore
     @PostMapping("/getShopService")
     public CommonResult<NewShopServiceDto> getShopService(@RequestBody NewShopQuery shopQuery){
         NewShopServiceDto serviceDto =  newShopService.getShopService(shopQuery);
@@ -290,6 +291,7 @@ public class NewShopController {
 
 
     @ApiOperation("C端查询店铺的距离多远")
+    @LoginIgnore
     @PostMapping("/getDistance")
     public CommonResult<NewShopDistanceDto> getDistance(@RequestBody NewShopDistanceParam distanceParam){
         NewShopDistanceDto distanceDto =  newShopService.getDistance(distanceParam);

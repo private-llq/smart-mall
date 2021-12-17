@@ -107,16 +107,14 @@ public class SetMenuController {
     public CommonResult<SetMenuDto> SetMenuList(@RequestParam("id")Long id){
         SetMenuDto setMenulist = setMenuService.getSetMenulist(id);
         if (ObjectUtil.isNull(setMenulist)){
-            System.out.println("ddd");
             return new CommonResult<>(-1,"套餐为空",null);
         }else {
-            System.out.println("ccc");
             return CommonResult.ok(setMenulist);
         }
     }
 
     /**
-     * 查询商家 上架或下架套餐
+     * 查询商家 上架或下架套餐  禁用的套餐
      * @return
      */
     @ApiOperation("查询商家 上架或下架套餐")
@@ -131,7 +129,7 @@ public class SetMenuController {
      * 查询所有套餐列表
      * @return
      */
-    @ApiOperation("查询商家所有套餐")
+    @ApiOperation("C端查询商家所有发布的套餐")
     @PostMapping(value = "/listAll")
     public CommonResult<PageInfo<SetMenuDto>> listAll(@RequestBody SetMenuQuery setMenuQuery){
         PageInfo<SetMenuDto> dtoList = setMenuService.listAll(setMenuQuery);
@@ -140,18 +138,17 @@ public class SetMenuController {
     }
 
     /**
-     * 修改上下架套餐
+     * 修改店铺类所有套餐   上下架 或禁用套餐
      * @return
      */
-    @ApiOperation("修改上下架套餐")
+    @ApiOperation("修改所有套餐上下架、或禁用套餐")
     @PostMapping(value = "/setState")
-    public CommonResult setState(@RequestParam("id") Long id, @RequestParam("state") Integer state){
-        try {
-            setMenuService.setState(id,state);
+    public CommonResult setState(@RequestBody SetMenuQuery setMenuQuery){
+        Boolean b = setMenuService.setState(setMenuQuery);
+        if (b){
             return CommonResult.ok();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return  CommonResult.error(-1,"删除失败！");
+        }else {
+            return new CommonResult(-1,"操作失败",null);
         }
     }
 
@@ -177,5 +174,7 @@ public class SetMenuController {
         return CommonResult.ok(dtoList);
 
     }
+
+
 
 }

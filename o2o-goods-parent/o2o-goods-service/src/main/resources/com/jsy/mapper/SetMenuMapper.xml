@@ -18,6 +18,17 @@
         <result column="create_time" property="createTime" />
         <result column="update_time" property="updateTime" />
         <result column="type" property="type" />
+        <result column="is_disable" property="isDisable" />
     </resultMap>
+    <update id="setAllState">
+        update w_set_menu s set
+        s.state=#{setMenuQuery.state}
+        where s.shop_id=#{setMenuQuery.shopId}
+    </update>
+    <update id="setAllDisable">
+        update w_set_menu s set
+        s.is_disable=#{setMenuQuery.isDisable}
+        where s.shop_id=#{setMenuQuery.shopId}
+    </update>
 
 </mapper>

@@ -118,7 +118,7 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
         for (SetMenuGoods setMenuGoods : setMenuGoodsList) {
                 Goods goods = goodsMapper.selectOne(new QueryWrapper<Goods>().eq("id", setMenuGoods.getGoodsIds()));
                 if (goods==null){
-                    throw new JSYException(-1,"商品为空");
+                   break;
                 }
                 setMenuGoods.setName(goods.getTitle());
                 setMenuGoods.setPrice(goods.getPrice());
@@ -127,10 +127,7 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
                 BeanUtils.copyProperties(setMenuGoods,setMenuGoodsDto);
                 menuGoodsDtoList.add(setMenuGoodsDto);
             }
-
         Map<String, List<SetMenuGoodsDto>> map = menuGoodsDtoList.stream().collect(Collectors.groupingBy(SetMenuGoodsDto::getTitle));
-
-
 
         List<SetMenuListDto> setMenuListDtos = new ArrayList<>();
         Set<Map.Entry<String, List<SetMenuGoodsDto>>> entries = map.entrySet();
@@ -203,7 +200,19 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
     @Override
     public PageInfo<SetMenuDto> getList(SetMenuQuery setMenuQuery) {
         //根据商家id 和所
-        List<SetMenu> menuList = setMenuMapper.selectList(new QueryWrapper<SetMenu>().eq("shop_id", setMenuQuery.getShopId()).eq("state",setMenuQuery.getState()));
+        List<SetMenu> menuList =  new ArrayList<>();
+        if (setMenuQuery.getState()!=null&&setMenuQuery.getIsDisable()!=null){
+            menuList = setMenuMapper.selectList(new QueryWrapper<SetMenu>().eq("shop_id", setMenuQuery.getShopId())
+                    .eq("state",setMenuQuery.getState())
+                    .eq("is_disable",setMenuQuery.getIsDisable())
+            );
+        }else if(setMenuQuery.getState()!=null){
+            menuList = setMenuMapper.selectList(new QueryWrapper<SetMenu>()
+                    .eq("shop_id", setMenuQuery.getShopId()).eq("state",setMenuQuery.getState()));
+        }else {
+            menuList = setMenuMapper.selectList(new QueryWrapper<SetMenu>()
+                    .eq("shop_id", setMenuQuery.getShopId()).eq("is_disable",setMenuQuery.getIsDisable()));
+        }
         List<SetMenuDto> dtoList = new ArrayList<>();
         for (SetMenu setMenu : menuList) {
             SetMenuDto setMenuDto = new SetMenuDto();
@@ -243,7 +252,9 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
     @Override
     public PageInfo<SetMenuDto> listAll(SetMenuQuery setMenuQuery) {
         //根据商家id
-        List<SetMenu> menuList = setMenuMapper.selectList(new QueryWrapper<SetMenu>().eq("shop_id", setMenuQuery.getShopId()));
+        List<SetMenu> menuList = setMenuMapper.selectList(new QueryWrapper<SetMenu>().eq("shop_id", setMenuQuery.getShopId())
+                                                .eq("state",1)
+                                                .eq("is_disable",0));
         List<SetMenuDto> dtoList = new ArrayList<>();
         for (SetMenu setMenu : menuList) {
             SetMenuDto setMenuDto = new SetMenuDto();
@@ -297,6 +308,17 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
         }
 //        BeansCopyUtils.copyListProperties(setMenus,SetMenuDto::new);
         return dtoList;
+    }
+
+    @Override
+    public Boolean setState(SetMenuQuery setMenuQuery) {
+        if (setMenuQuery.getState()!=null){
+            setMenuMapper.setAllState(setMenuQuery);
+        }
+        if (setMenuQuery.getIsDisable()!=null){
+            setMenuMapper.setAllDisable(setMenuQuery);
+        }
+        return true;
     }
 
 }

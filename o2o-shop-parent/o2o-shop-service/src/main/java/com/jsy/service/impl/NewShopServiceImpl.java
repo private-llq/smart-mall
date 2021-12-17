@@ -31,8 +31,11 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static java.math.BigDecimal.ROUND_HALF_UP;
 
 /**
  * <p>
@@ -108,18 +111,19 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         //数组
         try {
             String[] split = treeId.split(",");
-            Long aLong = Long.valueOf(split[0]);
-            System.out.println(aLong);
-            Tree tree = treeClient.getTree(aLong).getData();
-            newShop.setShopTreeId(tree.getParentId()+","+newShop.getShopTreeId());
+//            Long aLong = Long.valueOf(split[1]);
+            Long aLong = Long.valueOf(treeId.substring(0,1));
+            String data = treeClient.getParentTreeAll(aLong).getData();
+            String s = data.substring(1, data.length() - 1);
+            String substring = s.substring(s.length() - 1);
+            newShop.setShopTreeId(substring+","+shopPacketParam.getShopTreeId());
             //1是服务行业  0 套餐行业
-            if (tree.getParentId() == 1) {
+            if (Integer.parseInt(substring)== 1) {
                 newShop.setType(1);
             } else {
                 newShop.setType(0);
             }
         } catch (NumberFormatException e) {
-            e.printStackTrace();
             throw new JSYException(-1,"店铺创建分类错误");
         }
         shopMapper.insert(newShop);
@@ -253,6 +257,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
                         BeanUtils.copyProperties(newShop, recommendDto);
                         recommendDto.setShopName(newShop.getShopName());
                         recommendDto.setShopTreeId(newShop.getShopTreeId());
+                        recommendDto.setDistance(newShop.getDistance().divide(new BigDecimal(1000)).setScale(2,ROUND_HALF_UP));
 
                         String[] ids = newShop.getShopTreeId().split(",");
                         String treeName = getShopTreeIdName(ids);
@@ -335,10 +340,9 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
                 e.printStackTrace();
                 throw new JSYException(-1,"商品fenc错误");
             }
-            String l1= newShop.getLongitude()+","+newShop.getLatitude();
-            String l2= mainSearchQuery.getLongitude()+","+mainSearchQuery.getLatitude();
-            long addr = GouldUtil.getApiDistance(l1, l2);
-            myNewShopDto.setDistance(addr/1000+"km");
+            DecimalFormat df = new DecimalFormat("#0.00");
+            Double distance = GouldUtil.GetDistance(Double.parseDouble(mainSearchQuery.getLatitude()),Double.parseDouble(mainSearchQuery.getLongitude()),newShop.getLatitude().doubleValue(),newShop.getLongitude().doubleValue());
+            myNewShopDto.setDistance(df.format(distance/1000)+"km");
 
             String[] ids = newShop.getShopTreeId().split(",");
 
@@ -486,11 +490,14 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
 
         try {
             String[] split = treeId.split(",");
-            Long aLong = Long.valueOf(split[1]);
-            System.out.println(aLong);
-            Tree tree = treeClient.getTree(aLong).getData();
+//            Long aLong = Long.valueOf(split[1]);
+            Long aLong = Long.valueOf(treeId.substring(0,1));
+            String data = treeClient.getParentTreeAll(aLong).getData();
+            String s = data.substring(1, data.length() - 1);
+            String substring = s.substring(s.length() - 1);
+            newShop.setShopTreeId(substring+","+shopPacketParam.getShopTreeId());
             //1是服务行业  0 套餐行业
-            if (tree.getParentId() == 1) {
+            if (Integer.parseInt(substring)== 1) {
                 newShop.setType(1);
             } else {
                 newShop.setType(0);
@@ -498,6 +505,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         } catch (NumberFormatException e) {
             throw new JSYException(-1,"店铺创建分类错误");
         }
+
         shopMapper.updateById(newShop);
     }
  /** 
@@ -550,13 +558,12 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
             throw new JSYException(-1,"用户位置不能为空");
         }
         NewShop newShop = shopMapper.selectById(distanceParam.getId());
-        String startLonLat =newShop.getLongitude()+","+newShop.getLatitude();
-        String endLonLat = distanceParam.getLongitude()+","+distanceParam.getLatitude();
-        long distance = GouldUtil.getApiDistance(startLonLat, endLonLat);
+        DecimalFormat df = new DecimalFormat("#0.00");
+
+        Double distance = GouldUtil.GetDistance(distanceParam.getLatitude().doubleValue(), distanceParam.getLongitude().doubleValue(),newShop.getLatitude().doubleValue(),newShop.getLongitude().doubleValue());
         NewShopDistanceDto distanceDto = new NewShopDistanceDto();
         BeanUtils.copyProperties(newShop,distanceDto);
-        System.out.println(distanceDto);
-        distanceDto.setDistance((distance/1000)+"km");
+        distanceDto.setDistance(df.format(distance / 1000)+"km");
         return distanceDto;
     }
 
@@ -574,7 +581,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
             NewShopRecommendDto recommendDto = new NewShopRecommendDto();
             BeanUtils.copyProperties(newShop,recommendDto);
             //.divide(new BigDecimal(1000)
-            recommendDto.setDistance(newShop.getDistance());
+            recommendDto.setDistance(newShop.getDistance().divide(new BigDecimal(1000)).setScale(2,ROUND_HALF_UP));
             recommendDtoList.add(recommendDto);
         }
         PageInfo<NewShopRecommendDto> dtoPageInfo = MyPageUtils.pageMap(shopQuery.getPage(), shopQuery.getRows(), recommendDtoList);
@@ -598,12 +605,12 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
             NewShopRecommendDto recommendDto = new NewShopRecommendDto();
             BeanUtils.copyProperties(newShop,recommendDto);
             //.divide(new BigDecimal(1000)
-            recommendDto.setDistance(newShop.getDistance().divide(new BigDecimal(1000)));
+            recommendDto.setDistance(newShop.getDistance().divide(new BigDecimal(1000).setScale(2, ROUND_HALF_UP)));
             String[] spilt = newShop.getShopTreeId().split(",");
             String shopTreeIdName = getShopTreeIdName(spilt);
             recommendDto.setShopTreeIdName(shopTreeIdName);
-
             recommendDtoList.add(recommendDto);
+            System.out.println(recommendDto.getDistance());
         }
         serviceDto.setShopList(recommendDtoList);
         NearTheServiceQuery serviceQuery = new NearTheServiceQuery();
@@ -611,10 +618,11 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         serviceQuery.setLongitude(shopQuery.getLongitude());
         serviceQuery.setKeyword(shopQuery.getShopName());
         List<GoodsServiceDto> goodsList = goodsClient.NearTheService2(serviceQuery).getData();
+        DecimalFormat   fnum  =   new  DecimalFormat("##0.00");
         if (goodsList.size()>0){
             for (GoodsServiceDto goodsServiceDto : goodsList) {
                 Float aFloat = Float.parseFloat(goodsServiceDto.getDistance())/1000;
-                goodsServiceDto.setDistance(aFloat.toString());
+                goodsServiceDto.setDistance(fnum.format(aFloat).toString());
             }
         }
         serviceDto.setGoodsList(goodsList);

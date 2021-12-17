@@ -3,9 +3,11 @@ package com.jsy.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jsy.basic.util.MyPageUtils;
 import com.jsy.basic.util.PageInfo;
+import com.jsy.client.SetMenuClient;
 import com.jsy.client.TreeClient;
 import com.jsy.domain.Tree;
 import com.jsy.parameter.NewShopBackstageDto;
+import com.jsy.query.SetMenuQuery;
 import com.jsy.query.ShopAuditQuery;
 import com.jsy.util.RedisUtils;
 import com.jsy.domain.HotGoods;
@@ -48,6 +50,8 @@ public class ShopAuditServiceImpl extends ServiceImpl<ShopAuditMapper, ShopAudit
     private StringRedisTemplate stringRedisTemplate;
     @Resource
     private TreeClient treeClient;
+    @Resource
+    private SetMenuClient setMenuClient;
     @Override
     public boolean addAudit(NewShopAuditParam auditParam) {
         NewShop newShop = shopMapper.selectById(auditParam.getShopId());
@@ -90,6 +94,10 @@ public class ShopAuditServiceImpl extends ServiceImpl<ShopAuditMapper, ShopAudit
     @Override
     public boolean updateShielding(NewShopAuditParam auditParam) {
         NewShop newShop = shopMapper.selectById(auditParam.getShopId());
+        SetMenuQuery setMenuQuery = new SetMenuQuery();
+        //店铺被屏蔽之后 下架所有套餐
+        setMenuQuery.setIsDisable(1);
+        setMenuQuery.setShopId(auditParam.getShopId());
         ShopAudit shopAudit = auditMapper.selectOne(new QueryWrapper<ShopAudit>()
                 .eq("shop_id", auditParam.getShopId())
                 .orderByDesc("create_time")
@@ -106,6 +114,7 @@ public class ShopAuditServiceImpl extends ServiceImpl<ShopAuditMapper, ShopAudit
             //重新设置缓存
             List<HotGoods> hotGoodsList = hotGoodsMapper.selectList(null);
             redisUtils.setHotGoods(hotGoodsList,time);
+
         }
         if (shopAudit==null||shopAudit!=null&&shopAudit.getShieldingReason()!=null){
             //屏蔽状态 0未屏蔽  1已屏蔽
@@ -118,6 +127,7 @@ public class ShopAuditServiceImpl extends ServiceImpl<ShopAuditMapper, ShopAudit
                 shopAudit1.setShieldingReason(auditParam.getShieldingReason());
                 Long id = ContextHolder.getContext().getLoginUser().getId();
                 shopAudit1.setUserId(id);
+                setMenuClient.setState(setMenuQuery);
                 auditMapper.insert(shopAudit1);
             }
         }else {
