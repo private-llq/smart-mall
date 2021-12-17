@@ -60,12 +60,12 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
         List<SetMenuGoods> setMenuGoodsList = setMenu.getSetMenuGoodsList();
         SetMenu menu = new SetMenu();
         BeanUtils.copyProperties(setMenu,menu);
-        //开启折扣价格
+        //开启折扣价格   是否开启折扣：0未开启 1开启")
         if (setMenu.getSellingPrice()!=null){
             menu.setDiscountState(1);
         }else {
             menu.setDiscountState(0);
-            menu.setMenuExplain(null);
+//            menu.setMenuExplain(null);
         }
 //        String[] ids = setMenu.getServiceCharacteristicsIds().split(",");//服务特点ids
 //
@@ -100,13 +100,14 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
     @Override
     public SetMenuDto getSetMenulist(Long id) {
         SetMenu setMenu = setMenuMapper.selectOne(new QueryWrapper<SetMenu>().eq("id", id));
+
+        SetMenuDto setMenuDto = new SetMenuDto();
+        if (setMenu==null){
+            return setMenuDto;
+        }
         //套餐访问量+1
         setMenu.setPvNum(setMenu.getPvNum()+1);
         setMenuMapper.updateById(setMenu);
-
-        if (setMenu==null){
-            throw new JSYException(-1,"套餐为空");
-        }
         List<SetMenuGoods> setMenuGoodsList = menuGoodsMapper.selectList(new QueryWrapper<SetMenuGoods>()
                     .eq("set_menu_id", setMenu.getId())
             );
@@ -141,7 +142,6 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
             setMenuListDtos.add(setMenuListDto);
         }
 
-        SetMenuDto setMenuDto = new SetMenuDto();
         BeanUtils.copyProperties(setMenu,setMenuDto);
         setMenuDto.setMap(setMenuListDtos);
 //        setMenuDto.setServiceCharacteristicsIds(serviceCharacteristicsDtoList);

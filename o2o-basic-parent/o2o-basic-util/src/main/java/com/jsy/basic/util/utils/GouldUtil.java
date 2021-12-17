@@ -186,11 +186,11 @@ public class GouldUtil {
 
 	public static void main(String[] args) {
 		String s="重庆市渝北区天宫殿街道泰山大道东段106号";
-		String lonLat = GouldUtil.getLonLat(s);
-		String lat = GouldUtil.getLonLat("冉家坝");
-//		String[] split = lat.split(",");
-//		BigDecimal longitude = new BigDecimal((split[0]));
-		System.out.println(lat);
+//		String lonLat = GouldUtil.getLonLat(s);
+//		String lat = GouldUtil.getLonLat("冉家坝");
+////		String[] split = lat.split(",");
+////		BigDecimal longitude = new BigDecimal((split[0]));
+//		System.out.println(lat);
 
 //		System.out.println(lonLat);
 //		System.out.println(lat);

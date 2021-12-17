@@ -1,5 +1,6 @@
 package com.jsy.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jsy.basic.util.MyPageUtils;
@@ -85,8 +86,8 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         if (shopPacketParam.getShopName().length() > 15) {
             throw new JSYException(-1, "店铺名太长");
         }
-        List<String> shopLogo = shopPacketParam.getShopLogo();
-        if (shopLogo.size() > 1) {
+        String[] split1 = shopPacketParam.getShopLogo().split(",");
+        if (split1.length>1) {
             throw new JSYException(-1, "照片只能上传1张");
         }
 
@@ -214,6 +215,9 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
     @Override
     public void setSetShop(NewShopSetParam shopSetParam) {
         NewShop newShop = shopMapper.selectById(shopSetParam.getId());
+        if (ObjectUtil.isNull(newShop)){
+            return ;
+        }
         BeanUtils.copyProperties(shopSetParam, newShop);
         System.out.println(newShop);
         shopMapper.updateById(newShop);
@@ -292,15 +296,6 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         }else {
             throw new JSYException(-1,"商品分类错误");
         }
-
-
-//        for (String s : split) {
-//            Tree tree = treeClient.getTree(Long.valueOf(s)).getData();
-//            shopTreeIdName = shopTreeIdName + "-" + tree.getName();
-//        }
-        //截取  第二个-  开始
-//        String s1= shopTreeIdName.substring(shopTreeIdName.indexOf("-", shopTreeIdName.indexOf("-") + 1));
-//        return s1.substring(1);
 
     }
 
@@ -468,8 +463,8 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         if (shopPacketParam.getShopName().length() > 15) {
             throw new JSYException(-1, "店铺名太长");
         }
-        List<String> shopLogo = shopPacketParam.getShopLogo();
-        if (shopLogo.size() > 1) {
+        String[] split1 = shopPacketParam.getShopLogo().split(",");
+        if (split1.length>1) {
             throw new JSYException(-1, "照片只能上传1张");
         }
 
@@ -531,10 +526,10 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
     @Override
     public NewShopSupportDto getSupport(Long shopId) {
         NewShop newShop = shopMapper.selectOne(new QueryWrapper<NewShop>().eq("id", shopId));
-        if (newShop==null){
-            throw new JSYException(-1,"店铺不存在");
-        }
         NewShopSupportDto suportDto = new NewShopSupportDto();
+        if (ObjectUtil.isNull(newShop)){
+            return suportDto;
+        }
         suportDto.setIsVirtualShop(newShop.getIsVirtualShop());
         suportDto.setIsVisitingService(newShop.getIsVisitingService());
         suportDto.setMobile(newShop.getMobile());

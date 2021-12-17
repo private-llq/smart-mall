@@ -1,4 +1,5 @@
 package com.jsy.controller;
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.client.HotClient;
@@ -12,14 +13,14 @@ import com.jsy.domain.SetMenu;
 import com.jsy.query.SetMenuQuery;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.jsy.basic.util.vo.CommonResult;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -91,7 +92,11 @@ public class SetMenuController {
     @GetMapping(value = "/getMenuId")
     public CommonResult<List<SetMenuListDto>> getMenuId(@RequestParam("setMenuId")Long setMenuId){
         List<SetMenuListDto> setMenuListDto = setMenuService.getMenuId(setMenuId);
-        return  CommonResult.ok(setMenuListDto);
+        if (setMenuListDto.size()<=0){
+            return new CommonResult<>(-1,"套餐为空",null);
+        }else {
+            return  CommonResult.ok(setMenuListDto);
+        }
 
     }
     /**
@@ -101,7 +106,13 @@ public class SetMenuController {
     @GetMapping(value = "/SetMenuList")
     public CommonResult<SetMenuDto> SetMenuList(@RequestParam("id")Long id){
         SetMenuDto setMenulist = setMenuService.getSetMenulist(id);
-        return CommonResult.ok(setMenulist);
+        if (ObjectUtil.isNull(setMenulist)){
+            System.out.println("ddd");
+            return new CommonResult<>(-1,"套餐为空",null);
+        }else {
+            System.out.println("ccc");
+            return CommonResult.ok(setMenulist);
+        }
     }
 
     /**

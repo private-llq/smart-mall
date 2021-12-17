@@ -165,13 +165,14 @@ public class ShopAuditServiceImpl extends ServiceImpl<ShopAuditMapper, ShopAudit
         if (split.length<=2){
             //医疗
             Tree data = treeClient.getTree(Long.valueOf(split[split.length-1])).getData();
-            System.out.println("医疗");
             return data.getName();
         }else {
             //其他
             String id = split[split.length-1];
             Tree data1= treeClient.getTree(Long.valueOf(split[split.length-1])).getData();
+            System.out.println(data1);
             Tree data2= treeClient.getTree(Long.valueOf(split[split.length-2])).getData();
+            System.out.println(data1);
             System.out.println("其他");
             return data2.getName()+"-"+data1.getName();
         }
