@@ -100,7 +100,7 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
 
     @Override
     public SetMenuDto getSetMenulist(Long id) {
-        SetMenu setMenu = setMenuMapper.selectOne(new QueryWrapper<SetMenu>().eq("id", id).eq("is_disable",0));
+        SetMenu setMenu = setMenuMapper.selectOne(new QueryWrapper<SetMenu>().eq("id", id).eq("is_disable",0).eq("state",1));
 
         SetMenuDto setMenuDto = new SetMenuDto();
         if (ObjectUtil.isNull(setMenu)){

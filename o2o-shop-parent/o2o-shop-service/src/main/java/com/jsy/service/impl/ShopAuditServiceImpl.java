@@ -3,6 +3,7 @@ package com.jsy.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jsy.basic.util.MyPageUtils;
 import com.jsy.basic.util.PageInfo;
+import com.jsy.client.GoodsClient;
 import com.jsy.client.SetMenuClient;
 import com.jsy.client.TreeClient;
 import com.jsy.domain.Tree;
@@ -52,6 +53,8 @@ public class ShopAuditServiceImpl extends ServiceImpl<ShopAuditMapper, ShopAudit
     private TreeClient treeClient;
     @Resource
     private SetMenuClient setMenuClient;
+    @Resource
+    private GoodsClient goodsClient;
     @Override
     public boolean addAudit(NewShopAuditParam auditParam) {
         NewShop newShop = shopMapper.selectById(auditParam.getShopId());
