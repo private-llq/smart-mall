@@ -64,12 +64,13 @@
         )
         ) * 1000
         )
-        ) as d  from w_new_shop t1 where id = s.shop_id
+        ) as d  from w_new_shop t1 where id = g.shop_id
         ) as distance
-
-        FROM w_goods s WHERE type=1 AND deleted=0 AND is_putaway=1 AND state=0
+        FROM w_goods g  LEFT JOIN w_new_shop s ON s.id=g.shop_id
+        WHERE g.type=1 AND g.deleted=0 AND g.is_putaway=1 AND g.state=0
+        and FIND_IN_SET(6,s.shop_tree_id)>0
         <if test="shopQuery.keyword !=null and shopQuery.keyword !=''">
-            AND s.title LIKE CONCAT('%',#{shopQuery.keyword,jdbcType=VARCHAR},'%')
+            AND g.title LIKE CONCAT('%',#{shopQuery.keyword,jdbcType=VARCHAR},'%')
         </if>
         ORDER BY distance limit 0,5
     </select>

@@ -114,10 +114,10 @@ public class SetMenuController {
     }
 
     /**
-     * 查询商家 上架或下架套餐  禁用的套餐
+     * 查大后台询商家 上架或下架套餐  禁用的套餐
      * @return
      */
-    @ApiOperation("查询商家 上架或下架套餐")
+    @ApiOperation("大后台查询商家 上架或下架套餐")
     @PostMapping(value = "/list")
     public CommonResult<PageInfo<SetMenuDto>> list(@RequestBody SetMenuQuery setMenuQuery){
 //        Long shopId= 1L;
@@ -126,7 +126,7 @@ public class SetMenuController {
     }
 
     /**
-     * 查询所有套餐列表
+     * C端查询所有套餐列表
      * @return
      */
     @ApiOperation("C端查询商家所有发布的套餐")
@@ -138,7 +138,7 @@ public class SetMenuController {
     }
 
     /**
-     * 修改店铺类所有套餐   上下架 或禁用套餐
+     * 通过店铺修改所有套餐  的 上下架 或禁用状态
      * @return
      */
     @ApiOperation("修改所有套餐上下架、或禁用套餐")

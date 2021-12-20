@@ -112,7 +112,7 @@ public class NewShopController {
      /**
       * @author Tian
       * @since 2021/12/1-11:53
-      * @description 预览门店基本信息
+      * @description 预览门店基本信息 B端
       **/
     @PostMapping(value = "/selectBasic")
     public CommonResult<NewShopBasicDto> selectBasic(@RequestParam("shopId") Long shopId){
@@ -149,7 +149,7 @@ public class NewShopController {
     }
 
     /**
-    * 根据id查询一条
+    * 根据id查询一条  B端
     * @param shopId
     */
     @GetMapping(value = "/get")
@@ -184,7 +184,7 @@ public class NewShopController {
         return CommonResult.ok(newShopDtos);
     }
 
-    @ApiOperation("通过店铺id预览店铺基本信息")
+    @ApiOperation("通过店铺id预览店铺基本信息  B端")
     @RequestMapping(value = "/getPreviewDto",method = RequestMethod.GET)
     public CommonResult<NewShopPreviewDto> getPreviewDto(@RequestParam("shopId") Long shopId){
         NewShopPreviewDto newShopPreviewDto = newShopService.getPreviewDto(shopId);
@@ -209,7 +209,7 @@ public class NewShopController {
     public CommonResult<NewShopSetDto> getSetShop(@RequestParam("shopId") Long shopId){
         NewShop newShop = newShopService.getById(shopId);
         NewShopSetDto newShopSetDto = new NewShopSetDto();
-        if (ObjectUtil.isNull(newShop)){
+        if (ObjectUtil.isNull(newShop)||newShop.getShielding()==1){
             return new CommonResult(-1,"店铺不存在",null);
         }
         BeanUtils.copyProperties(newShop,newShopSetDto);
@@ -220,7 +220,7 @@ public class NewShopController {
         return CommonResult.ok(newShopSetDto);
     }
 
-    @ApiOperation("根据店铺id修改店铺设置")
+    @ApiOperation("根据店铺id修改店铺设置+C端")
     @RequestMapping(value = "/setSetShop",method = RequestMethod.POST)
     public CommonResult setSetShop(@RequestBody NewShopSetParam shopSetParam){
         try {
@@ -241,17 +241,13 @@ public class NewShopController {
      @LoginIgnore
      @RequestMapping(value = "/getSupport",method = RequestMethod.GET)
      public CommonResult getSupport(@RequestParam("shopId") Long shopId){
-         try {
+
              NewShopSupportDto suportDto = newShopService.getSupport(shopId);
              if (ObjectUtil.isNull(suportDto)){
                  return new CommonResult(-1,"店铺不存在",null);
              }else {
                  return CommonResult.ok(suportDto);
              }
-         } catch (Exception e) {
-             e.printStackTrace();
-             return  CommonResult.error(-1,"查询失败！");
-         }
      }
 
 

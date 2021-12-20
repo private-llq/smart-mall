@@ -1,5 +1,6 @@
 package com.jsy.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jsy.basic.util.MyPageUtils;
 import com.jsy.basic.util.PageInfo;
@@ -99,11 +100,12 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
 
     @Override
     public SetMenuDto getSetMenulist(Long id) {
-        SetMenu setMenu = setMenuMapper.selectOne(new QueryWrapper<SetMenu>().eq("id", id));
+        SetMenu setMenu = setMenuMapper.selectOne(new QueryWrapper<SetMenu>().eq("id", id).eq("is_disable",0));
 
         SetMenuDto setMenuDto = new SetMenuDto();
-        if (setMenu==null){
-            return setMenuDto;
+        if (ObjectUtil.isNull(setMenu)){
+            System.out.println("taoc");
+         throw  new JSYException(-1,"套餐不存在");
         }
         //套餐访问量+1
         setMenu.setPvNum(setMenu.getPvNum()+1);
@@ -113,8 +115,6 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
             );
 
         List<SetMenuGoodsDto> menuGoodsDtoList = new ArrayList<>();
-
-
         for (SetMenuGoods setMenuGoods : setMenuGoodsList) {
                 Goods goods = goodsMapper.selectOne(new QueryWrapper<Goods>().eq("id", setMenuGoods.getGoodsIds()));
                 if (goods==null){
@@ -314,9 +314,11 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
     public Boolean setState(SetMenuQuery setMenuQuery) {
         if (setMenuQuery.getState()!=null){
             setMenuMapper.setAllState(setMenuQuery);
+            hotClient.getHotGoods(setMenuQuery.getSetMenuId());
         }
         if (setMenuQuery.getIsDisable()!=null){
             setMenuMapper.setAllDisable(setMenuQuery);
+            hotClient.getHotGoods(setMenuQuery.getSetMenuId());
         }
         return true;
     }

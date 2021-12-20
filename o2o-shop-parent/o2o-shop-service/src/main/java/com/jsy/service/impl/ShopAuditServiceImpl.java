@@ -95,7 +95,7 @@ public class ShopAuditServiceImpl extends ServiceImpl<ShopAuditMapper, ShopAudit
     public boolean updateShielding(NewShopAuditParam auditParam) {
         NewShop newShop = shopMapper.selectById(auditParam.getShopId());
         SetMenuQuery setMenuQuery = new SetMenuQuery();
-        //店铺被屏蔽之后 下架所有套餐
+        //店铺被屏蔽之后 禁用所有套餐
         setMenuQuery.setIsDisable(1);
         setMenuQuery.setShopId(auditParam.getShopId());
         ShopAudit shopAudit = auditMapper.selectOne(new QueryWrapper<ShopAudit>()
@@ -114,12 +114,16 @@ public class ShopAuditServiceImpl extends ServiceImpl<ShopAuditMapper, ShopAudit
             //重新设置缓存
             List<HotGoods> hotGoodsList = hotGoodsMapper.selectList(null);
             redisUtils.setHotGoods(hotGoodsList,time);
+            //店铺被屏蔽之后 下架所有套餐
+            setMenuQuery.setIsDisable(1);
 
         }
         if (shopAudit==null||shopAudit!=null&&shopAudit.getShieldingReason()!=null){
             //屏蔽状态 0未屏蔽  1已屏蔽
             if (auditParam.getShielding()==0){
                 newShop.setShielding(0);
+                //店铺取消屏蔽之后 上架架所有套餐
+                setMenuQuery.setIsDisable(0);
             }else if(auditParam.getShielding()==1){
                 ShopAudit shopAudit1 = new ShopAudit();
                 newShop.setShielding(1);
@@ -129,11 +133,15 @@ public class ShopAuditServiceImpl extends ServiceImpl<ShopAuditMapper, ShopAudit
                 shopAudit1.setUserId(id);
                 setMenuClient.setState(setMenuQuery);
                 auditMapper.insert(shopAudit1);
+                //店铺被屏蔽之后 下架所有套餐
+                setMenuQuery.setIsDisable(1);
             }
         }else {
             //屏蔽状态 0未屏蔽  1已屏蔽
             if (auditParam.getShielding()==0){
                 newShop.setState(0);
+                //店铺取消屏蔽之后 上架架所有套餐
+                setMenuQuery.setIsDisable(0);
             }else if(auditParam.getShielding()==1){
                 newShop.setShielding(1);
                 shopAudit.setShopId(auditParam.getShopId());
@@ -141,8 +149,11 @@ public class ShopAuditServiceImpl extends ServiceImpl<ShopAuditMapper, ShopAudit
                 Long id = ContextHolder.getContext().getLoginUser().getId();
                 shopAudit.setUserId(id);
                 auditMapper.updateById(shopAudit);
+                //店铺被屏蔽之后 下架所有套餐
+                setMenuQuery.setIsDisable(1);
             }
         }
+        setMenuClient.setState(setMenuQuery);
         shopMapper.updateById(newShop);
         return true;
     }

@@ -66,6 +66,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
 //    private StringRedisTemplate redisTemplate;
 //    @Resource
 //    private RedisUtils redisUtils;
+//    private  final int shopType = 1;
 
     /**
      * @param shopPacketParam
@@ -139,7 +140,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
     @Override
     public NewShopPreviewDto getPreviewDto(Long shopId) {
         NewShop newShop = shopMapper.selectById(shopId);
-        if (newShop==null){
+        if (newShop==null|| newShop.getShielding()==1){
             throw new JSYException(-1,"店铺为空");
         }
         NewShopPreviewDto newShopPreviewDto = new NewShopPreviewDto();
@@ -440,6 +441,9 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
 //        if (newShop.getState()==3){
 //
 //        }
+        if (newShop.getShielding()==1){
+            throw new JSYException(-1,"店铺不存在");
+        }
         NewShopBasicDto basicDto = new NewShopBasicDto();
         BeanUtils.copyProperties(newShop,basicDto);
         try {
@@ -534,6 +538,9 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
     @Override
     public NewShopSupportDto getSupport(Long shopId) {
         NewShop newShop = shopMapper.selectOne(new QueryWrapper<NewShop>().eq("id", shopId));
+        if (newShop.getShielding()==1){
+            throw new JSYException(-1,"店铺不存在");
+        }
         NewShopSupportDto suportDto = new NewShopSupportDto();
         if (ObjectUtil.isNull(newShop)){
             return suportDto;
