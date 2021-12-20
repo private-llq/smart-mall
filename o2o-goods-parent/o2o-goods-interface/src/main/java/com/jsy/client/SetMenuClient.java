@@ -33,6 +33,6 @@ public interface SetMenuClient {
     CommonResult<SetMenuDto> SetMenuList(@RequestParam("id")Long id);
 
     @ApiOperation("修改上下架、或禁用套餐")
-    @PostMapping(value = "/setState")
+    @PostMapping(value = "/setMenu/setState")
     CommonResult setState(@RequestBody SetMenuQuery setMenuQuery);
 }
