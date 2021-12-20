@@ -318,8 +318,8 @@ public class GoodsController {
      * 商家被禁用，同步禁用商家的商品和服务
      */
     @GetMapping("/disableAll")
-    public CommonResult disableAll(@RequestParam("shopId") Long shopId){
-         goodsService.disableAll(shopId);
+    public CommonResult disableAll(@RequestParam("shopId") Long shopId,@RequestParam("type") Integer type){
+         goodsService.disableAll(shopId,type);
         return CommonResult.ok();
     }
 }

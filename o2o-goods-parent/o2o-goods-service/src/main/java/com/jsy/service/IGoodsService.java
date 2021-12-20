@@ -171,5 +171,5 @@ public interface IGoodsService extends IService<Goods> {
     /**
      * 商家被禁用，同步禁用商家的商品和服务
      */
-    void disableAll(Long shopId);
+    void disableAll(Long shopId,Integer type);
 }

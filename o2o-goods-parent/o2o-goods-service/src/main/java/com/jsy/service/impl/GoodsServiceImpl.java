@@ -607,8 +607,14 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
      */
     @Override
     @Transactional
-    public void disableAll(Long shopId) {
-        goodsMapper.update(null,new UpdateWrapper<Goods>().eq("shop_id",shopId).set("state",1));
+    public void disableAll(Long shopId,Integer type) {
+        if (type==0){//禁用
+            goodsMapper.update(null,new UpdateWrapper<Goods>().eq("shop_id",shopId).set("state",1));
+        }
+        if (type==1){//取消禁用
+            goodsMapper.update(null,new UpdateWrapper<Goods>().eq("shop_id",shopId).set("state",0));
+        }
+
     }
 
 

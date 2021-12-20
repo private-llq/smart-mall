@@ -30,7 +30,7 @@
         <if test="query.keyword !=null and query.keyword !=''">
             AND t1.title LIKE CONCAT('%',#{query.keyword,jdbcType=VARCHAR},'%')
         </if>
-        AND t1.title LIKE CONCAT('%',1,'%')
+        AND t1.title LIKE CONCAT('%',#{query.keyword},'%')
     </select>
 
 </mapper>
