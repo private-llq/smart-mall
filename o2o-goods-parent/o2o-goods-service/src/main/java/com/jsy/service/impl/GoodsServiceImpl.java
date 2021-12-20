@@ -614,7 +614,6 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         if (type==1){//取消禁用
             goodsMapper.update(null,new UpdateWrapper<Goods>().eq("shop_id",shopId).set("state",0));
         }
-
     }
 
 
