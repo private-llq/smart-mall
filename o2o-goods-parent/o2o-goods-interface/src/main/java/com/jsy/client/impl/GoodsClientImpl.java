@@ -53,7 +53,8 @@ public class GoodsClientImpl implements GoodsClient {
     }
 
     @Override
-    public CommonResult disableAll(Long shopId) {
+    public CommonResult disableAll(Long shopId, Integer type) {
         return null;
     }
+
 }

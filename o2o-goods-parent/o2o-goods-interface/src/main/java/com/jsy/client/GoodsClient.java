@@ -74,7 +74,8 @@ public interface GoodsClient {
 
     /**
      * 商家被禁用，同步禁用商家的商品和服务
+     * type 0 禁用  1 取消
      */
-    @GetMapping("/goods/disableAll")
-    CommonResult disableAll(@RequestParam("shopId") Long shopId);
+    @GetMapping("/disableAll")
+    CommonResult disableAll(@RequestParam("shopId") Long shopId,@RequestParam("type") Integer type);
 }
