@@ -427,6 +427,17 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
         }
     }
 
+    /**
+     * 列表删除多条收藏记录
+     * @param ids
+     * @return
+     */
+    @Override
+    @Transactional
+    public void delMultiUserCollect(List<Long> ids) {
+        userCollectMapper.deleteBatchIds(ids);
+    }
+
 
     private String getShopTreeIdName(String[] split) {
         String shopTreeIdName = "";

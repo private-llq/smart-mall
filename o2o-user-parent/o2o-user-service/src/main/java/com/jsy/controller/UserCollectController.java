@@ -1,13 +1,12 @@
 package com.jsy.controller;
 import com.jsy.basic.util.PageInfo;
+import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.domain.UserCollect;
-import com.jsy.dto.userCollectDto;
 import com.jsy.param.UserCollectParam;
-import com.jsy.service.IUserCollectService;
 import com.jsy.query.UserCollectQuery;
+import com.jsy.service.IUserCollectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import com.jsy.basic.util.vo.CommonResult;
 
 import java.util.List;
 
@@ -45,6 +44,16 @@ public class UserCollectController {
     @DeleteMapping(value="/delUserCollect")
     public CommonResult delUserCollect(@RequestParam("id") Long id){
         userCollectService.removeById(id);
+        return CommonResult.ok();
+    }
+    /**
+     * 列表删除多条收藏记录
+     * @param ids
+     * @return
+     */
+    @DeleteMapping(value="/delMultiUserCollect")
+    public CommonResult delMultiUserCollect( @RequestBody List<Long> ids){
+        userCollectService.delMultiUserCollect(ids);
         return CommonResult.ok();
     }
 

@@ -51,4 +51,9 @@ public class GoodsClientImpl implements GoodsClient {
     public CommonResult<List<GoodsServiceDto>> NearTheService2(NearTheServiceQuery nearTheServiceQuery) {
         return null;
     }
+
+    @Override
+    public CommonResult disableAll(Long shopId) {
+        return null;
+    }
 }

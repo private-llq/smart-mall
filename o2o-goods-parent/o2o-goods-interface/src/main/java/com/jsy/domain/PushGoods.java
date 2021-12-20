@@ -73,4 +73,13 @@ public class PushGoods extends BaseEntity implements Serializable {
     @TableField(exist = false)
     private Long sums=0L;
 
+    /**
+     * 经度
+     */
+    private BigDecimal longitude;
+    /**
+     * 维度
+     */
+    private BigDecimal latitude;
+
 }

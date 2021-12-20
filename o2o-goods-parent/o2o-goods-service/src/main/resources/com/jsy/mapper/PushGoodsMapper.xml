@@ -23,5 +23,14 @@
     <select id="sumGoodsSales" resultType="java.lang.Long">
         SELECT SUM(amount) as sums FROM w_order_goods WHERE  deleted=0  AND order_id IN (SELECT id FROM w_new_order WHERE server_code_status=1 AND deleted=0 and order_type=1) AND goods_id=#{goodsId}
     </select>
+    <select id="pageListPushGoods" resultType="com.jsy.domain.PushGoods">
+        SELECT * FROM w_push_goods t1 WHERE
+        round ( ( 6378.138 * 2 * ASIN( SQRT( POW( SIN( ( #{query.latitude} * PI( ) / 180 - t1.latitude * PI( ) / 180 ) / 2 ), 2 ) + COS( #{query.latitude} * PI( ) / 180 ) * COS( t1.latitude * PI( ) / 180 ) * POW( SIN( ( #{query.longitude} * PI( ) / 180 - t1.longitude * PI( ) / 180 ) / 2 ), 2 ) ) ) * 1000 ) ) &lt; 3000
+        AND deleted=0
+        <if test="query.keyword !=null and query.keyword !=''">
+            AND t1.title LIKE CONCAT('%',#{query.keyword,jdbcType=VARCHAR},'%')
+        </if>
+        AND t1.title LIKE CONCAT('%',1,'%')
+    </select>
 
 </mapper>
