@@ -11,10 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * 文件服务访问路径 服务器地址/端口号/存储桶/文件名
