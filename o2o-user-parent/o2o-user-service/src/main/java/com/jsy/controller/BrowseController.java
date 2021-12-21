@@ -38,7 +38,8 @@ public class BrowseController {
     */
     @PostMapping(value="/save")
     public CommonResult save(@RequestBody Browse browse){
-        Browse serviceOne = browseService.getOne(new QueryWrapper<Browse>().eq("goods_id", browse.getGoodsId()));
+        Long id = ContextHolder.getContext().getLoginUser().getId();
+        Browse serviceOne = browseService.getOne(new QueryWrapper<Browse>().eq("goods_id", browse.getGoodsId()).eq("user_id",id));
         try {
             if(ObjectUtil.isNotNull(serviceOne)){
                 browseService.updateById(serviceOne);
