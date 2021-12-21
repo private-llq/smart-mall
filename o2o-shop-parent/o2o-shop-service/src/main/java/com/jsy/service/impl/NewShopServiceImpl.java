@@ -570,6 +570,8 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         NewShopDistanceDto distanceDto = new NewShopDistanceDto();
         BeanUtils.copyProperties(newShop,distanceDto);
         distanceDto.setDistance(df.format(distance / 1000)+"km");
+        String imId = ContextHolder.getContext().getLoginUser().getImId();
+       distanceDto.setImId(imId);
         return distanceDto;
     }
 
@@ -632,7 +634,6 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
             }
         }
         serviceDto.setGoodsList(goodsList);
-
         return serviceDto;
     }
 

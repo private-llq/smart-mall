@@ -112,7 +112,22 @@
         </if>
     </select>
     <select id="selectHot" resultType="com.jsy.dto.NewShopHotDto">
-        SELECT * FROM pv_num WHERE id IN(SELECT id FROM sv_num)
+        SELECT id,shop_id,title,images,price,discount_price,discount_state,service_characteristics_ids,pv_num,CONCAT(type) as type FROM w_goods
+        WHERE id IN
+              (
+                  SELECT id FROM sv_num
+                  UNION
+                  SELECT id FROM pv_num
+              )
+        UNION
+        SELECT id,shop_id,name,images,real_price,selling_price,discount_state,service_characteristics_ids,pv_num,CONCAT(2) as type FROM w_set_menu
+        WHERE id IN
+              (
+                  SELECT id FROM sv_num
+                  UNION
+                  SELECT id FROM pv_num
+              )
+
     </select>
 <!--店铺名称和法人姓名-->
       <select id="selectAuitPage" resultType="com.jsy.parameter.NewShopBackstageDto">

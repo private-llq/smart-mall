@@ -4,6 +4,8 @@ import com.jsy.domain.Browse;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * <p>
  *  Mapper 接口
@@ -15,4 +17,6 @@ import org.apache.ibatis.annotations.Param;
 public interface BrowseMapper extends BaseMapper<Browse> {
     //彻底删除浏览记录
     Boolean deleteBrowse(@Param("id") Long id);
+    //批量删除
+    void delList(@Param("userId") Long userId, @Param("stringList") List<Long> stringList);
 }

@@ -18,6 +18,7 @@ import com.jsy.basic.util.PageList;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhsj.basecommon.vo.R;
 import com.zhsj.baseweb.annotation.LoginIgnore;
+import com.zhsj.baseweb.support.ContextHolder;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -216,6 +217,9 @@ public class NewShopController {
         SelectShopCommentScoreDto data = commentClent.selectShopCommentScore(shopId).getData();
         newShopSetDto.setScore(data.getScore());
         newShopSetDto.setSize(data.getSize());
+        String imId = ContextHolder.getContext().getLoginUser().getImId();
+        newShopSetDto.setImId(imId);
+
 
         return CommonResult.ok(newShopSetDto);
     }
@@ -287,7 +291,6 @@ public class NewShopController {
 
 
     @ApiOperation("C端查询店铺的距离多远")
-    @LoginIgnore
     @PostMapping("/getDistance")
     public CommonResult<NewShopDistanceDto> getDistance(@RequestBody NewShopDistanceParam distanceParam){
         NewShopDistanceDto distanceDto =  newShopService.getDistance(distanceParam);

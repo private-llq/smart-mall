@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jsy.basic.util.MyPageUtils;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.client.GoodsClient;
+import com.jsy.client.HotClient;
 import com.jsy.client.SetMenuClient;
 import com.jsy.client.TreeClient;
 import com.jsy.domain.Tree;
@@ -55,6 +56,8 @@ public class ShopAuditServiceImpl extends ServiceImpl<ShopAuditMapper, ShopAudit
     private SetMenuClient setMenuClient;
     @Resource
     private GoodsClient goodsClient;
+    @Resource
+    private HotClient hotClient;
     @Override
     public boolean addAudit(NewShopAuditParam auditParam) {
         NewShop newShop = shopMapper.selectById(auditParam.getShopId());
@@ -119,6 +122,10 @@ public class ShopAuditServiceImpl extends ServiceImpl<ShopAuditMapper, ShopAudit
             redisUtils.setHotGoods(hotGoodsList,time);
             //店铺被屏蔽之后 下架所有套餐
             setMenuQuery.setIsDisable(1);
+            //禁用所以商品和服务
+            goodsClient.disableAll(auditParam.getShopId(),0);
+            //更新热门数据
+            hotClient.getHotShop(auditParam.getShopId());
 
         }
         if (shopAudit==null||shopAudit!=null&&shopAudit.getShieldingReason()!=null){
@@ -127,6 +134,8 @@ public class ShopAuditServiceImpl extends ServiceImpl<ShopAuditMapper, ShopAudit
                 newShop.setShielding(0);
                 //店铺取消屏蔽之后 上架架所有套餐
                 setMenuQuery.setIsDisable(0);
+                //取消禁用所以商品和服务
+                goodsClient.disableAll(auditParam.getShopId(),1);
             }else if(auditParam.getShielding()==1){
                 ShopAudit shopAudit1 = new ShopAudit();
                 newShop.setShielding(1);
@@ -138,6 +147,10 @@ public class ShopAuditServiceImpl extends ServiceImpl<ShopAuditMapper, ShopAudit
                 auditMapper.insert(shopAudit1);
                 //店铺被屏蔽之后 下架所有套餐
                 setMenuQuery.setIsDisable(1);
+                //禁用所以商品和服务
+                goodsClient.disableAll(auditParam.getShopId(),0);
+                //更新热门数据
+                hotClient.getHotShop(auditParam.getShopId());
             }
         }else {
             //屏蔽状态 0未屏蔽  1已屏蔽
@@ -145,6 +158,8 @@ public class ShopAuditServiceImpl extends ServiceImpl<ShopAuditMapper, ShopAudit
                 newShop.setState(0);
                 //店铺取消屏蔽之后 上架架所有套餐
                 setMenuQuery.setIsDisable(0);
+                //取消禁用所以商品和服务
+                goodsClient.disableAll(auditParam.getShopId(),1);
             }else if(auditParam.getShielding()==1){
                 newShop.setShielding(1);
                 shopAudit.setShopId(auditParam.getShopId());
@@ -154,6 +169,10 @@ public class ShopAuditServiceImpl extends ServiceImpl<ShopAuditMapper, ShopAudit
                 auditMapper.updateById(shopAudit);
                 //店铺被屏蔽之后 下架所有套餐
                 setMenuQuery.setIsDisable(1);
+                //禁用所以商品和服务
+                goodsClient.disableAll(auditParam.getShopId(),0);
+                //更新热门数据
+                hotClient.getHotShop(auditParam.getShopId());
             }
         }
         setMenuClient.setState(setMenuQuery);
@@ -196,8 +215,6 @@ public class ShopAuditServiceImpl extends ServiceImpl<ShopAuditMapper, ShopAudit
             Tree data1= treeClient.getTree(Long.valueOf(split[split.length-1])).getData();
             System.out.println(data1);
             Tree data2= treeClient.getTree(Long.valueOf(split[split.length-2])).getData();
-            System.out.println(data1);
-            System.out.println("其他");
             return data2.getName()+"-"+data1.getName();
         }
 
