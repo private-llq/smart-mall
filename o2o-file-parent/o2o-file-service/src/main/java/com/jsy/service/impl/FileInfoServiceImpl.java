@@ -144,5 +144,10 @@ public class FileInfoServiceImpl extends ServiceImpl<FileInfoMapper, FileInfo> i
        return MinioUtil.uploadGetUrl(file);
     }
 
+    @Override
+    public Map<Object, String> uploadGetUrls(MultipartFile[] file) {
+        return MinioUtil.uploadGetUrls(file);
+    }
+
 
 }

@@ -30,4 +30,6 @@ public interface IFileInfoService extends IService<FileInfo> {
     Map<String, String> getUrlByList(List<String> picList);
 
     String uploadFile2(MultipartFile file);
+//批量上传
+    Map<Object, String> uploadGetUrls(MultipartFile[] file);
 }
