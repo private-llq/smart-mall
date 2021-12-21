@@ -23,6 +23,7 @@ import com.jsy.query.NearTheServiceQuery;
 import com.jsy.query.NewShopQuery;
 import com.jsy.service.INewShopService;
 import com.jsy.service.IUserSearchHistoryService;
+import com.zhsj.base.api.rpc.IBaseAuthRpcService;
 import com.zhsj.baseweb.annotation.LoginIgnore;
 import com.zhsj.baseweb.support.ContextHolder;
 import com.zhsj.baseweb.support.LoginUser;
@@ -571,6 +572,8 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         NewShopDistanceDto distanceDto = new NewShopDistanceDto();
         BeanUtils.copyProperties(newShop,distanceDto);
         distanceDto.setDistance(df.format(distance / 1000)+"km");
+        String imId = ContextHolder.getContext().getLoginUser().getImId();
+       distanceDto.setImId(imId);
         return distanceDto;
     }
 
@@ -633,7 +636,6 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
             }
         }
         serviceDto.setGoodsList(goodsList);
-
         return serviceDto;
     }
 
