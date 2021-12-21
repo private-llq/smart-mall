@@ -4,6 +4,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.jsy.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -30,13 +31,22 @@ public class PushGoods extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "商家id")
+    @JsonSerialize(using = com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
     @JSONField(serializeUsing = ToStringSerializer.class)
     private Long shopId;
 
     @ApiModelProperty(value = "冗余字段 ：商店name")
     private String shopName;
 
+    /**
+     * 商品id
+     */
+    @JsonSerialize(using = com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
+    @JSONField(serializeUsing = ToStringSerializer.class)
+    private Long goodsId;
+
     @ApiModelProperty(value = "商品/服务 分类id")
+    @JsonSerialize(using = com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
     @JSONField(serializeUsing = ToStringSerializer.class)
     private Long goodsTypeId;
 
@@ -81,5 +91,11 @@ public class PushGoods extends BaseEntity implements Serializable {
      * 维度
      */
     private BigDecimal latitude;
+
+
+    /**
+     * type 0:商品 1：服务 2：套餐 3：商店
+     */
+    private Integer type;
 
 }

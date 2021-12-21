@@ -65,6 +65,9 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     @Autowired
     private HotClient hotClient;
 
+    @Autowired
+    private SetMenuClient setMenuClient;
+
 
 
     /**
@@ -236,6 +239,12 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         if (Objects.isNull(goods)){
             throw new JSYException(-1,"没有找到该商品！");
         }
+        if (goods.getState()==1){
+            throw new JSYException(-1,"该商品可能存在违规已被大后台禁用！");
+        }
+        if (goods.getIsPutaway()==0){
+            throw new JSYException(-1,"该商品处于下架状态！");
+        }
             //添加商品访问量
             long pvNum = goods.getPvNum() + 1;
             goodsMapper.update(null,new UpdateWrapper<Goods>().eq("id",id).set("pv_num",pvNum));
@@ -276,7 +285,13 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         if (Objects.isNull(goods)){
             throw new JSYException(-1,"没有找到该服务！");
         }
-            //添加服务访问量
+        if (goods.getState()==1){
+            throw new JSYException(-1,"该服务可能存在违规已被大后台禁用！");
+        }
+        if (goods.getIsPutaway()==0){
+            throw new JSYException(-1,"该服务处于下架状态！");
+        }
+        //添加服务访问量
             long pvNum = goods.getPvNum() + 1;
             goodsMapper.update(null,new UpdateWrapper<Goods>().eq("id",id).set("pv_num",pvNum));
             //添加一条用户的浏览记录
@@ -614,6 +629,40 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         if (type==1){//取消禁用
             goodsMapper.update(null,new UpdateWrapper<Goods>().eq("shop_id",shopId).set("state",0));
         }
+    }
+
+
+    /**
+     * 查询状态 ture 正常 false 不正常
+     * type ：0 商品  1:服务  2：套餐  3：商店
+     */
+    @Override
+    public Boolean selectState(Long id, Integer type) {
+        if (Objects.isNull(type)){
+            throw new JSYException(-1,"type不能为空！");
+        }
+        if (type==0 || type==1){
+            Goods goods = goodsMapper.selectOne(new QueryWrapper<Goods>().eq("id", id).eq("state", 0).eq("is_putaway", 1));
+            if (Objects.nonNull(goods)){
+                return true;
+            }
+            return false;
+        }
+        if (type==2){
+            SetMenuDto setMenu = setMenuClient.SetMenuList(id).getData();
+            if (setMenu.getState()==1||setMenu.getIsDisable()==0){
+                return true;
+            }
+            return false;
+        }
+        if (type==3){
+            NewShopDto newShop = shopClient.get(id).getData();
+            if (newShop.getShielding()==0){
+                return true;
+            }
+            return false;
+        }
+        return null;
     }
 
 

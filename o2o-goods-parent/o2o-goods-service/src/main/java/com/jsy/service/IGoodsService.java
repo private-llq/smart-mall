@@ -172,4 +172,10 @@ public interface IGoodsService extends IService<Goods> {
      * 商家被禁用，同步禁用商家的商品和服务
      */
     void disableAll(Long shopId,Integer type);
+
+    /**
+     * 查询状态 ture 正常 false 不正常
+     * type ：0 商品  1:服务  2：套餐  3：商店
+     */
+    Boolean selectState(Long id, Integer type);
 }

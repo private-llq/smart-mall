@@ -47,10 +47,13 @@
 <!--        WHERE s.create_time>=#{startDate} AND s.create_time <= #{endDate} AND s.state=#{state}-->
     </select>
     <select id="mainSearch" resultType="com.jsy.domain.NewShop">
-        SELECT * FROM w_new_shop WHERE shop_name LIKE CONCAT("%",#{keyword},"%") AND deleted = 0
-        UNION
+        SELECT * FROM w_new_shop WHERE shop_name LIKE CONCAT("%",#{keyword},"%") AND deleted = 0 AND shielding=0
+         UNION
         SELECT s.* FROM w_goods g LEFT JOIN w_new_shop s ON g.shop_id=s.id WHERE g.title like CONCAT("%",#{keyword},"%")
-        AND g.is_putaway=1  AND g.deleted = 0 AND s.deleted=0
+        AND g.is_putaway=1 AND g.state=0 AND g.deleted = 0 AND s.deleted=0 AND s.shielding=0
+         UNION
+        SELECT s.* FROM w_set_menu g LEFT JOIN w_new_shop s ON g.shop_id=s.id WHERE g.name like CONCAT("%",#{keyword},"%")
+        AND g.is_disable=0 AND g.state=1  AND g.deleted = 0 AND s.deleted=0 AND s.shielding=0
     </select>
 <!-- 查询距离 -->
     <select id="selectAddress" resultType="com.jsy.domain.NewShop">

@@ -1,15 +1,20 @@
 package com.jsy.utils;
 import com.alibaba.fastjson.JSONObject;
 import com.jsy.basic.util.exception.JSYException;
+import com.jsy.basic.util.utils.SnowFlake;
 import com.jsy.domain.FileInfo;
 import io.minio.MinioClient;
 import io.minio.ObjectStat;
 import io.minio.policy.PolicyType;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
  * 文件服务访问路径 服务器地址/端口号/存储桶/文件名
@@ -124,14 +129,13 @@ public class MinioUtil {
             String fileName = file.getOriginalFilename();
             String prefix=fileName.substring(fileName.lastIndexOf(".")+1);
             // 文件存储的目录结构
-            String uuid = UUID.randomUUID().toString();
-            String objectNameTemp = uuid +"-"+ prefix.replaceAll(",","");
-            String objectName=objectNameTemp;
+            String uuid = String.valueOf(SnowFlake.nextId());
+            String replaceAll = prefix.replaceAll(",", "");
+            String objectName=uuid+"-"+replaceAll;
             // 存储文件
             minioClient.putObject(BUCKETNAME, objectName, file.getInputStream(), file.getContentType());
             String filePath =BUCKETNAME + "/" + objectName;//文件路径就是 桶名/文件名
             String download_url=ENDPOINT+":"+PROT+"/"+filePath;//下载地址
-
             return download_url;
         }catch (Exception e){
             throw new JSYException(-1,"上传失败");

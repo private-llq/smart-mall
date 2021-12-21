@@ -23,7 +23,6 @@ import com.jsy.query.NearTheServiceQuery;
 import com.jsy.query.NewShopQuery;
 import com.jsy.service.INewShopService;
 import com.jsy.service.IUserSearchHistoryService;
-import com.zhsj.baseweb.annotation.LoginIgnore;
 import com.zhsj.baseweb.support.ContextHolder;
 import com.zhsj.baseweb.support.LoginUser;
 import org.springframework.beans.BeanUtils;
@@ -339,7 +338,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                throw new JSYException(-1,"商品fenc错误");
+                throw new JSYException(-1,"无法找到商家最新上架的商品！");
             }
             DecimalFormat df = new DecimalFormat("#0.00");
             Double distance = GouldUtil.GetDistance(Double.parseDouble(mainSearchQuery.getLatitude()),Double.parseDouble(mainSearchQuery.getLongitude()),newShop.getLatitude().doubleValue(),newShop.getLongitude().doubleValue());
