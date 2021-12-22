@@ -38,4 +38,6 @@ List<SetMenuListDto> getMenuId(Long setMenuId);
 
     //修改上下架 或禁用套餐
     Boolean setState(SetMenuQuery setMenuQuery);
+//修改单个商品上下架或禁用
+    Boolean setStateById(SetMenuQuery setMenuQuery);
 }
