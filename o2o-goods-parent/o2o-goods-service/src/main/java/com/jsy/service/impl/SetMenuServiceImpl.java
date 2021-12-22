@@ -309,7 +309,7 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
 //        BeansCopyUtils.copyListProperties(setMenus,SetMenuDto::new);
         return dtoList;
     }
-
+//修改店铺所有商家的商品上下架或禁用
     @Override
     public Boolean setState(SetMenuQuery setMenuQuery) {
         if (setMenuQuery.getState()!=null){
@@ -321,6 +321,30 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
             hotClient.getHotGoods(setMenuQuery.getSetMenuId());
         }
         return true;
+    }
+//修改单个商品上下架或禁用
+    @Override
+    public Boolean setStateById(SetMenuQuery setMenuQuery) {
+        SetMenu menu = setMenuMapper.selectById(setMenuQuery.getSetMenuId());
+        if (setMenuQuery.getState()!=null){
+            menu.setState(setMenuQuery.getState());
+            setMenuMapper.updateById(menu);
+            if (setMenuQuery.getState()==0){
+                //0下架 1上架
+                hotClient.getHotGoods(setMenuQuery.getSetMenuId());
+            }
+            return true;
+        }
+        if (setMenuQuery.getIsDisable()!=null){
+            menu.setIsDisable(setMenuQuery.getIsDisable());
+            setMenuMapper.updateById(menu);
+            if (setMenuQuery.getIsDisable()==1){
+                //套餐是否禁用 0不禁用 1禁用
+                hotClient.getHotGoods(setMenuQuery.getSetMenuId());
+            }
+            return true;
+        }
+        return false;
     }
 
 }

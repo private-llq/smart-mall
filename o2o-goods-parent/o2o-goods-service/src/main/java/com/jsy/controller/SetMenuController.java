@@ -174,7 +174,17 @@ public class SetMenuController {
         return CommonResult.ok(dtoList);
 
     }
-
+    @ApiOperation("修改单个商品上下架或禁用状态")
+    @PostMapping("/setStateById")
+    public CommonResult setStateById(@RequestBody SetMenuQuery setMenuQuery)
+    {
+        Boolean b = setMenuService.setStateById(setMenuQuery);
+        if (b){
+            return CommonResult.ok();
+        }else {
+            return new CommonResult(-1,"修改失败",null);
+        }
+    }
 
 
 }
