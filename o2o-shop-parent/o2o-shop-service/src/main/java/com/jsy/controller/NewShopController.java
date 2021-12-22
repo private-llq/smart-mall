@@ -16,6 +16,10 @@ import com.jsy.domain.NewShop;
 import com.jsy.query.NewShopQuery;
 import com.jsy.basic.util.PageList;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zhsj.base.api.constant.RpcConst;
+import com.zhsj.base.api.rpc.IBaseAuthRpcService;
+import com.zhsj.base.api.rpc.IBaseUserInfoRpcService;
+import com.zhsj.base.api.vo.UserImVo;
 import com.zhsj.basecommon.vo.R;
 import com.zhsj.baseweb.annotation.LoginIgnore;
 import com.zhsj.baseweb.support.ContextHolder;
@@ -23,6 +27,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +52,8 @@ public class NewShopController {
     private HotClient hotClient;
     @Resource
     private CommentClent commentClent;
+    @DubboReference(version = RpcConst.Rpc.VERSION, group = RpcConst.Rpc.Group.GROUP_BASE_USER, check = false)
+    private IBaseUserInfoRpcService iBaseUserInfoRpcService;
 
 
     /**
@@ -218,10 +225,8 @@ public class NewShopController {
         SelectShopCommentScoreDto data = commentClent.selectShopCommentScore(shopId).getData();
         newShopSetDto.setScore(data.getScore());
         newShopSetDto.setSize(data.getSize());
-        String imId = ContextHolder.getContext().getLoginUser().getImId();
+        String imId = iBaseUserInfoRpcService.getEHomeUserIm(newShop.getOwnerUuid()).getImId();
         newShopSetDto.setImId(imId);
-
-
         return CommonResult.ok(newShopSetDto);
     }
 
