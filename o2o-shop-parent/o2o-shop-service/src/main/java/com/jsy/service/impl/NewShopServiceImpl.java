@@ -275,6 +275,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
                         Goods goods = goodsClient.latelyGoods(newShop.getId()).getData();
             System.out.println(goods);
                         if (goods!=null){
+                            System.out.println("111111111111111111111111111111111111111111");
                             recommendDto.setTitle(goods.getTitle());
                             recommendDto.setPrice(goods.getPrice());
                             recommendDto.setShopLogo(newShop.getShopLogo());
