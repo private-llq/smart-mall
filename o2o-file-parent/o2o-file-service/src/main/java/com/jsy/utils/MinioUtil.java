@@ -129,7 +129,7 @@ public class MinioUtil {
             // 文件存储的目录结构
             String uuid = String.valueOf(SnowFlake.nextId());
             String replaceAll = prefix.replaceAll(",", "");
-            String objectName=uuid+"-"+replaceAll;
+            String objectName=uuid+"."+replaceAll;
             // 存储文件
             minioClient.putObject(BUCKETNAME, objectName, file.getInputStream(), file.getContentType());
             String filePath =BUCKETNAME + "/" + objectName;//文件路径就是 桶名/文件名
@@ -181,7 +181,7 @@ public class MinioUtil {
                 String prefix=fileName.substring(fileName.lastIndexOf(".")+1);
                 // 文件存储的目录结构
                 String uuid = UUID.randomUUID().toString();
-                String objectNameTemp = uuid +"-"+ prefix.replaceAll(",","");
+                String objectNameTemp = uuid +"."+ prefix.replaceAll(",","");
                 String objectName=objectNameTemp;
 
                 // 存储文件
