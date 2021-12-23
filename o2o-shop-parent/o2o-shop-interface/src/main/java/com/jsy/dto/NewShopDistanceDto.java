@@ -28,4 +28,10 @@ public class NewShopDistanceDto implements Serializable {
     private String businessAddress;
     @ApiModelProperty(value = "服务行业：1是服务行业  0 套餐行业")
     private Integer type;
+    @ApiModelProperty(value = "店铺联系电话")
+    private String mobile;
+    @ApiModelProperty(value = "店铺法人/经营者电话")
+    private String shopPhone;
+    @ApiModelProperty(value = "聊天账号")
+    private String imId;
 }

@@ -1,22 +1,18 @@
 package com.jsy.domain;
 
-import java.math.BigDecimal;
-
 import com.alibaba.fastjson.annotation.JSONField;
 import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.IdType;
-import java.time.LocalDateTime;
-import com.baomidou.mybatisplus.annotation.TableId;
-import java.io.Serializable;
-
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.jsy.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.springframework.data.elasticsearch.annotations.Field;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * <p>
@@ -35,13 +31,22 @@ public class PushGoods extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "商家id")
+    @JsonSerialize(using = com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
     @JSONField(serializeUsing = ToStringSerializer.class)
     private Long shopId;
 
     @ApiModelProperty(value = "冗余字段 ：商店name")
     private String shopName;
 
+    /**
+     * 商品id
+     */
+    @JsonSerialize(using = com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
+    @JSONField(serializeUsing = ToStringSerializer.class)
+    private Long goodsId;
+
     @ApiModelProperty(value = "商品/服务 分类id")
+    @JsonSerialize(using = com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
     @JSONField(serializeUsing = ToStringSerializer.class)
     private Long goodsTypeId;
 
@@ -60,6 +65,11 @@ public class PushGoods extends BaseEntity implements Serializable {
     @ApiModelProperty(value = "商品/服务 价格")
     private BigDecimal price;
 
+    /**
+     * 折扣状态
+     */
+    private Integer discountState;
+
     @ApiModelProperty(value = "商品/服务 折扣价格")
     private BigDecimal discountPrice;
 
@@ -72,5 +82,20 @@ public class PushGoods extends BaseEntity implements Serializable {
     @ApiModelProperty(value = "销量")
     @TableField(exist = false)
     private Long sums=0L;
+
+    /**
+     * 经度
+     */
+    private BigDecimal longitude;
+    /**
+     * 维度
+     */
+    private BigDecimal latitude;
+
+
+    /**
+     * type 0:商品 1：服务 2：套餐 3：商店
+     */
+    private Integer type;
 
 }

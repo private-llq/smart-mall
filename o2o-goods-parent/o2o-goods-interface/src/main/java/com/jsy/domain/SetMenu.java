@@ -78,4 +78,7 @@ public class SetMenu  extends BaseEntity {
 
     @ApiModelProperty(value = "是否开启折扣：0未开启 1开启")
     private Integer discountState;
+
+    @ApiModelProperty(value = "是否开启折扣：0不禁用 1禁用")
+    private Integer isDisable;
 }

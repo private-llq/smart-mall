@@ -1,16 +1,19 @@
 package com.jsy.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.jsy.basic.util.PageInfo;
-import com.jsy.basic.util.utils.BeansCopyUtils;
-import com.jsy.basic.util.vo.CommonResult;
-import com.jsy.domain.Goods;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.jsy.basic.util.PageInfo;
+import com.jsy.domain.Goods;
 import com.jsy.domain.Tree;
-import com.jsy.dto.*;
+import com.jsy.dto.BackstageGoodsDto;
+import com.jsy.dto.BackstageServiceDto;
+import com.jsy.dto.GoodsDto;
+import com.jsy.dto.GoodsServiceDto;
 import com.jsy.parameter.GoodsParam;
 import com.jsy.parameter.GoodsServiceParam;
-import com.jsy.query.*;
+import com.jsy.query.BackstageGoodsQuery;
+import com.jsy.query.BackstageServiceQuery;
+import com.jsy.query.GoodsPageQuery;
+import com.jsy.query.NearTheServiceQuery;
 
 import java.util.List;
 
@@ -164,4 +167,15 @@ public interface IGoodsService extends IService<Goods> {
      * 医疗端：附近的服务2
      */
     List<GoodsServiceDto> NearTheService2(NearTheServiceQuery nearTheServiceQuery);
+
+    /**
+     * 商家被禁用，同步禁用商家的商品和服务
+     */
+    void disableAll(Long shopId,Integer type);
+
+    /**
+     * 查询状态 ture 正常 false 不正常
+     * type ：0 商品  1:服务  2：套餐  3：商店
+     */
+    Boolean selectState(Long id, Integer type);
 }

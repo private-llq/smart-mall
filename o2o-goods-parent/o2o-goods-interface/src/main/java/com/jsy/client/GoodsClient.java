@@ -71,4 +71,11 @@ public interface GoodsClient {
      */
     @PostMapping("/goods/NearTheService2")
     CommonResult<List<GoodsServiceDto>> NearTheService2(@RequestBody NearTheServiceQuery nearTheServiceQuery);
+
+    /**
+     * 商家被禁用，同步禁用商家的商品和服务
+     * type 0 禁用  1 取消
+     */
+    @GetMapping("/goods/disableAll")
+    CommonResult disableAll(@RequestParam("shopId") Long shopId,@RequestParam("type") Integer type);
 }

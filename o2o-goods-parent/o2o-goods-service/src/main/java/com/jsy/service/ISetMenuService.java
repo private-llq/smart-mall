@@ -4,13 +4,11 @@ import com.jsy.basic.util.PageInfo;
 import com.jsy.domain.SetMenu;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jsy.dto.SetMenuDto;
-import com.jsy.dto.SetMenuGoodsDto;
 import com.jsy.dto.SetMenuListDto;
 import com.jsy.parameter.SetMenuParam;
 import com.jsy.query.SetMenuQuery;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>
@@ -37,4 +35,9 @@ List<SetMenuListDto> getMenuId(Long setMenuId);
     void updateSetMenu(SetMenuParam setMenu);
 //根据id批量查询
     List<SetMenuDto> batchIds(List<Long> ids);
+
+    //修改上下架 或禁用套餐
+    Boolean setState(SetMenuQuery setMenuQuery);
+//修改单个商品上下架或禁用
+    Boolean setStateById(SetMenuQuery setMenuQuery);
 }

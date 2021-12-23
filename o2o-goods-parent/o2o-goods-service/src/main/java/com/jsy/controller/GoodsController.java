@@ -1,22 +1,25 @@
 package com.jsy.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsy.basic.util.PageInfo;
+import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.client.HotClient;
+import com.jsy.domain.Goods;
 import com.jsy.domain.Tree;
-import com.jsy.dto.*;
+import com.jsy.dto.BackstageGoodsDto;
+import com.jsy.dto.BackstageServiceDto;
+import com.jsy.dto.GoodsDto;
+import com.jsy.dto.GoodsServiceDto;
 import com.jsy.parameter.GoodsParam;
 import com.jsy.parameter.GoodsServiceParam;
-import com.jsy.query.*;
+import com.jsy.query.BackstageGoodsQuery;
+import com.jsy.query.BackstageServiceQuery;
+import com.jsy.query.GoodsPageQuery;
+import com.jsy.query.NearTheServiceQuery;
 import com.jsy.service.IGoodsService;
-import com.jsy.domain.Goods;
-import com.zhsj.baseweb.annotation.LoginIgnore;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import com.jsy.basic.util.vo.CommonResult;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -310,5 +313,26 @@ public class GoodsController {
         List<GoodsServiceDto> list= goodsService.NearTheService2(nearTheServiceQuery);
         return CommonResult.ok(list);
     }
+
+    /**
+     * 商家被禁用，同步禁用商家的商品和服务
+     * type 0 禁用  1 取消
+     */
+    @GetMapping("/disableAll")
+    public CommonResult disableAll(@RequestParam("shopId") Long shopId,@RequestParam("type") Integer type){
+         goodsService.disableAll(shopId,type);
+        return CommonResult.ok();
+    }
+
+    /**
+     * 查询状态 ture 正常 false 不正常
+     * type ：0 商品  1:服务  2：套餐  3：商店
+     */
+    @GetMapping("/selectState")
+    public CommonResult<Boolean> selectState(@RequestParam("id") Long id,@RequestParam("type") Integer type){
+        Boolean state= goodsService.selectState(id,type);
+        return CommonResult.ok(state);
+    }
+
 }
 

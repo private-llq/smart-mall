@@ -155,7 +155,7 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
             cartEntity.setTitle(setMenu.getName());
             cartEntity.setPrice(setMenu.getRealPrice());
             cartEntity.setDiscountPrice(setMenu.getSellingPrice());
-            cartEntity.setImages(setMenu.getImages());
+            cartEntity.setImages(setMenu.getImages().split(",")[0]);
             cartEntity.setDiscountState(1);//套餐默认开启折扣
             cartEntity.setType(2);
             //cartEntity.setIsVisitingService(setMenu.getIsVisitingService());//是否支持上门服务
@@ -183,6 +183,25 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
                 .eq("user_id",userId)
                 .eq("shop_id",shoppingCartParam.getShopId())
         );
+    }
+
+
+    /**
+     * 用户勾选 清空购物车
+     */
+    @Override
+    @Transactional
+    public void optionClearCart(List<Long> shopIds) {
+        LoginUser loginUser = ContextHolder.getContext().getLoginUser();
+        if (Objects.isNull(loginUser)){
+            new JSYException(-1,"用户认证失败！");
+        }
+        for (Long shopId : shopIds) {
+            shoppingCartMapper.delete(new QueryWrapper<ShoppingCart>()
+                    .eq("user_id",loginUser.getId())
+                    .eq("shop_id",shopId));
+        }
+
     }
 
     /**
@@ -356,5 +375,7 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
         queryUserCartDto.setGoodsList(cartList);
         return queryUserCartDto;
     }
+
+
 
 }

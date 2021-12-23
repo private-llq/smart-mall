@@ -18,4 +18,9 @@ public class TreeClientImpl implements TreeClient {
     public CommonResult<Tree> getTree(Long id) {
         return null;
     }
+
+    @Override
+    public CommonResult<String> getParentTreeAll(Long id) {
+        return null;
+    }
 }

@@ -47,10 +47,13 @@
 <!--        WHERE s.create_time>=#{startDate} AND s.create_time <= #{endDate} AND s.state=#{state}-->
     </select>
     <select id="mainSearch" resultType="com.jsy.domain.NewShop">
-        SELECT * FROM w_new_shop WHERE shop_name LIKE CONCAT("%",#{keyword},"%") AND deleted = 0
-        UNION
+        SELECT * FROM w_new_shop WHERE shop_name LIKE CONCAT("%",#{keyword},"%") AND deleted = 0 AND shielding=0
+         UNION
         SELECT s.* FROM w_goods g LEFT JOIN w_new_shop s ON g.shop_id=s.id WHERE g.title like CONCAT("%",#{keyword},"%")
-        AND g.is_putaway=1  AND g.deleted = 0 AND s.deleted=0
+        AND g.is_putaway=1 AND g.state=0 AND g.deleted = 0 AND s.deleted=0 AND s.shielding=0
+         UNION
+        SELECT s.* FROM w_set_menu g LEFT JOIN w_new_shop s ON g.shop_id=s.id WHERE g.name like CONCAT("%",#{keyword},"%")
+        AND g.is_disable=0 AND g.state=1  AND g.deleted = 0 AND s.deleted=0 AND s.shielding=0
     </select>
 <!-- 查询距离 -->
     <select id="selectAddress" resultType="com.jsy.domain.NewShop">
@@ -87,11 +90,12 @@
         ) * 1000
         )
         )
-        &lt;3000
+        &lt;=3000
         AND t1.state=1
         AND t1.deleted=0
         AND t1.shielding=0
-        AND locate(#{treeId}, t1.shop_tree_id) > 0;
+        AND FIND_IN_SET(#{treeId},t1.shop_tree_id)
+        order by distance
 
     </select>
 
@@ -108,7 +112,22 @@
         </if>
     </select>
     <select id="selectHot" resultType="com.jsy.dto.NewShopHotDto">
-        SELECT * FROM pv_num WHERE id IN(SELECT id FROM sv_num)
+        SELECT id,shop_id,title,images,price,discount_price,discount_state,service_characteristics_ids,pv_num,CONCAT(type) as type FROM w_goods
+        WHERE id IN
+              (
+                  SELECT id FROM sv_num
+                  UNION
+                  SELECT id FROM pv_num
+              )
+        UNION
+        SELECT id,shop_id,name,images,real_price,selling_price,discount_state,service_characteristics_ids,pv_num,CONCAT(2) as type FROM w_set_menu
+        WHERE id IN
+              (
+                  SELECT id FROM sv_num
+                  UNION
+                  SELECT id FROM pv_num
+              )
+
     </select>
 <!--店铺名称和法人姓名-->
       <select id="selectAuitPage" resultType="com.jsy.parameter.NewShopBackstageDto">
@@ -146,7 +165,7 @@
         WHERE  t1.state=1
             AND t1.deleted=0
             AND t1.shielding=0
-            AND locate(#{shopQuery.treeId}, t1.shop_tree_id) > 0
+            AND  FIND_IN_SET(#{shopQuery.treeId},t1.shop_tree_id)
         <if test="shopQuery.shopName !=null and shopQuery.shopName !=''">
             AND t1.shop_name LIKE CONCAT('%',#{shopQuery.shopName,jdbcType=VARCHAR},'%')
         </if>

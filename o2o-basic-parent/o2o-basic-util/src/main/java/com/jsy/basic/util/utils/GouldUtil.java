@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+
 /**
  * @author yu
  */
@@ -129,6 +130,7 @@ public class GouldUtil {
 		return result;
 	}
 
+
 	/**
 	 * 3.发送请求
 	 * @param serverUrl 请求地址
@@ -184,18 +186,27 @@ public class GouldUtil {
 		return Math.sqrt(distance);
 	}
 
+
+	private static double rad(double d) {
+		return d * Math.PI / 180.0;
+	}
+	public static double GetDistance(double lat1, double lng1, double lat2, double lng2) {
+		double EARTH_RADIUS = 6378137;
+		double radLat1 = rad(lat1);
+		double radLat2 = rad(lat2);
+		double a = radLat1 - radLat2;
+		double b = rad(lng1) - rad(lng2);
+		double s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2)
+				+ Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)));
+		s = s * EARTH_RADIUS;
+		s = Math.round(s * 10000) / 10000;
+		return s;
+	}
+
 	public static void main(String[] args) {
 		String s="重庆市渝北区天宫殿街道泰山大道东段106号";
-		String lonLat = GouldUtil.getLonLat(s);
-		String lat = GouldUtil.getLonLat("冉家坝");
-//		String[] split = lat.split(",");
-//		BigDecimal longitude = new BigDecimal((split[0]));
-		System.out.println(lat);
-
-//		System.out.println(lonLat);
-//		System.out.println(lat);
-//		long distanceByAddress = GouldUtil.getApiDistance(lonLat, lat);
-//		System.out.println(longitude);
+		double v = GetDistance(29.3541211, 106.4534211, 29.3555278, 106.4745269);
+		System.out.println(v);
 
 
 	}

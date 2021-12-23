@@ -2,6 +2,7 @@ package com.jsy.mapper;
 
 import com.jsy.domain.PushGoods;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.jsy.query.PushGoodsQuery;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
@@ -22,4 +23,5 @@ public interface PushGoodsMapper extends BaseMapper<PushGoods> {
      */
    Long sumGoodsSales(@Param("goodsId") Long goodsId);
 
+    List<PushGoods> pageListPushGoods(@Param("query") PushGoodsQuery pushGoodsQuery);
 }

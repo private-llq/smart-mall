@@ -18,4 +18,7 @@ public class SetMenuQuery extends BaseQuery{
     @ApiModelProperty(value = "店铺id")
     private Long shopId;
     private Integer state;
+    @ApiModelProperty(value = "是否开启折扣：0不禁用 1禁用")
+    private Integer isDisable;
+    private Long setMenuId;
 }

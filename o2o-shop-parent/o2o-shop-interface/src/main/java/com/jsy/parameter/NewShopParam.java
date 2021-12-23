@@ -40,7 +40,7 @@ public class NewShopParam implements Serializable {
 
     @NotEmpty(groups = {NewShopParam.newShopValidatedGroup.class},message = "店铺门头照不能为空")
     @ApiModelProperty(name = "shopLogo", value = "店铺logo图片(file_url)")
-    private List<String> shopLogo;
+    private String shopLogo;
 
     @NotBlank(groups = {NewShopParam.newShopValidatedGroup.class},message = "地址不能为空")
     @ApiModelProperty(name = "businessAddress", value = "请填写营业执照上面的地址")
@@ -54,6 +54,14 @@ public class NewShopParam implements Serializable {
     private Integer isVisitingService;
     @ApiModelProperty(value = "是否是虚拟店铺  0不是 1是")
     private Integer isVirtualShop;
+
+    @NotNull(groups = {NewShopParam.newShopValidatedGroup.class},message = "用户定位地址不能为空")
+    @ApiModelProperty(value = "经度")
+    private BigDecimal longitude;
+
+    @NotNull(groups = {NewShopParam.newShopValidatedGroup.class},message = "用户定位地址不能为空")
+    @ApiModelProperty(value = "维度")
+    private BigDecimal latitude;
 
 
 

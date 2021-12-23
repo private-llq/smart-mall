@@ -68,6 +68,8 @@ public class NewShopSetDto implements Serializable {
     private Integer isVirtualShop;
     @ApiModelProperty(value = "服务行业：1是服务行业  0 套餐行业")
     private Integer type;
+    @ApiModelProperty(value = "聊天账号")
+    private String imId;
 
 
 }

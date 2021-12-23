@@ -1,6 +1,9 @@
 package com.jsy.dto;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.jsy.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -24,14 +27,22 @@ import java.math.BigDecimal;
 public class BrowseDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    @JsonSerialize(using = com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long id;
     @ApiModelProperty(value = "商家id")
+    @JsonSerialize(using = com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long shopId;
 
     @ApiModelProperty(value = "用户id")
+    @JsonSerialize(using = com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long userId;
 
     @ApiModelProperty(value = "商品id")
+    @JsonSerialize(using = com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long goodsId;
 
     @ApiModelProperty(value = "商品、服务、套餐名称")

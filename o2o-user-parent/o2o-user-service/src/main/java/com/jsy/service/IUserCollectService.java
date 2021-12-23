@@ -1,9 +1,8 @@
 package com.jsy.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.domain.UserCollect;
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.jsy.dto.userCollectDto;
 import com.jsy.param.UserCollectParam;
 import com.jsy.query.UserCollectQuery;
 
@@ -50,4 +49,12 @@ public interface IUserCollectService extends IService<UserCollect> {
      * 购物车移入收藏
      */
     void userCartToCollect(List<Long> shopIds);
+
+
+    /**
+     * 列表删除多条收藏记录
+     * @param ids
+     * @return
+     */
+    void delMultiUserCollect(List<Long> ids);
 }

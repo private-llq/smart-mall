@@ -1,17 +1,23 @@
 package com.jsy.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.clent.CommentClent;
 import com.jsy.client.*;
-import com.jsy.domain.*;
-import com.jsy.dto.*;
+import com.jsy.domain.Goods;
+import com.jsy.domain.ShoppingCart;
+import com.jsy.domain.Tree;
+import com.jsy.domain.UserCollect;
+import com.jsy.dto.NewShopDto;
+import com.jsy.dto.QueryUserCartDto;
+import com.jsy.dto.SelectShopCommentScoreDto;
+import com.jsy.dto.SetMenuDto;
 import com.jsy.mapper.UserCollectMapper;
 import com.jsy.param.UserCollectParam;
 import com.jsy.query.UserCollectQuery;
 import com.jsy.service.IUserCollectService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhsj.baseweb.support.ContextHolder;
 import com.zhsj.baseweb.support.LoginUser;
 import org.springframework.beans.BeanUtils;
@@ -19,7 +25,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -183,6 +191,7 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
             userCollect.setUserId(userId);
             userCollect.setShopId(shopId);
             userCollect.setImage(data.getShopLogo());
+            userCollect.setPhone(data.getShopPhone());
             SelectShopCommentScoreDto rut = commentClent.selectShopCommentScore(shopId).getData();
             userCollect.setShopScore(Objects.isNull(rut)?5:rut.getScore());
             userCollect.setTitle(data.getShopName());
@@ -352,10 +361,22 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
         if (shopIds.size()==0){
             throw new JSYException(-1,"传入的商店id不能为空！");
         }
-        QueryUserCartDto data = shoppingCartClient.queryUserCart(shopIds).getData();
 
-        List<NewShopInfo> shopDtoList = data.getNewShopDtoList();
-        for (NewShopInfo newShopDto : shopDtoList) {
+
+        //查询用户购物车商店信息
+        QueryUserCartDto data = shoppingCartClient.queryUserCart(shopIds).getData();
+       /* List<NewShopInfo> shopDtoList = data.getNewShopDtoList();
+
+        List<NewShopInfo> shopDtoListCollect = shopDtoList.stream().filter(x -> {
+            UserCollect userCollect = userCollectMapper.selectOne(new QueryWrapper<UserCollect>().eq("type", 3).eq("shop_id", x.getId()));
+            if (Objects.isNull(userCollect)) {//没收藏过的才添加到收藏
+                return true;
+            }
+            return false;
+        }).collect(Collectors.toList());
+
+
+        for (NewShopInfo newShopDto : shopDtoListCollect) {
             UserCollect userCollect = new UserCollect();
             userCollect.setType(3);
             userCollect.setShopId(newShopDto.getId());
@@ -363,6 +384,7 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
             userCollect.setImage(newShopDto.getShopLogo());
             userCollect.setUserId(loginUser.getId());
             String shopTreeId = newShopDto.getShopTreeId();
+
             if (Objects.nonNull(shopTreeId)){
                 String shopTreeIdName = getShopTreeIdName(shopTreeId.split(","));
                 userCollect.setShopTypeName(Objects.isNull(shopTreeIdName)?null:shopTreeIdName);
@@ -370,14 +392,50 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
             SelectShopCommentScoreDto rut = commentClent.selectShopCommentScore(newShopDto.getId()).getData();
             userCollect.setShopScore(Objects.isNull(rut)?5:rut.getScore());
             userCollectMapper.insert(userCollect);
-        }
+        }*/
+
+
+        //查询用户购物车商品信息
         List<ShoppingCart> goodsList = data.getGoodsList();
-        for (ShoppingCart cart : goodsList) {
+        List<ShoppingCart> goodsListCollect = goodsList.stream().filter(x -> {
+            if (x.getType()==0 || x.getType()==1){
+                UserCollect userCollect = userCollectMapper.selectOne(new QueryWrapper<UserCollect>()
+                        .eq("type",x.getType())
+                        .eq("goods_id", x.getGoodsId())
+                );
+                if (Objects.isNull(userCollect)){//没收藏过的才添加到收藏
+                    return true;
+                }
+            }
+            if (x.getType()==2){
+                UserCollect userCollect = userCollectMapper.selectOne(new QueryWrapper<UserCollect>()
+                        .eq("type",2)
+                        .eq("menu_id", x.getSetMenuId())
+                );
+                if (Objects.isNull(userCollect)){//没收藏过的才添加到收藏
+                    return true;
+                }
+            }
+            return false;
+        }).collect(Collectors.toList());
+        for (ShoppingCart cart : goodsListCollect) {
             UserCollect userCollect = new UserCollect();
             BeanUtils.copyProperties(cart,userCollect);
+            userCollect.setImage(cart.getImages().split(",")[0]);
             userCollect.setMenuId(cart.getSetMenuId());
             userCollectMapper.insert(userCollect);
         }
+    }
+
+    /**
+     * 列表删除多条收藏记录
+     * @param ids
+     * @return
+     */
+    @Override
+    @Transactional
+    public void delMultiUserCollect(List<Long> ids) {
+        userCollectMapper.deleteBatchIds(ids);
     }
 
 

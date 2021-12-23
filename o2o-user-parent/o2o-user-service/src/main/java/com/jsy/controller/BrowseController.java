@@ -1,4 +1,5 @@
 package com.jsy.controller;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSON;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -37,9 +38,11 @@ public class BrowseController {
     */
     @PostMapping(value="/save")
     public CommonResult save(@RequestBody Browse browse){
+        Long id = ContextHolder.getContext().getLoginUser().getId();
+        Browse serviceOne = browseService.getOne(new QueryWrapper<Browse>().eq("goods_id", browse.getGoodsId()).eq("user_id",id));
         try {
-            if(browse.getId()!=null){
-                browseService.updateById(browse);
+            if(ObjectUtil.isNotNull(serviceOne)){
+                browseService.updateById(serviceOne);
             }else{
                 browseService.save(browse);
             }
@@ -59,7 +62,7 @@ public class BrowseController {
     public CommonResult delete(){
         try {
             Long id = ContextHolder.getContext().getLoginUser().getId();
-            browseService.removeById(id);
+            browseService.del(id);
             return CommonResult.ok();
         } catch (Exception e) {
         e.printStackTrace();
@@ -78,11 +81,24 @@ public class BrowseController {
     @PostMapping(value = "/list")
     public CommonResult<PageInfo<BrowseDto>> list(@RequestBody BrowseQuery browseQuery){
         Long id = ContextHolder.getContext().getLoginUser().getId();
-        List<Browse> list = browseService.list(new QueryWrapper<Browse>().eq("user_id",id));
+        List<Browse> list = browseService.list(new QueryWrapper<Browse>().eq("user_id",id).orderByDesc("create_time"));
         List<BrowseDto> dtoList = BeansCopyUtils.copyListProperties(list, BrowseDto::new);
         List<BrowseDto> collect = dtoList.stream().filter(distinctByKey(BrowseDto::getGoodsId)).collect(Collectors.toList());
         PageInfo<BrowseDto> browsePageInfo = MyPageUtils.pageMap(browseQuery.getPage(), browseQuery.getRows(), collect);
         return CommonResult.ok(browsePageInfo);
 
     }
+
+     /**
+      * @author Tian
+      * @since 2021/12/20-14:38
+      * @description 批量删除
+      **/
+
+     @PostMapping(value = "/delList")
+     public CommonResult delList(@RequestBody List<Long> stringList){
+         browseService.delList(stringList);
+         return CommonResult.ok();
+
+     }
 }

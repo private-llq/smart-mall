@@ -72,4 +72,10 @@ public interface IShoppingCartService extends IService<ShoppingCart> {
      * 查询购物车用户的商品和店铺
      */
     QueryUserCartDto queryUserCart(List<Long> shopIds);
+
+
+    /**
+     * 用户勾选 清空购物车
+     */
+    void optionClearCart(List<Long> shopIds);
 }

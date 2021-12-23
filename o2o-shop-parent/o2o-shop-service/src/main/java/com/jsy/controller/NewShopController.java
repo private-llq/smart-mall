@@ -1,4 +1,5 @@
 package com.jsy.controller;
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jsy.basic.util.GetServiceName;
 import com.jsy.basic.util.PageInfo;
@@ -15,11 +16,18 @@ import com.jsy.domain.NewShop;
 import com.jsy.query.NewShopQuery;
 import com.jsy.basic.util.PageList;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zhsj.base.api.constant.RpcConst;
+import com.zhsj.base.api.rpc.IBaseAuthRpcService;
+import com.zhsj.base.api.rpc.IBaseUserInfoRpcService;
+import com.zhsj.base.api.vo.UserImVo;
 import com.zhsj.basecommon.vo.R;
 import com.zhsj.baseweb.annotation.LoginIgnore;
+import com.zhsj.baseweb.support.ContextHolder;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +52,8 @@ public class NewShopController {
     private HotClient hotClient;
     @Resource
     private CommentClent commentClent;
+    @DubboReference(version = RpcConst.Rpc.VERSION, group = RpcConst.Rpc.Group.GROUP_BASE_USER, check = false)
+    private IBaseUserInfoRpcService iBaseUserInfoRpcService;
 
 
     /**
@@ -56,15 +66,8 @@ public class NewShopController {
     public CommonResult addBasic(@RequestBody NewShopParam shopPacketParam){
         log.info("入参：{}",shopPacketParam);
          ValidatorUtils.validateEntity(shopPacketParam,NewShopParam.newShopValidatedGroup.class);
-        try {
-               Long shopId =  newShopService.addNewShop(shopPacketParam);
-            return  CommonResult.ok(shopId);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return  CommonResult.error(-1,"创建失败！");
-        }
-
+         Long shopId =  newShopService.addNewShop(shopPacketParam);
+         return  CommonResult.ok(shopId);
     }
 
     /**
@@ -77,12 +80,7 @@ public class NewShopController {
     public CommonResult addQualification(@RequestBody NewShopQualificationParam qualificationParam){
         log.info("入参：{}",qualificationParam);
         ValidatorUtils.validateEntity(qualificationParam,NewShopParam.newShopValidatedGroup.class);
-        try {
             newShopService.addQualification(qualificationParam);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return  CommonResult.error(-1,"资质上传失败！");
-        }
         return  CommonResult.ok();
     }
 
@@ -123,7 +121,7 @@ public class NewShopController {
      /**
       * @author Tian
       * @since 2021/12/1-11:53
-      * @description 预览门店基本信息
+      * @description 预览门店基本信息 B端
       **/
     @PostMapping(value = "/selectBasic")
     public CommonResult<NewShopBasicDto> selectBasic(@RequestParam("shopId") Long shopId){
@@ -160,7 +158,7 @@ public class NewShopController {
     }
 
     /**
-    * 根据id查询一条
+    * 根据id查询一条  B端
     * @param shopId
     */
     @GetMapping(value = "/get")
@@ -195,7 +193,7 @@ public class NewShopController {
         return CommonResult.ok(newShopDtos);
     }
 
-    @ApiOperation("通过店铺id预览店铺基本信息")
+    @ApiOperation("通过店铺id预览店铺基本信息  B端")
     @RequestMapping(value = "/getPreviewDto",method = RequestMethod.GET)
     public CommonResult<NewShopPreviewDto> getPreviewDto(@RequestParam("shopId") Long shopId){
         NewShopPreviewDto newShopPreviewDto = newShopService.getPreviewDto(shopId);
@@ -220,14 +218,19 @@ public class NewShopController {
     public CommonResult<NewShopSetDto> getSetShop(@RequestParam("shopId") Long shopId){
         NewShop newShop = newShopService.getById(shopId);
         NewShopSetDto newShopSetDto = new NewShopSetDto();
+        if (ObjectUtil.isNull(newShop)||newShop.getShielding()==1){
+            return new CommonResult(-1,"店铺不存在",null);
+        }
         BeanUtils.copyProperties(newShop,newShopSetDto);
         SelectShopCommentScoreDto data = commentClent.selectShopCommentScore(shopId).getData();
         newShopSetDto.setScore(data.getScore());
         newShopSetDto.setSize(data.getSize());
+        String imId = iBaseUserInfoRpcService.getEHomeUserIm(newShop.getOwnerUuid()).getImId();
+        newShopSetDto.setImId(imId);
         return CommonResult.ok(newShopSetDto);
     }
 
-    @ApiOperation("根据店铺id修改店铺设置")
+    @ApiOperation("根据店铺id修改店铺设置+C端")
     @RequestMapping(value = "/setSetShop",method = RequestMethod.POST)
     public CommonResult setSetShop(@RequestBody NewShopSetParam shopSetParam){
         try {
@@ -248,13 +251,13 @@ public class NewShopController {
      @LoginIgnore
      @RequestMapping(value = "/getSupport",method = RequestMethod.GET)
      public CommonResult getSupport(@RequestParam("shopId") Long shopId){
-         try {
+
              NewShopSupportDto suportDto = newShopService.getSupport(shopId);
-             return CommonResult.ok(suportDto);
-         } catch (Exception e) {
-             e.printStackTrace();
-             return  CommonResult.error(-1,"修改失败！");
-         }
+             if (ObjectUtil.isNull(suportDto)){
+                 return new CommonResult(-1,"店铺不存在",null);
+             }else {
+                 return CommonResult.ok(suportDto);
+             }
      }
 
 
@@ -284,6 +287,7 @@ public class NewShopController {
         }
     }
     @ApiOperation("C端-通过关键词搜索店铺和服务名称")
+    @LoginIgnore
     @PostMapping("/getShopService")
     public CommonResult<NewShopServiceDto> getShopService(@RequestBody NewShopQuery shopQuery){
         NewShopServiceDto serviceDto =  newShopService.getShopService(shopQuery);

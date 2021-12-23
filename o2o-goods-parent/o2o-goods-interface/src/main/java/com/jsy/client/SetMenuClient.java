@@ -6,6 +6,8 @@ import com.jsy.client.impl.CartClientImpl;
 import com.jsy.client.impl.SetMenuClientImpl;
 import com.jsy.domain.SetMenu;
 import com.jsy.dto.SetMenuDto;
+import com.jsy.query.SetMenuQuery;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,4 +31,8 @@ public interface SetMenuClient {
      */
     @GetMapping(value = "/setMenu/SetMenuList")
     CommonResult<SetMenuDto> SetMenuList(@RequestParam("id")Long id);
+
+    @ApiOperation("修改上下架、或禁用套餐")
+    @PostMapping(value = "/setMenu/setState")
+    CommonResult setState(@RequestBody SetMenuQuery setMenuQuery);
 }

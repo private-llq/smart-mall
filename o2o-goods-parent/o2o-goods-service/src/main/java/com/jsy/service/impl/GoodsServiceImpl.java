@@ -1,16 +1,18 @@
 package com.jsy.service.impl;
-import java.time.LocalDateTime;
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.utils.BeansCopyUtils;
 import com.jsy.basic.util.utils.SnowFlake;
 import com.jsy.client.*;
-import com.jsy.domain.*;
+import com.jsy.domain.Browse;
+import com.jsy.domain.Goods;
+import com.jsy.domain.Tree;
 import com.jsy.dto.*;
 import com.jsy.mapper.GoodsMapper;
 import com.jsy.parameter.GoodsParam;
@@ -20,7 +22,6 @@ import com.jsy.query.BackstageServiceQuery;
 import com.jsy.query.GoodsPageQuery;
 import com.jsy.query.NearTheServiceQuery;
 import com.jsy.service.IGoodsService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhsj.baseweb.support.ContextHolder;
 import com.zhsj.baseweb.support.LoginUser;
 import org.apache.commons.lang3.StringUtils;
@@ -29,7 +30,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -60,6 +64,9 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
 
     @Autowired
     private HotClient hotClient;
+
+    @Autowired
+    private SetMenuClient setMenuClient;
 
 
 
@@ -232,6 +239,12 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         if (Objects.isNull(goods)){
             throw new JSYException(-1,"没有找到该商品！");
         }
+        if (goods.getState()==1){
+            throw new JSYException(-1,"该商品可能存在违规已被大后台禁用！");
+        }
+        if (goods.getIsPutaway()==0){
+            throw new JSYException(-1,"该商品处于下架状态！");
+        }
             //添加商品访问量
             long pvNum = goods.getPvNum() + 1;
             goodsMapper.update(null,new UpdateWrapper<Goods>().eq("id",id).set("pv_num",pvNum));
@@ -272,7 +285,13 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         if (Objects.isNull(goods)){
             throw new JSYException(-1,"没有找到该服务！");
         }
-            //添加服务访问量
+        if (goods.getState()==1){
+            throw new JSYException(-1,"该服务可能存在违规已被大后台禁用！");
+        }
+        if (goods.getIsPutaway()==0){
+            throw new JSYException(-1,"该服务处于下架状态！");
+        }
+        //添加服务访问量
             long pvNum = goods.getPvNum() + 1;
             goodsMapper.update(null,new UpdateWrapper<Goods>().eq("id",id).set("pv_num",pvNum));
             //添加一条用户的浏览记录
@@ -323,13 +342,14 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         browse.setTextDescription(goods.getTextDescription());
         browse.setRealPrice(goods.getPrice());
         browse.setSellingPrice(goods.getDiscountPrice());
-        //browse.setType();无法识别商品和服务
+        browse.setType(goods.getType());
         browse.setGoodsId(goods.getId());
         browse.setImages(goods.getImages());
         browse.setDiscountState(goods.getDiscountState());
         //browse.setIsVisitingService(goods.getIsVisitingService());
         browseClient.save(browse);
         Goods twoGoods = goodsMapper.selectOne(new QueryWrapper<Goods>().eq("id", id));
+
         Long aLong = goodsMapper.sumServiceSales(twoGoods.getId());
         twoGoods.setSums(Objects.isNull(aLong)?0:aLong);
         return twoGoods;
@@ -597,7 +617,53 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         return goodsServiceDtos;
     }
 
+    /**
+     * 商家被禁用，同步禁用商家的商品和服务
+     */
+    @Override
+    @Transactional
+    public void disableAll(Long shopId,Integer type) {
+        if (type==0){//禁用
+            goodsMapper.update(null,new UpdateWrapper<Goods>().eq("shop_id",shopId).set("state",1));
+        }
+        if (type==1){//取消禁用
+            goodsMapper.update(null,new UpdateWrapper<Goods>().eq("shop_id",shopId).set("state",0));
+        }
+    }
 
+
+    /**
+     * 查询状态 ture 正常 false 不正常
+     * type ：0 商品  1:服务  2：套餐  3：商店
+     */
+    @Override
+    public Boolean selectState(Long id, Integer type) {
+        if (Objects.isNull(type)){
+            throw new JSYException(-1,"type不能为空！");
+        }
+        if (type==0 || type==1){
+            Goods goods = goodsMapper.selectOne(new QueryWrapper<Goods>().eq("id", id).eq("state", 0).eq("is_putaway", 1));
+            if (Objects.nonNull(goods)){
+                return true;
+            }
+            return false;
+        }
+        if (type==2){
+            SetMenuDto setMenu = setMenuClient.SetMenuList(id).getData();
+            if (setMenu.getState()==1||setMenu.getIsDisable()==0){
+                return true;
+            }
+            return false;
+        }
+        if (type==3){
+            NewShopDto newShop = shopClient.get(id).getData();
+            if (newShop.getShielding()==0){
+                return true;
+            }
+            return false;
+        }
+        return null;
+    }
 
 
 }

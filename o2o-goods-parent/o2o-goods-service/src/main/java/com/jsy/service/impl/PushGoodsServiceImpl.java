@@ -1,25 +1,23 @@
 package com.jsy.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jsy.basic.util.MyPageUtils;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.client.NewShopClient;
-import com.jsy.client.ShopClient;
 import com.jsy.domain.Goods;
 import com.jsy.domain.PushGoods;
+import com.jsy.dto.NewShopDto;
 import com.jsy.mapper.GoodsMapper;
 import com.jsy.mapper.PushGoodsMapper;
 import com.jsy.query.PushGoodsQuery;
 import com.jsy.service.IPushGoodsService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -43,6 +41,9 @@ public class PushGoodsServiceImpl extends ServiceImpl<PushGoodsMapper, PushGoods
     @Autowired
     private PushGoodsMapper pushGoodsMapper;
 
+    @Autowired
+    private NewShopClient newShopClient;
+
     /**
      * 医疗端：推送产品（智能手环、手表）
      */
@@ -58,8 +59,20 @@ public class PushGoodsServiceImpl extends ServiceImpl<PushGoodsMapper, PushGoods
         if (goods.getState()==1){
             throw new JSYException(-1,"该商品已被禁用，不能推送！");
         }
+        if (goods.getShopId()==null){
+            throw new JSYException(-1,"商店id不能为空！");
+        }
+        NewShopDto data = newShopClient.get(goods.getShopId()).getData();
+        if (Objects.isNull(data)){
+           throw new JSYException(-1,"该店铺不存在！");
+        }
+        if (data.getShielding()==1){
+           throw new JSYException(-1,"该店铺已经被屏蔽！");
+        }
         PushGoods pushGoods = new PushGoods();
         BeanUtils.copyProperties(goods,pushGoods);
+        pushGoods.setLongitude(data.getLongitude());
+        pushGoods.setLatitude(data.getLatitude());
         pushGoodsMapper.insert(pushGoods);
     }
 
@@ -68,9 +81,12 @@ public class PushGoodsServiceImpl extends ServiceImpl<PushGoodsMapper, PushGoods
      */
     @Override
     public PageInfo<PushGoods> pageListPushGoods(PushGoodsQuery pushGoodsQuery) {
-        String keyword = pushGoodsQuery.getKeyword();
-        List<PushGoods> list = pushGoodsMapper.selectList(new QueryWrapper<PushGoods>()
-                .like(StringUtils.isNotBlank(keyword), "title", keyword));
+        BigDecimal longitude = pushGoodsQuery.getLongitude();
+        BigDecimal latitude = pushGoodsQuery.getLatitude();
+        if (Objects.isNull(longitude)||Objects.isNull(latitude)){
+            throw  new JSYException(-1,"经纬度不能为空！");
+        }
+        List<PushGoods> list = pushGoodsMapper.pageListPushGoods(pushGoodsQuery);
 
         if (pushGoodsQuery.getType()==0){//默认
             return MyPageUtils.pageMap(pushGoodsQuery.getPage(),pushGoodsQuery.getRows(),list);

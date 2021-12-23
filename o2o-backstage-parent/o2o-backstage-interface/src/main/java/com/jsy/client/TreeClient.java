@@ -16,4 +16,10 @@ public interface TreeClient {
 
     @RequestMapping(value = "/tree/getTree",method = RequestMethod.GET)
      CommonResult<Tree> getTree(@RequestParam("id")Long id);
+
+    /**
+     * 查询本级上面所有父级菜单（不包含本级）
+     */
+    @GetMapping("/tree/getParentTreeAll")
+    CommonResult<String> getParentTreeAll(@RequestParam ("id") Long id);
 }

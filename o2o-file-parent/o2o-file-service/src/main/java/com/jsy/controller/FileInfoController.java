@@ -87,4 +87,15 @@ public class FileInfoController {
        return CommonResult.ok(path);
     }
 
+    @ApiOperation("批量上传文件")
+    @PostMapping("/uploadGetUrls")
+    public CommonResult<Map<Object, String>> uploadGetUrls(MultipartFile[] file) {
+        Map<Object, String> path= fileInfoService.uploadGetUrls(file);
+        return CommonResult.ok(path);
+    }
+
+
+
+
+
 }
