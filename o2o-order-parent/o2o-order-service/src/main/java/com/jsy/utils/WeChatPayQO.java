@@ -3,6 +3,7 @@ package com.jsy.utils;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.util.Map;
 
@@ -26,5 +27,7 @@ public class WeChatPayQO {
     @ApiModelProperty("停车缴费临时记录id")
     private Long communityId;
 
+    @ApiModelProperty("收款方id")
+    private Long receiveUid;
 
 }

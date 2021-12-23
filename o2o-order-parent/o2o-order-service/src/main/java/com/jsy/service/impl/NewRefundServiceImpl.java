@@ -10,6 +10,7 @@ import com.jsy.mapper.NewRefundMapper;
 import com.jsy.query.AgreeRefundParam;
 import com.jsy.query.ApplyRefundParam;
 import com.jsy.query.ShopWhetherRefundParam;
+import com.jsy.service.INewOrderService;
 import com.jsy.service.INewRefundService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.aspectj.weaver.ast.Var;
@@ -37,7 +38,8 @@ public class NewRefundServiceImpl extends ServiceImpl<NewRefundMapper, NewRefund
     private NewRefundMapper newRefundMapper;
     @Resource
     private NewOrderMapper newOrderMapper;
-
+      @Resource
+      private INewOrderService newOrderService;
     //申请退款
     @Override
     @Transactional
@@ -49,6 +51,7 @@ public class NewRefundServiceImpl extends ServiceImpl<NewRefundMapper, NewRefund
         if (insert > 0) {//将订单改为退款中
             NewOrder entity1 = new NewOrder();
             entity1.setId(param.getOrderId());
+            entity1.setRefundApplyRole(param.getAccepts());
             entity1.setPayStatus(2);//退款中
             int i = newOrderMapper.updateById(entity1);
             if (i > 0) {
@@ -135,6 +138,7 @@ public class NewRefundServiceImpl extends ServiceImpl<NewRefundMapper, NewRefund
             newOrder.setPayStatus(3);//退款成功
             int i1 = newOrderMapper.updateById(newOrder);
             if (i1 > 0) {
+                Boolean value=newOrderService.allPayRefund(newOrder.getId());
                 //实在真实退款待添加接口
                 return true;
             }

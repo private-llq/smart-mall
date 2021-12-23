@@ -46,7 +46,8 @@ public class SelectUserOrderDto {
 
     @ApiModelProperty(value = "支付状态（0未支付，1支付成功,2退款中，3退款成功，4拒绝退款）")
     private Integer payStatus;
-
+    @ApiModelProperty(value = "申请退款方A角色0商家1平台")
+    private Integer refundApplyRole;
     @ApiModelProperty(value = "支付时间")
     private LocalDateTime payTime;
 
