@@ -30,11 +30,11 @@ public class NewRefundController {
         return new CommonResult<>(500, "操作失败", b);
     }
 
-    @ApiOperation("根据订单号查询退款信息")
+    @ApiOperation("根据订单id查询退款信息")
     @RequestMapping(value = "/selectRefundByoder", method = RequestMethod.GET)
     public CommonResult<SelectRefundByoderDto>  selectRefundByoder(@RequestParam("orderId") Long orderId){
         SelectRefundByoderDto dto =  newRefundService.selectRefundByoder(orderId);
-        return new CommonResult<>(500, "操作成功",dto);
+        return new CommonResult<>(200, "操作成功",dto);
     }
 
     @ApiOperation("拒绝退款")

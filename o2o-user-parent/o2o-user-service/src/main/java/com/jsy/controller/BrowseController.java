@@ -81,7 +81,7 @@ public class BrowseController {
     @PostMapping(value = "/list")
     public CommonResult<PageInfo<BrowseDto>> list(@RequestBody BrowseQuery browseQuery){
         Long id = ContextHolder.getContext().getLoginUser().getId();
-        List<Browse> list = browseService.list(new QueryWrapper<Browse>().eq("user_id",id).orderByDesc("create_time"));
+        List<Browse> list = browseService.list(new QueryWrapper<Browse>().eq("user_id",id).orderByDesc("update_time"));
         List<BrowseDto> dtoList = BeansCopyUtils.copyListProperties(list, BrowseDto::new);
         List<BrowseDto> collect = dtoList.stream().filter(distinctByKey(BrowseDto::getGoodsId)).collect(Collectors.toList());
         PageInfo<BrowseDto> browsePageInfo = MyPageUtils.pageMap(browseQuery.getPage(), browseQuery.getRows(), collect);

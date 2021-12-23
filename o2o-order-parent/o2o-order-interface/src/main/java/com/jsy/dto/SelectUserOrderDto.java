@@ -1,11 +1,9 @@
 package com.jsy.dto;
-
-import com.jsy.query.CreationOrderGoodsParam;
-import com.jsy.query.CreationOrderMenuParam;
-import com.jsy.query.CreationOrderServiceParam;
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -22,11 +20,19 @@ import java.util.List;
 public class SelectUserOrderDto {
 
     private static final long serialVersionUID = 1L;
+    @JsonSerialize(using = com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
+    @JSONField(serializeUsing = ToStringSerializer.class)
+    @ApiModelProperty(value = "订单id")
+    private Long id;
 
     @ApiModelProperty(value = "c端用户id")
+    @JsonSerialize(using = com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long userId;
 
     @ApiModelProperty(value = "b端商家id")
+    @JsonSerialize(using = com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long shopId;
 
     @ApiModelProperty(value = "订单编号")
@@ -40,7 +46,8 @@ public class SelectUserOrderDto {
 
     @ApiModelProperty(value = "支付状态（0未支付，1支付成功,2退款中，3退款成功，4拒绝退款）")
     private Integer payStatus;
-
+    @ApiModelProperty(value = "申请退款方A角色0商家1平台")
+    private Integer refundApplyRole;
     @ApiModelProperty(value = "支付时间")
     private LocalDateTime payTime;
 
@@ -62,14 +69,22 @@ public class SelectUserOrderDto {
     @ApiModelProperty(value = "预约状态（0预约中，1预约成功）")
     private Integer appointmentStatus;
 
+    @ApiModelProperty(value = "验卷状态")//验卷状态0未验卷，1验卷成功
+    private Integer serverCodeStatus;
+
     @ApiModelProperty(value = "消费方式（0用户到店，1商家上门）")
     private Integer consumptionWay;
 
     @ApiModelProperty(value = "订单的最终价格")
     private BigDecimal orderAllPrice;
 
-    @ApiModelProperty(value = "用户配送地址id（针对商家上门）")
-    private Long shippingAddress;
+    @ApiModelProperty(value = "总数量")
+    private Integer orderAllNumber;
+
+
+    @ApiModelProperty(value = "商家地址（用户到店）")
+    private String shippingAddress;
+
     @ApiModelProperty(value = "联系人")
     private String linkman;
     @ApiModelProperty(value = "性别    0  男  |  1 女")

@@ -20,7 +20,7 @@ public class AliAppPayQO implements Serializable {
 	@ApiModelProperty(value = "社区id")
 	@NotNull(groups = {addOrderGroup.class}, message = "社区ID不能为空")
 	private Long communityId;
-	
+
 	@ApiModelProperty(value = "系统订单号",hidden = true)
 	private String outTradeNo;
 	
@@ -46,7 +46,12 @@ public class AliAppPayQO implements Serializable {
 	
 	@ApiModelProperty(value = "物业缴费账单数据id，逗号分隔")
 	private String ids;
-	
+
+	@ApiModelProperty("收款方id")
+	private Long receiveUid;
+
+	@ApiModelProperty("订单附加信息")
+	private String body;
 	/**
 	 * 添加订单验证组
 	 */

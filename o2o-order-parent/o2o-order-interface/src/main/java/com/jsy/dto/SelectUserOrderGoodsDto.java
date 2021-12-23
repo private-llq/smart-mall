@@ -1,5 +1,8 @@
 package com.jsy.dto;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -16,24 +19,32 @@ import java.util.List;
 @Data
 public class SelectUserOrderGoodsDto {
     @ApiModelProperty(value = "订单id（外键）")
+    @JsonSerialize(using = com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long orderId;
 
     @ApiModelProperty(value = "数量")
     private Integer amount;
 
     @ApiModelProperty(value = "商家id")
+    @JsonSerialize(using = com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long shopId;
 
     @ApiModelProperty(value = "商品id")
+    @JsonSerialize(using = com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long goodsId;
 
     @ApiModelProperty(value = "商品分类id")
+    @JsonSerialize(using = com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long goodsTypeId;
 
     @ApiModelProperty(value = "商品名称")
     private String title;
 
-    @ApiModelProperty(value = "商品/服务 价格")
+    @ApiModelProperty(value = "商品 价格")
     private BigDecimal price;
 
     @ApiModelProperty(value = "商品 折扣价格")
@@ -45,7 +56,7 @@ public class SelectUserOrderGoodsDto {
     @ApiModelProperty(value = "商品 是否开启折扣：0未开启 1开启")
     private Integer discountState;
 
-    @ApiModelProperty(value = "商品/服务 - 图片1-3张")
+    @ApiModelProperty(value = "商品 - 图片1-3张")
     private String images;
 
 

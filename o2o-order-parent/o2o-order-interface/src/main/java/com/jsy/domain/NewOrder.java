@@ -30,6 +30,7 @@ public class NewOrder extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "c端用户id")
+
     private Long userId;
 
     @ApiModelProperty(value = "b端商家id")
@@ -46,6 +47,11 @@ public class NewOrder extends BaseEntity implements Serializable {
 
     @ApiModelProperty(value = "支付状态（0未支付，1支付成功,2退款中，3退款成功，4拒绝退款）")
     private Integer payStatus;
+
+    @ApiModelProperty(value = "申请退款方A角色0商家1平台")
+    private Integer refundApplyRole;
+
+
 
     @ApiModelProperty(value = "支付时间")
     private LocalDateTime payTime;
@@ -74,8 +80,11 @@ public class NewOrder extends BaseEntity implements Serializable {
     @ApiModelProperty(value = "订单的最终价格")
     private BigDecimal orderAllPrice;
 
-    @ApiModelProperty(value = "用户配送地址id（针对商家上门）")
-    private Long shippingAddress;
+    @ApiModelProperty(value = "总数量")
+    private Integer orderAllNumber;
+
+    @ApiModelProperty(value = "店铺地址（针对用户到店）")
+    private String shippingAddress;
     @ApiModelProperty(value = "联系人")
     private String linkman;
     @ApiModelProperty(value = "性别    0  男  |  1 女")

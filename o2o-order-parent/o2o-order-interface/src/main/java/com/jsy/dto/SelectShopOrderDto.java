@@ -51,21 +51,16 @@ public class SelectShopOrderDto {
 
     @ApiModelProperty(value = "是否评价0未评价，1评价（评价完成为订单完成）")
     private Integer commentStatus;
-
     @ApiModelProperty(value = "订单类型（0-服务类(只有服务)，1-普通类（套餐，单品集合））")
     private Integer orderType;
-
     @ApiModelProperty(value = "预约状态（0预约中，1预约成功）")
     private Integer appointmentStatus;
-
     @ApiModelProperty(value = "消费方式（0用户到店，1商家上门）")
     private Integer consumptionWay;
-
     @ApiModelProperty(value = "订单的最终价格")
     private BigDecimal orderAllPrice;
-
-    @ApiModelProperty(value = "用户配送地址id（针对商家上门）")
-    private Long shippingAddress;
+    @ApiModelProperty(value = "商家地址（用户到店）")
+    private String shippingAddress;
     @ApiModelProperty(value = "联系人")
     private String linkman;
     @ApiModelProperty(value = "性别    0  男  |  1 女")
@@ -76,15 +71,12 @@ public class SelectShopOrderDto {
     private String district;
     @ApiModelProperty(value = "详细地址")
     private String detailedAddress;
-
     @ApiModelProperty(value = "验证状态")
     private Integer serverCodeStatus;
     @ApiModelProperty(value = "预计最早时间")
     private LocalDateTime startTime;
-
     @ApiModelProperty(value = "预计最晚时间")
     private LocalDateTime entTime;
-
     @ApiModelProperty(value = "如果是商品的添加到商品详情")
     private List<SelectUserOrderGoodsDto> OrderGoodsDtos=new ArrayList<>();
     @ApiModelProperty(value = "如果是服务的添加到服务详情")

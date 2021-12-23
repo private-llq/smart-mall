@@ -305,7 +305,6 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         }
 
     }
-
     /**
      * 首页搜索
      */

@@ -2,17 +2,24 @@ package com.jsy.controller;
 
 import com.jsy.basic.util.utils.PagerUtils;
 import com.jsy.config.HttpClientHelper;
+import com.jsy.dto.OrderSizeDto;
 import com.jsy.dto.SelectShopOrderDto;
 import com.jsy.dto.SelectUserOrderDto;
+import com.jsy.dto.SelectUserOrderNumberDto;
 import com.jsy.query.*;
 import com.jsy.service.INewOrderService;
 import com.jsy.domain.NewOrder;
 import com.jsy.basic.util.PageList;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsy.utils.AliAppPayQO;
+
+import com.zhsj.base.api.domain.PayCallNotice;
+import com.zhsj.basecommon.vo.R;
+import com.zhsj.baseweb.annotation.LoginIgnore;
 import com.zhsj.baseweb.support.ContextHolder;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,11 +27,14 @@ import com.jsy.basic.util.vo.CommonResult;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @RestController
+@Slf4j
 @RequestMapping("/newOrder")
 public class NewOrderController {
     @Autowired
@@ -33,29 +43,62 @@ public class NewOrderController {
 
     /**********************************************arli***************************************/
 
-    @ApiOperation("新增订单")
-    @RequestMapping(value = "/creationOrder", method = RequestMethod.POST)
-    public CommonResult<Boolean> creationOrder(@RequestBody CreationOrderParam creationOrderParam) {
-        Boolean b = newOrderService.creationOrder(creationOrderParam);
-        return new CommonResult<Boolean>(200, "新增订单成功", b);
-    }
-    @ApiOperation("创建订单接口")
+//    @ApiOperation("新增订单")
+//    @RequestMapping(value = "/creationOrder", method = RequestMethod.POST)
+//    public CommonResult<Boolean> creationOrder(@RequestBody CreationOrderParam creationOrderParam) {
+//        Boolean b = newOrderService.creationOrder(creationOrderParam);
+//        return new CommonResult<Boolean>(200, "新增订单成功", b);
+//    }
+    @ApiOperation("生成订单接口返回订单id")
     @RequestMapping(value = "/insterOrder", method = RequestMethod.POST)
-    public CommonResult<Long> insterOrder(@RequestBody InsterOrderParam param) {
+    public CommonResult<String> insterOrder(@RequestBody InsterOrderParam param) {
            Long orderId =  newOrderService.insterOrder(param);
-        return new CommonResult<Long>(200, "新增订单成功", orderId);
+        return new CommonResult<String>(200, "新增订单成功", orderId.toString());
     }
+
+    @ApiOperation("生成订单接口返回订单id（单个商品直接购买）")
+    @RequestMapping(value = "/insterOrderOne", method = RequestMethod.POST)
+    public CommonResult<String> insterOrderOne(@RequestBody InsterOrderOneParam param) {
+        Long orderId =  newOrderService.insterOrderOne(param);
+        return new CommonResult<String>(200, "新增订单成功", orderId.toString());
+    }
+    @ApiOperation("修改生成订单商品数量（单个商品直接购买）+-")
+    @RequestMapping(value = "/updateOrderOne", method = RequestMethod.POST)
+    public CommonResult<Boolean> updateOrderOne(@RequestBody UpdateOrderOneParam param) {
+        Boolean b =  newOrderService.updateOrderOne(param);
+        if(b ){
+            return new CommonResult<Boolean>(200, "修改成功", b);
+        }
+        return new CommonResult<Boolean>(200, "修改失败", b);
+    }
+
 
     @ApiOperation("用户根据转态查询订单")
     @RequestMapping(value = "/selectUserOrder", method = RequestMethod.POST)
     public CommonResult<PagerUtils> selectUserOrder(@RequestBody SelectUserOrderParam param) {
         Long id = ContextHolder.getContext().getLoginUser().getId();//获取用户id
+        String token = ContextHolder.getContext().getLoginUser().getToken();
+        log.info("token"+token);
+
         System.out.println("用户id"+id);
         List<SelectUserOrderDto> list = newOrderService.selectUserOrder(id, param);
         PagerUtils pagerUtils = new PagerUtils<SelectUserOrderDto>();
         PagerUtils pagerUtils1 = pagerUtils.queryPage(param.getPage(), param.getSize(), list);
         return new CommonResult<>(200, "查询成功", pagerUtils1);
     }
+    @ApiOperation("查询相应状态下的数量")
+    @RequestMapping(value = "/selectUserOrderNumber", method = RequestMethod.GET)
+    public CommonResult<ArrayList<SelectUserOrderNumberDto>> selectUserOrderNumber() {
+        Long id = ContextHolder.getContext().getLoginUser().getId();//获取用户id
+        ArrayList<SelectUserOrderNumberDto>  selectUserOrderNumberDtos= newOrderService.selectUserOrderNumber(id);
+        return new CommonResult<>(200,"查询成功",selectUserOrderNumberDtos);
+
+    }
+
+
+
+
+
 
 
     @ApiOperation("商家根据转态查询订单")
@@ -67,11 +110,10 @@ public class NewOrderController {
         return new CommonResult<>(200, "查询成功", pagerUtils1);
     }
 
-
     @ApiOperation("用户删除订单")
-    @RequestMapping(value = "/deletedUserOrder", method = RequestMethod.POST)
-    public CommonResult<Boolean> deletedUserOrder(Long OrderId) {
-        boolean b = newOrderService.deletedUserOrder(OrderId);
+    @RequestMapping(value = "/deletedUserOrder", method = RequestMethod.GET)
+    public CommonResult<Boolean> deletedUserOrder(@RequestParam("orderId") Long orderId) {
+        boolean b = newOrderService.deletedUserOrder(orderId);
         return new CommonResult<>(200, "删除成功", b);
     }
 
@@ -113,22 +155,70 @@ public class NewOrderController {
         CommonResult value=newOrderService.alipay(orderId);
         return value;
     }
-
+//    @ApiOperation("支付宝退款接口")
+//    @RequestMapping(value = "/alipayRefund", method = RequestMethod.GET)
+//    public CommonResult<String> alipayRefund(@RequestParam("orderId") Long orderId) {
+//        CommonResult value=newOrderService.alipayRefund(orderId);
+//        return value;
+//    }
     @ApiOperation("微信支付接口")
     @RequestMapping(value = "/WeChatPay", method = RequestMethod.GET)
     public CommonResult<String> WeChatPay(@RequestParam("orderId") Long orderId) {
         CommonResult value=newOrderService.WeChatPay(orderId);
         return value;
     }
+    @ApiOperation("退款接口")
+    @RequestMapping(value = "/allPayRefund", method = RequestMethod.GET)
+    public CommonResult<Boolean> allPayRefund(@RequestParam("orderId") Long orderId) {
+        Boolean value=newOrderService.allPayRefund(orderId);
+        if(value){
+            return new CommonResult<Boolean>(200,"退款成功",value) ;
+        }
+        return new CommonResult<Boolean>(200,"退款失败",value) ;
 
+    }
+//    @LoginIgnore
+//    @ApiOperation("测试支付回调")
+//    @RequestMapping(value = "/replyPay", method = RequestMethod.POST)
+//    public CommonResult<Boolean> replyPay(@RequestBody CompletionPayParam param) {
+//        log.info("回调成功");
+//        System.out.println(param.toString());
+//        Boolean b = newOrderService.completionPay(param);
+//        if(b){
+//            return new CommonResult<>(0, "回调成功", b);
+//        }
+//        return new CommonResult<>(1, "失败", b);
+//    }
+
+
+
+    @LoginIgnore
     @ApiOperation("测试支付回调")
     @RequestMapping(value = "/replyPay", method = RequestMethod.POST)
-    public CommonResult<Boolean> testPay(@RequestBody CompletionPayParam param) {
-        Boolean b = newOrderService.completionPay(param);
-        if(b){
-            return new CommonResult<>(200, "回调成功", b);
+    public CommonResult<Boolean> replyPay(@RequestBody R<PayCallNotice> param) {
+        log.info("进入回调成功");
+        Boolean b =  newOrderService.replyPayOne(param);
+                if(b){
+            return new CommonResult<>(0, "回调成功", b);
         }
-        return new CommonResult<>(10005, "失败", b);
+        return new CommonResult<>(1, "失败", b);
+
     }
+
+
+
+
+
+    @ApiOperation("查询近多少日订单量")
+    @RequestMapping(value = "/orderSize", method = RequestMethod.POST)
+    public CommonResult<OrderSizeDto> orderSize(@RequestBody OrderSizeParam param){
+        OrderSizeDto   dto= newOrderService.orderSize(param);
+        return new CommonResult<>(200, "查询成功", dto);
+    }
+
+
+
+
+
 
 }

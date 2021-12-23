@@ -1,5 +1,8 @@
 package com.jsy.dto;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -17,9 +20,13 @@ import java.util.List;
 @Data
 public class SelectUserOrderServiceDto {
     @ApiModelProperty(value = "订单id")
+    @JsonSerialize(using = com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long orderId;
 
     @ApiModelProperty(value = "商家id")
+    @JsonSerialize(using = com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long shopId;
 
     @ApiModelProperty(value = "服务 - 图片1-3张")
@@ -53,6 +60,8 @@ public class SelectUserOrderServiceDto {
     private LocalDateTime validUntilTime;
 
     @ApiModelProperty(value = "服务Id")
+    @JsonSerialize(using = com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long serviceId;
 
     @ApiModelProperty(value = "服务数量")

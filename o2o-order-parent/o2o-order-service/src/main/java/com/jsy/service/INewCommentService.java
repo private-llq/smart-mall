@@ -7,6 +7,7 @@ import com.jsy.dto.SelectShopCommentPageDto;
 import com.jsy.dto.SelectShopCommentScoreDto;
 import com.jsy.query.CreateCommentParam;
 import com.jsy.query.SelectShopCommentPageParam;
+import com.jsy.query.ShopSelectCommentAndReplyParam;
 import com.jsy.utils.MyPage;
 import com.jsy.vo.SelectCommentAndReplyVo;
 
@@ -29,4 +30,6 @@ public interface INewCommentService extends IService<NewComment> {
     Page<NewComment> selectShopCommentPage(SelectShopCommentPageParam param);
    //查询评论和商家回复
    MyPage selectCommentAndReply(SelectShopCommentPageParam param);
+    //商家分页查询店铺的评论and回复
+    MyPage shopSelectCommentAndReply(ShopSelectCommentAndReplyParam param);
 }

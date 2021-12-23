@@ -36,6 +36,9 @@ public class NewRefund extends BaseEntity implements Serializable {
     @ApiModelProperty(value = "是否同意退款（0申请中，1申请成功，2拒绝）")
     private Integer refundStatus;
 
+    @ApiModelProperty(value = "退款描述")
+    private String describes;
+
     @ApiModelProperty(value = "拒绝原因")
     private String refusalCause;
 

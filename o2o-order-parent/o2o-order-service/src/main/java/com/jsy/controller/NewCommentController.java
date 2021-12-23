@@ -4,6 +4,7 @@ import com.jsy.dto.SelectShopCommentPageDto;
 import com.jsy.dto.SelectShopCommentScoreDto;
 import com.jsy.query.CreateCommentParam;
 import com.jsy.query.SelectShopCommentPageParam;
+import com.jsy.query.ShopSelectCommentAndReplyParam;
 import com.jsy.service.INewCommentService;
 import com.jsy.domain.NewComment;
 import com.jsy.query.NewCommentQuery;
@@ -49,15 +50,22 @@ public class NewCommentController {
         return CommonResult.ok(values);
     }*/
 
+
+
     //分页查询店铺的评论and回复
-   /* @LoginIgnore*/
     @RequestMapping(value = "/selectCommentAndReply",method =RequestMethod.POST)
     public CommonResult<MyPage> selectCommentAndReply(@RequestBody SelectShopCommentPageParam param) {
+
         MyPage values=newCommentService.selectCommentAndReply(param);
         return CommonResult.ok(values);
     }
 
-
+    //商家分页查询店铺的评论and回复
+    @RequestMapping(value = "/shopSelectCommentAndReply",method =RequestMethod.POST)
+    public CommonResult<MyPage> shopSelectCommentAndReply(@RequestBody ShopSelectCommentAndReplyParam param) {
+        MyPage values=newCommentService.shopSelectCommentAndReply(param);
+        return CommonResult.ok(values);
+    }
 
 
 
