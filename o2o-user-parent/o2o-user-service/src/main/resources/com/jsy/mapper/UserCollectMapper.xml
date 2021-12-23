@@ -13,5 +13,26 @@
         <result column="update_time" property="updateTime" />
         <result column="deleted" property="deleted" />
     </resultMap>
+    <update id="myDeleteBatchIds" parameterType="list">
+        delete from w_user_collect where id in
+        <foreach collection="ids" item="id"   open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </update>
+    <delete id="deleteCollectType">
+
+    </delete>
+    <delete id="delete0">
+        delete from w_user_collect where goods_id=#{id} and user_id=#{userId} and type=0
+    </delete>
+    <delete id="delete1">
+         delete from w_user_collect where goods_id=#{id} and user_id=#{userId} and type=1
+    </delete>
+    <delete id="delete2">
+         delete from w_user_collect where menu_id=#{id} and user_id=#{userId} and type=2
+    </delete>
+    <delete id="delete3">
+        delete from w_user_collect where shop_id=#{id} and user_id=#{userId} and type=3
+    </delete>
 
 </mapper>

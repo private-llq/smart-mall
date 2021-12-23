@@ -51,7 +51,7 @@ public class UserCollectController {
      * @param ids
      * @return
      */
-    @DeleteMapping(value="/delMultiUserCollect")
+    @PostMapping(value="/delMultiUserCollect")
     public CommonResult delMultiUserCollect( @RequestBody List<Long> ids){
         userCollectService.delMultiUserCollect(ids);
         return CommonResult.ok();

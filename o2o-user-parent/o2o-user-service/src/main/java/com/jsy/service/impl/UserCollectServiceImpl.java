@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -219,11 +220,14 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
         Long userId = loginUser.getId();//用户id
         Page<UserCollect> page = new Page<>(userCollectQuery.getPage(), userCollectQuery.getRows());
         Page<UserCollect> selectPage = userCollectMapper.selectPage(page, new QueryWrapper<UserCollect>().eq("user_id", userId));
+
+        List<UserCollect> records = selectPage.getRecords();
+        List<UserCollect> collect = records.stream().sorted(Comparator.comparing(UserCollect::getCreateTime).reversed()).collect(Collectors.toList());
         PageInfo<UserCollect> pageInfo = new PageInfo<>();
         pageInfo.setSize(selectPage.getSize());
         pageInfo.setTotal(selectPage.getTotal());
         pageInfo.setCurrent(selectPage.getCurrent());
-        pageInfo.setRecords(selectPage.getRecords());
+        pageInfo.setRecords(collect);
         return pageInfo;
     }
 
@@ -315,35 +319,16 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
          * 收藏类型：0 商品  1:服务  2：套餐  3：商店
          */
         if (type==0){
-            userCollectMapper.delete(new QueryWrapper<UserCollect>()
-                    .eq("goods_id",id)
-                    .eq("user_id",userId)
-                    .eq("type",0)
-            );
-
+            userCollectMapper.delete0(id,userId);
         }
         if (type==1){
-            userCollectMapper.delete(new QueryWrapper<UserCollect>()
-                    .eq("goods_id",id)
-                    .eq("user_id",userId)
-                    .eq("type",1)
-            );
-
+            userCollectMapper.delete1(id,userId);
         }
         if (type==2){
-            userCollectMapper.delete(new QueryWrapper<UserCollect>()
-                    .eq("menu_id",id)
-                    .eq("user_id",userId)
-                    .eq("type",2)
-            );
-
+            userCollectMapper.delete2(id,userId);
         }
         if (type==3){
-            userCollectMapper.delete(new QueryWrapper<UserCollect>()
-                    .eq("shop_id",id)
-                    .eq("user_id",userId)
-                    .eq("type",3)
-            );
+            userCollectMapper.delete3(id,userId);
         }
     }
 
@@ -435,7 +420,7 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
     @Override
     @Transactional
     public void delMultiUserCollect(List<Long> ids) {
-        userCollectMapper.deleteBatchIds(ids);
+        userCollectMapper.myDeleteBatchIds(ids);
     }
 
 

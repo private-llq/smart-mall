@@ -33,6 +33,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.math.BigDecimal.ROUND_HALF_UP;
 
@@ -336,6 +337,8 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
                     myNewShopDto.setPrice(goods.getPrice());
                     myNewShopDto.setDiscountState(goods.getDiscountState());
                     myNewShopDto.setDiscountPrice(goods.getDiscountPrice());
+                }else {
+                    continue;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -344,6 +347,11 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
             DecimalFormat df = new DecimalFormat("#0.00");
             Double distance = GouldUtil.GetDistance(Double.parseDouble(mainSearchQuery.getLatitude()),Double.parseDouble(mainSearchQuery.getLongitude()),newShop.getLatitude().doubleValue(),newShop.getLongitude().doubleValue());
             myNewShopDto.setDistance(df.format(distance/1000)+"km");
+            myNewShopDto.setDistanceBak(distance);
+
+            if (distance>3000){
+                myNewShopDto.setState(1);//超出配送范围
+            }
 
             String[] ids = newShop.getShopTreeId().split(",");
 
@@ -354,7 +362,8 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
             list.add(myNewShopDto);
 
         }
-        PageInfo<MyNewShopDto> pageInfo = MyPageUtils.pageMap(mainSearchQuery.getPage(), mainSearchQuery.getRows(), list);
+        List<MyNewShopDto> collect = list.stream().sorted(Comparator.comparing(MyNewShopDto::getDistanceBak)).collect(Collectors.toList());
+        PageInfo<MyNewShopDto> pageInfo = MyPageUtils.pageMap(mainSearchQuery.getPage(), mainSearchQuery.getRows(), collect);
 
         return pageInfo;
 

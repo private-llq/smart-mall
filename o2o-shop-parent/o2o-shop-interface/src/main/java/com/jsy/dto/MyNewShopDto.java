@@ -59,4 +59,14 @@ public class MyNewShopDto implements Serializable {
      */
     private String distance;
 
+    /**
+     * 距离备注
+     */
+    private Double distanceBak;
+
+    /**
+     * 是否超过配送范围 0 未超出 1 超出
+     */
+    private Integer state=0;
+
 }
