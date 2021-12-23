@@ -286,7 +286,7 @@ public class NewShopController {
             return new  CommonResult(-1,"失败",null);
         }
     }
-    @ApiOperation("C端-通过关键词搜索店铺和服务名称")
+    @ApiOperation("医疗-C端-通过关键词搜索店铺和服务名称")
     @LoginIgnore
     @PostMapping("/getShopService")
     public CommonResult<NewShopServiceDto> getShopService(@RequestBody NewShopQuery shopQuery){

@@ -627,13 +627,13 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
             String shopTreeIdName = getShopTreeIdName(spilt);
             recommendDto.setShopTreeIdName(shopTreeIdName);
             recommendDtoList.add(recommendDto);
-            System.out.println(recommendDto.getDistance());
         }
         serviceDto.setShopList(recommendDtoList);
         NearTheServiceQuery serviceQuery = new NearTheServiceQuery();
         serviceQuery.setLatitude(shopQuery.getLatitude());
         serviceQuery.setLongitude(shopQuery.getLongitude());
         serviceQuery.setKeyword(shopQuery.getShopName());
+
         List<GoodsServiceDto> goodsList = goodsClient.NearTheService2(serviceQuery).getData();
         DecimalFormat   fnum  =   new  DecimalFormat("##0.00");
         if (goodsList.size()>0){
