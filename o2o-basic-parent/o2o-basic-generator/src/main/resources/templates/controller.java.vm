@@ -16,74 +16,87 @@ public class ${entity}Controller {
     public ${table.serviceName} ${table.entityPath}Service;
 
     /**
-    * 保存和修改公用的
-    * @param ${table.entityPath}  传递的实体
-    * @return Ajaxresult转换结果
+    * 新增
+    * @param ${table.entityPath}  实体类对象
+    * @return CommonResult 公共返回类
     */
-    @PostMapping(value="/save")
-    public CommonResult save(@RequestBody ${entity} ${table.entityPath}){
+    @PostMapping("/save${entity}")
+    public CommonResult save${entity}(@RequestBody ${entity} ${table.entityPath}){
         try {
-            if(${table.entityPath}.getId()!=null){
-                ${table.entityPath}Service.updateById(${table.entityPath});
-            }else{
-                ${table.entityPath}Service.save(${table.entityPath});
-            }
+            ${table.entityPath}Service.save(${table.entityPath});
             return CommonResult.ok();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            return CommonResult.error(-1,"操作失败！");
+        }
+
+    }
+
+    /**
+     * 修改
+     * @param ${table.entityPath}  实体类对象
+     * @return CommonResult 公共返回类
+     */
+    @PostMapping("/update${entity}")
+    public CommonResult update${entity}(@RequestBody ${entity} ${table.entityPath}){
+        try {
+             ${table.entityPath}Service.updateById(${table.entityPath});
+            return CommonResult.ok();
+        } catch (Exception ex) {
             return CommonResult.error(-1,"操作失败！");
         }
     }
 
     /**
-    * 删除对象信息
+    * 删除
     * @param id
-    * @return
+    * @return CommonResult 公共返回类
     */
-    @DeleteMapping(value="/{id}")
-    public CommonResult delete(@PathVariable("id") Long id){
+    @DeleteMapping("/delete${entity}")
+    public CommonResult delete${entity}(@RequestParam("id") Long id){
         try {
             ${table.entityPath}Service.removeById(id);
             return CommonResult.ok();
-        } catch (Exception e) {
-        e.printStackTrace();
-            return  CommonResult.error(-1,"删除失败！");
+        } catch (Exception ex) {
+            return CommonResult.error(-1,"操作失败！");
         }
     }
 
     /**
-    * 根据id查询一条
+    * 查询
     * @param id
     */
-    @GetMapping(value = "/{id}")
-    public ${entity} get(@PathVariable("id")Long id)
+    @GetMapping("get${entity}")
+    public CommonResult<${entity}> get${entity}(@RequestParam("id")Long id)
     {
-        return ${table.entityPath}Service.getById(id);
+        ${entity} get${entity}=${table.entityPath}Service.getById(id);
+        return CommonResult.ok(get${entity});
     }
 
 
     /**
-    * 返回list列表
+    * list列表
     * @return
     */
-    @GetMapping(value = "/list")
-    public List<${entity}> list(){
-
-        return ${table.entityPath}Service.list(null);
+    @GetMapping("/list${entity}")
+    public CommonResult<List<${entity}>> list${entity}(){
+        List<${entity}> list=${table.entityPath}Service.list(null);
+        return CommonResult.ok(list);
     }
 
 
     /**
     * 分页查询数据
-    *
     * @param query 查询对象
-    * @return PageList 分页对象
+    * @return PageInfo 分页对象
     */
-    @PostMapping(value = "/pagelist")
-    public PageList<${entity}> json(@RequestBody ${entity}Query query)
+    @PostMapping("/page${entity}")
+    public CommonResult<PageInfo<${entity}>> page${entity}(@RequestBody ${entity}Query query)
     {
-        Page<${entity}> page = new Page<${entity}>(query.getPage(),query.getRows());
-        page = ${table.entityPath}Service.page(page);
-        return new PageList<${entity}>(page.getTotal(),page.getRecords());
+        Page<${entity}> page = new Page(query.getPage(),query.getRows());
+        Page<${entity}> selectPage = ${table.entityPath}Service.page(page);
+        PageInfo<${entity}> pageInfo=new PageInfo();
+        pageInfo.setRecords(selectPage.getRecords());pageInfo.setTotal(selectPage.getTotal());
+        pageInfo.setSize(selectPage.getSize());pageInfo.setCurrent(selectPage.getCurrent());
+        return CommonResult.ok(pageInfo);
     }
 }
