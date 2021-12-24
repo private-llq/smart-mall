@@ -1,7 +1,7 @@
 package com.jsy.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.jsy.basic.util.MyPageUtils;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.clent.CommentClent;
@@ -218,16 +218,11 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
             new JSYException(-1,"用户认证失败！");
         }
         Long userId = loginUser.getId();//用户id
-        Page<UserCollect> page = new Page<>(userCollectQuery.getPage(), userCollectQuery.getRows());
-        Page<UserCollect> selectPage = userCollectMapper.selectPage(page, new QueryWrapper<UserCollect>().eq("user_id", userId));
 
-        List<UserCollect> records = selectPage.getRecords();
-        List<UserCollect> collect = records.stream().sorted(Comparator.comparing(UserCollect::getCreateTime).reversed()).collect(Collectors.toList());
-        PageInfo<UserCollect> pageInfo = new PageInfo<>();
-        pageInfo.setSize(selectPage.getSize());
-        pageInfo.setTotal(selectPage.getTotal());
-        pageInfo.setCurrent(selectPage.getCurrent());
-        pageInfo.setRecords(collect);
+        List<UserCollect> list = userCollectMapper.selectList(new QueryWrapper<UserCollect>().eq("user_id", userId));
+        List<UserCollect> collect = list.stream().sorted(Comparator.comparing(UserCollect::getCreateTime).reversed()).collect(Collectors.toList());
+        PageInfo<UserCollect> pageInfo = MyPageUtils.pageMap(userCollectQuery.getPage(), userCollectQuery.getRows(), collect);
+
         return pageInfo;
     }
 
@@ -347,46 +342,22 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
             throw new JSYException(-1,"传入的商店id不能为空！");
         }
 
-
+        Long userId = loginUser.getId();
         //查询用户购物车商店信息
         QueryUserCartDto data = shoppingCartClient.queryUserCart(shopIds).getData();
-       /* List<NewShopInfo> shopDtoList = data.getNewShopDtoList();
-
-        List<NewShopInfo> shopDtoListCollect = shopDtoList.stream().filter(x -> {
-            UserCollect userCollect = userCollectMapper.selectOne(new QueryWrapper<UserCollect>().eq("type", 3).eq("shop_id", x.getId()));
-            if (Objects.isNull(userCollect)) {//没收藏过的才添加到收藏
-                return true;
-            }
-            return false;
-        }).collect(Collectors.toList());
-
-
-        for (NewShopInfo newShopDto : shopDtoListCollect) {
-            UserCollect userCollect = new UserCollect();
-            userCollect.setType(3);
-            userCollect.setShopId(newShopDto.getId());
-            userCollect.setTitle(newShopDto.getShopName());
-            userCollect.setImage(newShopDto.getShopLogo());
-            userCollect.setUserId(loginUser.getId());
-            String shopTreeId = newShopDto.getShopTreeId();
-
-            if (Objects.nonNull(shopTreeId)){
-                String shopTreeIdName = getShopTreeIdName(shopTreeId.split(","));
-                userCollect.setShopTypeName(Objects.isNull(shopTreeIdName)?null:shopTreeIdName);
-            }
-            SelectShopCommentScoreDto rut = commentClent.selectShopCommentScore(newShopDto.getId()).getData();
-            userCollect.setShopScore(Objects.isNull(rut)?5:rut.getScore());
-            userCollectMapper.insert(userCollect);
-        }*/
-
+        if (Objects.isNull(data) || Objects.isNull(data.getGoodsList())){
+            throw new JSYException(-1,"购物车参数异常！");
+        }
 
         //查询用户购物车商品信息
         List<ShoppingCart> goodsList = data.getGoodsList();
         List<ShoppingCart> goodsListCollect = goodsList.stream().filter(x -> {
             if (x.getType()==0 || x.getType()==1){
                 UserCollect userCollect = userCollectMapper.selectOne(new QueryWrapper<UserCollect>()
+                        .eq("user_id",userId)
                         .eq("type",x.getType())
                         .eq("goods_id", x.getGoodsId())
+                        .eq("shop_id",x.getShopId())
                 );
                 if (Objects.isNull(userCollect)){//没收藏过的才添加到收藏
                     return true;
@@ -394,8 +365,10 @@ public class UserCollectServiceImpl extends ServiceImpl<UserCollectMapper, UserC
             }
             if (x.getType()==2){
                 UserCollect userCollect = userCollectMapper.selectOne(new QueryWrapper<UserCollect>()
+                        .eq("user_id",userId)
                         .eq("type",2)
                         .eq("menu_id", x.getSetMenuId())
+                        .eq("shop_id",x.getShopId())
                 );
                 if (Objects.isNull(userCollect)){//没收藏过的才添加到收藏
                     return true;
