@@ -299,11 +299,16 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
                 payPrice= payPrice.add(cart.getDiscountPrice().multiply(BigDecimal.valueOf(cart.getNum())));
             }
         }
-        NewShopDto newShop = shopClient.get(shopId).getData();//http://127.0.0.1:7006/newShop/get/1457644731467661314
-        if (Objects.nonNull(newShop)){
-            shoppingCartDto.setShopId(newShop.getId());//商店id
-            shoppingCartDto.setShopName(newShop.getShopName());//商店名称
-            shoppingCartDto.setShopType(newShop.getType());
+        try {
+            NewShopDto newShop = shopClient.get(shopId).getData();//http://127.0.0.1:7006/newShop/get/1457644731467661314
+            if (Objects.nonNull(newShop)){
+                shoppingCartDto.setShopId(newShop.getId());//商店id
+                shoppingCartDto.setShopName(newShop.getShopName());//商店名称
+                shoppingCartDto.setShopType(newShop.getType());
+            }
+        } catch (Exception e) {
+            throw new JSYException(-1,"没有找到该商店的信息！");
+
         }
         shoppingCartDto.setSumGoods(sumGoods);//商品总数
         shoppingCartDto.setPayPrice(payPrice);//商品支付价格

@@ -54,7 +54,7 @@ public class ${entity}Controller {
     @DeleteMapping("/delete${entity}")
     public CommonResult delete${entity}(@RequestParam("id") Long id){
         try {
-            ${table.entityPath}Service.removeById(id);
+            ${table.entityPath}Service.removeById(${table.entityPath});
             return CommonResult.ok();
         } catch (Exception ex) {
             return CommonResult.error(-1,"操作失败！");

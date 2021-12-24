@@ -76,6 +76,15 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     @Override
     @Transactional
     public void saveGoods(GoodsParam goodsParam) {
+
+        if (Objects.isNull(goodsParam)){
+            throw new JSYException(500,"传入对象为空！");
+        }
+        String[] split = goodsParam.getImages().split(",");
+        if (split.length>3){
+            throw new JSYException(500,"图片最多上传3张！");
+        }
+
         Goods goods = new Goods();
         if (Objects.nonNull(goodsParam.getShopId())){
             NewShopDto newShop = shopClient.get(goodsParam.getShopId()).getData();
@@ -91,17 +100,6 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
             goods.setGoodsTypeName(data.getClassifyName());
         }
         goods.setGoodsNumber(String.valueOf(SnowFlake.nextId()));
-        //String[] ids = goodsParam.getServiceCharacteristicsIds().split(",");//服务特点ids
-       /* ArrayList<ServiceCharacteristics> list = new ArrayList<>();
-        for (String id : ids) {
-           list.add(client.get(Long.valueOf(id)).getData());
-        }
-
-        list.forEach(x->{
-            if (StringUtils.containsAny(x.getName(),"上门服务","上门","到家","到家服务")){
-                goods.setIsVisitingService(1);//支持上门服务
-            }
-        });*/
 
         if (Objects.nonNull(goodsParam.getDiscountPrice())){
             goods.setDiscountState(1);//开启折扣
@@ -123,6 +121,14 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     @Transactional
     public void saveService(GoodsServiceParam goodsServiceParam) {
 
+        if (Objects.isNull(goodsServiceParam)){
+            throw new JSYException(500,"传入对象为空！");
+        }
+        String[] split = goodsServiceParam.getImages().split(",");
+        if (split.length>3){
+            throw new JSYException(500,"图片最多上传3张！");
+        }
+
         Goods goods = new Goods();
         if (Objects.nonNull(goodsServiceParam.getShopId())){
             NewShopDto newShop = shopClient.get(goodsServiceParam.getShopId()).getData();
@@ -139,28 +145,11 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
             goods.setGoodsTypeName(data.getClassifyName());
         }
         goods.setGoodsNumber(String.valueOf(SnowFlake.nextId()));
-        /*String[] ids = goodsServiceParam.getServiceCharacteristicsIds().split(",");//服务特点ids
-        ArrayList<ServiceCharacteristics> list = new ArrayList<>();
-        StringBuffer strName=new StringBuffer();
-        for (String id : ids) {
-            ServiceCharacteristics data = client.get(Long.valueOf(id)).getData();
-            strName.append(data.getName()+",");
-            list.add(data);
-        }
-
-        list.forEach(x->{
-            if (StringUtils.containsAny(x.getName(),"上门服务","上门","到家","到家服务")){
-                goods.setIsVisitingService(1);//支持上门服务
-            }
-        });*/
-
         if (Objects.nonNull(goodsServiceParam.getDiscountPrice())){
             goods.setDiscountState(1);//开启折扣
         }else {
             goods.setDiscountState(0);
         }
-        //String substring = strName.substring(0, strName.length() - 1);
-       // goods.setServiceCharacteristicsName(substring);
         goods.setType(1);//服务类
         goods.setIsPutaway(0);//默认未上架
         BeanUtil.copyProperties(goodsServiceParam,goods);
