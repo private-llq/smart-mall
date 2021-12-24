@@ -104,7 +104,6 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
 
         SetMenuDto setMenuDto = new SetMenuDto();
         if (ObjectUtil.isNull(setMenu)){
-            System.out.println("taoc");
          throw  new JSYException(-1,"套餐不存在");
         }
         //套餐访问量+1
@@ -253,8 +252,8 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
     public PageInfo<SetMenuDto> listAll(SetMenuQuery setMenuQuery) {
         //根据商家id
         List<SetMenu> menuList = setMenuMapper.selectList(new QueryWrapper<SetMenu>().eq("shop_id", setMenuQuery.getShopId())
-                                                .eq("state",1)
-                                                .eq("is_disable",0));
+                                                .eq("state",setMenuQuery.getState())
+                                                .eq("is_disable",setMenuQuery.getIsDisable()));
         List<SetMenuDto> dtoList = new ArrayList<>();
         for (SetMenu setMenu : menuList) {
             SetMenuDto setMenuDto = new SetMenuDto();

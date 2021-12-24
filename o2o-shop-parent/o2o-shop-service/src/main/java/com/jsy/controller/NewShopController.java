@@ -54,6 +54,9 @@ public class NewShopController {
     private CommentClent commentClent;
     @DubboReference(version = RpcConst.Rpc.VERSION, group = RpcConst.Rpc.Group.GROUP_BASE_USER, check = false)
     private IBaseUserInfoRpcService iBaseUserInfoRpcService;
+    @DubboReference(version = RpcConst.Rpc.VERSION, group = RpcConst.Rpc.Group.GROUP_BASE_USER, check = false)
+    private IBaseAuthRpcService iBaseAuthRpcService;
+
 
 
     /**
@@ -183,7 +186,15 @@ public class NewShopController {
     @ApiOperation("查询所有店铺")
     @GetMapping(value = "/list")
     public CommonResult<List<NewShopDto>> list(){
-        List<NewShop> list = newShopService.list(null);
+        List<NewShop> list = newShopService.list();
+//        for (NewShop newShop : list) {
+//            System.out.println(newShop);
+//            if (newShop.getOwnerUuid()!=null){
+////                iBaseAuthRpcService.addLoginTypeScope(newShop.getOwnerUuid(),"shop_admin");
+//                String imId = iBaseUserInfoRpcService.getUserIm(newShop.getOwnerUuid(),"shop_admin").getImId();
+//                System.out.println(imId);
+//            }
+//        }
         List<NewShopDto> newShopDtos = new ArrayList<>();
         for (NewShop newShop : list) {
             NewShopDto newShopDto = new NewShopDto();
@@ -225,7 +236,7 @@ public class NewShopController {
         SelectShopCommentScoreDto data = commentClent.selectShopCommentScore(shopId).getData();
         newShopSetDto.setScore(data.getScore());
         newShopSetDto.setSize(data.getSize());
-        String imId = iBaseUserInfoRpcService.getEHomeUserIm(newShop.getOwnerUuid()).getImId();
+        String imId = iBaseUserInfoRpcService.getUserIm(newShop.getOwnerUuid(),"shop_admin").getImId();
         newShopSetDto.setImId(imId);
         return CommonResult.ok(newShopSetDto);
     }
@@ -358,6 +369,8 @@ public class NewShopController {
         Integer count = newShopService.newShopAudit();
         return CommonResult.ok(count);
     }
+
+
 
 
 }

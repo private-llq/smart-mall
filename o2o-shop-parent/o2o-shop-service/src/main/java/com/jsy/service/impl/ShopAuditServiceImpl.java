@@ -21,7 +21,10 @@ import com.jsy.mapper.ShopAuditMapper;
 import com.jsy.parameter.NewShopAuditParam;
 import com.jsy.service.IShopAuditService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zhsj.base.api.constant.RpcConst;
+import com.zhsj.base.api.rpc.IBaseAuthRpcService;
 import com.zhsj.baseweb.support.ContextHolder;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -58,6 +61,8 @@ public class ShopAuditServiceImpl extends ServiceImpl<ShopAuditMapper, ShopAudit
     private GoodsClient goodsClient;
     @Resource
     private HotClient hotClient;
+    @DubboReference(version = RpcConst.Rpc.VERSION, group = RpcConst.Rpc.Group.GROUP_BASE_USER, check = false)
+    private IBaseAuthRpcService iBaseAuthRpcService;
     @Override
     public boolean addAudit(NewShopAuditParam auditParam) {
         NewShop newShop = shopMapper.selectById(auditParam.getShopId());
@@ -71,6 +76,8 @@ public class ShopAuditServiceImpl extends ServiceImpl<ShopAuditMapper, ShopAudit
             //审核状态 0未审核 1已审核 2审核未通过 3资质未认证
             if (auditParam.getState()==1){
                 newShop.setState(1);
+                //成为商家用户
+                iBaseAuthRpcService.addLoginTypeScope(newShop.getOwnerUuid(),"shop_admin");
             }else if(auditParam.getState()==2){
                 ShopAudit shopAudit1 = new ShopAudit();
                 newShop.setState(2);
@@ -84,6 +91,8 @@ public class ShopAuditServiceImpl extends ServiceImpl<ShopAuditMapper, ShopAudit
             //审核状态 0未审核 1已审核 2审核未通过 3资质未认证
             if (auditParam.getState()==1){
                 newShop.setState(1);
+                //成为商家用户
+                iBaseAuthRpcService.addLoginTypeScope(newShop.getOwnerUuid(),"shop_admin");
             }else if(auditParam.getState()==2){
                 newShop.setState(2);
                 shopAudit.setShopId(auditParam.getShopId());

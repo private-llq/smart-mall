@@ -595,11 +595,12 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         }
         List<NewShopRecommendDto> recommendDtoList = new ArrayList<>();
         for (NewShop newShop : newShops) {
-            NewShopRecommendDto recommendDto = new NewShopRecommendDto();
-            BeanUtils.copyProperties(newShop,recommendDto);
-            //.divide(new BigDecimal(1000)
-            recommendDto.setDistance(newShop.getDistance().divide(new BigDecimal(1000)).setScale(2,ROUND_HALF_UP));
-            recommendDtoList.add(recommendDto);
+            if (ObjectUtil.isNotNull(newShop)){
+                NewShopRecommendDto recommendDto = new NewShopRecommendDto();
+                BeanUtils.copyProperties(newShop,recommendDto);
+                recommendDto.setDistance(newShop.getDistance().divide(new BigDecimal(1000)).setScale(2,ROUND_HALF_UP));
+                recommendDtoList.add(recommendDto);
+            }
         }
         PageInfo<NewShopRecommendDto> dtoPageInfo = MyPageUtils.pageMap(shopQuery.getPage(), shopQuery.getRows(), recommendDtoList);
         return dtoPageInfo;

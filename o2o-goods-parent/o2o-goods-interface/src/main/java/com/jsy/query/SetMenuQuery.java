@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 public class SetMenuQuery extends BaseQuery{
     @ApiModelProperty(value = "店铺id")
     private Long shopId;
+    @ApiModelProperty(value = "查询上下架：0下架 1上架")
     private Integer state;
     @ApiModelProperty(value = "是否开启折扣：0不禁用 1禁用")
     private Integer isDisable;
