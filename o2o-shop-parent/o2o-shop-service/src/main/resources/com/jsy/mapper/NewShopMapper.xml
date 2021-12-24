@@ -162,12 +162,14 @@
                         )
                 )  as distance
         from  w_new_shop t1
+        RIGHT JOIN  w_shop_tree s  on SUBSTRING_INDEX(t1.shop_tree_id, ',',  -1)  = s.id
         WHERE  t1.state=1
             AND t1.deleted=0
             AND t1.shielding=0
             AND  FIND_IN_SET(#{shopQuery.treeId},t1.shop_tree_id)
         <if test="shopQuery.shopName !=null and shopQuery.shopName !=''">
             AND t1.shop_name LIKE CONCAT('%',#{shopQuery.shopName,jdbcType=VARCHAR},'%')
+            OR s.name Like CONCAT('%',#{shopQuery.shopName,jdbcType=VARCHAR},'%')
         </if>
         order by distance
     </select>

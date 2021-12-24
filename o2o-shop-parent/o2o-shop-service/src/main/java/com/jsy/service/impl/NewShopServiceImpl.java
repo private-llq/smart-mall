@@ -614,26 +614,32 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         List<NewShop> newShops= shopMapper.getMedicalShop(shopQuery);
         List<NewShopRecommendDto> recommendDtoList = new ArrayList<>();
         Integer number = 0;
-        for (NewShop newShop : newShops) {
-            if (number>=5){
-                break;
+        if (newShops.size()>0){
+            for (NewShop newShop : newShops) {
+                if (number>=5){
+                    break;
+                }
+                number++;
+                NewShopRecommendDto recommendDto = new NewShopRecommendDto();
+                System.out.println("ddddddddddddddddddddddddddddddddddd  + number "+newShop+number);
+                if (ObjectUtil.isNotNull(newShop)){
+                    BeanUtils.copyProperties(newShop,recommendDto);
+                    recommendDto.setDistance(newShop.getDistance().divide(new BigDecimal(1000).setScale(2, ROUND_HALF_UP)));
+                    String[] spilt = newShop.getShopTreeId().split(",");
+                    String shopTreeIdName = getShopTreeIdName(spilt);
+                    recommendDto.setShopTreeIdName(shopTreeIdName);
+                    recommendDtoList.add(recommendDto);
+                }
+                //.divide(new BigDecimal(1000)
             }
-            number++;
-            NewShopRecommendDto recommendDto = new NewShopRecommendDto();
-            BeanUtils.copyProperties(newShop,recommendDto);
-            //.divide(new BigDecimal(1000)
-            recommendDto.setDistance(newShop.getDistance().divide(new BigDecimal(1000).setScale(2, ROUND_HALF_UP)));
-            String[] spilt = newShop.getShopTreeId().split(",");
-            String shopTreeIdName = getShopTreeIdName(spilt);
-            recommendDto.setShopTreeIdName(shopTreeIdName);
-            recommendDtoList.add(recommendDto);
-            System.out.println(recommendDto.getDistance());
         }
+
         serviceDto.setShopList(recommendDtoList);
         NearTheServiceQuery serviceQuery = new NearTheServiceQuery();
         serviceQuery.setLatitude(shopQuery.getLatitude());
         serviceQuery.setLongitude(shopQuery.getLongitude());
         serviceQuery.setKeyword(shopQuery.getShopName());
+
         List<GoodsServiceDto> goodsList = goodsClient.NearTheService2(serviceQuery).getData();
         DecimalFormat   fnum  =   new  DecimalFormat("##0.00");
         if (goodsList.size()>0){
