@@ -204,7 +204,7 @@ public class NewShopController {
         return CommonResult.ok(newShopDtos);
     }
 
-    @ApiOperation("通过店铺id预览店铺基本信息  B端")
+    @ApiOperation("通过店铺id预览店铺基本信息  C端")
     @RequestMapping(value = "/getPreviewDto",method = RequestMethod.GET)
     public CommonResult<NewShopPreviewDto> getPreviewDto(@RequestParam("shopId") Long shopId){
         NewShopPreviewDto newShopPreviewDto = newShopService.getPreviewDto(shopId);

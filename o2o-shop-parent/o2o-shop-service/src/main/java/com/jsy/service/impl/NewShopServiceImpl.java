@@ -622,7 +622,6 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
                 }
                 number++;
                 NewShopRecommendDto recommendDto = new NewShopRecommendDto();
-                System.out.println("ddddddddddddddddddddddddddddddddddd  + number "+newShop+number);
                 if (ObjectUtil.isNotNull(newShop)){
                     BeanUtils.copyProperties(newShop,recommendDto);
                     recommendDto.setDistance(newShop.getDistance().divide(new BigDecimal(1000).setScale(2, ROUND_HALF_UP)));
@@ -652,6 +651,8 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         serviceDto.setGoodsList(goodsList);
         return serviceDto;
     }
+
+
 
 
 }
