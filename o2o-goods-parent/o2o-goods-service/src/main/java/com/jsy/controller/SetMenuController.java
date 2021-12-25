@@ -93,7 +93,7 @@ public class SetMenuController {
     public CommonResult<List<SetMenuListDto>> getMenuId(@RequestParam("setMenuId")Long setMenuId){
         List<SetMenuListDto> setMenuListDto = setMenuService.getMenuId(setMenuId);
         if (setMenuListDto.size()<=0){
-            return new CommonResult<>(-1,"套餐为空",null);
+            return new CommonResult<>(-10,"套餐为空",null);
         }else {
             return  CommonResult.ok(setMenuListDto);
         }
@@ -107,7 +107,7 @@ public class SetMenuController {
     public CommonResult<SetMenuDto> SetMenuList(@RequestParam("id")Long id){
         SetMenuDto setMenulist = setMenuService.getSetMenulist(id);
         if (ObjectUtil.isNull(setMenulist)){
-            return new CommonResult<>(-1,"套餐为空",null);
+            return new CommonResult<>(-10,"套餐为空",null);
         }else {
             return CommonResult.ok(setMenulist);
         }

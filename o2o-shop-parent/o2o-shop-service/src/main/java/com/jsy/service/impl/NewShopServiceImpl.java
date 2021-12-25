@@ -23,8 +23,11 @@ import com.jsy.query.NearTheServiceQuery;
 import com.jsy.query.NewShopQuery;
 import com.jsy.service.INewShopService;
 import com.jsy.service.IUserSearchHistoryService;
+import com.zhsj.base.api.constant.RpcConst;
+import com.zhsj.base.api.rpc.IBaseUserInfoRpcService;
 import com.zhsj.baseweb.support.ContextHolder;
 import com.zhsj.baseweb.support.LoginUser;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -62,6 +65,9 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
 
     @Resource
     private CommentClent commentClent;
+
+    @DubboReference(version = RpcConst.Rpc.VERSION, group = RpcConst.Rpc.Group.GROUP_BASE_USER, check = false)
+    private IBaseUserInfoRpcService iBaseUserInfoRpcService;
 //    @Resource
 //    private StringRedisTemplate redisTemplate;
 //    @Resource
@@ -141,7 +147,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
     public NewShopPreviewDto getPreviewDto(Long shopId) {
         NewShop newShop = shopMapper.selectById(shopId);
         if (newShop==null|| newShop.getShielding()==1){
-            throw new JSYException(-1,"店铺为空");
+            throw new JSYException(-10,"店铺为空");
         }
         NewShopPreviewDto newShopPreviewDto = new NewShopPreviewDto();
         try {
@@ -450,7 +456,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
 //
 //        }
         if (newShop.getShielding()==1){
-            throw new JSYException(-1,"店铺不存在");
+            throw new JSYException(-10,"店铺不存在");
         }
         NewShopBasicDto basicDto = new NewShopBasicDto();
         BeanUtils.copyProperties(newShop,basicDto);
@@ -547,7 +553,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
     public NewShopSupportDto getSupport(Long shopId) {
         NewShop newShop = shopMapper.selectOne(new QueryWrapper<NewShop>().eq("id", shopId));
         if (newShop.getShielding()==1){
-            throw new JSYException(-1,"店铺不存在");
+            throw new JSYException(-10,"店铺不存在");
         }
         NewShopSupportDto suportDto = new NewShopSupportDto();
         if (ObjectUtil.isNull(newShop)){
@@ -578,9 +584,10 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         Double distance = GouldUtil.GetDistance(distanceParam.getLatitude().doubleValue(), distanceParam.getLongitude().doubleValue(),newShop.getLatitude().doubleValue(),newShop.getLongitude().doubleValue());
         NewShopDistanceDto distanceDto = new NewShopDistanceDto();
         BeanUtils.copyProperties(newShop,distanceDto);
-        distanceDto.setDistance(df.format(distance / 1000)+"km");
-        String imId = ContextHolder.getContext().getLoginUser().getImId();
-       distanceDto.setImId(imId);
+
+//        String imId = iBaseUserInfoRpcService.getUserIm(distanceParam.getId(),"shop_admin").getImId();
+////        String imId = ContextHolder.getContext().getLoginUser().getImId();
+//       distanceDto.setImId(imId);
         return distanceDto;
     }
 

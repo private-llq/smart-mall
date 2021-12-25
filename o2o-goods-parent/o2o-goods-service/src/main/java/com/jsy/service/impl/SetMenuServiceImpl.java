@@ -104,7 +104,7 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
 
         SetMenuDto setMenuDto = new SetMenuDto();
         if (ObjectUtil.isNull(setMenu)){
-         throw  new JSYException(-1,"套餐不存在");
+         throw  new JSYException(-10,"套餐不存在");
         }
         //套餐访问量+1
         setMenu.setPvNum(setMenu.getPvNum()+1);
