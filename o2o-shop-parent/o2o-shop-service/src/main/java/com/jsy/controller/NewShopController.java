@@ -370,7 +370,13 @@ public class NewShopController {
         return CommonResult.ok(count);
     }
 
-
+    @ApiOperation("出现商家的imd")
+    @RequestMapping(value = "/getShopImd",method = RequestMethod.POST)
+    public CommonResult<String> getShopImd(@RequestParam("shopId") Long shopId){
+        Long ownerUuid = newShopService.getById(shopId).getOwnerUuid();
+        String imId = iBaseUserInfoRpcService.getUserIm(ownerUuid,"shop_admin").getImId();
+        return CommonResult.ok(imId);
+    }
 
 
 }
