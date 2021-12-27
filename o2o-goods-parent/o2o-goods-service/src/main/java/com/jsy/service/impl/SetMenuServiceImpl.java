@@ -2,6 +2,7 @@ package com.jsy.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jsy.basic.util.MyPageUtils;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.exception.JSYException;
@@ -9,7 +10,10 @@ import com.jsy.basic.util.utils.BeansCopyUtils;
 import com.jsy.client.BrowseClient;
 import com.jsy.client.HotClient;
 import com.jsy.client.ServiceCharacteristicsClient;
-import com.jsy.domain.*;
+import com.jsy.domain.Browse;
+import com.jsy.domain.Goods;
+import com.jsy.domain.SetMenu;
+import com.jsy.domain.SetMenuGoods;
 import com.jsy.dto.SetMenuDto;
 import com.jsy.dto.SetMenuGoodsDto;
 import com.jsy.dto.SetMenuListDto;
@@ -19,18 +23,18 @@ import com.jsy.mapper.SetMenuMapper;
 import com.jsy.parameter.SetMenuParam;
 import com.jsy.query.SetMenuQuery;
 import com.jsy.service.ISetMenuService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhsj.baseweb.support.ContextHolder;
 import com.zhsj.baseweb.support.LoginUser;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -358,11 +362,11 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
         /**
          * 存入key
          */
-        stringRedisTemplate.opsForHyperLogLog().add("pv_num", userId + "-" + id);
+        stringRedisTemplate.opsForHyperLogLog().add("pv_num"+id, userId + "-" + id);
         /**
          * 统计访问量
          */
-        Long num = stringRedisTemplate.opsForHyperLogLog().size("pv_num");
+        Long num = stringRedisTemplate.opsForHyperLogLog().size("pv_num"+id);
         return num;
     }
 

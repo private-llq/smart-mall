@@ -272,11 +272,11 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         /**
          * 存入key
          */
-        stringRedisTemplate.opsForHyperLogLog().add("pv_num", userId + "-" + id);
+        stringRedisTemplate.opsForHyperLogLog().add("pv_num"+id, userId + "-" + id);
         /**
          * 统计访问量
          */
-        Long num = stringRedisTemplate.opsForHyperLogLog().size("pv_num");
+        Long num = stringRedisTemplate.opsForHyperLogLog().size("pv_num"+id);
         return num;
     }
 
