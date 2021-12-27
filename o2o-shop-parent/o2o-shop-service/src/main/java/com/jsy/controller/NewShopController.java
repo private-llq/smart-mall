@@ -170,7 +170,7 @@ public class NewShopController {
     {
         NewShop newShop = newShopService.getById(shopId);
         if (newShop==null){
-            return  new CommonResult(-1,"店铺为空",null);
+            return  new CommonResult(-10,"店铺为空",null);
         }
         NewShopDto newShopDto = new NewShopDto();
         BeanUtils.copyProperties(newShop,newShopDto);
@@ -265,7 +265,7 @@ public class NewShopController {
 
              NewShopSupportDto suportDto = newShopService.getSupport(shopId);
              if (ObjectUtil.isNull(suportDto)){
-                 return new CommonResult(-1,"店铺不存在",null);
+                 return new CommonResult(-10,"店铺不存在",null);
              }else {
                  return CommonResult.ok(suportDto);
              }
@@ -370,7 +370,13 @@ public class NewShopController {
         return CommonResult.ok(count);
     }
 
-
+    @ApiOperation("出现商家的imd")
+    @RequestMapping(value = "/getShopImd",method = RequestMethod.POST)
+    public CommonResult<String> getShopImd(@RequestParam("shopId") Long shopId){
+        Long ownerUuid = newShopService.getById(shopId).getOwnerUuid();
+        String imId = iBaseUserInfoRpcService.getUserIm(ownerUuid,"shop_admin").getImId();
+        return CommonResult.ok(imId);
+    }
 
 
 }

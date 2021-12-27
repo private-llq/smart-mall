@@ -30,4 +30,7 @@ public interface NewShopClient {
     @RequestMapping(value = "/getShopAllList",method = RequestMethod.POST)
     CommonResult<PageInfo<NewShopRecommendDto>> getShopAllList(@RequestBody NewShopQuery shopQuery);
 
+    @ApiOperation("查询商家的imd")
+    @RequestMapping(value = "/newShop/getShopImd",method = RequestMethod.POST)
+    CommonResult<String> getShopImd(@RequestParam("shopId") Long shopId);
 }
