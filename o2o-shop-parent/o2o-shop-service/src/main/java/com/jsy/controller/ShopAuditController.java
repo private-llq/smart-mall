@@ -10,6 +10,7 @@ import com.jsy.domain.ShopAudit;
 import com.jsy.query.ShopAuditQuery;
 import com.jsy.basic.util.PageList;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.jsy.basic.util.vo.CommonResult;
@@ -82,5 +83,7 @@ public class ShopAuditController {
         PageInfo<NewShopBackstageDto> pageInfo = shopAuditService.selectListPage(auditQuery);
         return CommonResult.ok(pageInfo);
     }
+
+
 
 }

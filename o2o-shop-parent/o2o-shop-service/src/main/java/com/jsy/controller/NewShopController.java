@@ -56,7 +56,7 @@ public class NewShopController {
     private IBaseUserInfoRpcService iBaseUserInfoRpcService;
     @DubboReference(version = RpcConst.Rpc.VERSION, group = RpcConst.Rpc.Group.GROUP_BASE_USER, check = false)
     private IBaseAuthRpcService iBaseAuthRpcService;
-
+    private Long userId;
 
 
     /**
@@ -234,6 +234,7 @@ public class NewShopController {
         SelectShopCommentScoreDto data = commentClent.selectShopCommentScore(shopId).getData();
         newShopSetDto.setScore(data.getScore());
         newShopSetDto.setSize(data.getSize());
+
         String imId = iBaseUserInfoRpcService.getUserIm(newShop.getOwnerUuid(),"shop_admin").getImId();
         newShopSetDto.setImId(imId);
         return CommonResult.ok(newShopSetDto);
@@ -376,5 +377,12 @@ public class NewShopController {
         return CommonResult.ok(imId);
     }
 
-
+    @ApiOperation("让商家拥有imid")
+    @RequestMapping(value = "/shopAuditImId",method = RequestMethod.POST)
+    public CommonResult<String> shopAuditImId(@RequestParam("userId") Long userId){
+        //成为商家用户
+        iBaseAuthRpcService.addLoginTypeScope(userId,"shop_admin");
+        String imId = iBaseUserInfoRpcService.getUserIm(userId,"shop_admin").getImId();
+        return CommonResult.ok(imId);
+    }
 }
