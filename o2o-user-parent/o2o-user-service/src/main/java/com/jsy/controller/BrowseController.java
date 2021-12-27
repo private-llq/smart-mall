@@ -101,4 +101,10 @@ public class BrowseController {
          return CommonResult.ok();
 
      }
+
+    @PostMapping(value = "/selectOne")
+    public CommonResult<Browse> selectOne(@RequestParam("goodsId") Long goodsId,@RequestParam("userId") Long userId){
+        Browse browse = browseService.getOne(new QueryWrapper<Browse>().eq("user_id", userId).eq("goods_id", goodsId));
+            return CommonResult.ok(browse);
+    }
 }
