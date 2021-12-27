@@ -226,13 +226,13 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         LoginUser loginUser = ContextHolder.getContext().getLoginUser();
         Goods goods = goodsMapper.selectOne(new QueryWrapper<Goods>().eq("id", id).eq("type",0));
         if (Objects.isNull(goods)){
-            throw new JSYException(-1,"没有找到该商品！");
+            throw new JSYException(-10,"没有找到该商品！");
         }
         if (goods.getState()==1){
-            throw new JSYException(-1,"该商品可能存在违规已被大后台禁用！");
+            throw new JSYException(-10,"该商品可能存在违规已被大后台禁用！");
         }
         if (goods.getIsPutaway()==0){
-            throw new JSYException(-1,"该商品处于下架状态！");
+            throw new JSYException(-10,"该商品处于下架状态！");
         }
             //添加商品访问量
             long pvNum = goods.getPvNum() + 1;
@@ -272,13 +272,13 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         LoginUser loginUser = ContextHolder.getContext().getLoginUser();
         Goods goods = goodsMapper.selectOne(new QueryWrapper<Goods>().eq("id", id).eq("type",1));
         if (Objects.isNull(goods)){
-            throw new JSYException(-1,"没有找到该服务！");
+            throw new JSYException(-10,"没有找到该服务！");
         }
         if (goods.getState()==1){
-            throw new JSYException(-1,"该服务可能存在违规已被大后台禁用！");
+            throw new JSYException(-10,"该服务可能存在违规已被大后台禁用！");
         }
         if (goods.getIsPutaway()==0){
-            throw new JSYException(-1,"该服务处于下架状态！");
+            throw new JSYException(-10,"该服务处于下架状态！");
         }
         //添加服务访问量
             long pvNum = goods.getPvNum() + 1;
@@ -318,7 +318,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         LoginUser loginUser = ContextHolder.getContext().getLoginUser();
         Goods goods = goodsMapper.selectOne(new QueryWrapper<Goods>().eq("id", id));/*.eq("type",1));*/
         if (Objects.isNull(goods)){
-            throw new JSYException(-1,"没有找到该商品！");
+            throw new JSYException(-10,"没有找到该商品！");
         }
         //添加服务访问量
         long pvNum = goods.getPvNum() + 1;
@@ -369,7 +369,6 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
                     .eq(Objects.nonNull(state),"state",state)
             );
         List<Goods> records = goodsPage.getRecords();
-
         ArrayList<GoodsDto> goodsDtos = new ArrayList<>();
         records.forEach(x->{
             GoodsDto goods = new GoodsDto();
