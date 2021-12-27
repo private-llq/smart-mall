@@ -243,7 +243,6 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         }
 
         Long pvNum = statisticsPvNum(loginUser.getId(), goods.getId());
-        System.out.println(pvNum+"***************");
         //添加商品访问量
             goodsMapper.update(null,new UpdateWrapper<Goods>().eq("id",id).set("pv_num",pvNum));
             //添加一条用户的浏览记录
@@ -301,7 +300,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
             throw new JSYException(-10,"该服务处于下架状态！");
         }
         //添加服务访问量
-            long pvNum = goods.getPvNum() + 1;
+            Long pvNum = statisticsPvNum(loginUser.getId(), goods.getId());
             goodsMapper.update(null,new UpdateWrapper<Goods>().eq("id",id).set("pv_num",pvNum));
             //添加一条用户的浏览记录
             Browse browse = new Browse();
