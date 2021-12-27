@@ -25,6 +25,7 @@ import com.zhsj.baseweb.support.LoginUser;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -54,6 +55,8 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
     private BrowseClient browseClient;
     @Autowired
     private HotClient hotClient;
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
     @Override
     public void addSetMenu(SetMenuParam setMenu) {
@@ -106,11 +109,13 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
         if (ObjectUtil.isNull(setMenu)){
          throw  new JSYException(-10,"套餐不存在");
         }
-        Browse browse1 = browseClient.selectOne(id, loginUser.getId()).getData();
-        if (ObjectUtil.isNull(browse1)){
-            //套餐访问量+1
-            setMenu.setPvNum(setMenu.getPvNum()+1);
-        }
+//        Browse browse1 = browseClient.selectOne(id, loginUser.getId()).getData();
+//        if (ObjectUtil.isNull(browse1)){
+//            //套餐访问量+1
+//            setMenu.setPvNum(setMenu.getPvNum()+1);
+//        }
+        Long pvNum = statisticsPvNum(loginUser.getId(), id);
+        setMenu.setPvNum(pvNum);
         setMenuMapper.updateById(setMenu);
         List<SetMenuGoods> setMenuGoodsList = menuGoodsMapper.selectList(new QueryWrapper<SetMenuGoods>()
                     .eq("set_menu_id", setMenu.getId())
@@ -348,6 +353,19 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
         }
         return false;
     }
+
+    public Long statisticsPvNum(Long userId,Long id){
+        /**
+         * 存入key
+         */
+        stringRedisTemplate.opsForHyperLogLog().add("pv_num", userId + "-" + id);
+        /**
+         * 统计访问量
+         */
+        Long num = stringRedisTemplate.opsForHyperLogLog().size("pv_num");
+        return num;
+    }
+
 
 }
 
