@@ -60,4 +60,10 @@ public class RedisConfig {
 	public ZSetOperations<String, Object> zSetOperations(RedisTemplate<String, Object> redisTemplate) {
 		return redisTemplate.opsForZSet();
 	}
+
+	@Bean
+	public HyperLogLogOperations<String, Object> hyperLogLogOperations(RedisTemplate<String, Object> redisTemplate) {
+		return redisTemplate.opsForHyperLogLog();
+	}
+
 }

@@ -1,4 +1,5 @@
 package com.jsy.service.impl;
+
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
@@ -27,10 +28,11 @@ import com.zhsj.baseweb.support.LoginUser;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,8 +71,8 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     @Autowired
     private SetMenuClient setMenuClient;
 
-    @Autowired
-    private RedisTemplate redisTemplate;
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
 
 
@@ -239,8 +241,10 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         if (goods.getIsPutaway()==0){
             throw new JSYException(-10,"该商品处于下架状态！");
         }
-            //添加商品访问量
-            long pvNum = goods.getPvNum() + 1;
+
+        Long pvNum = statisticsPvNum(loginUser.getId(), goods.getId());
+        System.out.println(pvNum+"***************");
+        //添加商品访问量
             goodsMapper.update(null,new UpdateWrapper<Goods>().eq("id",id).set("pv_num",pvNum));
             //添加一条用户的浏览记录
             Browse browse = new Browse();
@@ -265,6 +269,17 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         return goodsDto;
     }
 
+    public Long statisticsPvNum(Long userId,Long id){
+        /**
+         * 存入key
+         */
+        stringRedisTemplate.opsForHyperLogLog().add("pv_num", userId + "-" + id);
+        /**
+         * 统计访问量
+         */
+        Long num = stringRedisTemplate.opsForHyperLogLog().size("pv_num");
+        return num;
+    }
 
     /**
      * 查看一条服务的所有详细信息 B端+C端
