@@ -1,5 +1,6 @@
 package com.jsy.service;
 
+import com.jsy.basic.util.utils.PagerUtils;
 import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.domain.NewOrder;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -8,6 +9,7 @@ import com.jsy.dto.SelectShopOrderDto;
 import com.jsy.dto.SelectUserOrderDto;
 import com.jsy.dto.SelectUserOrderNumberDto;
 import com.jsy.query.*;
+import com.jsy.vo.SelectAllOrderByBackstageVo;
 import com.zhsj.base.api.domain.PayCallNotice;
 import com.zhsj.basecommon.vo.R;
 
@@ -59,4 +61,6 @@ public interface INewOrderService extends IService<NewOrder> {
     Boolean updateOrderOne(UpdateOrderOneParam param);
     //查询相应状态下的数量
     ArrayList<SelectUserOrderNumberDto> selectUserOrderNumber(Long id);
+    //大后台查询所有订单
+    List<SelectAllOrderByBackstageVo> selectAllOrderByBackstage(SelectAllOrderByBackstageParam param);
 }

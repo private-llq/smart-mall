@@ -4,29 +4,144 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.jsy.domain.NewOrder">
-        <id column="id" property="id" />
-        <result column="user_id" property="userId" />
-        <result column="shop_id" property="shopId" />
-        <result column="order_num" property="orderNum" />
-        <result column="order_status" property="orderStatus" />
-        <result column="pay_type" property="payType" />
-        <result column="pay_status" property="payStatus" />
-        <result column="pay_time" property="payTime" />
-        <result column="bill_month" property="billMonth" />
-        <result column="bill_num" property="billNum" />
-        <result column="bill_rise" property="billRise" />
-        <result column="comment_status" property="commentStatus" />
-        <result column="order_type" property="orderType" />
-        <result column="appointment_status" property="appointmentStatus" />
-        <result column="consumption_way" property="consumptionWay" />
-        <result column="order_all_price" property="orderAllPrice" />
-        <result column="shipping_address" property="shippingAddress" />
-        <result column="start_time" property="startTime" />
-        <result column="ent_time" property="entTime" />
-        <result column="serve_code" property="serveCode" />
-        <result column="create_time" property="createTime" />
-        <result column="update_time" property="updateTime" />
-        <result column="deleted" property="deleted" />
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="order_num" property="orderNum"/>
+        <result column="order_status" property="orderStatus"/>
+        <result column="pay_type" property="payType"/>
+        <result column="pay_status" property="payStatus"/>
+        <result column="pay_time" property="payTime"/>
+        <result column="bill_month" property="billMonth"/>
+        <result column="bill_num" property="billNum"/>
+        <result column="bill_rise" property="billRise"/>
+        <result column="comment_status" property="commentStatus"/>
+        <result column="order_type" property="orderType"/>
+        <result column="appointment_status" property="appointmentStatus"/>
+        <result column="consumption_way" property="consumptionWay"/>
+        <result column="order_all_price" property="orderAllPrice"/>
+        <result column="shipping_address" property="shippingAddress"/>
+        <result column="start_time" property="startTime"/>
+        <result column="ent_time" property="entTime"/>
+        <result column="serve_code" property="serveCode"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
     </resultMap>
+
+    <!--    映射selectAllOrderByBackstage-->
+    <resultMap id="selectAllOrderByBackstage" type="com.jsy.vo.SelectAllOrderByBackstageVo">
+        <id column="id" property="id"/>
+        <result column="create_time" property="createTime"/>
+        <result column="user_id" property="userId"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="order_num" property="orderNum"/>
+        <result column="pay_time" property="payTime"/>
+        <result column="consumption_way" property="consumptionWay"/>
+        <result column="order_all_price" property="orderAllPrice"/>
+        <result column="linkman" property="linkman"/>
+        <collection property="orderGoodsList" ofType="com.jsy.vo.OrderGoodsVO">
+            <id column="gid" property="id"/>
+            <result column="gcreate_time" property="createTime"/>
+            <result column="gamount" property="amount"/>
+            <result column="gtitle" property="title"/>
+            <result column="gprice" property="price"/>
+            <result column="gdiscount_price" property="discountPrice"/>
+            <result column="gdiscount_state" property="discountState"/>
+            <result column="gimages" property="images"/>
+            <result column="ggoods_id" property="goodsId"/>
+        </collection>
+        <collection property="orderSetMenuList" ofType="com.jsy.vo.OrderSetMenuVO">
+            <id column="mid" property="id"/>
+            <result column="mcreate_time" property="createTime"/>
+            <result column="morder_id" property="orderId"/>
+            <result column="mmenu_id" property="menuId"/>
+            <result column="mname" property="name"/>
+            <result column="mreal_price" property="realPrice"/>
+            <result column="mselling_price" property="sellingPrice"/>
+            <result column="mdiscount_state" property="discountState"/>
+            <result column="mimages" property="images"/>
+            <result column="mamount" property="amount"/>
+        </collection>
+        <collection property="orderServiceList" ofType="com.jsy.vo.OrderServiceVO">
+            <id column="sid" property="id"/>
+            <result column="screate_time" property="createTime"/>
+            <result column="simages" property="images"/>
+            <result column="stitle" property="title"/>
+            <result column="sprice" property="price"/>
+            <result column="sdiscount_price" property="discountPrice"/>
+            <result column="sdiscount_state" property="discountState"/>
+            <result column="samount" property="amount"/>
+            <result column="sservice_id" property="serviceId"/>
+        </collection>
+    </resultMap>
+
+
+    <select id="selectAllOrderByBackstage" resultMap="selectAllOrderByBackstage" parameterType="com.jsy.query.SelectAllOrderMapperParam">
+        select o.id,
+               o.user_id,
+               o.shop_id,
+               o.order_num,
+               o.order_status,
+               o.pay_type,
+               o.pay_status,
+               o.pay_time,
+               o.bill_month,
+               o.bill_num,
+               o.bill_rise,
+               o.comment_status,
+               o.order_type,
+               o.appointment_status,
+               o.consumption_way,
+               o.order_all_price,
+               o.shipping_address,
+               o.start_time,
+               o.ent_time,
+               o.serve_code,
+               o.create_time,
+
+
+               g.id             as gid,
+               g.create_time    as gcreate_time,
+               g.amount         as gamount,
+               g.title          as gtitle,
+               g.price          as gprice,
+               g.discount_price as gdiscount_price,
+               g.discount_state as gdiscount_state,
+               g.images         as gimages,
+               g.goods_id       as ggoods_id,
+
+               m.id             as mid,
+               m.create_time    as mcreate_time,
+               m.order_id       as morder_id,
+               m.menu_id        as mmenu_id,
+               m.name           as mname,
+               m.real_price     as mreal_price,
+               m.selling_price  as mselling_price,
+               m.discount_state as mdiscount_state,
+               m.images         as mimages,
+               m.amount         as mamount,
+
+
+               s.id             as sid,
+               s.create_time    as screate_time,
+               s.images         as simages,
+               s.title          as stitle,
+               s.price          as sprice,
+               s.discount_price as sdiscount_price,
+               s.discount_state as sdiscount_state,
+               s.amount         as samount,
+               s.service_id     as sservice_id
+
+
+        from     (SELECT * FROM w_new_order as ord  where  ord.create_time  &gt; #{startTime} and   ord.create_time &lt; #{endTime} limit #{start},#{end} ) as o
+                 LEFT JOIN w_order_goods as g on g.order_id = o.id
+                 LEFT JOIN w_order_service as s on s.order_id = o.id
+                 LEFT JOIN w_order_set_menu as m on m.order_id = o.id
+
+    </select>
+
+
+
+
 
 </mapper>

@@ -7,6 +7,7 @@ import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.utils.CodeUtils;
 import com.jsy.basic.util.utils.OrderNoUtil;
+import com.jsy.basic.util.utils.PagerUtils;
 import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.client.GoodsClient;
 import com.jsy.client.ServiceCharacteristicsClient;
@@ -23,9 +24,11 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jsy.utils.AliAppPayQO;
 import com.jsy.utils.Random8;
 import com.jsy.utils.WeChatPayQO;
+import com.jsy.vo.SelectAllOrderByBackstageVo;
 import com.zhsj.base.api.constant.RpcConst;
 import com.zhsj.base.api.domain.PayCallNotice;
 import com.zhsj.base.api.rpc.IBasePayRpcService;
+import com.zhsj.base.api.rpc.IBaseUserInfoRpcService;
 import com.zhsj.basecommon.vo.R;
 import com.zhsj.baseweb.support.ContextHolder;
 import com.zhsj.baseweb.support.LoginUser;
@@ -83,6 +86,10 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
 
     @DubboReference(version = RpcConst.Rpc.VERSION, group = RpcConst.Rpc.Group.GROUP_BASE_USER, check = false)
     private IBasePayRpcService basePayRpcService;
+
+
+
+
 
     @Value("${pay.urlAliPay}")
     private String urlAliPay;//支付宝支付url
@@ -933,7 +940,6 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
             throw new JSYException(500, data.getPayStatus().toString());
         }
 
-
         if (data.getPayStatus() == 1) { //0、待支付，1、支付成功，-1、支付失败
             String busOrderNo1 = busOrderNo;
             Long orderId = Long.valueOf(busOrderNo1);
@@ -1222,7 +1228,8 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
         weChatPayQO.setReceiveUid(newOrder.getShopId());//收款方id
         weChatPayQO.setServiceOrderNo(newOrder.getId().toString());
         System.out.println(orderData.toString());
-        weChatPayQO.setDescriptionStr(orderData.toString());//支付描述
+        //weChatPayQO.setDescriptionStr(orderData.toString().length()>30?"商城购物":orderData.toString());//支付描述
+        weChatPayQO.setDescriptionStr("商城购物");//支付描述
         String urlParam = urlWeChatPay;//微信支付的url
         CommonResult commonResult = HttpClientHelper.sendPost(urlParam, weChatPayQO, token, CommonResult.class);
         System.out.println(commonResult.toString());
@@ -1249,22 +1256,31 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
         String orderNum = newOrder.getOrderNum();//商户订单号
         String token = ContextHolder.getContext().getLoginUser().getToken();//获取用户token
 
+        Integer payStatus = newOrder.getPayStatus();
+        if (payStatus==3) {
+            throw new JSYException(200,"已退款");
+        }
+
         //（ 1app支付宝，2app微信)
         if (newOrder.getPayType() == 1) {
             log.info("支付宝退款url" + urlAliRefund);
             AlipayRefundParam param = new AlipayRefundParam();
             param.setOrderNo(newOrder.getOrderNum());//订单号
-            //String orderNo = newOrder.getOrderNum();
             log.info("订单号" + param);
             CommonResult commonResult = HttpClientHelper.sendPost(urlAliRefund, param, token, CommonResult.class);
             log.info("commonResult**********" + commonResult.toString());
             if ((Boolean) commonResult.getData() == false) {
                 throw new JSYException(commonResult.getCode(), commonResult.getMessage());
             }
-            Boolean data = (Boolean) commonResult.getData();
-            newOrder.setPayStatus(3);//将支付状态改为3（退款成功）
-            int i = newOrderMapper.updateById(newOrder);
-            return data;
+            Boolean vo = JSON.parseObject(commonResult.getData().toString(), Boolean.class);
+            if(vo){
+                newOrder.setPayStatus(3);//将支付状态改为3（退款成功）
+                int i = newOrderMapper.updateById(newOrder);
+                if(i>0){
+                    return  true;
+                }
+            }
+            return false;
         }
         if (newOrder.getPayType() == 2) {//微信支付的
             log.info("微信退款url" + urlWeChatRefund);
@@ -1273,23 +1289,18 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
             wechatRefundQO.setCommunityId(1L);
             wechatRefundQO.setOrderNum(orderNum);
             wechatRefundQO.setTradeFrom(2);//2.商城购物
-            wechatRefundQO.setServiceOrderNo(String.valueOf(orderId));
+            wechatRefundQO.setServiceOrderNo(String.valueOf(orderId));//订单id
             CommonResult commonResult = HttpClientHelper.sendPost(urlWeChatRefund, wechatRefundQO, token, CommonResult.class);
             log.info("commonResult**********退款" + commonResult.toString());
             if (commonResult.getCode() != 0) {
                 throw new JSYException(commonResult.getCode(), commonResult.getMessage());
             }
-
             String urlParamReturn = urlWeChatRefundStatus + orderId;//查询退款状态
             CommonResult commonResult1 = HttpClientHelper.sendGet(urlParamReturn, token, CommonResult.class);
             log.info("commonResult**********退款状态" + commonResult.toString());
-//            if (commonResult1.getCode() == 0) {
-//                throw new JSYException(200, "订单已无全额退款");
-//            }
-            WeChatOrderEntity vo = JSON.parseObject(commonResult1.getData().toString(), WeChatOrderEntity.class);
-            log.info("WeChatOrderEntity***********" + vo.toString());
-            if (vo.getOrderStatus() == 3 && vo.getArriveStatus() == 3) {
-                newOrder.setPayStatus(3);//将支付状态改为3
+            Boolean vo = JSON.parseObject(commonResult1.getData().toString(), Boolean.class);
+            if (vo=true) {
+                newOrder.setPayStatus(3);//将支付状态改为3,退款成功
                 int i = newOrderMapper.updateById(newOrder);
                 if (i > 0) {
                     return true;
@@ -1298,9 +1309,7 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
             }
             return false;
         }
-
         return false;
-
     }
 
 
@@ -1452,6 +1461,7 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
             QueryWrapper<NewOrder> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("user_id", id);//用户id
             queryWrapper.eq("order_status", 1);//订单状态（[1待上门、待配送、待发货]，2、完成）
+            queryWrapper.eq("pay_status", 0);//支付状态（0未支付，1支付成功,2退款申请中，3退款成功，4拒绝退款）
             Integer number = newOrderMapper.selectCount(queryWrapper);
             SelectUserOrderNumberDto selectUserOrderNumberDto = new SelectUserOrderNumberDto(1,number);
 
@@ -1498,6 +1508,22 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
         selectUserOrderNumberDtos.add(selectUserOrderNumberDto3);
 
         return selectUserOrderNumberDtos;
+    }
+    //大后台查询多有订单
+    @Override
+    public List<SelectAllOrderByBackstageVo> selectAllOrderByBackstage(SelectAllOrderByBackstageParam param) {
+
+        SelectAllOrderMapperParam selectAllOrderMapperParam = new SelectAllOrderMapperParam();
+        Integer page = param.getPage();
+        Integer size = param.getSize();
+        selectAllOrderMapperParam.setStart((page-1)*size);
+        selectAllOrderMapperParam.setEnd(size);
+        selectAllOrderMapperParam.setStartTime(param.getStartTime());
+        selectAllOrderMapperParam.setEndTime(param.getEndTime());
+        selectAllOrderMapperParam.setStatus(param.getStatus());
+        List<SelectAllOrderByBackstageVo>  vo= newOrderMapper.selectAllOrderByBackstage(selectAllOrderMapperParam);
+        log.info(vo.toString());
+        return vo;
     }
 
 }

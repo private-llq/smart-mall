@@ -9,4 +9,9 @@ public class BrowseClientImpl implements BrowseClient {
     public CommonResult save(Browse browse) {
         return null;
     }
+
+    @Override
+    public CommonResult<Browse> selectOne(Long goodsId, Long userId) {
+        return null;
+    }
 }

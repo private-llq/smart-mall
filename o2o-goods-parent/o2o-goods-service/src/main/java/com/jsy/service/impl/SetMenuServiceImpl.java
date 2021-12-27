@@ -101,13 +101,16 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
     @Override
     public SetMenuDto getSetMenulist(Long id) {
         SetMenu setMenu = setMenuMapper.selectOne(new QueryWrapper<SetMenu>().eq("id", id).eq("is_disable",0).eq("state",1));
-
+        LoginUser loginUser = ContextHolder.getContext().getLoginUser();
         SetMenuDto setMenuDto = new SetMenuDto();
         if (ObjectUtil.isNull(setMenu)){
          throw  new JSYException(-10,"套餐不存在");
         }
-        //套餐访问量+1
-        setMenu.setPvNum(setMenu.getPvNum()+1);
+        Browse browse1 = browseClient.selectOne(id, loginUser.getId()).getData();
+        if (ObjectUtil.isNull(browse1)){
+            //套餐访问量+1
+            setMenu.setPvNum(setMenu.getPvNum()+1);
+        }
         setMenuMapper.updateById(setMenu);
         List<SetMenuGoods> setMenuGoodsList = menuGoodsMapper.selectList(new QueryWrapper<SetMenuGoods>()
                     .eq("set_menu_id", setMenu.getId())
@@ -152,7 +155,7 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
         browse.setName(setMenu.getName());
         browse.setShopId(setMenu.getShopId());
         browse.setTextDescription(setMenu.getMenuExplain());
-        LoginUser loginUser = ContextHolder.getContext().getLoginUser();
+
         System.out.println(loginUser);
         browse.setUserId(loginUser.getId());
         browse.setDiscountState(setMenuDto.getDiscountState());

@@ -13,6 +13,7 @@ import com.jsy.basic.util.PageList;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsy.utils.AliAppPayQO;
 
+import com.jsy.vo.SelectAllOrderByBackstageVo;
 import com.zhsj.base.api.domain.PayCallNotice;
 import com.zhsj.basecommon.vo.R;
 import com.zhsj.baseweb.annotation.LoginIgnore;
@@ -206,9 +207,6 @@ public class NewOrderController {
     }
 
 
-
-
-
     @ApiOperation("查询近多少日订单量")
     @RequestMapping(value = "/orderSize", method = RequestMethod.POST)
     public CommonResult<OrderSizeDto> orderSize(@RequestBody OrderSizeParam param){
@@ -217,6 +215,21 @@ public class NewOrderController {
     }
 
 
+
+
+    //大后台查询所有订单
+    @RequestMapping(value = "/selectAllOrderByBackstage", method = RequestMethod.POST)
+    public CommonResult<List<SelectAllOrderByBackstageVo>> selectAllOrderByBackstage(@RequestBody SelectAllOrderByBackstageParam param){
+        List<SelectAllOrderByBackstageVo>   dto= newOrderService.selectAllOrderByBackstage(param);
+        return new CommonResult<>(200, "查询成功", dto);
+    }
+
+//    //根据订单号查询订单
+//    @RequestMapping(value = "/selectOrderByBackstageNo", method = RequestMethod.GET)
+//    public CommonResult<PagerUtils> selectOrderByBackstageNum(@RequestParam("orderNumber") String  orderNumber){
+//        PagerUtils   dto= newOrderService.selectOrderByBackstageNum(param);
+//        return new CommonResult<>(200, "查询成功", null);
+//    }
 
 
 

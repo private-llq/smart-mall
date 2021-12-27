@@ -2,6 +2,8 @@ package com.jsy.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jsy.basic.util.exception.JSYException;
+import com.jsy.basic.util.vo.CommonResult;
+import com.jsy.client.NewShopClient;
 import com.jsy.domain.NewOrder;
 import com.jsy.domain.NewRefund;
 import com.jsy.dto.SelectRefundByoderDto;
@@ -13,6 +15,9 @@ import com.jsy.query.ShopWhetherRefundParam;
 import com.jsy.service.INewOrderService;
 import com.jsy.service.INewRefundService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zhsj.base.api.constant.RpcConst;
+import com.zhsj.base.api.rpc.IBaseUserInfoRpcService;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.aspectj.weaver.ast.Var;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,13 +38,18 @@ import java.util.List;
  */
 @Service
 public class NewRefundServiceImpl extends ServiceImpl<NewRefundMapper, NewRefund> implements INewRefundService {
-
+    @Resource
+    private NewShopClient   newShopClient;
     @Resource
     private NewRefundMapper newRefundMapper;
     @Resource
     private NewOrderMapper newOrderMapper;
-      @Resource
-      private INewOrderService newOrderService;
+    @Resource
+    private INewOrderService newOrderService;
+
+    @DubboReference(version = RpcConst.Rpc.VERSION, group = RpcConst.Rpc.Group.GROUP_BASE_USER, check = false)
+    private IBaseUserInfoRpcService iBaseUserInfoRpcService;
+
     //申请退款
     @Override
     @Transactional
@@ -73,6 +83,10 @@ public class NewRefundServiceImpl extends ServiceImpl<NewRefundMapper, NewRefund
         }
         NewRefund newRefund = newRefunds.get(0);
         SelectRefundByoderDto dto = new SelectRefundByoderDto();
+        //根据店铺id查询imid
+        NewOrder newOrder = newOrderMapper.selectById(orderId);
+        String data = newShopClient.getShopImd(newOrder.getShopId()).getData();
+        dto.setImid(data);
         BeanUtils.copyProperties(newRefund, dto);
         return dto;
     }
@@ -112,6 +126,7 @@ public class NewRefundServiceImpl extends ServiceImpl<NewRefundMapper, NewRefund
 
         return false;
     }
+
     //同意退款
     @Override
     @Transactional
@@ -138,7 +153,7 @@ public class NewRefundServiceImpl extends ServiceImpl<NewRefundMapper, NewRefund
             newOrder.setPayStatus(3);//退款成功
             int i1 = newOrderMapper.updateById(newOrder);
             if (i1 > 0) {
-                Boolean value=newOrderService.allPayRefund(newOrder.getId());
+                Boolean value = newOrderService.allPayRefund(newOrder.getId());
                 //实在真实退款待添加接口
                 return true;
             }
