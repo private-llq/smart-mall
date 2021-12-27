@@ -55,7 +55,6 @@ public class NewCommentController {
     //分页查询店铺的评论and回复
     @RequestMapping(value = "/selectCommentAndReply",method =RequestMethod.POST)
     public CommonResult<MyPage> selectCommentAndReply(@RequestBody SelectShopCommentPageParam param) {
-
         MyPage values=newCommentService.selectCommentAndReply(param);
         return CommonResult.ok(values);
     }

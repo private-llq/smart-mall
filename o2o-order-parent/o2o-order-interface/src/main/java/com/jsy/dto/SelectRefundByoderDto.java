@@ -31,6 +31,9 @@ public class SelectRefundByoderDto {
     @ApiModelProperty(value = "图片")
     private String refundPicture;
 
+    @ApiModelProperty(value = "imid")
+    private String imid;
+
     @ApiModelProperty(value = "受理角色（0商家，1平台）")
     private Integer accepts;
 }

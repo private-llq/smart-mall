@@ -31,7 +31,7 @@ public class  PagerUtils<T> {
                 end = list.size();
             }
             if (start > end) {
-                throw new JSYException(-1,"页码错误,重新输入");
+                throw new JSYException(500,"页码错误,重新输入");
             }
 
         List<T> ts = list.subList(start, end);
