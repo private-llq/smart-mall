@@ -27,6 +27,7 @@ import com.zhsj.baseweb.support.LoginUser;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,6 +68,9 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
 
     @Autowired
     private SetMenuClient setMenuClient;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
 
 
@@ -222,6 +226,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
      *
      */
     @Override
+    @Transactional
     public GoodsDto getGoods(Long id) {
         LoginUser loginUser = ContextHolder.getContext().getLoginUser();
         Goods goods = goodsMapper.selectOne(new QueryWrapper<Goods>().eq("id", id).eq("type",0));
@@ -314,6 +319,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
      * @return
      */
     @Override
+    @Transactional
     public Goods getByGoods(Long id) {
         LoginUser loginUser = ContextHolder.getContext().getLoginUser();
         Goods goods = goodsMapper.selectOne(new QueryWrapper<Goods>().eq("id", id));/*.eq("type",1));*/
