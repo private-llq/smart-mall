@@ -287,7 +287,8 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
      */
     @Override
     @Transactional
-    public GoodsServiceDto getGoodsService(Long id) {
+    public GoodsServiceDto
+    getGoodsService(Long id) {
         LoginUser loginUser = ContextHolder.getContext().getLoginUser();
         Goods goods = goodsMapper.selectOne(new QueryWrapper<Goods>().eq("id", id).eq("type",1));
         if (Objects.isNull(goods)){
