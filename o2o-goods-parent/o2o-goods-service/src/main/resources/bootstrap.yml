@@ -1,4 +1,10 @@
 spring:
+  profiles:
+    active: dev
+
+---
+spring:
+  profiles: dev
   cloud:
     config:
       discovery:
@@ -12,5 +18,53 @@ spring:
 #eureka服务端的连接配置
 eureka:
   client:
-    serviceUrl:
+    service-url:
       defaultZone: http://192.168.12.49:36366/eureka/
+  instance:
+    hostname: ${spring.cloud.client.ip-address}
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${spring.application.instance_id:${server.port}}
+---
+spring:
+  profiles: test
+  cloud:
+    config:
+      discovery:
+        enabled: true #开启springcloudconfig服务端的服务发现
+        service-id: base-config-server #config-server服务的名称
+      name: application-goods #拉取的文件名称
+      profile: test #拉取的配置环境 通过name+profile确定拉取的文件 application-zuul-dev.yml
+      label: master
+  main:
+    allow-bean-definition-overriding: true
+#eureka服务端的连接配置
+eureka:
+  client:
+    service-url:
+      defaultZone: http://222.178.212.29:36366/eureka/
+  instance:
+    hostname: ${spring.cloud.client.ip-address}
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${spring.application.instance_id:${server.port}}
+---
+spring:
+  profiles: prod
+  cloud:
+    config:
+      discovery:
+        enabled: true #开启springcloudconfig服务端的服务发现
+        service-id: base-config-server #config-server服务的名称
+      name: application-goods #拉取的文件名称
+      profile: prod #拉取的配置环境 通过name+profile确定拉取的文件 application-zuul-dev.yml
+      label: master
+  main:
+    allow-bean-definition-overriding: true
+#eureka服务端的连接配置
+eureka:
+  client:
+    service-url:
+      defaultZone: http://222.178.212.29:36366/eureka/
+  instance:
+    hostname: ${spring.cloud.client.ip-address}
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${spring.application.instance_id:${server.port}}

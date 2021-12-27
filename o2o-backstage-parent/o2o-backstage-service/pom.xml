@@ -100,6 +100,9 @@
         </dependency>
     </dependencies>
 
+
+
+
     <build>
         <plugins>
             <plugin>
@@ -107,7 +110,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <!-- springboot main方法入口 -->
-                    <mainClass>com.jsy.FileApplication</mainClass>
+                    <mainClass>com.jsy.BackstageApplication</mainClass>
                     <layout>ZIP</layout>
                 </configuration>
                 <executions>

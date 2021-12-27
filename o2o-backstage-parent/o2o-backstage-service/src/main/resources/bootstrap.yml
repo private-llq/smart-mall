@@ -1,4 +1,10 @@
 spring:
+  profiles:
+    active: dev
+
+---
+spring:
+  profiles: dev
   cloud:
     config:
       discovery:
@@ -11,5 +17,51 @@ spring:
     allow-bean-definition-overriding: true
 eureka:
   client:
-    serviceUrl:
+    service-url:
       defaultZone: http://192.168.12.49:36366/eureka/
+  instance:
+    hostname: ${spring.cloud.client.ip-address}
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${spring.application.instance_id:${server.port}}
+---
+spring:
+  profiles: test
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: base-config-server
+      name: application-backstage
+      profile: test
+      label: master
+  main:
+    allow-bean-definition-overriding: true
+eureka:
+  client:
+    service-url:
+      defaultZone: http://222.178.212.29:36366/eureka/
+  instance:
+    hostname: ${spring.cloud.client.ip-address}
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${spring.application.instance_id:${server.port}}
+---
+spring:
+  profiles: prod
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: base-config-server
+      name: application-backstage
+      profile: prod
+      label: master
+  main:
+    allow-bean-definition-overriding: true
+eureka:
+  client:
+    service-url:
+      defaultZone: http://222.178.212.29:36366/eureka/
+  instance:
+    hostname: ${spring.cloud.client.ip-address}
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${spring.application.instance_id:${server.port}}
