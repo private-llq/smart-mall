@@ -24,6 +24,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jsy.utils.AliAppPayQO;
 import com.jsy.utils.Random8;
 import com.jsy.utils.WeChatPayQO;
+import com.jsy.vo.OrderGoodsVO;
+import com.jsy.vo.OrderServiceVO;
+import com.jsy.vo.OrderSetMenuVO;
 import com.jsy.vo.SelectAllOrderByBackstageVo;
 import com.zhsj.base.api.constant.RpcConst;
 import com.zhsj.base.api.domain.PayCallNotice;
@@ -592,7 +595,7 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
 
         List<NewOrder> newOrders = newOrderMapper.selectList(queryWrapper);//根据状态查询用户的所有订单
         if (newOrders.size() <= 0) {
-            throw new JSYException(500, "无订单");
+           return null;
         }
         for (NewOrder newOrder : newOrders) {
             SelectUserOrderDto userOrderDTO = new SelectUserOrderDto();//单个订单返回对象
@@ -1295,14 +1298,19 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
             if (commonResult.getCode() != 0) {
                 throw new JSYException(commonResult.getCode(), commonResult.getMessage());
             }
-            String urlParamReturn = urlWeChatRefundStatus + orderId;//查询退款状态
-            CommonResult commonResult1 = HttpClientHelper.sendGet(urlParamReturn, token, CommonResult.class);
-            log.info("commonResult**********退款状态" + commonResult.toString());
-            Boolean vo = JSON.parseObject(commonResult1.getData().toString(), Boolean.class);
-            if (vo=true) {
+//            String urlParamReturn = urlWeChatRefundStatus + orderId;//查询退款状态
+//            log.info("urlParamReturn**********************"+urlParamReturn);
+//            CommonResult commonResult1 = HttpClientHelper.sendGet(urlParamReturn, token, CommonResult.class);
+//            log.info("commonResult**********退款状态" + commonResult.toString());
+//            log.info(commonResult1.getData()+"****值");
+//            log.info(commonResult1.getData().toString()+"****toString");
+            Boolean vo = JSON.parseObject(commonResult.getData().toString(), Boolean.class);
+            log.info("Boolean***************"+vo.toString());
+            if (vo) {
                 newOrder.setPayStatus(3);//将支付状态改为3,退款成功
                 int i = newOrderMapper.updateById(newOrder);
                 if (i > 0) {
+                    log.info("退款转态修改成功");
                     return true;
                 }
 
@@ -1511,8 +1519,7 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
     }
     //大后台查询多有订单
     @Override
-    public List<SelectAllOrderByBackstageVo> selectAllOrderByBackstage(SelectAllOrderByBackstageParam param) {
-
+    public List<SelectAllOrderByBackstageDto> selectAllOrderByBackstage(SelectAllOrderByBackstageParam param) {
         SelectAllOrderMapperParam selectAllOrderMapperParam = new SelectAllOrderMapperParam();
         Integer page = param.getPage();
         Integer size = param.getSize();
@@ -1522,8 +1529,92 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
         selectAllOrderMapperParam.setEndTime(param.getEndTime());
         selectAllOrderMapperParam.setStatus(param.getStatus());
         List<SelectAllOrderByBackstageVo>  vo= newOrderMapper.selectAllOrderByBackstage(selectAllOrderMapperParam);
-        log.info(vo.toString());
-        return vo;
+
+        List<SelectAllOrderByBackstageDto> dtoList=new ArrayList<>();//返回对象
+
+        for (SelectAllOrderByBackstageVo one : vo) {
+            SelectAllOrderByBackstageDto  dto=new SelectAllOrderByBackstageDto();
+            BeanUtils.copyProperties(one,dto);
+            Integer orderStatus = one.getOrderStatus();//订单状态
+            Integer appointmentStatus = one.getAppointmentStatus();//预约状态（0预约中，1预约成功）
+            Integer commentStatus = one.getCommentStatus();//是否评价0未评价，1评价
+            Integer payStatus = one.getPayStatus();//支付状态（0未支付，1支付成功,2退款中，3退款成功，4拒绝退款）
+            Integer serverCodeStatus = one.getServerCodeStatus();//验卷状态0未验卷，1验卷成功
+            Integer refundApplyRole = one.getRefundApplyRole();//申请退款角色0商家1平台
+            String currentStatus=null;
+//  0待消费、1已完成、2商家退款中、3商家已退款、4官方退款中5、官方已退款-->
+//<!--   2 商家退款中（支付状态为退款中，预约成功,退款角色为商家）-->
+//<!--   3商家已退款 （支付状态为退款成功，预约成功,退款角色为商家）-->
+//<!--    4 官方退款中（支付状态为退款中，预约成功,退款角色为官方）-->
+//<!--    5 官方已退款（支付状态为退款成功，预约成功,退款角色为官方）-->
+
+
+           if(orderStatus==1 && appointmentStatus==1 && serverCodeStatus==0 && payStatus==1){
+               currentStatus="待消费";
+           }else if (appointmentStatus==1 && serverCodeStatus==1 && payStatus==1 && commentStatus==1){
+               currentStatus="已完成";
+           }else if (orderStatus==1 && appointmentStatus==1  && payStatus==2 && refundApplyRole==0){
+               currentStatus="商家退款中";
+           }else if (orderStatus==1 && appointmentStatus==1  && payStatus==3 && refundApplyRole==0){
+               currentStatus="商家已退款";
+           }else if (orderStatus==1 && appointmentStatus==1  && payStatus==2 && refundApplyRole==1){
+               currentStatus="官方退款中";
+           }else if (orderStatus==1 && appointmentStatus==1  && payStatus==3 && refundApplyRole==1){
+               currentStatus="官方已退款";
+           }
+
+
+            dto.setCurrentStatus(currentStatus);//当前状态
+
+
+            List<SelectAllOrderBelongDto> belongDto=new ArrayList<>();
+
+            List<OrderGoodsVO> orderGoodsList = one.getOrderGoodsList();
+            List<OrderServiceVO> orderServiceList = one.getOrderServiceList();
+            List<OrderSetMenuVO> orderSetMenuList = one.getOrderSetMenuList();
+            if (orderGoodsList!=null && orderGoodsList.size()>0 ) {
+                for (OrderGoodsVO goodsVO : orderGoodsList) {
+                    SelectAllOrderBelongDto  dto1=new SelectAllOrderBelongDto();
+                    dto1.setName(goodsVO.getTitle());
+                    dto1.setPictures(goodsVO.getImages());
+                    dto1.setPrice(goodsVO.getDiscountState()==0?goodsVO.getPrice():goodsVO.getDiscountPrice());
+                    dto1.setNumber(goodsVO.getAmount());
+                    belongDto.add(dto1);
+                }
+
+
+            }
+            if (orderServiceList!=null && orderServiceList.size()>0 ) {
+                for (OrderServiceVO serviceVO : orderServiceList) {
+                    SelectAllOrderBelongDto  dto1=new SelectAllOrderBelongDto();
+                    dto1.setName(serviceVO.getTitle());
+                    dto1.setPictures(serviceVO.getImages());
+                    dto1.setPrice(serviceVO.getDiscountState()==0?serviceVO.getPrice():serviceVO.getDiscountPrice());
+                    dto1.setNumber(serviceVO.getAmount());
+                    belongDto.add(dto1);
+                }
+            }
+            if (orderSetMenuList!=null && orderSetMenuList.size()>0 ) {
+                for (OrderSetMenuVO menuVO : orderSetMenuList) {
+                    SelectAllOrderBelongDto  dto1=new SelectAllOrderBelongDto();
+                    dto1.setName(menuVO.getName());
+                    dto1.setPictures(menuVO.getImages());
+                    dto1.setPrice(menuVO.getDiscountState()==0?menuVO.getRealPrice():menuVO.getSellingPrice());
+                    dto1.setNumber(menuVO.getAmount());
+                    belongDto.add(dto1);
+                }
+            }
+            dto.setThings(new ArrayList<>());
+            dto.getThings().addAll(belongDto);
+            dtoList.add(dto);
+        }
+
+
+
+
+
+   //     log.info(vo.toString());
+        return dtoList;
     }
 
 }

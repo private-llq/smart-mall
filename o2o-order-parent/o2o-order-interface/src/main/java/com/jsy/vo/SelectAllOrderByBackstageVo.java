@@ -57,6 +57,21 @@ public class SelectAllOrderByBackstageVo  {
     @ApiModelProperty(value = "联系人")
     private String linkman;
 
+    @ApiModelProperty(value = "验卷状态")//验卷状态0未验卷，1验卷成功
+    private Integer serverCodeStatus;
+    @ApiModelProperty(value = "预约状态（0预约中，1预约成功）")
+    private Integer appointmentStatus;
+    @ApiModelProperty(value = "是否评价0未评价，1评价（评价完成为订单完成）")
+    private Integer commentStatus;
+    @ApiModelProperty(value = "支付状态（0未支付，1支付成功,2退款中，3退款成功，4拒绝退款）")
+    private Integer payStatus;
+    @ApiModelProperty(value = "订单状态（[1待上门、待配送、待发货]，2、完成）")
+    private Integer orderStatus;
+    @ApiModelProperty(value = "申请退款角色（0商家，1是平台）")
+    private Integer refundApplyRole;
+
+
+
     @ApiModelProperty(value = "商品集合")
     private List<OrderGoodsVO> orderGoodsList;
     @ApiModelProperty(value = "套餐集合")

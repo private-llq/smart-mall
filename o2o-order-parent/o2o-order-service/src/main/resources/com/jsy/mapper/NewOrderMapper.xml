@@ -39,6 +39,13 @@
         <result column="consumption_way" property="consumptionWay"/>
         <result column="order_all_price" property="orderAllPrice"/>
         <result column="linkman" property="linkman"/>
+        <result column="server_code_status"  property="serverCodeStatus"/>
+        <result column="appointment_status"  property="appointmentStatus"/>
+        <result column="comment_status"  property="commentStatus"/>
+        <result column="pay_status"  property="payStatus"/>
+        <result column="order_status"  property="orderStatus"/>
+        <result column="refund_apply_role" property="refundApplyRole"/>
+
         <collection property="orderGoodsList" ofType="com.jsy.vo.OrderGoodsVO">
             <id column="gid" property="id"/>
             <result column="gcreate_time" property="createTime"/>
@@ -75,73 +82,130 @@
         </collection>
     </resultMap>
 
+    <!--sql片段-->
+    <sql id="timeCondition">
+        <if test="startTime != null">
+            AND ord.create_time &gt; #{startTime}
+        </if>
+        <if test="endTime != null">
+            AND ord.create_time &lt; #{endTime}
+        </if>
+
+    </sql>
+
+<!--  0待消费、1已完成、2商家退款中、3商家已退款、4官方退款中5、官方已退款-->
+<!--    &#45;&#45; 待消费（已经支付，没有验卷，预约成功）-->
+<!--    &#45;&#45; 已完成（已经支付，已经验卷，预约成功，已经评价）-->
+<!--    &#45;&#45; 商家退款中（支付状态为退款中，预约成功,退款角色为商家）-->
+<!--    &#45;&#45;商家已退款 （支付状态为退款成功，预约成功,退款角色为商家）-->
+<!--    &#45;&#45; 官方退款中（支付状态为退款中，预约成功,退款角色为官方）-->
+<!--    &#45;&#45; 官方已退款（支付状态为退款成功，预约成功,退款角色为官方）-->
+<!-- sql片段-->
+    <sql id="orderStatus">
+        <if test="status == 0">
+
+            AND ord.pay_status =1 and ord.server_code_status=0 and  ord.appointment_status=1
+        </if>
+        <if test="status == 1">
+
+            AND ord.pay_status=1 and ord.server_code_status=1 and  ord.appointment_status=1 and ord.comment_status=1
+        </if>
+        <if test="status == 2">
+
+            AND ord.pay_status=2  and  ord.appointment_status=1 and ord.refund_apply_role=0
+
+        </if>
+        <if test="status == 3">
+
+            AND ord.pay_status=3  and  ord.appointment_status=1 and ord.refund_apply_role=0
+        </if>
+        <if test="status == 4">
+
+            AND ord.pay_status=2  and  ord.appointment_status=1 and ord.refund_apply_role=1
+
+        </if>
+        <if test="status == 5">
+
+            AND ord.pay_status=3  and  ord.appointment_status=1 and ord.refund_apply_role=1
+        </if>
+
+    </sql>
 
     <select id="selectAllOrderByBackstage" resultMap="selectAllOrderByBackstage" parameterType="com.jsy.query.SelectAllOrderMapperParam">
         select o.id,
-               o.user_id,
-               o.shop_id,
-               o.order_num,
-               o.order_status,
-               o.pay_type,
-               o.pay_status,
-               o.pay_time,
-               o.bill_month,
-               o.bill_num,
-               o.bill_rise,
-               o.comment_status,
-               o.order_type,
-               o.appointment_status,
-               o.consumption_way,
-               o.order_all_price,
-               o.shipping_address,
-               o.start_time,
-               o.ent_time,
-               o.serve_code,
-               o.create_time,
+        o.user_id,
+        o.shop_id,
+        o.order_num,
+        o.order_status,/**/
+        o.pay_type,
+        o.pay_status,/**/
+        o.pay_time,
+        o.bill_month,
+        o.bill_num,
+        o.bill_rise,
+        o.comment_status,/**/
+        o.order_type,
+        o.appointment_status,/**/
+        o.consumption_way,
+        o.order_all_price,
+        o.shipping_address,
+        o.start_time,
+        o.ent_time,
+        o.server_code_status,/**/
+        o.refund_apply_role,
+        o.serve_code,
+        o.create_time,
 
 
-               g.id             as gid,
-               g.create_time    as gcreate_time,
-               g.amount         as gamount,
-               g.title          as gtitle,
-               g.price          as gprice,
-               g.discount_price as gdiscount_price,
-               g.discount_state as gdiscount_state,
-               g.images         as gimages,
-               g.goods_id       as ggoods_id,
+        g.id as gid,
+        g.create_time as gcreate_time,
+        g.amount as gamount,
+        g.title as gtitle,
+        g.price as gprice,
+        g.discount_price as gdiscount_price,
+        g.discount_state as gdiscount_state,
+        g.images as gimages,
+        g.goods_id as ggoods_id,
 
-               m.id             as mid,
-               m.create_time    as mcreate_time,
-               m.order_id       as morder_id,
-               m.menu_id        as mmenu_id,
-               m.name           as mname,
-               m.real_price     as mreal_price,
-               m.selling_price  as mselling_price,
-               m.discount_state as mdiscount_state,
-               m.images         as mimages,
-               m.amount         as mamount,
-
-
-               s.id             as sid,
-               s.create_time    as screate_time,
-               s.images         as simages,
-               s.title          as stitle,
-               s.price          as sprice,
-               s.discount_price as sdiscount_price,
-               s.discount_state as sdiscount_state,
-               s.amount         as samount,
-               s.service_id     as sservice_id
+        m.id as mid,
+        m.create_time as mcreate_time,
+        m.order_id as morder_id,
+        m.menu_id as mmenu_id,
+        m.name as mname,
+        m.real_price as mreal_price,
+        m.selling_price as mselling_price,
+        m.discount_state as mdiscount_state,
+        m.images as mimages,
+        m.amount as mamount,
 
 
-        from     (SELECT * FROM w_new_order as ord  where  ord.create_time  &gt; #{startTime} and   ord.create_time &lt; #{endTime} limit #{start},#{end} ) as o
-                 LEFT JOIN w_order_goods as g on g.order_id = o.id
-                 LEFT JOIN w_order_service as s on s.order_id = o.id
-                 LEFT JOIN w_order_set_menu as m on m.order_id = o.id
+        s.id as sid,
+        s.create_time as screate_time,
+        s.images as simages,
+        s.title as stitle,
+        s.price as sprice,
+        s.discount_price as sdiscount_price,
+        s.discount_state as sdiscount_state,
+        s.amount as samount,
+        s.service_id as sservice_id
+
+
+        from (SELECT * FROM w_new_order as ord
+        <where>
+            <include refid="timeCondition"></include>
+            <include refid="orderStatus"></include>
+        </where>
+
+
+
+
+
+        limit #{start},#{end} ) as o
+        LEFT JOIN w_order_goods as g on g.order_id = o.id
+        LEFT JOIN w_order_service as s on s.order_id = o.id
+        LEFT JOIN w_order_set_menu as m on m.order_id = o.id
 
     </select>
-
-
-
 
 
 </mapper>

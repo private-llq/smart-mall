@@ -25,7 +25,9 @@ public class  PagerUtils<T> {
     public PagerUtils<T> queryPage(int page, int size, List<T> list) {
             int start = (page - 1) * size;
             int end = size * page;
-
+        if (list==null) {
+            return null;
+        }
             //end 超过总长
             if (end > list.size()) {
                 end = list.size();

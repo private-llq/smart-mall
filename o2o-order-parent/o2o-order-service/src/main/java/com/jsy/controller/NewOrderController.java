@@ -2,10 +2,7 @@ package com.jsy.controller;
 
 import com.jsy.basic.util.utils.PagerUtils;
 import com.jsy.config.HttpClientHelper;
-import com.jsy.dto.OrderSizeDto;
-import com.jsy.dto.SelectShopOrderDto;
-import com.jsy.dto.SelectUserOrderDto;
-import com.jsy.dto.SelectUserOrderNumberDto;
+import com.jsy.dto.*;
 import com.jsy.query.*;
 import com.jsy.service.INewOrderService;
 import com.jsy.domain.NewOrder;
@@ -90,6 +87,7 @@ public class NewOrderController {
     @ApiOperation("查询相应状态下的数量")
     @RequestMapping(value = "/selectUserOrderNumber", method = RequestMethod.GET)
     public CommonResult<ArrayList<SelectUserOrderNumberDto>> selectUserOrderNumber() {
+
         Long id = ContextHolder.getContext().getLoginUser().getId();//获取用户id
         ArrayList<SelectUserOrderNumberDto>  selectUserOrderNumberDtos= newOrderService.selectUserOrderNumber(id);
         return new CommonResult<>(200,"查询成功",selectUserOrderNumberDtos);
@@ -219,8 +217,8 @@ public class NewOrderController {
 
     //大后台查询所有订单
     @RequestMapping(value = "/selectAllOrderByBackstage", method = RequestMethod.POST)
-    public CommonResult<List<SelectAllOrderByBackstageVo>> selectAllOrderByBackstage(@RequestBody SelectAllOrderByBackstageParam param){
-        List<SelectAllOrderByBackstageVo>   dto= newOrderService.selectAllOrderByBackstage(param);
+    public CommonResult< List<SelectAllOrderByBackstageDto>> selectAllOrderByBackstage(@RequestBody SelectAllOrderByBackstageParam param){
+        List<SelectAllOrderByBackstageDto>   dto= newOrderService.selectAllOrderByBackstage(param);
         return new CommonResult<>(200, "查询成功", dto);
     }
 
