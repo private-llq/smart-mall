@@ -28,6 +28,13 @@
             <artifactId>mybatis-plus</artifactId>
             <version>3.4.0</version>
         </dependency>
+
+        <!--easyPOI-->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easyexcel</artifactId>
+            <version>3.0.5</version>
+        </dependency>
         <dependency>
             <groupId>com.zhsj</groupId>
             <artifactId>o2o-basic-util</artifactId>

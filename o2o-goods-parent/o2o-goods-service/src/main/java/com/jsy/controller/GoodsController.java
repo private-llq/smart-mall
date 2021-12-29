@@ -33,6 +33,7 @@ public class GoodsController {
 
 
 
+
     /**
     * 添加 商品
     */
@@ -333,6 +334,9 @@ public class GoodsController {
         Boolean state= goodsService.selectState(id,type);
         return CommonResult.ok(state);
     }
+
+
+
 
 }
 

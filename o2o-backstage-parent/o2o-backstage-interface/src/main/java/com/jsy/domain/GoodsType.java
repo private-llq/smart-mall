@@ -1,14 +1,14 @@
 package com.jsy.domain;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-
-import java.util.List;
-
-import com.jsy.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.util.List;
 
 /**
  * <p>
@@ -21,20 +21,24 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("w_goods_type")
-public class GoodsType extends BaseEntity {
+public class GoodsType {
 
     private static final long serialVersionUID = 1L;
 
+    @ExcelProperty("分类id")
+    private Long id;
 
     /**
      * 分类名称
      */
     @ApiModelProperty(value = "行业服务分类名称",name = "classifyName")
+    @ExcelProperty("分类名称")
     private String classifyName;
 
     /**
      * 等级
      */
+    @ExcelProperty("等级")
     @ApiModelProperty(value = "等级",name = "level")
     private Integer level;
 
@@ -42,17 +46,20 @@ public class GoodsType extends BaseEntity {
      * 父级id
      */
     @ApiModelProperty(value = "父级id",name = "pid")
+    @ExcelIgnore
     private Long pid;
 
     /**
      * 是否显示
      */
     @ApiModelProperty(value = "是否显示",name = "state")
+    @ExcelIgnore
     private Integer state;
 
 
     @TableField(exist = false)
     @ApiModelProperty(value = "子节点列表")
+    @ExcelIgnore
     private List<GoodsType> children;
 
 }

@@ -1,16 +1,14 @@
 package com.jsy.controller;
-import com.jsy.basic.util.utils.BeansCopyUtils;
+
+import com.jsy.basic.util.vo.CommonResult;
+import com.jsy.domain.GoodsType;
 import com.jsy.dto.GoodsTypeDto;
 import com.jsy.param.GoodsTypeParam;
 import com.jsy.service.IGoodsTypeService;
-import com.jsy.domain.GoodsType;
-import com.jsy.query.IndustryCategoryQuery;
-import com.jsy.basic.util.PageList;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import com.jsy.basic.util.vo.CommonResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,6 +113,7 @@ public class GoodsTypeController {
         }
         return CommonResult.ok(dtoList);
     }
+
 
 
 

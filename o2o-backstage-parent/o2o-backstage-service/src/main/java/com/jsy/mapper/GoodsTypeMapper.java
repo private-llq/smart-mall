@@ -1,7 +1,7 @@
 package com.jsy.mapper;
 
-import com.jsy.domain.GoodsType;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.jsy.domain.GoodsType;
 
 /**
  * <p>
@@ -12,5 +12,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @since 2021-11-05
  */
 public interface GoodsTypeMapper extends BaseMapper<GoodsType> {
+
 
 }

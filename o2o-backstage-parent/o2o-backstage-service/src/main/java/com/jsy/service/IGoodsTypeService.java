@@ -1,7 +1,7 @@
 package com.jsy.service;
 
-import com.jsy.domain.GoodsType;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.jsy.domain.GoodsType;
 import com.jsy.dto.GoodsTypeDto;
 
 import java.util.List;
