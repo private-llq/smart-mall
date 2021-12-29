@@ -2,6 +2,7 @@ package com.jsy.basic.util.handler;
 import com.jsy.basic.util.exception.JSYError;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.vo.CommonResult;
+import com.zhsj.basecommon.exception.BaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
@@ -50,7 +51,9 @@ public class ControllerHandler {
                 !(e instanceof ServletRequestBindingException) &&
                 !(e instanceof MethodArgumentNotValidException) &&
                 !(e instanceof IllegalArgumentException) &&
-                !(e instanceof IllegalStateException)) {
+                !(e instanceof IllegalStateException) &&
+                !(e instanceof BaseException))
+        {
             model =CommonResult.error(JSYError.UNKNOWN_EXCEPTION.getCode(), "系统异常，请联系客服！");
             this.logger.error(e.getMessage(), e);
         } else {
