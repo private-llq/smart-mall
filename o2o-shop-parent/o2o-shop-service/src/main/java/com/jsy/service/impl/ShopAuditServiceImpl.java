@@ -226,8 +226,6 @@ public class ShopAuditServiceImpl extends ServiceImpl<ShopAuditMapper, ShopAudit
             Tree data2= treeClient.getTree(Long.valueOf(split[split.length-2])).getData();
             return data2.getName()+"-"+data1.getName();
         }
-
-
     }
 
 

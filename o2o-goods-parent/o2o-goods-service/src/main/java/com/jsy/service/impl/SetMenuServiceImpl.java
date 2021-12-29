@@ -25,6 +25,7 @@ import com.jsy.query.SetMenuQuery;
 import com.jsy.service.ISetMenuService;
 import com.zhsj.baseweb.support.ContextHolder;
 import com.zhsj.baseweb.support.LoginUser;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -369,7 +370,6 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
         Long num = stringRedisTemplate.opsForHyperLogLog().size("pv_num"+id);
         return num;
     }
-
-
+    
 }
 
