@@ -25,17 +25,14 @@ import com.jsy.query.SetMenuQuery;
 import com.jsy.service.ISetMenuService;
 import com.zhsj.baseweb.support.ContextHolder;
 import com.zhsj.baseweb.support.LoginUser;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisConnectionUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -120,7 +117,9 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
 //            setMenu.setPvNum(setMenu.getPvNum()+1);
 //        }
         Long pvNum = statisticsPvNum(loginUser.getId(), id);
-        setMenu.setPvNum(pvNum);
+        if (Objects.nonNull(pvNum)){
+            setMenu.setPvNum(pvNum);
+        }
         setMenuMapper.updateById(setMenu);
         List<SetMenuGoods> setMenuGoodsList = menuGoodsMapper.selectList(new QueryWrapper<SetMenuGoods>()
                     .eq("set_menu_id", setMenu.getId())
@@ -359,16 +358,24 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
         return false;
     }
 
-    public Long statisticsPvNum(Long userId,Long id){
-        /**
-         * 存入key
-         */
-        stringRedisTemplate.opsForHyperLogLog().add("pv_num"+id, userId + "-" + id);
-        /**
-         * 统计访问量
-         */
-        Long num = stringRedisTemplate.opsForHyperLogLog().size("pv_num"+id);
-        return num;
+    public Long statisticsPvNum(Long userId,Long id) {
+        Long num;
+        stringRedisTemplate.multi();//开启事务
+        try {
+            //存入key
+            stringRedisTemplate.opsForHyperLogLog().add("pv_num" + id, userId + "-" + id);
+            //统计访问量
+            num = stringRedisTemplate.opsForHyperLogLog().size("pv_num" + id);
+            stringRedisTemplate.exec();//执行事务
+            return num;
+        } catch (Exception e) {
+            stringRedisTemplate.discard();//放弃事务
+            System.out.println(e);
+        } finally {
+            RedisConnectionUtils.unbindConnection(stringRedisTemplate.getConnectionFactory());//关闭连接
+        }
+
+        return null;
     }
     
 }

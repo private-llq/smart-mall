@@ -25,9 +25,11 @@ import com.jsy.query.NearTheServiceQuery;
 import com.jsy.service.IGoodsService;
 import com.zhsj.baseweb.support.ContextHolder;
 import com.zhsj.baseweb.support.LoginUser;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisConnectionUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,6 +49,7 @@ import java.util.Objects;
  * @since 2021-11-09
  */
 @Service
+@Slf4j
 public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements IGoodsService {
 
     @Autowired
@@ -72,7 +75,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     private SetMenuClient setMenuClient;
 
     @Resource
-    private StringRedisTemplate stringRedisTemplate;
+    private StringRedisTemplate redisTep;
 
 
 
@@ -244,7 +247,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
 
         Long pvNum = statisticsPvNum(loginUser.getId(), goods.getId());
         //添加商品访问量
-            goodsMapper.update(null,new UpdateWrapper<Goods>().eq("id",id).set("pv_num",pvNum));
+            goodsMapper.update(null,new UpdateWrapper<Goods>().eq("id",id).set(Objects.nonNull(pvNum),"pv_num",pvNum));
             //添加一条用户的浏览记录
             Browse browse = new Browse();
             browse.setShopId(goods.getShopId());
@@ -268,16 +271,24 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         return goodsDto;
     }
 
-    public Long statisticsPvNum(Long userId,Long id){
-        /**
-         * 存入key
-         */
-        stringRedisTemplate.opsForHyperLogLog().add("pv_num"+id, userId + "-" + id);
-        /**
-         * 统计访问量
-         */
-        Long num = stringRedisTemplate.opsForHyperLogLog().size("pv_num"+id);
-        return num;
+    public Long statisticsPvNum(Long userId,Long id) {
+        Long num;
+        redisTep.multi();//开启事务
+        try {
+            //存入key
+            redisTep.opsForHyperLogLog().add("pv_num" + id, userId + "-" + id);
+            //统计访问量
+            num = redisTep.opsForHyperLogLog().size("pv_num" + id);
+            redisTep.exec();//执行事务
+            return num;
+        } catch (Exception e) {
+            redisTep.discard();//放弃事务
+            System.out.println(e);
+        } finally {
+            RedisConnectionUtils.unbindConnection(redisTep.getConnectionFactory());//关闭连接
+        }
+
+        return null;
     }
 
     /**
@@ -302,7 +313,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         }
         //添加服务访问量
             Long pvNum = statisticsPvNum(loginUser.getId(), goods.getId());
-            goodsMapper.update(null,new UpdateWrapper<Goods>().eq("id",id).set("pv_num",pvNum));
+            goodsMapper.update(null,new UpdateWrapper<Goods>().eq("id",id).set(Objects.nonNull(pvNum),"pv_num",pvNum));
             //添加一条用户的浏览记录
             Browse browse = new Browse();
             browse.setShopId(goods.getShopId());
