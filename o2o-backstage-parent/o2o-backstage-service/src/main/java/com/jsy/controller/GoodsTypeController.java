@@ -114,6 +114,9 @@ public class GoodsTypeController {
         return CommonResult.ok(dtoList);
     }
 
+    /**
+     * 2222
+     */
 /*
 
 1111
