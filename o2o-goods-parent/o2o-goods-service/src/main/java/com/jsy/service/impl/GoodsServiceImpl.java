@@ -271,6 +271,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     }
 
     public Long statisticsPvNum(Long userId,Long id) {
+
             //存入key
             redisTep.opsForHyperLogLog().add("pv_num" + id, userId + "-" + id);
             //统计访问量
