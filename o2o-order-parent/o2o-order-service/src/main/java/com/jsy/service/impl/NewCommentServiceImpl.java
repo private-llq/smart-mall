@@ -145,7 +145,11 @@ public class NewCommentServiceImpl extends ServiceImpl<NewCommentMapper, NewComm
             BeanUtils.copyProperties(a, selectCommentAndReplyDto);
 
             UserDetail userDetail = iBaseUserInfoRpcService.getUserDetail(a.getUserId());//获取用户的头像
-            String avatarThumbnail = userDetail.getAvatarThumbnail();
+            String avatarThumbnail=null;
+            if(userDetail!=null){
+                avatarThumbnail= userDetail.getAvatarThumbnail();
+            }
+
             System.out.println("用户头像" + avatarThumbnail);
             selectCommentAndReplyDto.setHeadpPhoto(avatarThumbnail);
             selectCommentAndReplyDto.setName(userDetail.getNickName());

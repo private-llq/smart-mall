@@ -216,6 +216,7 @@ public class NewOrderController {
 
 
     //大后台查询所有订单
+    @LoginIgnore
     @RequestMapping(value = "/selectAllOrderByBackstage", method = RequestMethod.POST)
     public CommonResult< List<SelectAllOrderByBackstageDto>> selectAllOrderByBackstage(@RequestBody SelectAllOrderByBackstageParam param){
         List<SelectAllOrderByBackstageDto>   dto= newOrderService.selectAllOrderByBackstage(param);
