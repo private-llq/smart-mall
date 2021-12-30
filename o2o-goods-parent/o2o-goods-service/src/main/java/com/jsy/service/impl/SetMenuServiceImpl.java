@@ -27,7 +27,6 @@ import com.zhsj.baseweb.support.ContextHolder;
 import com.zhsj.baseweb.support.LoginUser;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisConnectionUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -117,9 +116,7 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
 //            setMenu.setPvNum(setMenu.getPvNum()+1);
 //        }
         Long pvNum = statisticsPvNum(loginUser.getId(), id);
-        if (Objects.nonNull(pvNum)){
             setMenu.setPvNum(pvNum);
-        }
         setMenuMapper.updateById(setMenu);
         List<SetMenuGoods> setMenuGoodsList = menuGoodsMapper.selectList(new QueryWrapper<SetMenuGoods>()
                     .eq("set_menu_id", setMenu.getId())
@@ -359,24 +356,12 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
     }
 
     public Long statisticsPvNum(Long userId,Long id) {
-        stringRedisTemplate.setEnableTransactionSupport(true);//开启事务支持
-        Long num;
-        stringRedisTemplate.multi();//开启事务
-        try {
             //存入key
             stringRedisTemplate.opsForHyperLogLog().add("pv_num" + id, userId + "-" + id);
             //统计访问量
-            num = stringRedisTemplate.opsForHyperLogLog().size("pv_num" + id);
-            stringRedisTemplate.exec();//执行事务
+            Long num = stringRedisTemplate.opsForHyperLogLog().size("pv_num" + id);
             return num;
-        } catch (Exception e) {
-            stringRedisTemplate.discard();//放弃事务
-            System.out.println(e);
-        } finally {
-            RedisConnectionUtils.unbindConnection(stringRedisTemplate.getConnectionFactory());//关闭连接
-        }
 
-        return null;
     }
     
 }
