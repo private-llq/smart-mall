@@ -359,6 +359,7 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
     }
 
     public Long statisticsPvNum(Long userId,Long id) {
+        stringRedisTemplate.setEnableTransactionSupport(true);//开启事务支持
         Long num;
         stringRedisTemplate.multi();//开启事务
         try {

@@ -272,6 +272,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     }
 
     public Long statisticsPvNum(Long userId,Long id) {
+        redisTep.setEnableTransactionSupport(true);//开启事务支持
         Long num;
         redisTep.multi();//开启事务
         try {
