@@ -234,9 +234,13 @@ public class NewShopController {
         SelectShopCommentScoreDto data = commentClent.selectShopCommentScore(shopId).getData();
         newShopSetDto.setScore(data.getScore());
         newShopSetDto.setSize(data.getSize());
-
-        String imId = iBaseUserInfoRpcService.getUserIm(newShop.getOwnerUuid(),"shop_admin").getImId();
-        newShopSetDto.setImId(imId);
+          try {
+              String imId = iBaseUserInfoRpcService.getUserIm(newShop.getOwnerUuid(),"shop_admin").getImId();
+              newShopSetDto.setImId(imId);
+          }catch (Exception e){
+              e.printStackTrace();
+              newShopSetDto.setImId(null);
+          }
         return CommonResult.ok(newShopSetDto);
     }
 
