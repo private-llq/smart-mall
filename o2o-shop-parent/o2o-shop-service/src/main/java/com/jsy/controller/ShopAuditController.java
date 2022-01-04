@@ -75,7 +75,7 @@ public class ShopAuditController {
     /**
      * @author Tian
      * @since 2021/12/1-18:03
-     * @description 查询审核是否通过的商家   店铺名称和法人姓名
+     * @description 查询屏蔽是否通过的商家   店铺名称
      **/
 
     @PostMapping(value = "/selectListPage")

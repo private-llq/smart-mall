@@ -72,7 +72,7 @@ public interface INewShopService extends IService<NewShop> {
   * @since 2021/12/1-11:18
   * @description 店铺预览基本信息查询
   **/
-    NewShopBasicDto selectBasic(Long shopId);
+    NewShopBasicDto selectBasic(Long shopId, Integer type);
      /**
       * @author Tian
       * @since 2021/12/1-11:47
@@ -90,7 +90,7 @@ public interface INewShopService extends IService<NewShop> {
   * @since 2021/12/3-10:00
   * @description 查询店铺支持
   **/
- NewShopSupportDto getSupport(Long shopId);
+ NewShopSupportDto getSupport(Long shopId, Integer type);
  /**
   * @author Tian
   * @since 2021/12/8-11:41

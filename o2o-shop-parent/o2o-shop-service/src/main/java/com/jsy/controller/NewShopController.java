@@ -128,10 +128,10 @@ public class NewShopController {
       **/
     @PostMapping(value = "/selectBasic")
     public CommonResult<NewShopBasicDto> selectBasic(@RequestParam("shopId") Long shopId){
-       NewShopBasicDto basicDto =  newShopService.selectBasic(shopId);
+        Integer type = 1;
+       NewShopBasicDto basicDto =  newShopService.selectBasic(shopId,type);
         return CommonResult.ok(basicDto);
     }
-
 
     @LoginIgnore
     @PostMapping("/test")
@@ -228,15 +228,19 @@ public class NewShopController {
         NewShop newShop = newShopService.getById(shopId);
         NewShopSetDto newShopSetDto = new NewShopSetDto();
         if (ObjectUtil.isNull(newShop)||newShop.getShielding()==1){
-            return new CommonResult(-1,"店铺不存在",null);
+            return new CommonResult(-10,"店铺不存在",null);
         }
         BeanUtils.copyProperties(newShop,newShopSetDto);
         SelectShopCommentScoreDto data = commentClent.selectShopCommentScore(shopId).getData();
         newShopSetDto.setScore(data.getScore());
         newShopSetDto.setSize(data.getSize());
-
-        String imId = iBaseUserInfoRpcService.getUserIm(newShop.getOwnerUuid(),"shop_admin").getImId();
-        newShopSetDto.setImId(imId);
+          try {
+              String imId = iBaseUserInfoRpcService.getUserIm(newShop.getOwnerUuid(),"shop_admin").getImId();
+              newShopSetDto.setImId(imId);
+          }catch (Exception e){
+              e.printStackTrace();
+              newShopSetDto.setImId(null);
+          }
         return CommonResult.ok(newShopSetDto);
     }
 
@@ -261,8 +265,8 @@ public class NewShopController {
      @LoginIgnore
      @RequestMapping(value = "/getSupport",method = RequestMethod.GET)
      public CommonResult getSupport(@RequestParam("shopId") Long shopId){
-
-             NewShopSupportDto suportDto = newShopService.getSupport(shopId);
+            Integer type = 1;
+             NewShopSupportDto suportDto = newShopService.getSupport(shopId,type);
              if (ObjectUtil.isNull(suportDto)){
                  return new CommonResult(-10,"店铺不存在",null);
              }else {
@@ -385,4 +389,57 @@ public class NewShopController {
         String imId = iBaseUserInfoRpcService.getUserIm(userId,"shop_admin").getImId();
         return CommonResult.ok(imId);
     }
+
+    /**
+     * @author Tian
+     * @since 2021/12/1-11:53
+     * @description 预览门店基本信息 B端+大后台
+     **/
+    @PostMapping(value = "/selectBasic2")
+    public CommonResult<NewShopBasicDto> selectBasic2(@RequestParam("shopId") Long shopId){
+        Integer type = 2;
+        NewShopBasicDto basicDto =  newShopService.selectBasic(shopId,type);
+        return CommonResult.ok(basicDto);
+    }
+
+    @ApiOperation("根据店铺id查询店铺设置  B端+大后台")
+    @RequestMapping(value = "/getSetShop2",method = RequestMethod.GET)
+    public CommonResult<NewShopSetDto> getSetShop2(@RequestParam("shopId") Long shopId){
+        NewShop newShop = newShopService.getById(shopId);
+        NewShopSetDto newShopSetDto = new NewShopSetDto();
+        if (ObjectUtil.isNull(newShop)){
+            return new CommonResult(-10,"店铺不存在",null);
+        }
+        BeanUtils.copyProperties(newShop,newShopSetDto);
+        SelectShopCommentScoreDto data = commentClent.selectShopCommentScore(shopId).getData();
+        newShopSetDto.setScore(data.getScore());
+        newShopSetDto.setSize(data.getSize());
+        try {
+            String imId = iBaseUserInfoRpcService.getUserIm(newShop.getOwnerUuid(),"shop_admin").getImId();
+            newShopSetDto.setImId(imId);
+        }catch (Exception e){
+            e.printStackTrace();
+            newShopSetDto.setImId(null);
+        }
+        return CommonResult.ok(newShopSetDto);
+    }
+
+    /**
+     * @author Tian
+     * @since 2021/12/3-9:57
+     * @description 查询店铺支持
+     **/
+    @ApiOperation("查询店铺支持")
+    @LoginIgnore
+    @RequestMapping(value = "/getSupport2",method = RequestMethod.GET)
+    public CommonResult getSupport2(@RequestParam("shopId") Long shopId){
+        Integer type = 2;
+        NewShopSupportDto suportDto = newShopService.getSupport(shopId,type);
+        if (ObjectUtil.isNull(suportDto)){
+            return new CommonResult(-10,"店铺不存在",null);
+        }else {
+            return CommonResult.ok(suportDto);
+        }
+    }
+
 }

@@ -84,10 +84,11 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
      */
     @Override
     public Long addNewShop(NewShopParam shopPacketParam) {
-//        boolean mobile = RegexUtils.isLandline(shopPacketParam.getMobile());//验证电话
-//        if (!mobile) {
-//            throw new JSYException(-1, "座机电话格式错误");
-//        }
+        boolean mobile = RegexUtils.isLandline(shopPacketParam.getMobile());//验证电话
+        boolean mobile1 = RegexUtils.isMobile(shopPacketParam.getMobile());//验证电话
+        if (!mobile&&!mobile1) {
+            throw new JSYException(-1, "电话格式错误");
+        }
 //        boolean phone = RegexUtils.isMobile(shopPacketParam.getShopPhone());
 //        if (!phone) {
 //            throw new JSYException(-1, "经营者/法人电话格式错误");
@@ -181,10 +182,14 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         if(!RegexUtils.isIDCard(modifyParam.getIdNumber())){
             throw  new JSYException(-1,"身份证号有误");
         }
-        boolean phone = RegexUtils.isMobile(modifyParam.getShopPhone());
-        if (!phone) {
-            throw new JSYException(-1, "经营者/法人电话格式错误");
+        boolean mobile = RegexUtils.isLandline(modifyParam.getMobile());//验证电话
+        boolean mobile1 = RegexUtils.isMobile(modifyParam.getMobile());//验证电话
+        if (!mobile&&!mobile1) {
+            throw new JSYException(-1, "电话格式错误");
         }
+//        if (!phone) {
+//            throw new JSYException(-1, "经营者/法人电话格式错误");
+//        }
 
         if (modifyParam.getShopName().length() > 15) {
             throw new JSYException(-1, "店铺名太长");
@@ -448,13 +453,19 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
   * @description 店铺预览基本信息查询
   **/
     @Override
-    public NewShopBasicDto selectBasic(Long shopId) {
+    public NewShopBasicDto selectBasic(Long shopId, Integer type) {
         NewShop newShop = shopMapper.selectById(shopId);
 //        if (newShop.getState()==3){
 //
 //        }
-        if (newShop.getShielding()==1){
+        if (ObjectUtil.isNull(newShop)){
+
             throw new JSYException(-10,"店铺不存在");
+        }
+        if (type==1){
+            if (newShop.getShielding()==1){
+                throw new JSYException(-10,"店铺不存在");
+            }
         }
         NewShopBasicDto basicDto = new NewShopBasicDto();
         BeanUtils.copyProperties(newShop,basicDto);
@@ -548,10 +559,12 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
     }
 
     @Override
-    public NewShopSupportDto getSupport(Long shopId) {
+    public NewShopSupportDto getSupport(Long shopId, Integer type) {
         NewShop newShop = shopMapper.selectOne(new QueryWrapper<NewShop>().eq("id", shopId));
-        if (newShop.getShielding()==1){
-            throw new JSYException(-10,"店铺不存在");
+        if (type==1){
+            if (newShop.getShielding()==1){
+                throw new JSYException(-10,"店铺不存在");
+            }
         }
         NewShopSupportDto suportDto = new NewShopSupportDto();
         if (ObjectUtil.isNull(newShop)){

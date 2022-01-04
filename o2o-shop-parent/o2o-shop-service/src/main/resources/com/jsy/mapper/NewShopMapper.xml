@@ -132,12 +132,12 @@
 <!--店铺名称和法人姓名-->
       <select id="selectAuitPage" resultType="com.jsy.parameter.NewShopBackstageDto">
         select * from w_new_shop s where deleted=0
-        <if test="shopQuery.state !=null and shopQuery.state !=''">
+        <if test="shopQuery.state !=null">
             AND s.state= #{shopQuery.state,jdbcType=INTEGER}
         </if>
-        <if test="shopQuery.shielding !=null and shopQuery.shielding !=''">
-            AND s.shielding= #{shopQuery.shielding,jdbcType=INTEGER}
-        </if>
+<!--        <if test="shopQuery.shielding !=null and shopQuery.shielding !=''">-->
+<!--            AND s.shielding= #{shopQuery.shielding,jdbcType=INTEGER}-->
+<!--        </if>-->
         <if test="shopQuery.keyword !=null and shopQuery.keyword!=''">
             AND s.shop_name LIKE CONCAT('%',#{shopQuery.keyword,jdbcType=VARCHAR},'%')
             OR s.shop_username LIKE CONCAT('%',#{shopQuery.keyword,jdbcType=VARCHAR},'%')
