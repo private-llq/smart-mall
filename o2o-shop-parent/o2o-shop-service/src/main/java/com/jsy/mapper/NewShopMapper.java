@@ -32,7 +32,7 @@ public interface NewShopMapper extends BaseMapper<NewShop> {
 //大后台查询当月入驻商家
     Integer newShopAudit(@Param("startDate") String startDate, @Param("endDate") String endDate,@Param("state") Integer state);
 
-    //大后台商家分页
+    //大后台商家分页  查询审核是否通过的商家   店铺名称和法人姓名
     List<NewShopBackstageDto> selectAuitPage(@Param("shopQuery") ShopAuditQuery shopQuery);
  /**
   * @author Tian

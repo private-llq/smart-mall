@@ -22,7 +22,7 @@ public interface ISetMenuService extends IService<SetMenu> {
 //创建套餐
     void addSetMenu(SetMenuParam setMenu);
 //根据id查询套餐和套餐详情
-  SetMenuDto getSetMenulist(Long id);
+  SetMenuDto getSetMenulist(Long id, Integer type);
 //查询所有套餐上下架套餐
 PageInfo<SetMenuDto> getList(SetMenuQuery setMenuQuery);
 //通过套餐id查询套餐详情

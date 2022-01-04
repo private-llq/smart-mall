@@ -103,8 +103,13 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
     }
 
     @Override
-    public SetMenuDto getSetMenulist(Long id) {
-        SetMenu setMenu = setMenuMapper.selectOne(new QueryWrapper<SetMenu>().eq("id", id).eq("is_disable",0).eq("state",1));
+    public SetMenuDto getSetMenulist(Long id, Integer type) {
+        SetMenu setMenu;
+        if (type==1){
+          setMenu = setMenuMapper.selectOne(new QueryWrapper<SetMenu>().eq("id", id).eq("is_disable",0).eq("state",1));
+        }else {
+            setMenu = setMenuMapper.selectOne(new QueryWrapper<SetMenu>().eq("id", id));
+        }
         LoginUser loginUser = ContextHolder.getContext().getLoginUser();
         SetMenuDto setMenuDto = new SetMenuDto();
         if (ObjectUtil.isNull(setMenu)){

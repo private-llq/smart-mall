@@ -3,9 +3,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.client.HotClient;
-import com.jsy.domain.Goods;
 import com.jsy.dto.SetMenuDto;
-import com.jsy.dto.SetMenuGoodsDto;
 import com.jsy.dto.SetMenuListDto;
 import com.jsy.parameter.SetMenuParam;
 import com.jsy.service.ISetMenuService;
@@ -13,17 +11,11 @@ import com.jsy.domain.SetMenu;
 import com.jsy.query.SetMenuQuery;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.jsy.basic.util.vo.CommonResult;
 
-import javax.annotation.Resource;
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/setMenu")
@@ -100,12 +92,13 @@ public class SetMenuController {
 
     }
     /**
-     * 据id查询套餐和套餐详情
+     * C端据id查询套餐和套餐详情
      * @return
      */
     @GetMapping(value = "/SetMenuList")
     public CommonResult<SetMenuDto> SetMenuList(@RequestParam("id")Long id){
-        SetMenuDto setMenulist = setMenuService.getSetMenulist(id);
+        Integer type = 1;
+        SetMenuDto setMenulist = setMenuService.getSetMenulist(id,type);
         if (ObjectUtil.isNull(setMenulist)){
             return new CommonResult<>(-10,"套餐为空",null);
         }else {
@@ -186,5 +179,19 @@ public class SetMenuController {
         }
     }
 
+    /**
+     * C端据id查询套餐和套餐详情
+     * @return
+     */
+    @GetMapping(value = "/SetMenuList2")
+    public CommonResult<SetMenuDto> SetMenuList2(@RequestParam("id")Long id){
+        Integer type = 2;
+        SetMenuDto setMenulist = setMenuService.getSetMenulist(id,type);
+        if (ObjectUtil.isNull(setMenulist)){
+            return new CommonResult<>(-10,"套餐为空",null);
+        }else {
+            return CommonResult.ok(setMenulist);
+        }
+    }
 
 }
