@@ -267,6 +267,9 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
 
         //商品总数
         sumGoods = carts.stream().mapToInt(ShoppingCart::getNum).sum();
+        if (carts.size()==0){
+           throw new JSYException(-1,"购物车没有商品！");
+        }
         for (ShoppingCart cart : carts) {
             ShoppingCartListDto cartListDto = new ShoppingCartListDto();
             BeanUtils.copyProperties(cart,cartListDto);

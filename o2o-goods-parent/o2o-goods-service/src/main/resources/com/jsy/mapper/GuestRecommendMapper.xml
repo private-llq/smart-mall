@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jsy.mapper.GuestRecommendMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jsy.domain.GuestRecommend">
+        <id column="id" property="id" />
+        <result column="tree_id" property="treeId" />
+        <result column="details" property="details" />
+        <result column="images" property="images" />
+    </resultMap>
+
+</mapper>
