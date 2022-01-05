@@ -10,12 +10,9 @@ import org.springframework.util.StringUtils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 
@@ -162,7 +159,7 @@ public class GouldUtil {
 	 * @param lonLat1
 	 * @return
 	 */
-	public double getDistance(String lonLat, String lonLat1) {
+	public static double getDistance(String lonLat, String lonLat1) {
 		String[] end = lonLat1.split(",");
 		String[] start = lonLat.split(",");
 		//end[1],start[1],end[0],start[0]

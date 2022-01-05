@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 /**
  * <p>
@@ -49,27 +48,19 @@ public class GuestRecommend extends BaseEntity implements Serializable {
      */
     private String shopName;
     /**
-     * 联系人
+     * 用户昵称
      */
     private String linkman;
-    /**
-     * 手机号码
-     */
-    private String phone;
+
     /**
      * 店铺用户id
      */
     private Long shopUserId;
 
     /**
-     * 维度
+     * 推荐给用户的数量
      */
-    private BigDecimal longitude;
-    /**
-     * 经度
-     */
-    private BigDecimal latitude;
-
+    private Long userNum;
 
 
 }

@@ -4,6 +4,7 @@ import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.domain.GuestRecommend;
 import com.jsy.dto.GuestRecommendDto;
+import com.jsy.dto.MatchTheUserDto;
 import com.jsy.query.GuestRecommendQuery;
 import com.jsy.service.IGuestRecommendService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +68,7 @@ public class GuestRecommendController {
     * 查询
     * @param id
     */
-    @GetMapping("getGuestRecommend")
+    @GetMapping("/getGuestRecommend")
     public CommonResult<GuestRecommend> getGuestRecommend(@RequestParam("id")Long id)
     {
         GuestRecommend getGuestRecommend=guestRecommendService.getById(id);
@@ -98,4 +99,17 @@ public class GuestRecommendController {
 
         return CommonResult.ok(pageInfo);
     }
+
+    /**
+     * 根据商家的模板来匹配用户
+     */
+    @PostMapping("/matchTheUser")
+    public CommonResult<PageInfo<MatchTheUserDto>> matchTheUser(@RequestBody GuestRecommendQuery query)
+    {
+        PageInfo<MatchTheUserDto> pageInfo= guestRecommendService.matchTheUser(query);
+
+        return CommonResult.ok(pageInfo);
+    }
+
+
 }
