@@ -195,6 +195,8 @@ public class MinioUtil {
         }
         return map;
     }
+    /************************************************商家Logo图上传  限制大小***********************************************************/
+
 
     /*文件加密*/
     private static String digest(String algorithm, byte[] bytes) {
