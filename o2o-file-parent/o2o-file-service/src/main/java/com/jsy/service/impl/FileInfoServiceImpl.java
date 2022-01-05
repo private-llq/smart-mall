@@ -30,6 +30,10 @@ import java.util.Objects;
  */
 @Service
 public class FileInfoServiceImpl extends ServiceImpl<FileInfoMapper, FileInfo> implements IFileInfoService {
+    /**
+     * 图片文件最大kb
+     */
+    public static final Integer IMAGE_MAX_SIZE = 2000;
 
     @Override
     public String uploadFile(MultipartFile file) {
@@ -141,6 +145,12 @@ public class FileInfoServiceImpl extends ServiceImpl<FileInfoMapper, FileInfo> i
      */
     @Override
     public String uploadFile2(MultipartFile file) {
+        //判断图片大小
+        long size = file.getSize() / 1024;
+        System.out.println(size);
+        if (size > IMAGE_MAX_SIZE) {
+            throw new JSYException(-1, "文件太大了,最大：" + IMAGE_MAX_SIZE + "KB");
+        }
        return MinioUtil.uploadGetUrl(file);
     }
 
