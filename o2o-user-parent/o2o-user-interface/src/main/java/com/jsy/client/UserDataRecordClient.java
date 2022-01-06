@@ -9,19 +9,27 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(value = "SERVICE-USER",configuration = FeignConfiguration.class)
+@FeignClient(value = "shop-service-user",configuration = FeignConfiguration.class)
 public interface UserDataRecordClient {
     /**
      * list列表
      * @return
      */
-    @GetMapping("user/listUserDataRecord")
+    @GetMapping("userDataRecord/listUserDataRecord")
     CommonResult<List<UserDataRecord>> listUserDataRecord();
 
     /**
      * 查询
      * @param imId
      */
-    @GetMapping("user/getUserDataRecord")
-    CommonResult<UserDataRecord> getUserDataRecord(@RequestParam("imId")String imId);
+    @GetMapping("userDataRecord/getUserDataRecord")
+    CommonResult<List<UserDataRecord>> getUserDataRecord(@RequestParam("imId")String imId);
+
+    /**
+     * 查询
+     * @param treeId
+     */
+    @GetMapping("userDataRecord/getUserDataRecordTreeId")
+    CommonResult<List<UserDataRecord>> getUserDataRecordTreeId(@RequestParam("treeId")Long treeId);
+
 }

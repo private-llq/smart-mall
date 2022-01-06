@@ -48,6 +48,11 @@ public class GuestRecommendDto implements Serializable {
      */
     private Long userNum;
 
+    /**
+     * 店家用户头像
+     */
+    private String headImage;
+
 
 
 }

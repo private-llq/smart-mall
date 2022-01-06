@@ -53,6 +53,11 @@ public class GuestRecommend extends BaseEntity implements Serializable {
     private String linkman;
 
     /**
+     * 用户头像
+     */
+    private String headImg;
+
+    /**
      * 店铺用户id
      */
     private Long shopUserId;

@@ -17,6 +17,9 @@ spring:
       password: ecf50273a250499a9ec28953c2c494ab
   main:
     allow-bean-definition-overriding: true
+dubbo:
+  cloud:
+    subscribed-services: im-chat-user
 #eureka服务端的连接配置
 eureka:
   client:

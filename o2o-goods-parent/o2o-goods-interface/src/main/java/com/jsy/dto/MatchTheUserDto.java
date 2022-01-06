@@ -18,7 +18,7 @@ public class MatchTheUserDto implements Serializable {
     /**
      * 下线分钟数据
      */
-    private Long outTime;
+    private String outTime;
     /**
      * 分类名称
      */

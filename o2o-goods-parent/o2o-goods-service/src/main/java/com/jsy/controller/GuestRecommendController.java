@@ -4,7 +4,6 @@ import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.domain.GuestRecommend;
 import com.jsy.dto.GuestRecommendDto;
-import com.jsy.dto.MatchTheUserDto;
 import com.jsy.query.GuestRecommendQuery;
 import com.jsy.service.IGuestRecommendService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +24,8 @@ public class GuestRecommendController {
     */
     @PostMapping("/saveGuestRecommend")
     public CommonResult saveGuestRecommend(@RequestBody GuestRecommend guestRecommend){
-        try {
             guestRecommendService.saveGuestRecommend(guestRecommend);
             return CommonResult.ok();
-        } catch (Exception ex) {
-            return CommonResult.error(-1,"操作失败！");
-        }
 
     }
 
@@ -42,7 +37,7 @@ public class GuestRecommendController {
     @PostMapping("/updateGuestRecommend")
     public CommonResult updateGuestRecommend(@RequestBody GuestRecommend guestRecommend){
         try {
-             guestRecommendService.updateById(guestRecommend);
+             guestRecommendService.updateGuestRecommend(guestRecommend);
             return CommonResult.ok();
         } catch (Exception ex) {
             return CommonResult.error(-1,"操作失败！");
@@ -100,16 +95,7 @@ public class GuestRecommendController {
         return CommonResult.ok(pageInfo);
     }
 
-    /**
-     * 根据商家的模板来匹配用户
-     */
-    @PostMapping("/matchTheUser")
-    public CommonResult<PageInfo<MatchTheUserDto>> matchTheUser(@RequestBody GuestRecommendQuery query)
-    {
-        PageInfo<MatchTheUserDto> pageInfo= guestRecommendService.matchTheUser(query);
 
-        return CommonResult.ok(pageInfo);
-    }
 
 
 }

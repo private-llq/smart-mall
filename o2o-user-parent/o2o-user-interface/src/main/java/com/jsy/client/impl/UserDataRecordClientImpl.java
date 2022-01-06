@@ -13,7 +13,12 @@ public class UserDataRecordClientImpl implements UserDataRecordClient {
     }
 
     @Override
-    public CommonResult<UserDataRecord> getUserDataRecord(String imId) {
+    public CommonResult<List<UserDataRecord>> getUserDataRecord(String imId) {
+        return null;
+    }
+
+    @Override
+    public CommonResult<List<UserDataRecord>> getUserDataRecordTreeId(Long treeId) {
         return null;
     }
 }

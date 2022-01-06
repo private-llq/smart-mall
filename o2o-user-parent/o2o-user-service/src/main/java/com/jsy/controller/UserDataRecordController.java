@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.domain.UserDataRecord;
+import com.jsy.dto.MatchTheUserDto;
 import com.jsy.query.UserDataRecordQuery;
 import com.jsy.service.IUserDataRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,11 +69,23 @@ public class UserDataRecordController {
     * @param imId
     */
     @GetMapping("/getUserDataRecord")
-    public CommonResult<UserDataRecord> getUserDataRecord(@RequestParam("imId")String imId)
+    public CommonResult<List<UserDataRecord>> getUserDataRecord(@RequestParam("imId")String imId)
     {
-        UserDataRecord getUserDataRecord=userDataRecordService.getUserDataRecord(imId);
+        List<UserDataRecord> getUserDataRecord=userDataRecordService.getUserDataRecord(imId);
         return CommonResult.ok(getUserDataRecord);
     }
+
+    /**
+     * 查询
+     * @param treeId
+     */
+    @GetMapping("/getUserDataRecordTreeId")
+    public CommonResult<List<UserDataRecord>> getUserDataRecordTreeId(@RequestParam("treeId")Long treeId)
+    {
+        List<UserDataRecord> getUserDataRecord=userDataRecordService.getUserDataRecordTreeId(treeId);
+        return CommonResult.ok(getUserDataRecord);
+    }
+
 
 
     /**
@@ -81,7 +94,7 @@ public class UserDataRecordController {
     */
     @GetMapping("/listUserDataRecord")
     public CommonResult<List<UserDataRecord>> listUserDataRecord(){
-        List<UserDataRecord> list=userDataRecordService.list(null);
+        List<UserDataRecord> list=userDataRecordService.listUserDataRecord();
         return CommonResult.ok(list);
     }
 
@@ -99,6 +112,17 @@ public class UserDataRecordController {
         PageInfo<UserDataRecord> pageInfo=new PageInfo();
         pageInfo.setRecords(selectPage.getRecords());pageInfo.setTotal(selectPage.getTotal());
         pageInfo.setSize(selectPage.getSize());pageInfo.setCurrent(selectPage.getCurrent());
+        return CommonResult.ok(pageInfo);
+    }
+
+    /**
+     * 根据商家的模板来匹配用户
+     */
+    @PostMapping("/matchTheUser")
+    public CommonResult<PageInfo<MatchTheUserDto>> matchTheUser(@RequestBody UserDataRecordQuery query)
+    {
+        PageInfo<MatchTheUserDto> pageInfo= userDataRecordService.matchTheUser(query);
+
         return CommonResult.ok(pageInfo);
     }
 }

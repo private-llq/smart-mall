@@ -1,8 +1,10 @@
 package com.jsy.mapper;
 
-import com.jsy.domain.UserDataRecord;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.jsy.domain.UserDataRecord;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * <p>
@@ -15,5 +17,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public interface UserDataRecordMapper extends BaseMapper<UserDataRecord> {
+
+    List<UserDataRecord> matchTheUser();
 
 }

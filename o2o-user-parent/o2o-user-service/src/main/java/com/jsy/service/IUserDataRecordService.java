@@ -1,7 +1,12 @@
 package com.jsy.service;
 
-import com.jsy.domain.UserDataRecord;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.jsy.basic.util.PageInfo;
+import com.jsy.domain.UserDataRecord;
+import com.jsy.dto.MatchTheUserDto;
+import com.jsy.query.UserDataRecordQuery;
+
+import java.util.List;
 
 /**
  * <p>
@@ -15,5 +20,12 @@ public interface IUserDataRecordService extends IService<UserDataRecord> {
 
     void saveUserDataRecord(UserDataRecord userDataRecord);
 
-    UserDataRecord getUserDataRecord(String imId);
+    List<UserDataRecord> getUserDataRecord(String imId);
+
+    List<UserDataRecord> listUserDataRecord();
+
+
+    List<UserDataRecord> getUserDataRecordTreeId(Long treeId);
+
+    PageInfo<MatchTheUserDto> matchTheUser(UserDataRecordQuery query);
 }

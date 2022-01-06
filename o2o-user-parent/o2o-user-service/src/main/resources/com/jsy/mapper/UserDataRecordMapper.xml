@@ -14,4 +14,8 @@
         <result column="type" property="type" />
     </resultMap>
 
+    <select id="matchTheUser" resultType="com.jsy.domain.UserDataRecord">
+        SELECT * FROM w_user_data_record WHERE shop_tree_id IN (SELECT tree_id  FROM w_guest_recommend)
+    </select>
+
 </mapper>
