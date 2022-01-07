@@ -37,4 +37,9 @@ public class FileClientImpl implements FileClient {
     public Map<String, String> getPicUrl(List<String> picList) {
         return null;
     }
+
+    @Override
+    public CommonResult<String> uploadFile2(MultipartFile file) {
+        return null;
+    }
 }

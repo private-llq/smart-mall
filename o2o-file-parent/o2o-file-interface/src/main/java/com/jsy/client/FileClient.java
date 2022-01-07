@@ -3,7 +3,9 @@ package com.jsy.client;
 import com.jsy.FeignConfiguration;
 import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.client.impl.FileClientImpl;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
-@FeignClient(value = "SERVICE-FILE",fallback = FileClientImpl.class,configuration = FeignConfiguration.class)
+@FeignClient(value = "shop-service-file",fallback = FileClientImpl.class,configuration = FeignConfiguration.class)
 public interface FileClient {
 
     @PostMapping("/uploadFile")
@@ -28,4 +30,8 @@ public interface FileClient {
 
     @PostMapping("/fileInfo/pub/pictureUrl")
     Map<String,String> getPicUrl(@RequestBody List<String> picList);
+
+    @ApiOperation("上传文件")
+    @PostMapping(value = "/fileInfo/uploadFile2",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    CommonResult<String> uploadFile2(MultipartFile file);
 }
