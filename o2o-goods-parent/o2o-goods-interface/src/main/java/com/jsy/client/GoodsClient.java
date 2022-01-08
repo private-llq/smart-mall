@@ -78,4 +78,10 @@ public interface GoodsClient {
      */
     @GetMapping("/goods/disableAll")
     CommonResult disableAll(@RequestParam("shopId") Long shopId,@RequestParam("type") Integer type);
+
+    /**
+     * 统计店家商品的发布数量 (type=0:商品 1：服务)
+     */
+    @GetMapping("/goods/getGoodsNumber")
+    CommonResult getGoodsNumber(@RequestParam("shopId") Long shopId,@RequestParam("type") Integer type);
 }

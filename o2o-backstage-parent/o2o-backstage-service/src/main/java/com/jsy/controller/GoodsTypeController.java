@@ -1,10 +1,10 @@
 package com.jsy.controller;
-
 import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.domain.GoodsType;
 import com.jsy.dto.GoodsTypeDto;
 import com.jsy.param.GoodsTypeParam;
 import com.jsy.service.IGoodsTypeService;
+import com.zhsj.basecommon.vo.R;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,8 +113,5 @@ public class GoodsTypeController {
         }
         return CommonResult.ok(dtoList);
     }
-
-
-
 
 }

@@ -674,5 +674,11 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         return null;
     }
 
+    @Override
+    public Integer getGoodsNumber(Long shopId, Integer type) {
+        Integer count = goodsMapper.selectCount(new QueryWrapper<Goods>().eq("shop_id", shopId).eq("type", type));
+        return count;
+    }
+
 
 }

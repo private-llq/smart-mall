@@ -91,7 +91,6 @@ public class GuestRecommendController {
     public CommonResult<PageInfo<GuestRecommendDto>> pageGuestRecommend(@RequestBody GuestRecommendQuery query)
     {
         PageInfo<GuestRecommendDto> pageInfo= guestRecommendService.pageGuestRecommend(query);
-
         return CommonResult.ok(pageInfo);
     }
 

@@ -178,4 +178,7 @@ public interface IGoodsService extends IService<Goods> {
      * type ：0 商品  1:服务  2：套餐  3：商店
      */
     Boolean selectState(Long id, Integer type);
+
+
+    Integer getGoodsNumber(Long shopId, Integer type);
 }

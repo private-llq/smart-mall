@@ -19,7 +19,6 @@ import com.jsy.service.IGoodsService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -30,9 +29,6 @@ public class GoodsController {
 
     @Autowired
     private HotClient hotClient;
-
-
-
 
     /**
     * 添加 商品
@@ -336,6 +332,14 @@ public class GoodsController {
     }
 
 
+    /**
+     * 统计店家商品的发布数量 (type=0:商品 1：服务)
+     */
+    @GetMapping("/getGoodsNumber")
+    public CommonResult getGoodsNumber(@RequestParam("shopId") Long shopId,@RequestParam("type") Integer type){
+        Integer num= goodsService.getGoodsNumber(shopId,type);
+        return CommonResult.ok(num);
+    }
 
 
 }
