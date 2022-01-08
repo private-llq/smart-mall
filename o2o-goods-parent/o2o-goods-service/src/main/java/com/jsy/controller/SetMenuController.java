@@ -194,4 +194,14 @@ public class SetMenuController {
         }
     }
 
+    /**
+     * 大后台查询的发布数量
+     * @return
+     */
+    @GetMapping(value = "/selectAllSetMenuNumber")
+    public CommonResult<Integer> selectAllSetMenuNumber(@RequestParam("shopId")Long shopId){
+        Integer number = setMenuService.seleceAllSenMenuNumber(shopId);
+        return CommonResult.ok(number);
+    }
+
 }

@@ -80,8 +80,8 @@ public interface GoodsClient {
     CommonResult disableAll(@RequestParam("shopId") Long shopId,@RequestParam("type") Integer type);
 
     /**
-     * 统计店家商品的发布数量 (type=0:商品 1：服务)
+     * 统计店家商品的发布数量 (type=0:商品 1：服务1)
      */
     @GetMapping("/goods/getGoodsNumber")
-    CommonResult getGoodsNumber(@RequestParam("shopId") Long shopId,@RequestParam("type") Integer type);
+    CommonResult<Integer> getGoodsNumber(@RequestParam("shopId") Long shopId,@RequestParam("type") Integer type);
 }

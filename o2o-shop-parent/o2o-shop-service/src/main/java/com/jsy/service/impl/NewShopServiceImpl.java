@@ -674,7 +674,26 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         return serviceDto;
     }
 
-
+    @Override
+    public Map<String, Object> selectReleaseNumber(Long shopId) {
+        Map<String, Object> map = new HashMap<>();
+        NewShop newShop = shopMapper.selectById(shopId);
+        Integer senmenuNumber = setMenuClient.selectAllSetMenuNumber(shopId).getData();
+        Integer goodsNumber = 0;
+        //统计店家商品的发布数量 (type=0:商品 1：服务1)
+        if (newShop.getType()==1){
+             goodsNumber = goodsClient.getGoodsNumber(shopId, 1).getData();
+        }else {
+             goodsNumber = goodsClient.getGoodsNumber(shopId, 0).getData();
+        }
+        //发布数量
+        map.put("releaseNumber",senmenuNumber+goodsNumber);
+        //订单数量
+        map.put("orderNumber",0);
+        //金额
+        map.put("money",0);
+        return map;
+    }
 
 
 }

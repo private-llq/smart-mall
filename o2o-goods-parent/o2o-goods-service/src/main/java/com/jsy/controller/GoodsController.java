@@ -336,7 +336,7 @@ public class GoodsController {
      * 统计店家商品的发布数量 (type=0:商品 1：服务)
      */
     @GetMapping("/getGoodsNumber")
-    public CommonResult getGoodsNumber(@RequestParam("shopId") Long shopId,@RequestParam("type") Integer type){
+    public CommonResult<Integer> getGoodsNumber(@RequestParam("shopId") Long shopId,@RequestParam("type") Integer type){
         Integer num= goodsService.getGoodsNumber(shopId,type);
         return CommonResult.ok(num);
     }

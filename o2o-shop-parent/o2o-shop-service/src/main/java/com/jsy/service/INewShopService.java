@@ -9,6 +9,7 @@ import com.jsy.query.MainSearchQuery;
 import com.jsy.query.NewShopQuery;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -109,4 +110,10 @@ public interface INewShopService extends IService<NewShop> {
    * @description 通过关键词搜索店铺和服务名称
    **/
  NewShopServiceDto getShopService(NewShopQuery shopQuery);
+ /**
+  * @author Tian
+  * @since 2022/1/8-14:45
+  * @description 查询的发布数量、订单数量、交易金额
+  **/
+ Map<String, Object> selectReleaseNumber(Long shopId);
 }
