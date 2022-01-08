@@ -249,6 +249,9 @@ public class TreeServiceImpl extends ServiceImpl<TreeMapper, Tree> implements IT
         treeList.add(tree1);
         return getParentId(treeList,tree1.getParentId(),trees);
     }
+
+
+
     public List<Tree> getParentId(List<Tree> treeList,Long pid,List<Tree> trees) {
         Tree tree = trees.stream().filter(s -> s.getId() == pid).findFirst().get();
         treeList.add(tree);
@@ -257,6 +260,8 @@ public class TreeServiceImpl extends ServiceImpl<TreeMapper, Tree> implements IT
         }
         return treeList;
     }
+
+
 
 
 

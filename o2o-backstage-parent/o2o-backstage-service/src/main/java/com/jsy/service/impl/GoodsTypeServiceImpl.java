@@ -1,7 +1,9 @@
 package com.jsy.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.utils.BeansCopyUtils;
 import com.jsy.domain.GoodsType;
 import com.jsy.dto.GoodsTypeDto;
@@ -10,7 +12,9 @@ import com.jsy.service.IGoodsTypeService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -67,19 +71,6 @@ public class GoodsTypeServiceImpl extends ServiceImpl<GoodsTypeMapper, GoodsType
         return dtos;
     }
 
-    /**
-     *
-     * @param id 本级id
-     * @return
-     */
-    @Override
-    public List<GoodsType> listPar(Long id) {
-        /*GoodsType goodsType = categoryMapper.selectById(id);
-        List<GoodsType> goodsTypes1 = listPar(goodsType.getPid());*/
-
-        return null;
-    }
-
 
 
 
@@ -106,6 +97,93 @@ public class GoodsTypeServiceImpl extends ServiceImpl<GoodsTypeMapper, GoodsType
                     return item;
                 }).collect(Collectors.toList());
         return collect;
+    }
+
+
+
+    @Override
+    public List<GoodsType> getParentList(Long id) {
+        List<GoodsType> goodsTypes = categoryMapper.selectList(null);
+        List<GoodsType> treeList = new ArrayList<>();
+        GoodsType goodsType = categoryMapper.selectById(id);
+        if (Objects.isNull(goodsType)){
+            throw new JSYException(-1,"没有找到该商品分类！");
+        }
+        treeList.add(goodsType);
+        return getParentId(treeList,goodsType.getPid(),goodsTypes);
+    }
+    public List<GoodsType> getParentId(List<GoodsType> treeList,Long pid,List<GoodsType> trees) {
+        GoodsType tree = trees.stream().filter(s -> s.getId() == pid).findFirst().get();
+        treeList.add(tree);
+        if (tree.getLevel() != 2) {
+            getParentId(treeList, tree.getPid(), trees);
+        }
+        return treeList;
+    }
+
+
+    public List<Long> getGoodsTypeId(Long id) {
+        List<GoodsType> treeList = categoryMapper.selectList(null);
+        List<Long> list = new ArrayList<>();
+        Long temp = id;
+        for (GoodsType tree : treeList) {
+            for (GoodsType tree1 : treeList) {
+                if (tree1.getId()==temp&&tree1.getPid()!=0){
+                    list.add(tree1.getId());
+                    temp = tree1.getPid();
+
+                }
+            }
+        }
+        GoodsType tree = categoryMapper.selectById(temp);
+        if (ObjectUtil.isNotNull(tree)){
+
+            list.add(tree.getPid());
+        }
+        System.out.println(list);
+
+
+//        List<Long> collect = list.stream().filter(x -> {
+//            if (x == 0L) {
+//                return false;
+//            }
+//            return true;
+//        }).collect(Collectors.toList());
+
+        return list;
+
+//        List<Tree> treeList = categoryMapper.selectList(null);
+//        List<Long> list = new ArrayList<>();
+//        Long temp = id;
+//        for (Tree tree : treeList) {
+//            for (Tree tree1 : treeList) {
+//                if (tree1.getId()==temp&&tree1.getParentId()!=0){
+//                    list.add(tree1.getParentId());
+//                    temp = tree1.getParentId();
+//                }
+//            }
+//        }
+//        Tree tree = treeMapper.selectById(temp);
+//        if (ObjectUtil.isNotNull(tree)){
+//
+//            list.add(tree.getParentId());
+//        }
+//        Collections.reverse(list);
+//        return list.toString();
+    }
+
+
+
+    @Override
+    public String bachGoodsType(List<Long> longList) {
+        List<GoodsType> list = categoryMapper.selectBatchIds(longList);
+        StringBuffer buffer = new StringBuffer();
+        list.forEach(x->{
+            buffer.append(x.getClassifyName()+"-");
+
+        });
+        buffer.deleteCharAt(buffer.length() - 1);
+        return buffer.toString();
     }
 
 }

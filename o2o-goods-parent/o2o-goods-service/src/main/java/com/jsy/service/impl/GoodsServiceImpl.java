@@ -84,7 +84,6 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     private PushGoodsMapper pushGoodsMapper;
 
 
-
     /**
      * 添加 商品
      */
@@ -108,11 +107,14 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
             }
         }
         if (Objects.nonNull(goodsParam.getGoodsTypeId())){
+
             GoodsTypeDto data = goodsTypeClient.get(goodsParam.getGoodsTypeId()).getData();
             if (Objects.isNull(data)){
                 throw new JSYException(-1,"商品分类不存在！");
             }
-            goods.setGoodsTypeName(data.getClassifyName());
+            List<Long> ids = goodsTypeClient.getGoodsTypeId(data.getId());
+            String strGoodsName = goodsTypeClient.bachGoodsTypeName(ids);
+            goods.setGoodsTypeName(strGoodsName);
         }
         goods.setGoodsNumber(String.valueOf(SnowFlake.nextId()));
 

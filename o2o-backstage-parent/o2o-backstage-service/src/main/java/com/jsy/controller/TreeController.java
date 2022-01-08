@@ -121,12 +121,13 @@ public class TreeController {
         return CommonResult.ok(tree);
     }
     /**
-     * 新增菜单
+     * 查询父级
      */
     @RequestMapping(value = "/getParentList/{id}",method = RequestMethod.GET)
     public CommonResult<List<Tree>> getParentList(@PathVariable("id")Long id) {
         List<Tree> tree = treeService.getParentList(id);
         return CommonResult.ok(tree);
     }
+
 
 }

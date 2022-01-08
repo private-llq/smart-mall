@@ -26,6 +26,9 @@ public interface IGoodsTypeService extends IService<GoodsType> {
 
     List<GoodsTypeDto> selectLevel(Integer level);
 
-    List<GoodsType> listPar(Long id);
+    List<GoodsType> getParentList(Long id);
 
+    List<Long> getGoodsTypeId(Long id);
+
+    String bachGoodsType(List<Long> longList);
 }

@@ -119,16 +119,24 @@ public class GoodsTypeController {
      * @return
      */
     @ApiOperation(value = "查询分类结果",httpMethod = "GET",response = CommonResult.class)
-    @GetMapping(value = "/listPar")
-    public CommonResult<List<GoodsTypeDto>> listPar(@RequestParam("id") Long id){
-        List<GoodsType> list = goodsTypeService.listPar(id);
-        List<GoodsTypeDto> dtoList = new ArrayList<>();
-        for (GoodsType goodsType : list) {
-            GoodsTypeDto goodsTypeDto = new GoodsTypeDto();
-            BeanUtils.copyProperties(goodsType,goodsTypeDto);
-            dtoList.add(goodsTypeDto);
-        }
-        return CommonResult.ok(dtoList);
+    @GetMapping(value = "/getParentList")
+    public CommonResult<List<GoodsType>> getParentList(@RequestParam("id") Long id){
+        List<GoodsType> list= goodsTypeService.getParentList(id);
+        return CommonResult.ok(list);
     }
+
+
+    @ApiOperation(value = "查询分类结果",httpMethod = "GET",response = CommonResult.class)
+    @GetMapping(value = "/getGoodsTypeId")
+    List<Long> getGoodsTypeId(@RequestParam("id") Long id){
+        List<Long> parentTreeAll = goodsTypeService.getGoodsTypeId(id);
+        return parentTreeAll;
+    };
+
+    @PostMapping("bachGoodsTypeName")
+    String bachGoodsTypeName(@RequestBody List<Long> longList){
+        String strName = goodsTypeService.bachGoodsType(longList);
+        return strName;
+    };
 
 }
