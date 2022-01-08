@@ -63,6 +63,9 @@ public class NewShopParam implements Serializable {
     @ApiModelProperty(value = "维度")
     private BigDecimal latitude;
 
+    @ApiModelProperty(value = "是否是官方店铺  0不是 1是")
+    private Integer isOfficialShop;
+
 
 
 

@@ -35,4 +35,10 @@ public interface SetMenuClient {
     @ApiOperation("修改上下架、或禁用套餐")
     @PostMapping(value = "/setMenu/setState")
     CommonResult setState(@RequestBody SetMenuQuery setMenuQuery);
+    /**
+     * 大后台查询的发布数量
+     * @return
+     */
+    @GetMapping(value = "/setMenu/selectAllSetMenuNumber")
+    CommonResult<Integer> selectAllSetMenuNumber(@RequestParam("shopId")Long shopId);
 }

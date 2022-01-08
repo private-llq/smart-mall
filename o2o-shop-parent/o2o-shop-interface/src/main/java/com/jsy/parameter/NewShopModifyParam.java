@@ -46,6 +46,8 @@ public class NewShopModifyParam implements Serializable {
     private Integer isVisitingService;
     @ApiModelProperty(value = "是否是虚拟店铺  0不是 1是")
     private Integer isVirtualShop;
+    @ApiModelProperty(value = "是否是官方店铺  0不是 1是")
+    private Integer isOfficialShop;
 
 
 

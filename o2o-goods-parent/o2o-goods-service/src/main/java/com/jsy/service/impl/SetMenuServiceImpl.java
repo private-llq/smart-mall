@@ -360,6 +360,12 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
         return false;
     }
 
+    @Override
+    public Integer seleceAllSenMenuNumber(Long shopId) {
+        Integer count = setMenuMapper.selectCount(new QueryWrapper<SetMenu>().eq("shop_id", shopId));
+        return count;
+    }
+
     public Long statisticsPvNum(Long userId,Long id) {
             //存入key
             stringRedisTemplate.opsForHyperLogLog().add("pv_num" + id, userId + "-" + id);

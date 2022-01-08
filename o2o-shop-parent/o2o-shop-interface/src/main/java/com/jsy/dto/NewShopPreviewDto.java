@@ -62,6 +62,8 @@ public class NewShopPreviewDto implements Serializable {
     private Integer type;
 
     private Integer shopType;
+    @ApiModelProperty(value = "是否是官方店铺  0不是 1是")
+    private Integer isOfficialShop;
 
 
 

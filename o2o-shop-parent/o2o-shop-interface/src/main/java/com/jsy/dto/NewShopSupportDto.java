@@ -26,5 +26,6 @@ public class NewShopSupportDto implements Serializable {
     private String shopName;
     @ApiModelProperty(value = "店铺logo(file_url)")
     private String shopLogo;
-
+    @ApiModelProperty(value = "是否是官方店铺  0不是 1是")
+    private Integer isOfficialShop;
 }

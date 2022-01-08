@@ -40,4 +40,6 @@ List<SetMenuListDto> getMenuId(Long setMenuId);
     Boolean setState(SetMenuQuery setMenuQuery);
 //修改单个商品上下架或禁用
     Boolean setStateById(SetMenuQuery setMenuQuery);
+    //查询所有套餐的数量
+    Integer seleceAllSenMenuNumber(Long shopId);
 }

@@ -55,6 +55,8 @@ public class NewShopSetParam implements Serializable {
 
     @ApiModelProperty(value = "店铺公告")
     private String notice;
+    @ApiModelProperty(value = "是否是官方店铺  0不是 1是")
+    private Integer isOfficialShop;
 
 
 }

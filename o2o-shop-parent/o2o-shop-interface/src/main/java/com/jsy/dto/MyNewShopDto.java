@@ -3,6 +3,7 @@ package com.jsy.dto;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.alibaba.fastjson.serializer.ToStringSerializer;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -68,5 +69,7 @@ public class MyNewShopDto implements Serializable {
      * 是否超过配送范围 0 未超出 1 超出
      */
     private Integer state=0;
+    @ApiModelProperty(value = "是否是官方店铺  0不是 1是")
+    private Integer isOfficialShop;
 
 }

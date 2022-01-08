@@ -40,6 +40,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/newShop")
@@ -440,6 +441,19 @@ public class NewShopController {
         }else {
             return CommonResult.ok(suportDto);
         }
+    }
+
+    /**
+     * @author Tian
+     * @since 2021/12/3-9:57
+     * @description 查询的发布数量、订单数量、交易金额
+     **/
+    @ApiOperation("查询的发布数量、订单数量、交易金额")
+    @LoginIgnore
+    @RequestMapping(value = "/selectReleaseNumber",method = RequestMethod.GET)
+    public CommonResult selectReleaseNumber(@RequestParam("shopId") Long shopId){
+        Map<String,Object> map = newShopService.selectReleaseNumber(shopId);
+            return CommonResult.ok(map);
     }
 
 }

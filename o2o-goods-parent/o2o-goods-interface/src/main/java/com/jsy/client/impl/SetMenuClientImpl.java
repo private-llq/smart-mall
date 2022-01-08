@@ -28,4 +28,9 @@ public class SetMenuClientImpl implements SetMenuClient {
     public CommonResult setState(SetMenuQuery setMenuQuery) {
         return null;
     }
+
+    @Override
+    public CommonResult<Integer> selectAllSetMenuNumber(Long shopId) {
+        return null;
+    }
 }
