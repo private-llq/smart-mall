@@ -27,6 +27,10 @@ eureka:
     hostname: ${spring.cloud.client.ip-address}
     prefer-ip-address: true
     instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${spring.application.instance_id:${server.port}}
+IdCardUrl: https://dm-51.data.aliyun.com/rest/160601/ocr/ocr_idcard.json
+IdCardAppCode: syPMjrYHXkdwA+2hgBYqsPosEzLrkZ4hgNncsiuGFJdhXEuLWcOV9xgIRp2XMS6S
+BusinessUrl: https://bizlicense.market.alicloudapi.com/rest/160601/ocr/ocr_business_license.json
+BusinessAppCode: syPMjrYHXkdwA+2hgBYqsPosEzLrkZ4hgNncsiuGFJdhXEuLWcOV9xgIRp2XMS6S
 ---
 spring:
   profiles: test

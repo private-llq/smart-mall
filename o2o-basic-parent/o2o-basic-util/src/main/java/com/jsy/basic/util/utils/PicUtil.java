@@ -23,6 +23,7 @@ public class PicUtil {
 
     public static final String TYPE_JPG = "jpg";
     public static final String TYPE_JPEG = "jpeg";
+    public static final String TYPE_JFIF = "jfif";
     public static final String JPG_BYTE = "FFD8FF";
     public static final String TYPE_GIF = "gif";
     public static final String GIF_BYTE = "47494638";
@@ -35,7 +36,7 @@ public class PicUtil {
     /**
      * 可用图片格式数组
      */
-    public static final String[] AVAILABLE_FORMAT = {TYPE_JPG, TYPE_JPEG, TYPE_BMP, TYPE_GIF, TYPE_PNG};
+    public static final String[] AVAILABLE_FORMAT = {TYPE_JPG, TYPE_JPEG, TYPE_BMP, TYPE_GIF, TYPE_PNG,TYPE_JFIF};
 
     /**
      * 图片文件最大kb
