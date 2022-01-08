@@ -70,6 +70,8 @@ public class NewShopSetDto implements Serializable {
     private Integer type;
     @ApiModelProperty(value = "聊天账号")
     private String imId;
+    @ApiModelProperty(value = "是否是官方店铺  0不是 1是")
+    private Integer isOfficialShop;
 
 
 }

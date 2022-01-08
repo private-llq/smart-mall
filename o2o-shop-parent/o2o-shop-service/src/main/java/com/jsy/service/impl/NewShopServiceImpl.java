@@ -268,6 +268,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
                         NewShopRecommendDto recommendDto = new NewShopRecommendDto();
                         BeanUtils.copyProperties(newShop, recommendDto);
                         recommendDto.setShopName(newShop.getShopName());
+                        recommendDto.setIsOfficialShop(newShop.getIsOfficialShop());
                         recommendDto.setShopTreeId(newShop.getShopTreeId());
                         recommendDto.setDistance(newShop.getDistance().divide(new BigDecimal(1000)).setScale(2,ROUND_HALF_UP));
 
@@ -332,6 +333,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
             MyNewShopDto myNewShopDto = new MyNewShopDto();
             myNewShopDto.setId(newShop.getId());
             myNewShopDto.setShopName(newShop.getShopName());
+            myNewShopDto.setIsOfficialShop(newShop.getIsOfficialShop());
             SelectShopCommentScoreDto data = commentClent.selectShopCommentScore(newShop.getId()).getData();
             if (Objects.nonNull(data)){
                 myNewShopDto.setGrade(data.getScore());
@@ -345,6 +347,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
                     myNewShopDto.setPrice(goods.getPrice());
                     myNewShopDto.setDiscountState(goods.getDiscountState());
                     myNewShopDto.setDiscountPrice(goods.getDiscountPrice());
+
                 }else {
                     continue;
                 }
@@ -577,6 +580,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         suportDto.setShopId(shopId);
         suportDto.setShopName(newShop.getShopName());
         suportDto.setShopLogo(newShop.getShopLogo());
+        suportDto.setIsOfficialShop(newShop.getIsOfficialShop());
         return suportDto;
     }
  /**
