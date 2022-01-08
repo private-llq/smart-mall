@@ -98,13 +98,30 @@ public class GoodsTypeController {
 
 
     /**
-     * 返回list列表
+     * 返回list列表 查询所有子级
      * @return
      */
     @ApiOperation(value = "查询分类结果",httpMethod = "GET",response = CommonResult.class)
     @GetMapping(value = "/list")
     public CommonResult<List<GoodsTypeDto>> list(){
         List<GoodsType> list = goodsTypeService.selectCategory();
+        List<GoodsTypeDto> dtoList = new ArrayList<>();
+        for (GoodsType goodsType : list) {
+            GoodsTypeDto goodsTypeDto = new GoodsTypeDto();
+            BeanUtils.copyProperties(goodsType,goodsTypeDto);
+            dtoList.add(goodsTypeDto);
+        }
+        return CommonResult.ok(dtoList);
+    }
+
+    /**
+     * 返回list列表 查询所有父级
+     * @return
+     */
+    @ApiOperation(value = "查询分类结果",httpMethod = "GET",response = CommonResult.class)
+    @GetMapping(value = "/listPar")
+    public CommonResult<List<GoodsTypeDto>> listPar(@RequestParam("id") Long id){
+        List<GoodsType> list = goodsTypeService.listPar(id);
         List<GoodsTypeDto> dtoList = new ArrayList<>();
         for (GoodsType goodsType : list) {
             GoodsTypeDto goodsTypeDto = new GoodsTypeDto();

@@ -57,4 +57,9 @@ public class GoodsClientImpl implements GoodsClient {
         return null;
     }
 
+    @Override
+    public CommonResult getGoodsNumber(Long shopId, Integer type) {
+        return null;
+    }
+
 }

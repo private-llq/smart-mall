@@ -1,16 +1,17 @@
 package com.jsy.domain;
-import java.math.BigDecimal;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.jsy.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -108,6 +109,10 @@ public class Goods extends BaseEntity  {
      */
     private Long virtualSales;
 
+    /**
+     * 推送状态：0 未推送  1：医疗  2 ：养老 3 商城
+     */
+    private Integer pushState;
 
     @TableField(exist = false)
     @ApiModelProperty(value = "销量")

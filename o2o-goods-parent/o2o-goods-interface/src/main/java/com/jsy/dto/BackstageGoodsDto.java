@@ -37,4 +37,9 @@ public class BackstageGoodsDto implements Serializable {
      * 商品状态 0 启用 1禁用
      */
     private Integer state;
+
+    /**
+     * 推送状态：0 未推送  1：医疗  2 ：养老 3 商城
+     */
+    private Integer pushState;
 }

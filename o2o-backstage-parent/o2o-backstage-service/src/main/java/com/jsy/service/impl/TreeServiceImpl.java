@@ -206,7 +206,6 @@ public class TreeServiceImpl extends ServiceImpl<TreeMapper, Tree> implements IT
 
     }
 
-
     //递归方法
     private void getIds(ArrayList<Long> idList, Long oneId) {
         //查询二级分类的对象
@@ -250,9 +249,6 @@ public class TreeServiceImpl extends ServiceImpl<TreeMapper, Tree> implements IT
         treeList.add(tree1);
         return getParentId(treeList,tree1.getParentId(),trees);
     }
-
-
-
     public List<Tree> getParentId(List<Tree> treeList,Long pid,List<Tree> trees) {
         Tree tree = trees.stream().filter(s -> s.getId() == pid).findFirst().get();
         treeList.add(tree);
@@ -263,39 +259,6 @@ public class TreeServiceImpl extends ServiceImpl<TreeMapper, Tree> implements IT
     }
 
 
-
-//    @Override
-//    public List<Tree> selectAllTree1(Long id){
-//
-//        List<Tree> list = treeMapper.selectList(new QueryWrapper<Tree>().eq("deleted",0));
-//        List<Tree> collect = list.stream().filter(x -> x.getId() == id)//过滤出子级父id等于传入的父级id
-//                .map(x -> {
-//                    x.setChildrens(getChildrens(x, list));//从所有数据中找出N条 符合 子级父id等于传入的父级id 的数据 ，然后再把这N条数据当做参数，找到他们的子级
-//                    return x;
-//                }).sorted(Comparator.comparing(Tree::getRanks)).collect(Collectors.toList());
-//        List<Tree> trees = new ArrayList<>();
-//        collect.forEach(x->{//数据合并
-//            List<Tree> childrens = x.getChildrens();
-//            trees.addAll(childrens);
-//
-//        });
-////        List<Tree> treeList = trees.stream().sorted(Comparator.comparing(Tree::getRanks)).collect(Collectors.toList());
-//        return collect;
-//    }
-//
-//
-//    //N条数据          //所有数据
-//    private List<Tree> getChildrens1(Tree root,List<Tree> childrens ){
-//        List<Tree> collect = childrens.stream().filter(x ->
-//                x.getId() == root.getId()
-//                //过滤出父级id和子级的父id相等的数据
-//        ).map(x->{
-//            x.setChildrens(getChildrens(x,childrens));//循环比较
-//            return x;
-//        }).collect(Collectors.toList());
-//
-//        return collect;
-//    }
 
 
 }

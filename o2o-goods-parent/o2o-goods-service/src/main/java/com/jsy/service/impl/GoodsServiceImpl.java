@@ -13,9 +13,11 @@ import com.jsy.basic.util.utils.SnowFlake;
 import com.jsy.client.*;
 import com.jsy.domain.Browse;
 import com.jsy.domain.Goods;
+import com.jsy.domain.PushGoods;
 import com.jsy.domain.Tree;
 import com.jsy.dto.*;
 import com.jsy.mapper.GoodsMapper;
+import com.jsy.mapper.PushGoodsMapper;
 import com.jsy.parameter.GoodsParam;
 import com.jsy.parameter.GoodsServiceParam;
 import com.jsy.query.BackstageGoodsQuery;
@@ -75,6 +77,11 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
 
     @Resource
     private StringRedisTemplate redisTep;
+
+
+
+    @Autowired
+    private PushGoodsMapper pushGoodsMapper;
 
 
 
@@ -678,6 +685,14 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     public Integer getGoodsNumber(Long shopId, Integer type) {
         Integer count = goodsMapper.selectCount(new QueryWrapper<Goods>().eq("shop_id", shopId).eq("type", type));
         return count;
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long id) {
+        goodsMapper.deleteById(id);
+        pushGoodsMapper.delete(new QueryWrapper<PushGoods>().eq("goods_id",id));//更新推送数据
+        hotClient.getHotGoods(id);//更新热门数据
     }
 
 

@@ -15,10 +15,11 @@ public class PushGoodsController {
 
     /**
      * 医疗端：推送产品（智能手环、手表）
+     * type 推送状态：0 未推送  1：医疗 2 ：养老 3 商城
      */
     @GetMapping("/addPushGoods")
-    public CommonResult addPushGoods(@RequestParam("id") Long id){
-        pushGoodsService.pushGoods(id);
+    public CommonResult addPushGoods(@RequestParam("id") Long id,@RequestParam("type") Integer type ){
+        pushGoodsService.pushGoods(id,type);
         return CommonResult.ok();
     }
 
@@ -29,6 +30,15 @@ public class PushGoodsController {
     public CommonResult<PageInfo<PushGoods>> pageListPushGoods(@RequestBody PushGoodsQuery pushGoodsQuery){
         PageInfo<PushGoods> pageInfo=pushGoodsService.pageListPushGoods(pushGoodsQuery);
         return CommonResult.ok(pageInfo);
+    }
+
+    /**
+     * 大后台设置推荐商品 排序位置
+     */
+    @GetMapping("/setPushGoodsSort")
+    public CommonResult setPushGoodsSort(@RequestParam("sort") Integer sort){
+        pushGoodsService.setPushGoodsSort(sort);
+        return CommonResult.ok();
     }
 
 }

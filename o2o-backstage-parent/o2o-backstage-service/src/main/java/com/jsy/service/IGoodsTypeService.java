@@ -25,4 +25,7 @@ public interface IGoodsTypeService extends IService<GoodsType> {
     void deleteById(Long id);
 
     List<GoodsTypeDto> selectLevel(Integer level);
+
+    List<GoodsType> listPar(Long id);
+
 }

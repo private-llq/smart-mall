@@ -67,6 +67,21 @@ public class GoodsTypeServiceImpl extends ServiceImpl<GoodsTypeMapper, GoodsType
         return dtos;
     }
 
+    /**
+     *
+     * @param id 本级id
+     * @return
+     */
+    @Override
+    public List<GoodsType> listPar(Long id) {
+        /*GoodsType goodsType = categoryMapper.selectById(id);
+        List<GoodsType> goodsTypes1 = listPar(goodsType.getPid());*/
+
+        return null;
+    }
+
+
+
 
     public void getNext(List<GoodsType> category){
         //判断当前chrldren是否为空

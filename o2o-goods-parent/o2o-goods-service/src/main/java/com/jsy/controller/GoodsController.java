@@ -2,7 +2,6 @@ package com.jsy.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.vo.CommonResult;
-import com.jsy.client.HotClient;
 import com.jsy.domain.Goods;
 import com.jsy.domain.Tree;
 import com.jsy.dto.BackstageGoodsDto;
@@ -19,6 +18,7 @@ import com.jsy.service.IGoodsService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -27,8 +27,8 @@ public class GoodsController {
     @Autowired
     private IGoodsService goodsService;
 
-    @Autowired
-    private HotClient hotClient;
+
+
 
     /**
     * 添加 商品
@@ -111,16 +111,8 @@ public class GoodsController {
     @ApiOperation("删除商品或者服务")
     @DeleteMapping("delete")
     public CommonResult delete(@RequestParam("id") Long id){
-        try {
-            boolean deleted = goodsService.removeById(id);
-            if (deleted==true){
-                hotClient.getHotGoods(id);//更新热门数据
-            }
-            return CommonResult.ok();
-        } catch (Exception e) {
-        e.printStackTrace();
-            return  CommonResult.error(-1,"删除失败！");
-        }
+        goodsService.delete(id);
+        return CommonResult.ok();
     }
     /**
      * 查看一条商品的所有详细信息 B端+C端
@@ -340,6 +332,7 @@ public class GoodsController {
         Integer num= goodsService.getGoodsNumber(shopId,type);
         return CommonResult.ok(num);
     }
+
 
 
 }

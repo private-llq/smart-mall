@@ -18,10 +18,12 @@ public interface IPushGoodsService extends IService<PushGoods> {
     /**
      * 医疗端：推送产品（智能手环、手表）
      */
-    void pushGoods(Long id);
+    void pushGoods(Long id,Integer type);
 
     /**
      * 医疗端：查询推送的产品（智能手环、手表）
      */
     PageInfo<PushGoods> pageListPushGoods(PushGoodsQuery pushGoodsQuery);
+
+    void setPushGoodsSort(Integer sort);
 }

@@ -181,4 +181,6 @@ public interface IGoodsService extends IService<Goods> {
 
 
     Integer getGoodsNumber(Long shopId, Integer type);
+
+    void delete(Long id);
 }

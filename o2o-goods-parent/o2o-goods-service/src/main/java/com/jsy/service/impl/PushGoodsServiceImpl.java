@@ -1,6 +1,7 @@
 package com.jsy.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jsy.basic.util.MyPageUtils;
 import com.jsy.basic.util.PageInfo;
@@ -16,6 +17,7 @@ import com.jsy.service.IPushGoodsService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -48,7 +50,8 @@ public class PushGoodsServiceImpl extends ServiceImpl<PushGoodsMapper, PushGoods
      * 医疗端：推送产品（智能手环、手表）
      */
     @Override
-    public void pushGoods(Long id) {
+    @Transactional
+    public void pushGoods(Long id,Integer type) {
         Goods goods = goodsMapper.selectOne(new QueryWrapper<Goods>().eq("id", id));
         if (Objects.isNull(goods)){
             throw new JSYException(-1,"未找到该商品！");
@@ -73,7 +76,11 @@ public class PushGoodsServiceImpl extends ServiceImpl<PushGoodsMapper, PushGoods
         BeanUtils.copyProperties(goods,pushGoods);
         pushGoods.setLongitude(data.getLongitude());
         pushGoods.setLatitude(data.getLatitude());
-        pushGoodsMapper.insert(pushGoods);
+        int insert = pushGoodsMapper.insert(pushGoods);
+        if (insert>0){//修改商品的推送状态
+            goodsMapper.update(null,new UpdateWrapper<Goods>().eq("id",id).set("push_state",type));
+        }
+
     }
 
     /**
@@ -136,6 +143,11 @@ public class PushGoodsServiceImpl extends ServiceImpl<PushGoodsMapper, PushGoods
             return MyPageUtils.pageMap(pushGoodsQuery.getPage(),pushGoodsQuery.getRows(),collect);
         }
         return null;
+    }
+
+    @Override
+    public void setPushGoodsSort(Integer sort) {
+
     }
 
 }
