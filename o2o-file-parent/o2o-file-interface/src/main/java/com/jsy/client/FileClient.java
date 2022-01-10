@@ -3,7 +3,6 @@ package com.jsy.client;
 import com.jsy.FeignConfiguration;
 import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.client.impl.FileClientImpl;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +30,7 @@ public interface FileClient {
     @PostMapping("/fileInfo/pub/pictureUrl")
     Map<String,String> getPicUrl(@RequestBody List<String> picList);
 
-    @ApiOperation("上传文件")
+
     @PostMapping(value = "/fileInfo/uploadFile2",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     CommonResult<String> uploadFile2(MultipartFile file);
 }

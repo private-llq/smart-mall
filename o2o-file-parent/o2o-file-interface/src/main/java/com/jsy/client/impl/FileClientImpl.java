@@ -14,25 +14,24 @@ import java.util.Map;
 public class FileClientImpl implements FileClient {
     @Override
     public CommonResult uploadFile(MultipartFile file) {
-        return CommonResult.error(JSYError.FUSE_DOWNGRADE.getCode(),"熔断降级");
+        return null;
     }
 
     @Override
     public CommonResult removeFile(Long id) {
-        return CommonResult.error(JSYError.FUSE_DOWNGRADE.getCode(),"熔断降级");
+        return null;
     }
 
     @Override
     public CommonResult downLoadFile(Long id, HttpServletResponse response) {
-        return CommonResult.error(JSYError.FUSE_DOWNGRADE.getCode(),"熔断降级");
+        return null;
     }
 
     @Override
     public CommonResult showPic(Long id) {
-        return CommonResult.error(JSYError.FUSE_DOWNGRADE.getCode(),"熔断降级");
+        return null;
     }
 
-    @PostMapping("/fileInfo/pub/pictureUrl")
     @Override
     public Map<String, String> getPicUrl(List<String> picList) {
         return null;
@@ -42,4 +41,5 @@ public class FileClientImpl implements FileClient {
     public CommonResult<String> uploadFile2(MultipartFile file) {
         return null;
     }
+
 }

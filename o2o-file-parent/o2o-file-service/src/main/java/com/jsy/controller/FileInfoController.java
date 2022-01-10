@@ -1,6 +1,7 @@
 package com.jsy.controller;
 import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.service.IFileInfoService;
+import com.zhsj.baseweb.annotation.LoginIgnore;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,6 +83,7 @@ public class FileInfoController {
 
     @ApiOperation("上传文件")
     @PostMapping("/uploadFile2")
+    @LoginIgnore
     public CommonResult<String> uploadFile2(MultipartFile file) {
        String path= fileInfoService.uploadFile2(file);
        return CommonResult.ok(path);

@@ -45,6 +45,10 @@ public class ShopBillServiceImpl extends ServiceImpl<ShopBillMapper, ShopBill> i
     public Boolean addShopBillOne(AddShopBillOneParam param) {
         ShopBill entity = new ShopBill();
         BeanUtils.copyProperties(param,entity);
+        LocalDateTime now = LocalDateTime.now();
+        entity.setYear(now.getYear());
+        entity.setMonth(now.getMonthValue());
+        entity.setDay(now.getDayOfMonth());
         int insert = shopBillMapper.insert(entity);
         if (insert>0) {
             if(entity.getBillType()==0){//0收入

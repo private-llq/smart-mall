@@ -5,14 +5,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.jsy.basic.util.exception.JSYException;
-import com.jsy.basic.util.utils.CodeUtils;
 import com.jsy.basic.util.utils.OrderNoUtil;
-import com.jsy.basic.util.utils.PagerUtils;
 import com.jsy.basic.util.vo.CommonResult;
-import com.jsy.client.GoodsClient;
-import com.jsy.client.ServiceCharacteristicsClient;
-import com.jsy.client.SetMenuClient;
-import com.jsy.client.ShoppingCartClient;
+import com.jsy.client.*;
 import com.jsy.config.*;
 import com.jsy.domain.*;
 import com.jsy.dto.*;
@@ -21,7 +16,9 @@ import com.jsy.parameter.ShoppingCartParam;
 import com.jsy.query.*;
 import com.jsy.service.INewOrderService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.jsy.service.IShopBillService;
 import com.jsy.utils.AliAppPayQO;
+import com.jsy.utils.QrCodeUtils;
 import com.jsy.utils.Random8;
 import com.jsy.utils.WeChatPayQO;
 import com.jsy.vo.OrderGoodsVO;
@@ -31,25 +28,26 @@ import com.jsy.vo.SelectAllOrderByBackstageVo;
 import com.zhsj.base.api.constant.RpcConst;
 import com.zhsj.base.api.domain.PayCallNotice;
 import com.zhsj.base.api.rpc.IBasePayRpcService;
-import com.zhsj.base.api.rpc.IBaseUserInfoRpcService;
 import com.zhsj.basecommon.vo.R;
 import com.zhsj.baseweb.support.ContextHolder;
 import com.zhsj.baseweb.support.LoginUser;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.checkerframework.common.value.qual.DoubleVal;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import javax.servlet.ServletOutputStream;
-import java.lang.reflect.Method;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -86,14 +84,12 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
     private ShoppingCartClient shoppingCartClient;
     @Autowired
     private ServiceCharacteristicsClient characteristicsClient;
-
     @DubboReference(version = RpcConst.Rpc.VERSION, group = RpcConst.Rpc.Group.GROUP_BASE_USER, check = false)
     private IBasePayRpcService basePayRpcService;
-
-
-
-
-
+    @Autowired
+    public IShopBillService shopBillService;
+    @Autowired
+    public FileClient fileClient;
     @Value("${pay.urlAliPay}")
     private String urlAliPay;//支付宝支付url
     @Value("${pay.urlWeChatPay}")
@@ -595,7 +591,7 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
 
         List<NewOrder> newOrders = newOrderMapper.selectList(queryWrapper);//根据状态查询用户的所有订单
         if (newOrders.size() <= 0) {
-           return null;
+            return listDto;
         }
         for (NewOrder newOrder : newOrders) {
             SelectUserOrderDto userOrderDTO = new SelectUserOrderDto();//单个订单返回对象
@@ -721,6 +717,7 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
             queryWrapper.eq("appointment_status", 1);//预约状态（0预约中，1预约成功，2预约失败）
             queryWrapper.eq("pay_status", 1);//支付状态（0未支付，1支付成功,2退款申请中，3退款成功，4拒绝退款）
             queryWrapper.eq("server_code_status", 1);//验卷状态0未验卷，1验卷成功
+            queryWrapper.eq("deleted", 1);
         }
 
         if (status == 4) {//预约中
@@ -743,6 +740,9 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
         for (NewOrder newOrder : newOrders) {
             SelectShopOrderDto shopOrderDto = new SelectShopOrderDto();//单个订单返回对象
             BeanUtils.copyProperties(newOrder, shopOrderDto);
+            String orderStatusShow = getOrderStatusShow(newOrder);
+            shopOrderDto.setOrderStatusShow(orderStatusShow);
+
             List<SelectUserOrderServiceDto> serviceDtos = new ArrayList<>();
             List<SelectUserOrderGoodsDto> OrderGoodsDtos = new ArrayList<>();
             List<SelectUserOrderMenuDto> orderMenuDtos = new ArrayList<>();
@@ -923,6 +923,7 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
 
     //支付回调接口修改版
     @Override
+    @Transactional
     public Boolean replyPayOne(R<PayCallNotice> param) {
 
 //        PayCallNotice data = param.getData();
@@ -953,16 +954,28 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
             newOrder.setBillMonth(month);//账单月份
             newOrder.setBillNum(sysOrderNo);//账单号
             newOrder.setPayTime(payTime);//支付时间
-            newOrder.setServeCode(Random8.getNumber8());//生成验劵码转成大写11位
+            String number8 = Random8.getNumber8();
+            String serveCodeImg = codeToImg(number8);//根据验证码生成二维码
+            newOrder.setServeCodeImg(serveCodeImg);
+            newOrder.setServeCode(number8);//生成验劵码转成大写11位
             SelectShopOrderDto shopOrderDto = selectOrderByOrderId(orderId);//根据id查询订单详情
             HashMap<String, Object> orderData = createOrderData(shopOrderDto);//整理数据
             newOrder.setBillRise(orderData.toString());//填入账单抬头
 
             int update = newOrderMapper.updateById(newOrder);
             if (update > 0) {
-                basePayRpcService.receiveCall(sysOrderNo);//确认订单回复
-                log.info("确认订单回复完成");
-                return true;
+                NewOrder newOrder1 = newOrderMapper.selectById(Long.getLong(busOrderNo));
+                AddShopBillOneParam billOneParam = new AddShopBillOneParam();
+                billOneParam.setMoney(orderAmount);
+                billOneParam.setShopId(newOrder1.getShopId());
+                billOneParam.setOrderId(newOrder1.getId());
+                billOneParam.setBillType(1);//收入
+                Boolean aBoolean = shopBillService.addShopBillOne(billOneParam);
+                if (aBoolean) {
+                    basePayRpcService.receiveCall(sysOrderNo);//确认订单回复
+                    log.info("确认订单回复完成");
+                    return true;
+                }
             }
 
         }
@@ -999,7 +1012,6 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
     @Override
     public SelectShopOrderDto shopConsentOrder(ShopConsentOrderParam param) {
 
-
         QueryWrapper<NewOrder> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("shop_id", param.getShopId());//商家id
         queryWrapper.eq("serve_code", param.getCode());//验证码
@@ -1007,14 +1019,29 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
         queryWrapper.eq("pay_status", 1);//支付状态（0未支付，1支付成功,2退款申请中，3退款成功，4拒绝退款）
         NewOrder newOrder = newOrderMapper.selectOne(queryWrapper);//根据状态查询用户的所有订单
         if (newOrder == null) {
-            throw new JSYException(10002, "无验证消息");
+            throw new JSYException(10002, "无验证码信息");
         }
-
+        if (newOrder.getPayStatus() == 2) {
+            throw new JSYException(10003, "退款中");
+        }
+        if (newOrder.getPayStatus() == 3) {
+            throw new JSYException(10003, "已退款");
+        }
         SelectShopOrderDto shopOrderDto = new SelectShopOrderDto();//单个订单返回对象
         BeanUtils.copyProperties(newOrder, shopOrderDto);
         List<SelectUserOrderServiceDto> serviceDtos = new ArrayList<>();
         List<SelectUserOrderGoodsDto> OrderGoodsDtos = new ArrayList<>();
         List<SelectUserOrderMenuDto> orderMenuDtos = new ArrayList<>();
+
+        //查询商品
+        QueryWrapper<OrderGoods> queryWrappers = new QueryWrapper<>();
+        queryWrappers.eq("order_id", newOrder.getId());
+        List<OrderGoods> orderGoods = orderGoodsMapper.selectList(queryWrappers);//商品的集合
+        for (OrderGoods orderGood : orderGoods) {
+            SelectUserOrderGoodsDto orderGoodsDto = new SelectUserOrderGoodsDto();
+            BeanUtils.copyProperties(orderGood, orderGoodsDto);
+            OrderGoodsDtos.add(orderGoodsDto);
+        }
 
 
         if (newOrder.getOrderType() == 0) {//（0-服务类(只有服务)
@@ -1031,17 +1058,6 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
 
 
         if (newOrder.getOrderType() == 1) {//1-普通类（套餐，单品集合）
-
-            QueryWrapper<OrderGoods> queryWrapper1 = new QueryWrapper<>();
-            queryWrapper1.eq("order_id", newOrder.getId());
-            List<OrderGoods> orderGoods = orderGoodsMapper.selectList(queryWrapper1);//商品的集合
-            for (OrderGoods orderGood : orderGoods) {
-                SelectUserOrderGoodsDto orderGoodsDto = new SelectUserOrderGoodsDto();
-                BeanUtils.copyProperties(orderGood, orderGoodsDto);
-                OrderGoodsDtos.add(orderGoodsDto);
-            }
-
-
             QueryWrapper<OrderSetMenu> queryWrapper2 = new QueryWrapper<>();
             queryWrapper2.eq("order_id", newOrder.getId());
             List<OrderSetMenu> orderSetMenus = orderSetMenuMapper.selectList(queryWrapper2);//套餐集合
@@ -1164,21 +1180,19 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
         log.info("支付宝支付url" + urlAliPay);
 
         NewOrder newOrder = newOrderMapper.selectById(orderId);
-
         if (newOrder == null) {
-            throw new JSYException(500, "无此订单");
+            throw new JSYException(501, "无此订单");
         }
 
         Integer payStatus = newOrder.getPayStatus();
         if (payStatus == 1 || payStatus == 2 || payStatus == 3 || payStatus == 4) {
-            throw new JSYException(500, "已支付");
+            throw new JSYException(501, "已支付");
         }
         String token = ContextHolder.getContext().getLoginUser().getToken();//获取用户token
         SelectShopOrderDto shopOrderDto = selectOrderByOrderId(orderId);
-        //String orderNum = shopOrderDto.getOrderNum();//订单编号
         BigDecimal orderAllPrice = shopOrderDto.getOrderAllPrice();//订单的最终价格
         HashMap<String, Object> orderData = createOrderData(shopOrderDto);
-        System.out.println(orderData);
+        log.info(orderData.toString());
         AliAppPayQO aliAppPayQO = new AliAppPayQO();//支付的参数对象
         aliAppPayQO.setCommunityId(1L);//社区id
         aliAppPayQO.setServiceOrderNo(newOrder.getId().toString());//订单id
@@ -1191,10 +1205,9 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
         aliAppPayQO.setReceiveUid(newOrder.getShopId());//收款方id
         String urlParam = urlAliPay;//支付宝支付url
         CommonResult commonResult = HttpClientHelper.sendPost(urlParam, aliAppPayQO, token, CommonResult.class);
-        log.info(commonResult.toString() + "*********");
+        log.info(commonResult.toString() + "支付响应");
         AliPayVO vo = JSON.parseObject(commonResult.getData().toString(), AliPayVO.class);
-
-        System.out.println("支付时的订单号" + vo.getOrderNum());
+        log.info("支付时的订单号" + vo.getOrderNum());
         NewOrder entity = new NewOrder();
         entity.setId(orderId);
         entity.setOrderNum(vo.getOrderNum());
@@ -1203,9 +1216,8 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
             log.info("订单号修改成功");
         }
         if (i < 1) {
-            throw new JSYException(500, "系统繁忙");
+            throw new JSYException(501, "系统繁忙");
         }
-
         return commonResult;
     }
 
@@ -1230,8 +1242,7 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
         weChatPayQO.setOrderData(orderData);
         weChatPayQO.setReceiveUid(newOrder.getShopId());//收款方id
         weChatPayQO.setServiceOrderNo(newOrder.getId().toString());
-        System.out.println(orderData.toString());
-        //weChatPayQO.setDescriptionStr(orderData.toString().length()>30?"商城购物":orderData.toString());//支付描述
+        log.info(orderData.toString());
         weChatPayQO.setDescriptionStr("商城购物");//支付描述
         String urlParam = urlWeChatPay;//微信支付的url
         CommonResult commonResult = HttpClientHelper.sendPost(urlParam, weChatPayQO, token, CommonResult.class);
@@ -1243,7 +1254,7 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
         entity.setOrderNum(vo.getOrderNum());
         int i = newOrderMapper.updateById(entity);
         if (i < 1) {
-            throw new JSYException(500, "系统繁忙");
+            throw new JSYException(501, "系统繁忙");
         }
         return commonResult;
     }
@@ -1260,8 +1271,8 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
         String token = ContextHolder.getContext().getLoginUser().getToken();//获取用户token
 
         Integer payStatus = newOrder.getPayStatus();
-        if (payStatus==3) {
-            throw new JSYException(200,"已退款");
+        if (payStatus == 3) {
+            throw new JSYException(200, "已退款");
         }
 
         //（ 1app支付宝，2app微信)
@@ -1276,11 +1287,22 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
                 throw new JSYException(commonResult.getCode(), commonResult.getMessage());
             }
             Boolean vo = JSON.parseObject(commonResult.getData().toString(), Boolean.class);
-            if(vo){
+            if (vo) {
                 newOrder.setPayStatus(3);//将支付状态改为3（退款成功）
                 int i = newOrderMapper.updateById(newOrder);
-                if(i>0){
-                    return  true;
+                if (i > 0) {
+                    NewOrder newOrder1 = newOrderMapper.selectById(orderId);
+                    AddShopBillOneParam billOneParam = new AddShopBillOneParam();
+                    billOneParam.setMoney(newOrder1.getOrderAllPrice());
+                    billOneParam.setShopId(newOrder1.getShopId());
+                    billOneParam.setOrderId(newOrder1.getId());
+                    billOneParam.setBillType(1);//退款
+                    Boolean aBoolean = shopBillService.addShopBillOne(billOneParam);
+                    if (aBoolean) {
+                        return true;
+                    }
+
+
                 }
             }
             return false;
@@ -1305,13 +1327,25 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
 //            log.info(commonResult1.getData()+"****值");
 //            log.info(commonResult1.getData().toString()+"****toString");
             Boolean vo = JSON.parseObject(commonResult.getData().toString(), Boolean.class);
-            log.info("Boolean***************"+vo.toString());
+            log.info("Boolean***************" + vo.toString());
             if (vo) {
                 newOrder.setPayStatus(3);//将支付状态改为3,退款成功
                 int i = newOrderMapper.updateById(newOrder);
                 if (i > 0) {
-                    log.info("退款转态修改成功");
-                    return true;
+                    NewOrder newOrder1 = newOrderMapper.selectById(orderId);
+                    AddShopBillOneParam billOneParam = new AddShopBillOneParam();
+                    billOneParam.setMoney(newOrder1.getOrderAllPrice());
+                    billOneParam.setShopId(newOrder1.getShopId());
+                    billOneParam.setOrderId(newOrder1.getId());
+                    billOneParam.setBillType(1);//退款
+                    Boolean aBoolean = shopBillService.addShopBillOne(billOneParam);
+                    if (aBoolean) {
+                        log.info("退款转态修改成功");
+                        return true;
+
+                    }
+
+
                 }
 
             }
@@ -1459,56 +1493,57 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
 
         return false;
     }
+
     //查询相应状态下的数量
     @Override
     public ArrayList<SelectUserOrderNumberDto> selectUserOrderNumber(Long id) {
         ArrayList<SelectUserOrderNumberDto> selectUserOrderNumberDtos = new ArrayList<SelectUserOrderNumberDto>();
         //状态1代付款2待消费3已完成4售后
 
-            //1代付款
-            QueryWrapper<NewOrder> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("user_id", id);//用户id
-            queryWrapper.eq("order_status", 1);//订单状态（[1待上门、待配送、待发货]，2、完成）
-            queryWrapper.eq("pay_status", 0);//支付状态（0未支付，1支付成功,2退款申请中，3退款成功，4拒绝退款）
-            Integer number = newOrderMapper.selectCount(queryWrapper);
-            SelectUserOrderNumberDto selectUserOrderNumberDto = new SelectUserOrderNumberDto(1,number);
+        //1代付款
+        QueryWrapper<NewOrder> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_id", id);//用户id
+        queryWrapper.eq("order_status", 1);//订单状态（[1待上门、待配送、待发货]，2、完成）
+        queryWrapper.eq("pay_status", 0);//支付状态（0未支付，1支付成功,2退款申请中，3退款成功，4拒绝退款）
+        Integer number = newOrderMapper.selectCount(queryWrapper);
+        SelectUserOrderNumberDto selectUserOrderNumberDto = new SelectUserOrderNumberDto(1, number);
 
 
         //2待消费
         QueryWrapper<NewOrder> queryWrapper1 = new QueryWrapper<>();
-            queryWrapper1.eq("user_id", id);//用户id
-            queryWrapper1.eq("appointment_status", 1);//预约状态（0预约中，1预约成功，2预约失败）
-            queryWrapper1.eq("pay_status", 1);//支付状态（0未支付，1支付成功,2退款申请中，3退款成功，4拒绝退款）
-            queryWrapper1.eq("server_code_status", 0);//验卷状态0未验卷，1验卷成功
+        queryWrapper1.eq("user_id", id);//用户id
+        queryWrapper1.eq("appointment_status", 1);//预约状态（0预约中，1预约成功，2预约失败）
+        queryWrapper1.eq("pay_status", 1);//支付状态（0未支付，1支付成功,2退款申请中，3退款成功，4拒绝退款）
+        queryWrapper1.eq("server_code_status", 0);//验卷状态0未验卷，1验卷成功
         Integer number1 = newOrderMapper.selectCount(queryWrapper1);
-        SelectUserOrderNumberDto selectUserOrderNumberDto1 = new SelectUserOrderNumberDto(2,number1);
+        SelectUserOrderNumberDto selectUserOrderNumberDto1 = new SelectUserOrderNumberDto(2, number1);
 
         //3针对页面上的已完成（已经使用了，验过卷）
         QueryWrapper<NewOrder> queryWrapper2 = new QueryWrapper<>();
-            queryWrapper2.eq("user_id", id);//用户id
-            queryWrapper2.eq("appointment_status", 1);//预约状态（0预约中，1预约成功，2预约失败）
-            queryWrapper2.eq("pay_status", 1);//支付状态（0未支付，1支付成功,2退款申请中，3退款成功，4拒绝退款）
-            queryWrapper2.eq("server_code_status", 1);//验卷状态0未验卷，1验卷成功
+        queryWrapper2.eq("user_id", id);//用户id
+        queryWrapper2.eq("appointment_status", 1);//预约状态（0预约中，1预约成功，2预约失败）
+        queryWrapper2.eq("pay_status", 1);//支付状态（0未支付，1支付成功,2退款申请中，3退款成功，4拒绝退款）
+        queryWrapper2.eq("server_code_status", 1);//验卷状态0未验卷，1验卷成功
         Integer number2 = newOrderMapper.selectCount(queryWrapper2);
-        SelectUserOrderNumberDto selectUserOrderNumberDto2 = new SelectUserOrderNumberDto(3,number2);
+        SelectUserOrderNumberDto selectUserOrderNumberDto2 = new SelectUserOrderNumberDto(3, number2);
 
 
         //4退款/售后
-           QueryWrapper<NewOrder> queryWrapper3 = new QueryWrapper<>();
-            queryWrapper3
-                    .eq("user_id", id)//用户id
-                    .eq("appointment_status", 1)//预约状态（0预约中，1预约成功，2预约失败）
-                    .eq("pay_status", 2)//支付状态（0未支付，1支付成功,2退款申请中，3退款成功，4拒绝退款）
-                    .or()
-                    .eq("user_id", id)//用户id
-                    .eq("appointment_status", 1)//预约状态（0预约中，1预约成功，2预约失败）
-                    .eq("pay_status", 3)//支付状态（0未支付，1支付成功,2退款申请中，3退款成功，4拒绝退款）
-                    .or()
-                    .eq("user_id", id)//用户id
-                    .eq("appointment_status", 1)//预约状态（0预约中，1预约成功，2预约失败）
-                    .eq("pay_status", 4);//支付状态（0未支付，1支付成功,2退款申请中，3退款成功，4拒绝退款）
+        QueryWrapper<NewOrder> queryWrapper3 = new QueryWrapper<>();
+        queryWrapper3
+                .eq("user_id", id)//用户id
+                .eq("appointment_status", 1)//预约状态（0预约中，1预约成功，2预约失败）
+                .eq("pay_status", 2)//支付状态（0未支付，1支付成功,2退款申请中，3退款成功，4拒绝退款）
+                .or()
+                .eq("user_id", id)//用户id
+                .eq("appointment_status", 1)//预约状态（0预约中，1预约成功，2预约失败）
+                .eq("pay_status", 3)//支付状态（0未支付，1支付成功,2退款申请中，3退款成功，4拒绝退款）
+                .or()
+                .eq("user_id", id)//用户id
+                .eq("appointment_status", 1)//预约状态（0预约中，1预约成功，2预约失败）
+                .eq("pay_status", 4);//支付状态（0未支付，1支付成功,2退款申请中，3退款成功，4拒绝退款）
         Integer number3 = newOrderMapper.selectCount(queryWrapper3);
-        SelectUserOrderNumberDto selectUserOrderNumberDto3 = new SelectUserOrderNumberDto(4,number3);
+        SelectUserOrderNumberDto selectUserOrderNumberDto3 = new SelectUserOrderNumberDto(4, number3);
 
         selectUserOrderNumberDtos.add(selectUserOrderNumberDto);
         selectUserOrderNumberDtos.add(selectUserOrderNumberDto1);
@@ -1517,31 +1552,32 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
 
         return selectUserOrderNumberDtos;
     }
+
     //大后台查询多有订单
     @Override
     public List<SelectAllOrderByBackstageDto> selectAllOrderByBackstage(SelectAllOrderByBackstageParam param) {
         SelectAllOrderMapperParam selectAllOrderMapperParam = new SelectAllOrderMapperParam();
         Integer page = param.getPage();
         Integer size = param.getSize();
-        selectAllOrderMapperParam.setStart((page-1)*size);
+        selectAllOrderMapperParam.setStart((page - 1) * size);
         selectAllOrderMapperParam.setEnd(size);
         selectAllOrderMapperParam.setStartTime(param.getStartTime());
         selectAllOrderMapperParam.setEndTime(param.getEndTime());
         selectAllOrderMapperParam.setStatus(param.getStatus());
-        List<SelectAllOrderByBackstageVo>  vo= newOrderMapper.selectAllOrderByBackstage(selectAllOrderMapperParam);
+        List<SelectAllOrderByBackstageVo> vo = newOrderMapper.selectAllOrderByBackstage(selectAllOrderMapperParam);
 
-        List<SelectAllOrderByBackstageDto> dtoList=new ArrayList<>();//返回对象
+        List<SelectAllOrderByBackstageDto> dtoList = new ArrayList<>();//返回对象
 
         for (SelectAllOrderByBackstageVo one : vo) {
-            SelectAllOrderByBackstageDto  dto=new SelectAllOrderByBackstageDto();
-            BeanUtils.copyProperties(one,dto);
+            SelectAllOrderByBackstageDto dto = new SelectAllOrderByBackstageDto();
+            BeanUtils.copyProperties(one, dto);
             Integer orderStatus = one.getOrderStatus();//订单状态
             Integer appointmentStatus = one.getAppointmentStatus();//预约状态（0预约中，1预约成功）
             Integer commentStatus = one.getCommentStatus();//是否评价0未评价，1评价
             Integer payStatus = one.getPayStatus();//支付状态（0未支付，1支付成功,2退款中，3退款成功，4拒绝退款）
             Integer serverCodeStatus = one.getServerCodeStatus();//验卷状态0未验卷，1验卷成功
             Integer refundApplyRole = one.getRefundApplyRole();//申请退款角色0商家1平台
-            String currentStatus=null;
+            String currentStatus = null;
 //  0待消费、1已完成、2商家退款中、3商家已退款、4官方退款中5、官方已退款-->
 //<!--   2 商家退款中（支付状态为退款中，预约成功,退款角色为商家）-->
 //<!--   3商家已退款 （支付状态为退款成功，预约成功,退款角色为商家）-->
@@ -1549,57 +1585,61 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
 //<!--    5 官方已退款（支付状态为退款成功，预约成功,退款角色为官方）-->
 
 
-           if(orderStatus==1 && appointmentStatus==1 && serverCodeStatus==0 && payStatus==1){
-               currentStatus="待消费";
-           }else if (appointmentStatus==1 && serverCodeStatus==1 && payStatus==1 && commentStatus==1){
-               currentStatus="已完成";
-           }else if (orderStatus==1 && appointmentStatus==1  && payStatus==2 && refundApplyRole==0){
-               currentStatus="商家退款中";
-           }else if (orderStatus==1 && appointmentStatus==1  && payStatus==3 && refundApplyRole==0){
-               currentStatus="商家已退款";
-           }else if (orderStatus==1 && appointmentStatus==1  && payStatus==2 && refundApplyRole==1){
-               currentStatus="官方退款中";
-           }else if (orderStatus==1 && appointmentStatus==1  && payStatus==3 && refundApplyRole==1){
-               currentStatus="官方已退款";
-           }
+            if (orderStatus == 1 && appointmentStatus == 1 && serverCodeStatus == 0 && payStatus == 1) {
+                currentStatus = "待消费";
+            } else if (appointmentStatus == 1 && serverCodeStatus == 1 && payStatus == 1 && commentStatus == 1) {
+                currentStatus = "已完成";
+            } else if (orderStatus == 1 && appointmentStatus == 1 && payStatus == 2 && refundApplyRole == 0) {
+                currentStatus = "商家退款中";
+            } else if (orderStatus == 1 && appointmentStatus == 1 && payStatus == 3 && refundApplyRole == 0) {
+                currentStatus = "商家已退款";
+            } else if (orderStatus == 1 && appointmentStatus == 1 && payStatus == 4 && refundApplyRole == 0) {
+                currentStatus = "商家拒绝退款";
+            } else if (orderStatus == 1 && appointmentStatus == 1 && payStatus == 2 && refundApplyRole == 1) {
+                currentStatus = "官方退款中";
+            } else if (orderStatus == 1 && appointmentStatus == 1 && payStatus == 3 && refundApplyRole == 1) {
+                currentStatus = "官方已退款";
+            } else if (orderStatus == 1 && appointmentStatus == 1 && payStatus == 4 && refundApplyRole == 1) {
+                currentStatus = "官方拒绝退款";
+            }
 
 
             dto.setCurrentStatus(currentStatus);//当前状态
 
 
-            List<SelectAllOrderBelongDto> belongDto=new ArrayList<>();
+            List<SelectAllOrderBelongDto> belongDto = new ArrayList<>();
 
             List<OrderGoodsVO> orderGoodsList = one.getOrderGoodsList();
             List<OrderServiceVO> orderServiceList = one.getOrderServiceList();
             List<OrderSetMenuVO> orderSetMenuList = one.getOrderSetMenuList();
-            if (orderGoodsList!=null && orderGoodsList.size()>0 ) {
+            if (orderGoodsList != null && orderGoodsList.size() > 0) {
                 for (OrderGoodsVO goodsVO : orderGoodsList) {
-                    SelectAllOrderBelongDto  dto1=new SelectAllOrderBelongDto();
+                    SelectAllOrderBelongDto dto1 = new SelectAllOrderBelongDto();
                     dto1.setName(goodsVO.getTitle());
                     dto1.setPictures(goodsVO.getImages());
-                    dto1.setPrice(goodsVO.getDiscountState()==0?goodsVO.getPrice():goodsVO.getDiscountPrice());
+                    dto1.setPrice(goodsVO.getDiscountState() == 0 ? goodsVO.getPrice() : goodsVO.getDiscountPrice());
                     dto1.setNumber(goodsVO.getAmount());
                     belongDto.add(dto1);
                 }
 
 
             }
-            if (orderServiceList!=null && orderServiceList.size()>0 ) {
+            if (orderServiceList != null && orderServiceList.size() > 0) {
                 for (OrderServiceVO serviceVO : orderServiceList) {
-                    SelectAllOrderBelongDto  dto1=new SelectAllOrderBelongDto();
+                    SelectAllOrderBelongDto dto1 = new SelectAllOrderBelongDto();
                     dto1.setName(serviceVO.getTitle());
                     dto1.setPictures(serviceVO.getImages());
-                    dto1.setPrice(serviceVO.getDiscountState()==0?serviceVO.getPrice():serviceVO.getDiscountPrice());
+                    dto1.setPrice(serviceVO.getDiscountState() == 0 ? serviceVO.getPrice() : serviceVO.getDiscountPrice());
                     dto1.setNumber(serviceVO.getAmount());
                     belongDto.add(dto1);
                 }
             }
-            if (orderSetMenuList!=null && orderSetMenuList.size()>0 ) {
+            if (orderSetMenuList != null && orderSetMenuList.size() > 0) {
                 for (OrderSetMenuVO menuVO : orderSetMenuList) {
-                    SelectAllOrderBelongDto  dto1=new SelectAllOrderBelongDto();
+                    SelectAllOrderBelongDto dto1 = new SelectAllOrderBelongDto();
                     dto1.setName(menuVO.getName());
                     dto1.setPictures(menuVO.getImages());
-                    dto1.setPrice(menuVO.getDiscountState()==0?menuVO.getRealPrice():menuVO.getSellingPrice());
+                    dto1.setPrice(menuVO.getDiscountState() == 0 ? menuVO.getRealPrice() : menuVO.getSellingPrice());
                     dto1.setNumber(menuVO.getAmount());
                     belongDto.add(dto1);
                 }
@@ -1610,11 +1650,155 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
         }
 
 
-
-
-
-   //     log.info(vo.toString());
+        //     log.info(vo.toString());
         return dtoList;
     }
+   // 商家根据转态查询订单(包含逻辑删除)
+    @Override
+    public List<SelectShopOrderDto> selectShopOrder2(SelectShopOrderParam param) {
+        Integer page = (param.getPage()-1)*param.getSize();
+        param.setPage(page);
+
+        List<SelectShopOrderDto>  values=newOrderMapper.selectShopOrder2(param);
+        return values;
+    }
+
+
+    //根据验证码生成
+    public String codeToImg(String code) {
+        BufferedImage bufferedImage = null;
+        String serveCodeImg = null;
+        try {
+            bufferedImage = QrCodeUtils.createImage(code, null, true);
+            //创建一个ByteArrayOutputStream
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            //把BufferedImage写入ByteArrayOutputStream
+            ImageIO.write(bufferedImage, "jpg", os);
+            //ByteArrayOutputStream转成InputStream
+            InputStream input = new ByteArrayInputStream(os.toByteArray());
+            //InputStream转成MultipartFile
+            MultipartFile multipartFile = new MockMultipartFile("file", "file.jpg", "text/plain", input);
+            CommonResult<String> stringCommonResult = fileClient.uploadFile2(multipartFile);
+            serveCodeImg = stringCommonResult.getData();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new JSYException(501, e.getMessage());
+        }
+        return serveCodeImg;
+    }
+    //获取订单的显示转态
+   public  String getOrderStatusShow(NewOrder newOrder){
+
+       if (newOrder.getCommentStatus()==0 //预约状态（0预约中，1预约成功，2预约失败）
+               && newOrder.getPayStatus()==0 //（0未支付，1支付成功,2退款申请中，3退款成功，4拒绝退款）
+               && newOrder.getServerCodeStatus()==0//验卷状态0未验卷，1验卷成功
+               && newOrder.getOrderStatus()==1  //订单状态（[1待上门、待配送、待发货]，2、完成）
+
+       ) {
+           return  "预约中";
+       }
+       else if (newOrder.getCommentStatus()==1 //预约状态（0预约中，1预约成功，2预约失败）
+               && newOrder.getPayStatus()==0 //（0未支付，1支付成功,2退款申请中，3退款成功，4拒绝退款）
+               && newOrder.getServerCodeStatus()==0//验卷状态0未验卷，1验卷成功
+               && newOrder.getOrderStatus()==1  //订单状态（[1待上门、待配送、待发货]，2、完成）
+       ) {
+           return"预约成功";
+       }
+       else if (newOrder.getCommentStatus()==2 //预约状态（0预约中，1预约成功，2预约失败）
+               && newOrder.getPayStatus()==0 //（0未支付，1支付成功,2退款申请中，3退款成功，4拒绝退款）
+               && newOrder.getServerCodeStatus()==0//验卷状态0未验卷，1验卷成功
+               && newOrder.getOrderStatus()==1  //订单状态（[1待上门、待配送、待发货]，2、完成）
+       ) {
+           return"拒绝预约";
+       }
+       else if (newOrder.getCommentStatus()==1 //预约状态（0预约中，1预约成功，2预约失败）
+               && newOrder.getPayStatus()==1 //（0未支付，1支付成功,2退款申请中，3退款成功，4拒绝退款）
+               && newOrder.getServerCodeStatus()==0//验卷状态0未验卷，1验卷成功
+               && newOrder.getOrderStatus()==1  //订单状态（[1待上门、待配送、待发货]，2、完成）
+               &&  newOrder.getStartTime().isBefore(LocalDateTime.now())//开始时间在当前时间之前是true
+       ) {
+           return "待消费";
+       }
+       else if (newOrder.getCommentStatus()==1 //预约状态（0预约中，1预约成功，2预约失败）
+               && newOrder.getPayStatus()==1 //（0未支付，1支付成功,2退款申请中，3退款成功，4拒绝退款）
+               && newOrder.getServerCodeStatus()==0//验卷状态0未验卷，1验卷成功
+               && newOrder.getOrderStatus()==1  //订单状态（[1待上门、待配送、待发货]，2、完成）
+               &&  newOrder.getStartTime().isAfter(LocalDateTime.now())//开始时间在当前时间之后是true
+               &&  newOrder.getEntTime().isBefore(LocalDateTime.now())//结束时间在当前时间之前是true
+       ) {
+           return "超时订单";
+       }
+
+
+       else if (newOrder.getCommentStatus()==1 //预约状态（0预约中，1预约成功，2预约失败）
+               && newOrder.getPayStatus()==1 //（0未支付，1支付成功,2退款申请中，3退款成功，4拒绝退款）
+               && newOrder.getServerCodeStatus()==1//验卷状态0未验卷，1验卷成功
+//             && newOrder.getOrderStatus()==1  //订单状态（[1待上门、待配送、待发货]，2、完成）
+       ) {
+           return"已完成";//（待评价）
+       }
+       else if (newOrder.getCommentStatus()==1 //预约状态（0预约中，1预约成功，2预约失败）
+               && newOrder.getPayStatus()==2 //（0未支付，1支付成功,2退款申请中，3退款成功，4拒绝退款）
+               && newOrder.getServerCodeStatus()==0//验卷状态0未验卷，1验卷成功
+               && newOrder.getOrderStatus()==1  //订单状态（[1待上门、待配送、待发货]，2、完成）
+               && newOrder.getRefundApplyRole()==0//申请退款角色（0商家，1是平台）
+       ) {
+           return"未消费退款中";
+       }
+       else if (newOrder.getCommentStatus()==1 //预约状态（0预约中，1预约成功，2预约失败）
+               && newOrder.getPayStatus()==2 //（0未支付，1支付成功,2退款申请中，3退款成功，4拒绝退款）
+               && newOrder.getServerCodeStatus()==1//验卷状态0未验卷，1验卷成功
+               && newOrder.getOrderStatus()==1  //订单状态（[1待上门、待配送、待发货]，2、完成）
+               && newOrder.getRefundApplyRole()==0//申请退款角色（0商家，1是平台）
+       ) {
+           return"已消费退款中";
+       }
+
+
+       else if (newOrder.getCommentStatus()==1 //预约状态（0预约中，1预约成功，2预约失败）
+               && newOrder.getPayStatus()==3 //（0未支付，1支付成功,2退款申请中，3退款成功，4拒绝退款）
+//                    && newOrder.getServerCodeStatus()==0//验卷状态0未验卷，1验卷成功
+               && newOrder.getOrderStatus()==1  //订单状态（[1待上门、待配送、待发货]，2、完成）
+               && newOrder.getRefundApplyRole()==0//申请退款角色（0商家，1是平台）
+       ) {
+           return"退款成功";
+       }
+       else if (newOrder.getCommentStatus()==1 //预约状态（0预约中，1预约成功，2预约失败）
+               && newOrder.getPayStatus()==4 //（0未支付，1支付成功,2退款申请中，3退款成功，4拒绝退款）
+//                    && newOrder.getServerCodeStatus()==0//验卷状态0未验卷，1验卷成功
+               && newOrder.getOrderStatus()==1  //订单状态（[1待上门、待配送、待发货]，2、完成）
+               && newOrder.getRefundApplyRole()==0//申请退款角色（0商家，1是平台）
+       ) {
+           return"拒绝退款";
+       }
+
+       else if (newOrder.getCommentStatus()==1 //预约状态（0预约中，1预约成功，2预约失败）
+               && newOrder.getPayStatus()==2 //（0未支付，1支付成功,2退款申请中，3退款成功，4拒绝退款）
+//                    && newOrder.getServerCodeStatus()==0//验卷状态0未验卷，1验卷成功
+               && newOrder.getOrderStatus()==1  //订单状态（[1待上门、待配送、待发货]，2、完成）
+               && newOrder.getRefundApplyRole()==1//申请退款角色（0商家，1是平台）
+       ) {
+           return"平台介入" ;
+       }
+       else if (newOrder.getCommentStatus()==1 //预约状态（0预约中，1预约成功，2预约失败）
+               && newOrder.getPayStatus()==3 //（0未支付，1支付成功,2退款申请中，3退款成功，4拒绝退款）
+//                    && newOrder.getServerCodeStatus()==0//验卷状态0未验卷，1验卷成功
+               && newOrder.getOrderStatus()==1  //订单状态（[1待上门、待配送、待发货]，2、完成）
+               && newOrder.getRefundApplyRole()==1//申请退款角色（0商家，1是平台）
+       ) {
+           return"平台退款成功";
+       }
+       else if (newOrder.getCommentStatus()==1 //预约状态（0预约中，1预约成功，2预约失败）
+               && newOrder.getPayStatus()==4 //（0未支付，1支付成功,2退款申请中，3退款成功，4拒绝退款）
+//                    && newOrder.getServerCodeStatus()==0//验卷状态0未验卷，1验卷成功
+               && newOrder.getOrderStatus()==1  //订单状态（[1待上门、待配送、待发货]，2、完成）
+               && newOrder.getRefundApplyRole()==1//申请退款角色（0商家，1是平台）
+       ) {
+           return"平台拒绝退款";
+       }
+       return "订单异常";
+   }
+
+
 
 }

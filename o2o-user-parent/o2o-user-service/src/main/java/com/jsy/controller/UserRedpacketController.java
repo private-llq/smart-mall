@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -52,6 +53,9 @@ public class UserRedpacketController {
 
 
 
+
+
+
     @ApiOperation(value = "根据用户和活动uuid查询已领红包数据集合", httpMethod = "GET")
     @RequestMapping(value="/selectUserRedpacketAll/{activity}",method= RequestMethod.GET)
     public CommonResult<List<UserRedpacket>> selectUserRedpacketAll(@PathVariable("activity")String activity){
@@ -62,7 +66,6 @@ public class UserRedpacketController {
 
 
     /*******************************************************************************/
-
     /**
     * 领取红包
     * @param receiveRedpacketVo  传递的实体

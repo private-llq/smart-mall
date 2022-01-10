@@ -18,6 +18,10 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-logging</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
@@ -69,7 +73,6 @@
         </dependency>
 
 
-
         <!--  解决 Illegal DefaultValue null for parameter type integer    异常  -->
         <dependency>
             <groupId>io.swagger</groupId>
@@ -111,7 +114,6 @@
         </dependency>
 
 
-
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
@@ -124,11 +126,17 @@
         </dependency>
 
 
-<!--         导入的项目模块-->
+        <!--         导入的项目模块-->
         <dependency>
             <groupId>com.zhsj</groupId>
             <artifactId>o2o-goods-interface</artifactId>
             <version>1.0-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.zhsj</groupId>
@@ -140,8 +148,44 @@
             <artifactId>o2o-basic-util</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-
-
+        <!--二维码依赖-->
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>3.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>javase</artifactId>
+            <version>3.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.zhsj</groupId>
+            <artifactId>o2o-file-interface</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <!--MultipartFile 依赖-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>5.0.5.RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
+        <!--<dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.25</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>1.2.3</version>
+        </dependency>-->
 
     </dependencies>
 
