@@ -45,7 +45,7 @@ public class TreeController {
     }
 
     /**
-     * 新增菜单
+     * 根据id查父级id
      */
     @PostMapping("addTree")
     public CommonResult addTree(@RequestBody Tree tree) {

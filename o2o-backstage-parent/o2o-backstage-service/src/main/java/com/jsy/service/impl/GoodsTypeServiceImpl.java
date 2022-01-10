@@ -128,18 +128,19 @@ public class GoodsTypeServiceImpl extends ServiceImpl<GoodsTypeMapper, GoodsType
         Long temp = id;
         for (GoodsType tree : treeList) {
             for (GoodsType tree1 : treeList) {
-                if (tree1.getId()==temp&&tree1.getPid()!=0){
+                if (tree1.getId().equals(temp) && tree1.getPid()!=0L){
                     list.add(tree1.getId());
                     temp = tree1.getPid();
 
                 }
             }
         }
-        GoodsType tree = categoryMapper.selectById(temp);
-        if (ObjectUtil.isNotNull(tree)){
-
-            list.add(tree.getPid());
-        }
+        System.out.println("++++++++++1111111111");
+//        GoodsType tree = categoryMapper.selectById(temp);
+//        if (ObjectUtil.isNotNull(tree)){
+//
+//            list.add(tree.getPid());
+//        }
         System.out.println(list);
 
 
