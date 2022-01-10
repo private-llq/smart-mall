@@ -145,9 +145,5 @@ public class PushGoodsServiceImpl extends ServiceImpl<PushGoodsMapper, PushGoods
         return null;
     }
 
-    @Override
-    public void setPushGoodsSort(Integer sort) {
-
-    }
 
 }

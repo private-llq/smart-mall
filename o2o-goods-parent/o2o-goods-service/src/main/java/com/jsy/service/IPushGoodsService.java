@@ -25,5 +25,5 @@ public interface IPushGoodsService extends IService<PushGoods> {
      */
     PageInfo<PushGoods> pageListPushGoods(PushGoodsQuery pushGoodsQuery);
 
-    void setPushGoodsSort(Integer sort);
+
 }
