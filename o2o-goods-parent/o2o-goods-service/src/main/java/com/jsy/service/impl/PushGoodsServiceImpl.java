@@ -12,6 +12,7 @@ import com.jsy.domain.PushGoods;
 import com.jsy.dto.NewShopDto;
 import com.jsy.mapper.GoodsMapper;
 import com.jsy.mapper.PushGoodsMapper;
+import com.jsy.parameter.PushGoodsParam;
 import com.jsy.query.PushGoodsQuery;
 import com.jsy.service.IPushGoodsService;
 import org.springframework.beans.BeanUtils;
@@ -20,10 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -51,7 +49,16 @@ public class PushGoodsServiceImpl extends ServiceImpl<PushGoodsMapper, PushGoods
      */
     @Override
     @Transactional
-    public void pushGoods(Long id,Integer type) {
+    public void pushGoods(PushGoodsParam pushGoodsParam) {
+        Long id = pushGoodsParam.getId();
+        Integer type = pushGoodsParam.getType();
+        Long sort = pushGoodsParam.getSort();
+        if (Objects.isNull(id)){
+            throw new JSYException(-1,"商品id不能为空！");
+        }
+        if (Objects.isNull(type)){
+            throw new JSYException(-1,"推送的模块type不能为空！");
+        }
         Goods goods = goodsMapper.selectOne(new QueryWrapper<Goods>().eq("id", id));
         if (Objects.isNull(goods)){
             throw new JSYException(-1,"未找到该商品！");
@@ -76,7 +83,23 @@ public class PushGoodsServiceImpl extends ServiceImpl<PushGoodsMapper, PushGoods
         BeanUtils.copyProperties(goods,pushGoods);
         pushGoods.setLongitude(data.getLongitude());
         pushGoods.setLatitude(data.getLatitude());
+
+        if (Objects.nonNull(sort)){//设置排序插入 依次加一
+            setPushGoodsSort(sort);
+        }else {//不设置排序 就找到最大的sort 放在最后
+            List<PushGoods> selectList = pushGoodsMapper.selectList(null);
+            Optional<Long> max = selectList.stream().map(x ->
+                    x.getSort()
+            ).max(Comparator.comparingLong(x -> x));
+            if (max.isPresent()){
+                pushGoods.setSort(max.get()+1);
+            }else {
+                pushGoods.setSort(0L);
+            }
+        }
+
         int insert = pushGoodsMapper.insert(pushGoods);
+
         if (insert>0){//修改商品的推送状态
             goodsMapper.update(null,new UpdateWrapper<Goods>().eq("id",id).set("push_state",type));
         }
@@ -96,7 +119,8 @@ public class PushGoodsServiceImpl extends ServiceImpl<PushGoodsMapper, PushGoods
         List<PushGoods> list = pushGoodsMapper.pageListPushGoods(pushGoodsQuery);
 
         if (pushGoodsQuery.getType()==0){//默认
-            return MyPageUtils.pageMap(pushGoodsQuery.getPage(),pushGoodsQuery.getRows(),list);
+            List<PushGoods> collect = list.stream().sorted(Comparator.comparing(PushGoods::getSort)).collect(Collectors.toList());
+            return MyPageUtils.pageMap(pushGoodsQuery.getPage(),pushGoodsQuery.getRows(),collect);
         }
 
         if (pushGoodsQuery.getType()==1){//销量升序
@@ -113,7 +137,7 @@ public class PushGoodsServiceImpl extends ServiceImpl<PushGoodsMapper, PushGoods
                 pushGoodsList.add(pushGoods);
 
             });
-            List<PushGoods> collect = pushGoodsList.stream().sorted(Comparator.comparing(PushGoods::getSums)).collect(Collectors.toList());
+            List<PushGoods> collect = pushGoodsList.stream().sorted(Comparator.comparing(PushGoods::getSort)).sorted(Comparator.comparing(PushGoods::getSums)).collect(Collectors.toList());
             return MyPageUtils.pageMap(pushGoodsQuery.getPage(),pushGoodsQuery.getRows(),collect);
         }
         if (pushGoodsQuery.getType()==2){//销量降序
@@ -130,20 +154,42 @@ public class PushGoodsServiceImpl extends ServiceImpl<PushGoodsMapper, PushGoods
                 pushGoodsList.add(pushGoods);
 
             });
-            List<PushGoods> collect = pushGoodsList.stream().sorted(Comparator.comparing(PushGoods::getSums).reversed()).collect(Collectors.toList());
+            List<PushGoods> collect = pushGoodsList.stream().sorted(Comparator.comparing(PushGoods::getSort)).sorted(Comparator.comparing(PushGoods::getSums).reversed()).collect(Collectors.toList());
             return MyPageUtils.pageMap(pushGoodsQuery.getPage(),pushGoodsQuery.getRows(),collect);
         }
         if (pushGoodsQuery.getType()==3){// 价格升序
-            List<PushGoods> collect = list.stream().sorted(Comparator.comparing(PushGoods::getDiscountPrice)).collect(Collectors.toList());
+            List<PushGoods> collect = list.stream().sorted(Comparator.comparing(PushGoods::getSort)).sorted(Comparator.comparing(PushGoods::getDiscountPrice)).collect(Collectors.toList());
 
             return MyPageUtils.pageMap(pushGoodsQuery.getPage(),pushGoodsQuery.getRows(),collect);
         }
         if (pushGoodsQuery.getType()==4){// 价格降序
-            List<PushGoods> collect = list.stream().sorted(Comparator.comparing(PushGoods::getDiscountPrice).reversed()).collect(Collectors.toList());
+            List<PushGoods> collect = list.stream().sorted(Comparator.comparing(PushGoods::getSort)).sorted(Comparator.comparing(PushGoods::getDiscountPrice).reversed()).collect(Collectors.toList());
             return MyPageUtils.pageMap(pushGoodsQuery.getPage(),pushGoodsQuery.getRows(),collect);
         }
         return null;
     }
 
+    /**
+     * 取消推送
+     * @param goodsId
+     */
+    @Override
+    public void outPushGoodsSort(Long goodsId) {
+        int delete = pushGoodsMapper.delete(new QueryWrapper<PushGoods>().eq("goods_id", goodsId));
+        if (delete>0){
+            PushGoods pushGoods = pushGoodsMapper.selectOne(new QueryWrapper<PushGoods>().eq("goods_id", goodsId));
+            if (Objects.nonNull(pushGoods)){
+                delPushGoodsSort(pushGoods.getSort());
+            }
+        }
+    }
+
+    public void setPushGoodsSort(Long sort) {
+      pushGoodsMapper.setPushGoodsSort(sort);
+    }
+
+    public void delPushGoodsSort(Long sort) {
+        pushGoodsMapper.delPushGoodsSort(sort);
+    }
 
 }

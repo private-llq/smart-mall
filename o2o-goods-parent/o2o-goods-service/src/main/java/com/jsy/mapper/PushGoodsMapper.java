@@ -24,4 +24,8 @@ public interface PushGoodsMapper extends BaseMapper<PushGoods> {
    Long sumGoodsSales(@Param("goodsId") Long goodsId);
 
     List<PushGoods> pageListPushGoods(@Param("query") PushGoodsQuery pushGoodsQuery);
+
+    void setPushGoodsSort(@Param("sort") Long sort);
+
+    void delPushGoodsSort(@Param("sort")Long sort);
 }

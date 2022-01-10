@@ -1,6 +1,7 @@
 package com.jsy.controller;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.domain.PushGoods;
+import com.jsy.parameter.PushGoodsParam;
 import com.jsy.query.PushGoodsQuery;
 import com.jsy.service.IPushGoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +18,9 @@ public class PushGoodsController {
      * 医疗端：推送产品（智能手环、手表）
      * type 推送状态：0 未推送  1：医疗 2 ：养老 3 商城
      */
-    @GetMapping("/addPushGoods")
-    public CommonResult addPushGoods(@RequestParam("id") Long id,@RequestParam("type") Integer type ){
-        pushGoodsService.pushGoods(id,type);
+    @PostMapping("/addPushGoods")
+    public CommonResult addPushGoods(@RequestBody PushGoodsParam pushGoodsParam){
+        pushGoodsService.pushGoods(pushGoodsParam);
         return CommonResult.ok();
     }
 
@@ -33,11 +34,11 @@ public class PushGoodsController {
     }
 
     /**
-     * 大后台设置推荐商品 排序位置
+     * 取消推送
      */
-    @GetMapping("/setPushGoodsSort")
-    public CommonResult setPushGoodsSort(@RequestParam("sort") Integer sort){
-        pushGoodsService.setPushGoodsSort(sort);
+    @GetMapping("/outPushGoodsSort")
+    public CommonResult outPushGoodsSort(@RequestParam("goodsId") Long goodsId){
+        pushGoodsService.outPushGoodsSort(goodsId);
         return CommonResult.ok();
     }
 

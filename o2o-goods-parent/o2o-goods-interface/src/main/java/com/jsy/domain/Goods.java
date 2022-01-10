@@ -119,6 +119,9 @@ public class Goods extends BaseEntity  {
      */
     private Integer isOfficialGoods;
 
+
+
+
     @TableField(exist = false)
     @ApiModelProperty(value = "销量")
     private Long sums=0L;

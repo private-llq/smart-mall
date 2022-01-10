@@ -14,11 +14,9 @@ import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.client.*;
 import com.jsy.domain.Browse;
 import com.jsy.domain.Goods;
-import com.jsy.domain.PushGoods;
 import com.jsy.domain.Tree;
 import com.jsy.dto.*;
 import com.jsy.mapper.GoodsMapper;
-import com.jsy.mapper.PushGoodsMapper;
 import com.jsy.parameter.GoodsParam;
 import com.jsy.parameter.GoodsServiceParam;
 import com.jsy.query.BackstageGoodsQuery;
@@ -82,7 +80,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
 
 
     @Autowired
-    private PushGoodsMapper pushGoodsMapper;
+    private PushGoodsServiceImpl pushGoodsService;
 
 
     /**
@@ -602,6 +600,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         int update = goodsMapper.update(goods, new QueryWrapper<Goods>().eq("id", id));
         if (update>=0){
             hotClient.getHotGoods(id);//更新热门数据！
+            pushGoodsService.outPushGoodsSort(id);//取消推送 ！
         }
     }
 
@@ -700,7 +699,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     @Transactional
     public void delete(Long id) {
         goodsMapper.deleteById(id);
-        pushGoodsMapper.delete(new QueryWrapper<PushGoods>().eq("goods_id",id));//更新推送数据
+        pushGoodsService.outPushGoodsSort(id);//取消推送
         hotClient.getHotGoods(id);//更新热门数据
     }
 

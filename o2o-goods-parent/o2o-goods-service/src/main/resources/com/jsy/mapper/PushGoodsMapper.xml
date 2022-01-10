@@ -33,4 +33,12 @@
         AND t1.title LIKE CONCAT('%',#{query.keyword},'%')
     </select>
 
+    <update id="setPushGoodsSort">
+        UPDATE w_push_goods SET sort=sort+1 WHERE sort>=#{sort}
+    </update>
+    <update id="delPushGoodsSort">
+        UPDATE w_push_goods SET sort=sort-1 WHERE sort>#{sort}
+    </update>
+
+
 </mapper>
