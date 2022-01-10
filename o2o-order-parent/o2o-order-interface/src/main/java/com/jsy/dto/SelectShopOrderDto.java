@@ -1,5 +1,9 @@
 package com.jsy.dto;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.jsy.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -16,18 +20,26 @@ import java.util.List;
  * @version（版本）: v1.0
  */
 @Data
-public class SelectShopOrderDto {
+public class SelectShopOrderDto extends BaseEntity {
     private static final long serialVersionUID = 1L;
-
+    @ApiModelProperty(value = "id")
+    @JsonSerialize(using = com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
+    @JSONField(serializeUsing = ToStringSerializer.class)
+    private Long id;
     @ApiModelProperty(value = "c端用户id")
+    @JsonSerialize(using = com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long userId;
 
     @ApiModelProperty(value = "b端商家id")
+    @JsonSerialize(using = com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
+    @JSONField(serializeUsing = ToStringSerializer.class)
     private Long shopId;
 
     @ApiModelProperty(value = "订单编号")
     private String orderNum;
-
+    @ApiModelProperty(value = "订单状态显示数据")
+    private String orderStatusShow;
     @ApiModelProperty(value = "订单状态（[1待上门、待配送、待发货]，2、完成）")
     private Integer orderStatus;
 
@@ -48,7 +60,8 @@ public class SelectShopOrderDto {
 
     @ApiModelProperty(value = "账单抬头")
     private String billRise;
-
+    @ApiModelProperty(value = "退款角色0商家1是平台")
+    private Integer refundApplyRole;
     @ApiModelProperty(value = "是否评价0未评价，1评价（评价完成为订单完成）")
     private Integer commentStatus;
     @ApiModelProperty(value = "订单类型（0-服务类(只有服务)，1-普通类（套餐，单品集合））")
@@ -78,9 +91,9 @@ public class SelectShopOrderDto {
     @ApiModelProperty(value = "预计最晚时间")
     private LocalDateTime entTime;
     @ApiModelProperty(value = "如果是商品的添加到商品详情")
-    private List<SelectUserOrderGoodsDto> OrderGoodsDtos=new ArrayList<>();
+    private List<SelectUserOrderGoodsDto> orderGoodsDtos=new ArrayList<>();
     @ApiModelProperty(value = "如果是服务的添加到服务详情")
-    private   List<SelectUserOrderServiceDto> OrderServiceDtos=new ArrayList<>();
+    private   List<SelectUserOrderServiceDto> orderServiceDtos=new ArrayList<>();
     @ApiModelProperty(value = "如果是套餐的添加到套餐详情")
-    private  List<SelectUserOrderMenuDto> OrderMenuDtos=new ArrayList<>();
+    private  List<SelectUserOrderMenuDto> orderMenuDtos=new ArrayList<>();
 }

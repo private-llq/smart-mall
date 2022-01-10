@@ -3,6 +3,7 @@ package com.jsy.dto;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.jsy.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -17,7 +18,7 @@ import java.util.List;
  * @version（版本）: v1.0
  */
 @Data
-public class SelectUserOrderGoodsDto {
+public class SelectUserOrderGoodsDto extends BaseEntity {
     @ApiModelProperty(value = "订单id（外键）")
     @JsonSerialize(using = com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
     @JSONField(serializeUsing = ToStringSerializer.class)

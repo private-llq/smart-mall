@@ -55,8 +55,8 @@ public class NewCommentServiceImpl extends ServiceImpl<NewCommentMapper, NewComm
     @Override
     @Transactional
     public Boolean createComment(CreateCommentParam param) {
-        if(param.getEvaluateLevel()>5 || param.getEvaluateLevel()<1){
-            throw new JSYException(500,"评分异常");
+        if(param.getEvaluateLevel()>5 || param.getEvaluateLevel()<0){
+            throw new JSYException(500,"合理评分");
         }
         QueryWrapper<NewComment> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("order_id",param.getOrderId());

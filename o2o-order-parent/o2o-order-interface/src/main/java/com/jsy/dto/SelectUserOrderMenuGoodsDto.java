@@ -37,11 +37,11 @@ public class SelectUserOrderMenuGoodsDto {
     @ApiModelProperty(value = "商品 价格")
     private BigDecimal price;
 
-    @ApiModelProperty(value = "商品 折扣价格")
-    private BigDecimal discountPrice;
-
-    @ApiModelProperty(value = "商品的说明")
-    private String textDescription;
+//    @ApiModelProperty(value = "商品 折扣价格")
+//    private BigDecimal discountPrice;
+//
+//    @ApiModelProperty(value = "商品的说明")
+//    private String textDescription;
 
 //    @ApiModelProperty(value = "商品分类id")
 //    private Long goodsTypeId;

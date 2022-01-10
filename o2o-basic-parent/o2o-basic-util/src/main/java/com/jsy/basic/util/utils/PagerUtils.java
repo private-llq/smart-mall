@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,11 +24,11 @@ public class  PagerUtils<T> {
 
     //集合手动分页
     public PagerUtils<T> queryPage(int page, int size, List<T> list) {
-            int start = (page - 1) * size;
-            int end = size * page;
-        if (list==null) {
-            return null;
-        }
+        int start = (page - 1) * size;
+        int end = size * page;
+
+        PagerUtils<T> utils = new PagerUtils<>();
+        if (list.size()!=0) {
             //end 超过总长
             if (end > list.size()) {
                 end = list.size();
@@ -36,11 +37,19 @@ public class  PagerUtils<T> {
                 throw new JSYException(500,"页码错误,重新输入");
             }
 
-        List<T> ts = list.subList(start, end);
-        PagerUtils<T> utils = new PagerUtils<>();
-        utils.setTotal(list.size());
-        utils.setRecords(ts);
+            List<T> ts = list.subList(start, end);
+
+            utils.setTotal(list.size());
+            utils.setRecords(ts);
+        }else if(list.size()==0){
+            utils.setTotal(0);
+            utils.setRecords(list);
+        }
+
         return utils;
+
+
+
     }
 
 }

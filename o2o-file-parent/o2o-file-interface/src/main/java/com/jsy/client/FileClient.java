@@ -3,9 +3,7 @@ package com.jsy.client;
 import com.jsy.FeignConfiguration;
 import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.client.impl.FileClientImpl;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 

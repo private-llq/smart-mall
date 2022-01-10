@@ -104,6 +104,9 @@ public class NewOrder extends BaseEntity implements Serializable {
 
     @ApiModelProperty(value = "验卷码")
     private String serveCode;
+    @ApiModelProperty(value = "验卷码img")
+    private String serveCodeImg;
+
     @ApiModelProperty(value = "验卷状态")//验卷状态0未验卷，1验卷成功
     private Integer serverCodeStatus;
 

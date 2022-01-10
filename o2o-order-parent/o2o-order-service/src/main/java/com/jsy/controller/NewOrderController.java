@@ -1,6 +1,7 @@
 package com.jsy.controller;
 
 import com.jsy.basic.util.utils.PagerUtils;
+import com.jsy.client.FileClient;
 import com.jsy.config.HttpClientHelper;
 import com.jsy.dto.*;
 import com.jsy.query.*;
@@ -10,6 +11,7 @@ import com.jsy.basic.util.PageList;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsy.utils.AliAppPayQO;
 
+import com.jsy.utils.QrCodeUtils;
 import com.jsy.vo.SelectAllOrderByBackstageVo;
 import com.zhsj.base.api.domain.PayCallNotice;
 import com.zhsj.basecommon.vo.R;
@@ -20,10 +22,17 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.bind.annotation.*;
 import com.jsy.basic.util.vo.CommonResult;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
 import javax.validation.constraints.NotNull;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -37,7 +46,8 @@ import java.util.Map;
 public class NewOrderController {
     @Autowired
     public INewOrderService newOrderService;
-
+    @Autowired
+    public FileClient fileClient;
 
     /**********************************************arli***************************************/
 
@@ -50,21 +60,22 @@ public class NewOrderController {
     @ApiOperation("生成订单接口返回订单id")
     @RequestMapping(value = "/insterOrder", method = RequestMethod.POST)
     public CommonResult<String> insterOrder(@RequestBody InsterOrderParam param) {
-           Long orderId =  newOrderService.insterOrder(param);
+        Long orderId = newOrderService.insterOrder(param);
         return new CommonResult<String>(200, "新增订单成功", orderId.toString());
     }
 
     @ApiOperation("生成订单接口返回订单id（单个商品直接购买）")
     @RequestMapping(value = "/insterOrderOne", method = RequestMethod.POST)
     public CommonResult<String> insterOrderOne(@RequestBody InsterOrderOneParam param) {
-        Long orderId =  newOrderService.insterOrderOne(param);
+        Long orderId = newOrderService.insterOrderOne(param);
         return new CommonResult<String>(200, "新增订单成功", orderId.toString());
     }
+
     @ApiOperation("修改生成订单商品数量（单个商品直接购买）+-")
     @RequestMapping(value = "/updateOrderOne", method = RequestMethod.POST)
     public CommonResult<Boolean> updateOrderOne(@RequestBody UpdateOrderOneParam param) {
-        Boolean b =  newOrderService.updateOrderOne(param);
-        if(b ){
+        Boolean b = newOrderService.updateOrderOne(param);
+        if (b) {
             return new CommonResult<Boolean>(200, "修改成功", b);
         }
         return new CommonResult<Boolean>(200, "修改失败", b);
@@ -76,28 +87,24 @@ public class NewOrderController {
     public CommonResult<PagerUtils> selectUserOrder(@RequestBody SelectUserOrderParam param) {
         Long id = ContextHolder.getContext().getLoginUser().getId();//获取用户id
         String token = ContextHolder.getContext().getLoginUser().getToken();
-        log.info("token"+token);
+        log.info("token" + token);
 
-        System.out.println("用户id"+id);
+        System.out.println("用户id" + id);
         List<SelectUserOrderDto> list = newOrderService.selectUserOrder(id, param);
         PagerUtils pagerUtils = new PagerUtils<SelectUserOrderDto>();
         PagerUtils pagerUtils1 = pagerUtils.queryPage(param.getPage(), param.getSize(), list);
         return new CommonResult<>(200, "查询成功", pagerUtils1);
     }
+
     @ApiOperation("查询相应状态下的数量")
     @RequestMapping(value = "/selectUserOrderNumber", method = RequestMethod.GET)
     public CommonResult<ArrayList<SelectUserOrderNumberDto>> selectUserOrderNumber() {
 
         Long id = ContextHolder.getContext().getLoginUser().getId();//获取用户id
-        ArrayList<SelectUserOrderNumberDto>  selectUserOrderNumberDtos= newOrderService.selectUserOrderNumber(id);
-        return new CommonResult<>(200,"查询成功",selectUserOrderNumberDtos);
+        ArrayList<SelectUserOrderNumberDto> selectUserOrderNumberDtos = newOrderService.selectUserOrderNumber(id);
+        return new CommonResult<>(200, "查询成功", selectUserOrderNumberDtos);
 
     }
-
-
-
-
-
 
 
     @ApiOperation("商家根据转态查询订单")
@@ -108,6 +115,15 @@ public class NewOrderController {
         PagerUtils pagerUtils1 = pagerUtils.queryPage(param.getPage(), param.getSize(), list);
         return new CommonResult<>(200, "查询成功", pagerUtils1);
     }
+
+    @ApiOperation("商家根据转态查询订单(包含逻辑删除)")
+    @RequestMapping(value = "/selectShopOrder2", method = RequestMethod.POST)
+    public CommonResult<List<SelectShopOrderDto>> selectShopOrder2(@RequestBody SelectShopOrderParam param) {
+        List<SelectShopOrderDto> list  = newOrderService.selectShopOrder2(param);
+        return new CommonResult<>(200, "查询成功", list);
+    }
+
+
 
     @ApiOperation("用户删除订单")
     @RequestMapping(value = "/deletedUserOrder", method = RequestMethod.GET)
@@ -120,8 +136,9 @@ public class NewOrderController {
     @RequestMapping(value = "/shopConsentOrder", method = RequestMethod.POST)
     public CommonResult<SelectShopOrderDto> shopConsentOrder(@RequestBody ShopConsentOrderParam param) {
         SelectShopOrderDto value = newOrderService.shopConsentOrder(param);
-        return CommonResult.ok(value);
+        return new CommonResult<>(200, "查询成功", value);
     }
+
     @ApiOperation("商家同意预约订单")
     @RequestMapping(value = "/consentOrder", method = RequestMethod.POST)
     public CommonResult<Boolean> consentOrder(@RequestBody ConsentOrderParam param) {
@@ -141,6 +158,7 @@ public class NewOrderController {
         }
         return new CommonResult<>(500, "验证失败", b);
     }
+
     @ApiOperation("根据订单id查询订单详情")
     @RequestMapping(value = "/selectOrderByOrderId", method = RequestMethod.GET)
     public CommonResult<SelectShopOrderDto> selectOrderByOrderId(@RequestParam("orderId") Long orderId) {
@@ -151,10 +169,11 @@ public class NewOrderController {
     @ApiOperation("支付宝支付接口")
     @RequestMapping(value = "/alipay", method = RequestMethod.GET)
     public CommonResult<String> alipay(@RequestParam("orderId") Long orderId) {
-        CommonResult value=newOrderService.alipay(orderId);
+        CommonResult value = newOrderService.alipay(orderId);
         return value;
     }
-//    @ApiOperation("支付宝退款接口")
+
+    //    @ApiOperation("支付宝退款接口")
 //    @RequestMapping(value = "/alipayRefund", method = RequestMethod.GET)
 //    public CommonResult<String> alipayRefund(@RequestParam("orderId") Long orderId) {
 //        CommonResult value=newOrderService.alipayRefund(orderId);
@@ -163,17 +182,18 @@ public class NewOrderController {
     @ApiOperation("微信支付接口")
     @RequestMapping(value = "/WeChatPay", method = RequestMethod.GET)
     public CommonResult<String> WeChatPay(@RequestParam("orderId") Long orderId) {
-        CommonResult value=newOrderService.WeChatPay(orderId);
+        CommonResult value = newOrderService.WeChatPay(orderId);
         return value;
     }
+
     @ApiOperation("退款接口")
     @RequestMapping(value = "/allPayRefund", method = RequestMethod.GET)
     public CommonResult<Boolean> allPayRefund(@RequestParam("orderId") Long orderId) {
-        Boolean value=newOrderService.allPayRefund(orderId);
-        if(value){
-            return new CommonResult<Boolean>(200,"退款成功",value) ;
+        Boolean value = newOrderService.allPayRefund(orderId);
+        if (value) {
+            return new CommonResult<Boolean>(200, "退款成功", value);
         }
-        return new CommonResult<Boolean>(200,"退款失败",value) ;
+        return new CommonResult<Boolean>(200, "退款失败", value);
 
     }
 //    @LoginIgnore
@@ -190,14 +210,13 @@ public class NewOrderController {
 //    }
 
 
-
     @LoginIgnore
     @ApiOperation("测试支付回调")
     @RequestMapping(value = "/replyPay", method = RequestMethod.POST)
     public CommonResult<Boolean> replyPay(@RequestBody R<PayCallNotice> param) {
         log.info("进入回调成功");
-        Boolean b =  newOrderService.replyPayOne(param);
-                if(b){
+        Boolean b = newOrderService.replyPayOne(param);
+        if (b) {
             return new CommonResult<>(0, "回调成功", b);
         }
         return new CommonResult<>(1, "失败", b);
@@ -207,19 +226,16 @@ public class NewOrderController {
 
     @ApiOperation("查询近多少日订单量")
     @RequestMapping(value = "/orderSize", method = RequestMethod.POST)
-    public CommonResult<OrderSizeDto> orderSize(@RequestBody OrderSizeParam param){
-        OrderSizeDto   dto= newOrderService.orderSize(param);
+    public CommonResult<OrderSizeDto> orderSize(@RequestBody OrderSizeParam param) {
+        OrderSizeDto dto = newOrderService.orderSize(param);
         return new CommonResult<>(200, "查询成功", dto);
     }
 
 
-
-
     //大后台查询所有订单
-    @LoginIgnore
     @RequestMapping(value = "/selectAllOrderByBackstage", method = RequestMethod.POST)
-    public CommonResult< List<SelectAllOrderByBackstageDto>> selectAllOrderByBackstage(@RequestBody SelectAllOrderByBackstageParam param){
-        List<SelectAllOrderByBackstageDto>   dto= newOrderService.selectAllOrderByBackstage(param);
+    public CommonResult<List<SelectAllOrderByBackstageDto>> selectAllOrderByBackstage(@RequestBody SelectAllOrderByBackstageParam param) {
+        List<SelectAllOrderByBackstageDto> dto = newOrderService.selectAllOrderByBackstage(param);
         return new CommonResult<>(200, "查询成功", dto);
     }
 
@@ -230,7 +246,31 @@ public class NewOrderController {
 //        return new CommonResult<>(200, "查询成功", null);
 //    }
 
+    //生成二维码测试接口
+    @LoginIgnore
+    @RequestMapping(value = "/test1", method = RequestMethod.POST)
+    public CommonResult<String> test1() {
+        CommonResult<String> stringCommonResult=null;
+        BufferedImage image = null;
+        try {
+            image = QrCodeUtils.createImage("4554525896", null, true);
+            //创建一个ByteArrayOutputStream
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            //把BufferedImage写入ByteArrayOutputStream
+            ImageIO.write(image, "jpg", os);
+            //ByteArrayOutputStream转成InputStream
+            InputStream input = new ByteArrayInputStream(os.toByteArray());
+            //InputStream转成MultipartFile
+            MultipartFile multipartFile = new MockMultipartFile("file", "file.jpg", "text/plain", input);
+            stringCommonResult = fileClient.uploadFile2(multipartFile);
+            String data = stringCommonResult.getData();
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return stringCommonResult;
+    }
 
 
 }

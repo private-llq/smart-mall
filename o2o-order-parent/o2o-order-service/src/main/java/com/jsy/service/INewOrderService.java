@@ -60,4 +60,6 @@ public interface INewOrderService extends IService<NewOrder> {
     ArrayList<SelectUserOrderNumberDto> selectUserOrderNumber(Long id);
     //大后台查询所有订单
     List<SelectAllOrderByBackstageDto> selectAllOrderByBackstage(SelectAllOrderByBackstageParam param);
+    //商家根据转态查询订单(包含逻辑删除)
+    List<SelectShopOrderDto> selectShopOrder2(SelectShopOrderParam param);
 }

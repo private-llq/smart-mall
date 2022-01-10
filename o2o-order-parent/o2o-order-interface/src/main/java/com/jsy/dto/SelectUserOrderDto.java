@@ -101,7 +101,8 @@ public class SelectUserOrderDto {
 
     @ApiModelProperty(value = "预计最晚时间")
     private LocalDateTime entTime;
-
+    @ApiModelProperty(value = "验卷码")
+    private String serveCodeImg;
     @ApiModelProperty(value = "验卷码")
     private String serveCode;
     @ApiModelProperty(value = "创建时间")
