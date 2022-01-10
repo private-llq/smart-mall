@@ -10,6 +10,7 @@ import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.utils.BeansCopyUtils;
 import com.jsy.basic.util.utils.SnowFlake;
+import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.client.*;
 import com.jsy.domain.Browse;
 import com.jsy.domain.Goods;
@@ -104,6 +105,8 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
             NewShopDto newShop = shopClient.get(goodsParam.getShopId()).getData();
             if (Objects.nonNull(newShop)){
                 goods.setShopName(newShop.getShopName());
+                goods.setIsOfficialGoods(newShop.getIsOfficialShop());
+
             }
         }
         if (Objects.nonNull(goodsParam.getGoodsTypeId())){
@@ -112,9 +115,9 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
             if (Objects.isNull(data)){
                 throw new JSYException(-1,"商品分类不存在！");
             }
-            List<Long> ids = goodsTypeClient.getGoodsTypeId(data.getId());
-            String strGoodsName = goodsTypeClient.bachGoodsTypeName(ids);
-            goods.setGoodsTypeName(strGoodsName);
+            CommonResult<String> commonResult = goodsTypeClient.getGoodsTypeId(data.getId());
+            String goodsTypeName = commonResult.getData();
+            goods.setGoodsTypeName(goodsTypeName);
         }
         goods.setGoodsNumber(String.valueOf(SnowFlake.nextId()));
 
@@ -153,13 +156,16 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
                 throw new JSYException(-1,"商家不存在！");
             }
             goods.setShopName(newShop.getShopName());
+            goods.setIsOfficialGoods(newShop.getIsOfficialShop());
         }
         if (Objects.nonNull(goodsServiceParam.getGoodsTypeId())){
             GoodsTypeDto data = goodsTypeClient.get(goodsServiceParam.getGoodsTypeId()).getData();
             if (Objects.isNull(data)){
                 throw new JSYException(-1,"商品分类不存在！");
             }
-            goods.setGoodsTypeName(data.getClassifyName());
+            CommonResult<String> commonResult = goodsTypeClient.getGoodsTypeId(data.getId());
+            String goodsTypeName = commonResult.getData();
+            goods.setGoodsTypeName(goodsTypeName);
         }
         goods.setGoodsNumber(String.valueOf(SnowFlake.nextId()));
         if (Objects.nonNull(goodsServiceParam.getDiscountPrice())){
@@ -485,6 +491,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         LocalDateTime endTime = backstageGoodsQuery.getEndTime();
         Page<Goods> page = new Page<>(backstageGoodsQuery.getPage(), backstageGoodsQuery.getRows());
         Page<Goods> goodsPage = goodsMapper.selectPage(page, new QueryWrapper<Goods>()
+                .eq("is_official_goods",backstageGoodsQuery.getType())
                 .eq("type", 0)
                 .like(StringUtils.isNotBlank(goodsName), "title", goodsName)
                 .eq(Objects.nonNull(goodsTypeId), "goods_type_id", goodsTypeId)

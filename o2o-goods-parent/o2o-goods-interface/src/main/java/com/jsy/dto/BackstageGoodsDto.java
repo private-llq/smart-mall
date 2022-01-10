@@ -42,4 +42,8 @@ public class BackstageGoodsDto implements Serializable {
      * 推送状态：0 未推送  1：医疗  2 ：养老 3 商城
      */
     private Integer pushState;
+    /**
+     * 是否是官方商品 0不是 1是
+     */
+    private Integer isOfficialGoods;
 }

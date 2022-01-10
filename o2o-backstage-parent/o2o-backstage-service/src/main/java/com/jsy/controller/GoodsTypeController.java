@@ -128,15 +128,9 @@ public class GoodsTypeController {
 
     @ApiOperation(value = "查询分类结果",httpMethod = "GET",response = CommonResult.class)
     @GetMapping(value = "/getGoodsTypeId")
-    List<Long> getGoodsTypeId(@RequestParam("id") Long id){
-        List<Long> parentTreeAll = goodsTypeService.getGoodsTypeId(id);
-        return parentTreeAll;
-    };
-
-    @PostMapping("bachGoodsTypeName")
-    String bachGoodsTypeName(@RequestBody List<Long> longList){
-        String strName = goodsTypeService.bachGoodsType(longList);
-        return strName;
+    CommonResult<String> getGoodsTypeId(@RequestParam("id") Long id){
+        String name = goodsTypeService.getGoodsTypeId(id);
+        return CommonResult.ok(name);
     };
 
 }

@@ -114,6 +114,11 @@ public class Goods extends BaseEntity  {
      */
     private Integer pushState;
 
+    /**
+     * 是否是官方商品 0不是 1是
+     */
+    private Integer isOfficialGoods;
+
     @TableField(exist = false)
     @ApiModelProperty(value = "销量")
     private Long sums=0L;

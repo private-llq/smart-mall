@@ -28,7 +28,6 @@ public interface IGoodsTypeService extends IService<GoodsType> {
 
     List<GoodsType> getParentList(Long id);
 
-    List<Long> getGoodsTypeId(Long id);
+    String getGoodsTypeId(Long id);
 
-    String bachGoodsType(List<Long> longList);
 }

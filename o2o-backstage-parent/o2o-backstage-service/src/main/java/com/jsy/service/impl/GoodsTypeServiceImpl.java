@@ -1,6 +1,5 @@
 package com.jsy.service.impl;
 
-import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jsy.basic.util.exception.JSYException;
@@ -13,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -122,69 +122,34 @@ public class GoodsTypeServiceImpl extends ServiceImpl<GoodsTypeMapper, GoodsType
     }
 
 
-    public List<Long> getGoodsTypeId(Long id) {
+    public String getGoodsTypeId(Long id) {
         List<GoodsType> treeList = categoryMapper.selectList(null);
         List<Long> list = new ArrayList<>();
         Long temp = id;
         for (GoodsType tree : treeList) {
             for (GoodsType tree1 : treeList) {
-                if (tree1.getId().equals(temp) && tree1.getPid()!=0L){
+                if (tree1.getId().equals(temp)){
                     list.add(tree1.getId());
                     temp = tree1.getPid();
 
                 }
             }
         }
-        System.out.println("++++++++++1111111111");
-//        GoodsType tree = categoryMapper.selectById(temp);
-//        if (ObjectUtil.isNotNull(tree)){
-//
-//            list.add(tree.getPid());
-//        }
-        System.out.println(list);
+        Collections.reverse(list);
 
+        List<GoodsType> goodsTypeList = categoryMapper.selectBatchIds(list);
 
-//        List<Long> collect = list.stream().filter(x -> {
-//            if (x == 0L) {
-//                return false;
-//            }
-//            return true;
-//        }).collect(Collectors.toList());
-
-        return list;
-
-//        List<Tree> treeList = categoryMapper.selectList(null);
-//        List<Long> list = new ArrayList<>();
-//        Long temp = id;
-//        for (Tree tree : treeList) {
-//            for (Tree tree1 : treeList) {
-//                if (tree1.getId()==temp&&tree1.getParentId()!=0){
-//                    list.add(tree1.getParentId());
-//                    temp = tree1.getParentId();
-//                }
-//            }
-//        }
-//        Tree tree = treeMapper.selectById(temp);
-//        if (ObjectUtil.isNotNull(tree)){
-//
-//            list.add(tree.getParentId());
-//        }
-//        Collections.reverse(list);
-//        return list.toString();
-    }
-
-
-
-    @Override
-    public String bachGoodsType(List<Long> longList) {
-        List<GoodsType> list = categoryMapper.selectBatchIds(longList);
         StringBuffer buffer = new StringBuffer();
-        list.forEach(x->{
+        goodsTypeList.forEach(x->{
             buffer.append(x.getClassifyName()+"-");
 
         });
         buffer.deleteCharAt(buffer.length() - 1);
         return buffer.toString();
+
+
+
     }
+
 
 }

@@ -67,8 +67,14 @@ public class GoodsDto {
    /* @ApiModelProperty(value = "是否支持上门服务 0 不支持 1 支持")
     private Integer isVisitingService;*/
 
+
     @ApiModelProperty(value = "销量")
     private Long sums=0L;
+
+    /**
+     * 是否是官方商品 0不是 1是
+     */
+    private Integer isOfficialGoods;
 
     /**
      * 访问量

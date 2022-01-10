@@ -91,4 +91,9 @@ public class GoodsServiceDto {
      * 返回距离
      */
     private String distance;
+
+    /**
+     * 是否是官方商品 0不是 1是
+     */
+    private Integer isOfficialGoods;
 }
