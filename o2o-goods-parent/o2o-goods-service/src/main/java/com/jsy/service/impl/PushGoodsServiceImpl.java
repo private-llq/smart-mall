@@ -53,6 +53,7 @@ public class PushGoodsServiceImpl extends ServiceImpl<PushGoodsMapper, PushGoods
         Long id = pushGoodsParam.getId();
         Integer type = pushGoodsParam.getType();
         Long sort = pushGoodsParam.getSort();
+        Integer pushState = pushGoodsParam.getPushState();
         if (Objects.isNull(id)){
             throw new JSYException(-1,"商品id不能为空！");
         }
@@ -80,8 +81,15 @@ public class PushGoodsServiceImpl extends ServiceImpl<PushGoodsMapper, PushGoods
            throw new JSYException(-1,"该店铺已经被屏蔽！");
         }
 
-        //每次推送把已推送的数据取消推送
-        this.delPushGoodsSort(sort);
+        if (pushState==0){//直接取消返回
+            //每次推送把已推送的数据取消推送
+            this.outPushGoodsSort(id);
+            return;
+        }
+
+        //如果是正常插入，以这一次数据为准，把之前的删除掉
+        this.outPushGoodsSort(id);
+
 
         PushGoods pushGoods = new PushGoods();
         BeanUtils.copyProperties(goods,pushGoods);
@@ -182,11 +190,12 @@ public class PushGoodsServiceImpl extends ServiceImpl<PushGoodsMapper, PushGoods
     @Override
     @Transactional
     public void outPushGoodsSort(Long goodsId) {
-         pushGoodsMapper.outPushGoodsSort(goodsId);
+         pushGoodsMapper.outPushGoodsSort(goodsId);//删除数据
          PushGoods pushGoods = pushGoodsMapper.selectOne(new QueryWrapper<PushGoods>().eq("goods_id", goodsId));
          if (Objects.nonNull(pushGoods)){
-             delPushGoodsSort(pushGoods.getSort());
+             delPushGoodsSort(pushGoods.getSort());//复原sort序号
          }
+        goodsMapper.update(null,new UpdateWrapper<Goods>().eq("id",goodsId).set("push_state",0));//修改未推送状态
 
     }
 
@@ -204,6 +213,7 @@ public class PushGoodsServiceImpl extends ServiceImpl<PushGoodsMapper, PushGoods
         if (selectList.size()!=0){
             pushGoodsMapper.delPushGoodsSort(sort);
         }
+
 
     }
 

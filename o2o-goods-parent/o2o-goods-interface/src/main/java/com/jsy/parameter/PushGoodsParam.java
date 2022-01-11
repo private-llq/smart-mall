@@ -19,4 +19,8 @@ public class PushGoodsParam implements Serializable {
      * 设置数据排序位置
      */
     private Long sort;
+    /**
+     * 推送状态 0 ：取消  1：推送
+     */
+    private Integer pushState;
 }
