@@ -34,6 +34,8 @@ public class FileInfoServiceImpl extends ServiceImpl<FileInfoMapper, FileInfo> i
      * 图片文件最大kb
      */
     public static final Integer IMAGE_MAX_SIZE = 2000;
+    public static final String TYPE = "shop_logo";
+    public static final Integer SHOP_IMAGE_MAX_SIZE = 1024;
 
     @Override
     public String uploadFile(MultipartFile file) {
@@ -157,6 +159,19 @@ public class FileInfoServiceImpl extends ServiceImpl<FileInfoMapper, FileInfo> i
     @Override
     public Map<Object, String> uploadGetUrls(MultipartFile[] file) {
         return MinioUtil.uploadGetUrls(file);
+    }
+//限制大小
+    @Override
+    public String uploadFile3(MultipartFile file, String type) {
+        long size = file.getSize() / 1024;
+        if (type.equals(TYPE)){
+            //判断图片大小
+            if (size > SHOP_IMAGE_MAX_SIZE) {
+                throw new JSYException(-1, "文件太大了,最大：" + SHOP_IMAGE_MAX_SIZE + "KB");
+            }
+        }
+        System.out.println(size);
+        return null;
     }
 
 
