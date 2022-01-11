@@ -27,6 +27,7 @@ import com.zhsj.base.api.constant.RpcConst;
 import com.zhsj.base.api.rpc.IBaseUserInfoRpcService;
 import com.zhsj.baseweb.support.ContextHolder;
 import com.zhsj.baseweb.support.LoginUser;
+import org.apache.commons.lang.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -96,6 +97,9 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
 
         if (shopPacketParam.getShopName().length() > 15) {
             throw new JSYException(-1, "店铺名太长");
+        }
+        if (shopPacketParam.getBusinessAddress().length() > 25) {
+            throw new JSYException(-1, "营业执照地址太长");
         }
         String[] split1 = shopPacketParam.getShopLogo().split(",");
         if (split1.length>1) {
@@ -194,6 +198,9 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         if (modifyParam.getShopName().length() > 15) {
             throw new JSYException(-1, "店铺名太长");
         }
+        if (modifyParam.getBusinessAddress().length() > 25) {
+            throw new JSYException(-1, "营业执照地址太长");
+        }
         List<String> shopLogo = modifyParam.getShopLogo();
         if (shopLogo.size() > 1) {
             throw new JSYException(-1, "照片只能上传1张");
@@ -219,6 +226,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
             e.printStackTrace();
             throw new JSYException(-1,"店铺分类错误");
         }
+        //审核状态 0未审核 1已审核 2审核未通过  3资质未认证
         newShop.setState(0);
         shopMapper.updateById(newShop);
     }
@@ -234,8 +242,29 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         if (ObjectUtil.isNull(newShop)){
             return ;
         }
+        if (shopSetParam.getShopName().length() > 15) {
+            throw new JSYException(-1, "店铺名太长");
+        }
+        if (shopSetParam.getAddressDetail().length() > 25) {
+            throw new JSYException(-1, "营业执照地址太长");
+        }
+        String[] split1 = shopSetParam.getShopLogo().split(",");
+        if (split1.length>1) {
+            throw new JSYException(-1, "照片只能上传1张");
+        }
+        String[] split = shopSetParam.getShopImages().split(",");
+        if (split.length>3) {
+            throw new JSYException(-1, "环境照片只能上传3张");
+        }
+        if (shopSetParam.getNotice().length()>150){
+            throw new JSYException(-1, "店铺公告最大输入150个字符" );
+        }
         BeanUtils.copyProperties(shopSetParam, newShop);
         System.out.println(newShop);
+        if (StringUtils.isNotBlank(shopSetParam.getPapers())){
+            //审核状态 0未审核 1已审核 2审核未通过  3资质未认证
+            newShop.setState(0);
+        }
         shopMapper.updateById(newShop);
     }
 

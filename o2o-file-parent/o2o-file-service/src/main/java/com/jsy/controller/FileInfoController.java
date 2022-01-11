@@ -96,7 +96,12 @@ public class FileInfoController {
         return CommonResult.ok(path);
     }
 
-
+    @ApiOperation("上传文件,限制大小")
+    @PostMapping("/uploadFile3")
+    public CommonResult<String> uploadFile3(MultipartFile file,String type) {
+        String path= fileInfoService.uploadFile3(file,type);
+        return CommonResult.ok(path);
+    }
 
 
 

@@ -32,4 +32,6 @@ public interface IFileInfoService extends IService<FileInfo> {
     String uploadFile2(MultipartFile file);
 //批量上传
     Map<Object, String> uploadGetUrls(MultipartFile[] file);
+//限制大小
+    String uploadFile3(MultipartFile file, String type);
 }

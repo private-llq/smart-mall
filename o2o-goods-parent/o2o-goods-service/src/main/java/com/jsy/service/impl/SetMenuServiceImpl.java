@@ -72,6 +72,15 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
             menu.setDiscountState(0);
 //            menu.setMenuExplain(null);
         }
+        if(setMenu.getName().length()>15){
+            throw  new JSYException(-1,"套餐名称最大只能15个字符");
+        }
+        if (setMenu.getMenuExplain().length()>150){
+            throw  new JSYException(-1,"套餐备注说明最大只能150个字符");
+        }
+
+
+
 //        String[] ids = setMenu.getServiceCharacteristicsIds().split(",");//服务特点ids
 //
 //        ArrayList<ServiceCharacteristics> list = new ArrayList<>();
@@ -94,6 +103,9 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
         Long id = menu.getId();
         for (SetMenuGoods setMenuGoods : setMenuGoodsList) {
             SetMenuGoods menuGoods = new SetMenuGoods();
+            if (setMenuGoods.getTitle().length()>15){
+                throw  new JSYException(-1,"套餐标题最大只能15个字符");
+            }
             BeanUtils.copyProperties(setMenuGoods,menuGoods);
             menuGoods.setShopId(setMenu.getShopId());
             menuGoods.setSetMenuId(id);
@@ -302,10 +314,18 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
             menu.setDiscountState(0);
             menu.setSellingPrice(null);
         }
+        if(setMenu.getName().length()>15){
+            throw  new JSYException(-1,"套餐名称最大只能15个字符");
+        }
+        if (setMenu.getMenuExplain().length()>150){
+            throw  new JSYException(-1,"套餐备注说明最大只能150个字符");
+        }
         setMenuMapper.updateById(menu);
         Long menuId = setMenu.getId();
         for (SetMenuGoods setMenuGoods : setMenuGoodsList) {
-            System.out.println(setMenuGoods);
+            if (setMenuGoods.getTitle().length()>15){
+                throw  new JSYException(-1,"套餐标题最大只能15个字符");
+            }
             menuGoodsMapper.updateById(setMenuGoods);
         }
     }
@@ -326,12 +346,13 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
     @Override
     public Boolean setState(SetMenuQuery setMenuQuery) {
         if (setMenuQuery.getState()!=null){
+            //所以商品上下架 就直接将店铺的的热门数据删除了
             setMenuMapper.setAllState(setMenuQuery);
-            hotClient.getHotGoods(setMenuQuery.getSetMenuId());
+            hotClient.delHotShop(setMenuQuery.getShopId());
         }
         if (setMenuQuery.getIsDisable()!=null){
             setMenuMapper.setAllDisable(setMenuQuery);
-            hotClient.getHotGoods(setMenuQuery.getSetMenuId());
+            hotClient.delHotShop(setMenuQuery.getShopId());
         }
         return true;
     }
