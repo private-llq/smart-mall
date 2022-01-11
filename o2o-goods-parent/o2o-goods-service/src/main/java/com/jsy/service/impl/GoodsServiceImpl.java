@@ -483,6 +483,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
      */
     @Override
     public PageInfo<BackstageGoodsDto> backstageGetGoodsAll(BackstageGoodsQuery backstageGoodsQuery) {
+        Integer type = backstageGoodsQuery.getType();
         String goodsName = backstageGoodsQuery.getGoodsName();
         Long goodsTypeId = backstageGoodsQuery.getGoodsTypeId();
         LocalDateTime startTime = backstageGoodsQuery.getStartTime();
@@ -493,6 +494,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
                 .eq("type", 0)
                 .like(StringUtils.isNotBlank(goodsName), "title", goodsName)
                 .eq(Objects.nonNull(goodsTypeId), "goods_type_id", goodsTypeId)
+                .eq("is_official_goods",type)
                 .between(Objects.nonNull(startTime) && Objects.nonNull(endTime), "create_time", startTime, endTime)
         );
         List<Goods> records = goodsPage.getRecords();

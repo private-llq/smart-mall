@@ -79,10 +79,16 @@ public class PushGoodsServiceImpl extends ServiceImpl<PushGoodsMapper, PushGoods
         if (data.getShielding()==1){
            throw new JSYException(-1,"该店铺已经被屏蔽！");
         }
+
+        //每次推送把已推送的数据取消推送
+        this.delPushGoodsSort(sort);
+
         PushGoods pushGoods = new PushGoods();
         BeanUtils.copyProperties(goods,pushGoods);
         pushGoods.setLongitude(data.getLongitude());
         pushGoods.setLatitude(data.getLatitude());
+        pushGoods.setSort(sort);
+        pushGoods.setGoodsId(goods.getId());
 
         if (Objects.nonNull(sort)){//设置排序插入 依次加一
             setPushGoodsSort(sort);
@@ -101,7 +107,7 @@ public class PushGoodsServiceImpl extends ServiceImpl<PushGoodsMapper, PushGoods
         int insert = pushGoodsMapper.insert(pushGoods);
 
         if (insert>0){//修改商品的推送状态
-            goodsMapper.update(null,new UpdateWrapper<Goods>().eq("id",id).set("push_state",type));
+            goodsMapper.update(null,new UpdateWrapper<Goods>().eq("id",id).set("push_state",type).set("push_sort",sort));
         }
 
     }
@@ -174,22 +180,31 @@ public class PushGoodsServiceImpl extends ServiceImpl<PushGoodsMapper, PushGoods
      * @param goodsId
      */
     @Override
+    @Transactional
     public void outPushGoodsSort(Long goodsId) {
-        int delete = pushGoodsMapper.delete(new QueryWrapper<PushGoods>().eq("goods_id", goodsId));
-        if (delete>0){
-            PushGoods pushGoods = pushGoodsMapper.selectOne(new QueryWrapper<PushGoods>().eq("goods_id", goodsId));
-            if (Objects.nonNull(pushGoods)){
-                delPushGoodsSort(pushGoods.getSort());
-            }
-        }
+         pushGoodsMapper.outPushGoodsSort(goodsId);
+         PushGoods pushGoods = pushGoodsMapper.selectOne(new QueryWrapper<PushGoods>().eq("goods_id", goodsId));
+         if (Objects.nonNull(pushGoods)){
+             delPushGoodsSort(pushGoods.getSort());
+         }
+
     }
 
     public void setPushGoodsSort(Long sort) {
-      pushGoodsMapper.setPushGoodsSort(sort);
+
+        List<PushGoods> selectList = pushGoodsMapper.selectList(new QueryWrapper<PushGoods>().eq("sort", sort));
+        if (selectList.size()!=0){
+            pushGoodsMapper.setPushGoodsSort(sort);
+        }
+
     }
 
     public void delPushGoodsSort(Long sort) {
-        pushGoodsMapper.delPushGoodsSort(sort);
+        List<PushGoods> selectList = pushGoodsMapper.selectList(new QueryWrapper<PushGoods>().eq("sort", sort));
+        if (selectList.size()!=0){
+            pushGoodsMapper.delPushGoodsSort(sort);
+        }
+
     }
 
 }

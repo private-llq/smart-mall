@@ -28,4 +28,6 @@ public interface PushGoodsMapper extends BaseMapper<PushGoods> {
     void setPushGoodsSort(@Param("sort") Long sort);
 
     void delPushGoodsSort(@Param("sort")Long sort);
+
+    void outPushGoodsSort(@Param("goodsId")Long goodsId);
 }

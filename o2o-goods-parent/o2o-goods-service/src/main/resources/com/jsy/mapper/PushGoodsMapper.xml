@@ -40,5 +40,8 @@
         UPDATE w_push_goods SET sort=sort-1 WHERE sort>#{sort}
     </update>
 
+    <select id="outPushGoodsSort" >
+        delete from w_push_goods where goods_id=#{goodsId}
+    </select>
 
 </mapper>
