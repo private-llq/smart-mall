@@ -107,7 +107,7 @@ public class PushGoodsServiceImpl extends ServiceImpl<PushGoodsMapper, PushGoods
         int insert = pushGoodsMapper.insert(pushGoods);
 
         if (insert>0){//修改商品的推送状态
-            goodsMapper.update(null,new UpdateWrapper<Goods>().eq("id",id).set("push_state",type).set("push_sort",sort));
+            goodsMapper.update(null,new UpdateWrapper<Goods>().eq("id",id).set("push_state",type));
         }
 
     }
