@@ -97,6 +97,8 @@ public class PushGoodsServiceImpl extends ServiceImpl<PushGoodsMapper, PushGoods
         pushGoods.setLatitude(data.getLatitude());
         pushGoods.setSort(sort);
         pushGoods.setGoodsId(goods.getId());
+        pushGoods.setPushType(type);
+
 
         if (Objects.nonNull(sort)){//设置排序插入 依次加一
             setPushGoodsSort(sort);

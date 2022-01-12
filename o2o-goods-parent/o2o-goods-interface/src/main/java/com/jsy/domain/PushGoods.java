@@ -97,4 +97,9 @@ public class PushGoods extends BaseEntity implements Serializable {
      */
     private Integer type;
 
+    /**
+     * pushType 推送类型 1：医疗  2 ：养老 3 商城
+     */
+    private Integer pushType;
+
 }

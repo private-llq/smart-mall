@@ -27,6 +27,7 @@
         SELECT * FROM w_push_goods t1 WHERE
         round ( ( 6378.138 * 2 * ASIN( SQRT( POW( SIN( ( #{query.latitude} * PI( ) / 180 - t1.latitude * PI( ) / 180 ) / 2 ), 2 ) + COS( #{query.latitude} * PI( ) / 180 ) * COS( t1.latitude * PI( ) / 180 ) * POW( SIN( ( #{query.longitude} * PI( ) / 180 - t1.longitude * PI( ) / 180 ) / 2 ), 2 ) ) ) * 1000 ) ) &lt; 3000
         AND deleted=0
+        and t1.push_type=1
         <if test="query.keyword !=null and query.keyword !=''">
             AND t1.title LIKE CONCAT('%',#{query.keyword,jdbcType=VARCHAR},'%')
         </if>
