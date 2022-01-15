@@ -167,11 +167,9 @@ public class TreeServiceImpl extends ServiceImpl<TreeMapper, Tree> implements IT
                 if (tree1.getId().equals(temp)&&tree1.getParentId()!=0){
                     list.add(tree1.getParentId());
                     temp = tree1.getParentId();
-                    System.out.println(tree1.getId()+"+++++++++++++++++++++++++++++++++++++");
                 }
             }
         }
-        System.out.println("++++++++++++++++++++");
         Tree tree = treeMapper.selectById(temp);
         if (ObjectUtil.isNotNull(tree)){
             list.add(tree.getParentId());
