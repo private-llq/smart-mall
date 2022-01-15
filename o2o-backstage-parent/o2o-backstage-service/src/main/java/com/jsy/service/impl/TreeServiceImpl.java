@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.domain.Tree;
 import com.jsy.mapper.TreeMapper;
-import com.jsy.query.MySortQuery;
 import com.jsy.service.ITreeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -223,12 +222,12 @@ public class TreeServiceImpl extends ServiceImpl<TreeMapper, Tree> implements IT
 
     /**
      * 菜单排序
-     * @param mySortQuery
+     * @param trees
      * @return
      */
     @Override
-    public void sortMenu(MySortQuery mySortQuery) {
-        treeMapper.sortMenu(mySortQuery);
+    public void sortMenu(List<Tree> trees) {
+        treeMapper.sortMenu(trees);
     }
 
 

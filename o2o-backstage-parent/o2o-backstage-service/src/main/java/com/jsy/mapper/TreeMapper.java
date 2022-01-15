@@ -2,9 +2,10 @@ package com.jsy.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.jsy.domain.Tree;
-import com.jsy.query.MySortQuery;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * <p>
@@ -16,5 +17,5 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public interface TreeMapper extends BaseMapper<Tree> {
-     void sortMenu(@Param("query") MySortQuery mySortQuery);
+     void sortMenu(@Param("list") List<Tree> trees);
 }

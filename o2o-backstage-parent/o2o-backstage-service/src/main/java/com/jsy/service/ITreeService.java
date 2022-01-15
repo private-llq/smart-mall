@@ -2,7 +2,6 @@ package com.jsy.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jsy.domain.Tree;
-import com.jsy.query.MySortQuery;
 
 import java.util.List;
 import java.util.Map;
@@ -68,10 +67,10 @@ public interface ITreeService extends IService<Tree> {
 
     /**
      * 菜单排序
-     * @param mySortQuery
+     * @param trees
      * @return
      */
-    void sortMenu(MySortQuery mySortQuery);
+    void sortMenu(List<Tree> trees);
 
 
     /**

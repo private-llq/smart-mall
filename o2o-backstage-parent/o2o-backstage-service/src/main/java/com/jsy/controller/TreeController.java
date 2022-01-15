@@ -1,7 +1,6 @@
 package com.jsy.controller;
 import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.domain.Tree;
-import com.jsy.query.MySortQuery;
 import com.jsy.service.ITreeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -87,8 +86,8 @@ public class TreeController {
      * 菜单排序
      */
     @PostMapping("sortMenu")
-    public CommonResult sortMenu(@RequestBody MySortQuery mySortQuery) {
-        treeService.sortMenu(mySortQuery);
+    public CommonResult sortMenu(@RequestBody List<Tree> trees) {
+        treeService.sortMenu(trees);
         return CommonResult.ok();
     }
     /**

@@ -11,7 +11,7 @@
         <result column="ranks" property="ranks" />
     </resultMap>
     <update id="sortMenu">
-        <foreach collection="query.trees" item="var">
+        <foreach collection="list" item="var">
             update t_shop_tree  set ranks = #{var.ranks} where id = #{var.id} and parent_id= #{query.parentId} and deleted=0;
         </foreach>
     </update>
