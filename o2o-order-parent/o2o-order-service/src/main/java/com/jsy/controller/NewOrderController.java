@@ -10,9 +10,9 @@ import com.jsy.domain.NewOrder;
 import com.jsy.basic.util.PageList;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsy.utils.AliAppPayQO;
-
 import com.jsy.utils.QrCodeUtils;
 import com.jsy.vo.SelectAllOrderByBackstageVo;
+import com.jsy.vo.SelectShopOrderVo;
 import com.zhsj.base.api.domain.PayCallNotice;
 import com.zhsj.basecommon.vo.R;
 import com.zhsj.baseweb.annotation.LoginIgnore;
@@ -21,6 +21,7 @@ import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Range;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.bind.annotation.*;
@@ -99,39 +100,37 @@ public class NewOrderController {
     @ApiOperation("查询相应状态下的数量")
     @RequestMapping(value = "/selectUserOrderNumber", method = RequestMethod.GET)
     public CommonResult<ArrayList<SelectUserOrderNumberDto>> selectUserOrderNumber() {
-
         Long id = ContextHolder.getContext().getLoginUser().getId();//获取用户id
         ArrayList<SelectUserOrderNumberDto> selectUserOrderNumberDtos = newOrderService.selectUserOrderNumber(id);
         return new CommonResult<>(200, "查询成功", selectUserOrderNumberDtos);
-
     }
 
-
-    @ApiOperation("商家根据转态查询订单")
-    @RequestMapping(value = "/selectShopOrder", method = RequestMethod.POST)
-    public CommonResult<PagerUtils> selectShopOrder(@RequestBody SelectShopOrderParam param) {
-        List<SelectShopOrderDto> list = newOrderService.selectShopOrder(param);
-        PagerUtils pagerUtils = new PagerUtils<SelectUserOrderDto>();
-        PagerUtils pagerUtils1 = pagerUtils.queryPage(param.getPage(), param.getSize(), list);
-        return new CommonResult<>(200, "查询成功", pagerUtils1);
-    }
+//    @ApiOperation("商家根据转态查询订单")
+//    @RequestMapping(value = "/selectShopOrder", method = RequestMethod.POST)
+//    public CommonResult<PagerUtils> selectShopOrder(@RequestBody SelectShopOrderParam param) {
+//        List<SelectShopOrderDto> list = newOrderService.selectShopOrder(param);
+//        PagerUtils pagerUtils = new PagerUtils<SelectUserOrderDto>();
+//        PagerUtils pagerUtils1 = pagerUtils.queryPage(param.getPage(), param.getSize(), list);
+//        return new CommonResult<>(200, "查询成功", pagerUtils1);
+//    }
 
     @ApiOperation("商家根据转态查询订单(包含逻辑删除)")
     @RequestMapping(value = "/selectShopOrder2", method = RequestMethod.POST)
-    public CommonResult<List<SelectShopOrderDto>> selectShopOrder2(@RequestBody SelectShopOrderParam param) {
-        List<SelectShopOrderDto> list  = newOrderService.selectShopOrder2(param);
-        return new CommonResult<>(200, "查询成功", list);
+    public CommonResult<PagerUtils> selectShopOrder2(@RequestBody SelectShopOrderParam param) {
+        List<SelectShopOrderVo> list  = newOrderService.selectShopOrder2(param);
+        //查询数量
+        Integer size= newOrderService.selectShopOrder2Count(param);
+        PagerUtils pagerUtils = new PagerUtils<SelectShopOrderVo>();
+        pagerUtils.setTotal(size);
+        pagerUtils.setRecords(list);
+        return new CommonResult<>(200, "查询成功", pagerUtils);
     }
-
-
-
     @ApiOperation("用户删除订单")
     @RequestMapping(value = "/deletedUserOrder", method = RequestMethod.GET)
     public CommonResult<Boolean> deletedUserOrder(@RequestParam("orderId") Long orderId) {
         boolean b = newOrderService.deletedUserOrder(orderId);
         return new CommonResult<>(200, "删除成功", b);
     }
-
     @ApiOperation("商家根据验证码查询订单")
     @RequestMapping(value = "/shopConsentOrder", method = RequestMethod.POST)
     public CommonResult<SelectShopOrderDto> shopConsentOrder(@RequestBody ShopConsentOrderParam param) {
@@ -194,8 +193,8 @@ public class NewOrderController {
             return new CommonResult<Boolean>(200, "退款成功", value);
         }
         return new CommonResult<Boolean>(200, "退款失败", value);
-
     }
+
 //    @LoginIgnore
 //    @ApiOperation("测试支付回调")
 //    @RequestMapping(value = "/replyPay", method = RequestMethod.POST)

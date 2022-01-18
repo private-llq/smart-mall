@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.jsy.dto.*;
 import com.jsy.query.*;
 import com.jsy.vo.SelectAllOrderByBackstageVo;
+import com.jsy.vo.SelectShopOrderVo;
 import com.zhsj.base.api.domain.PayCallNotice;
 import com.zhsj.basecommon.vo.R;
 
@@ -27,7 +28,7 @@ public interface INewOrderService extends IService<NewOrder> {
     //用户根据转态查询订单
     List<SelectUserOrderDto> selectUserOrder(Long id, SelectUserOrderParam param);
     //商家根据转态查询订单
-    List<SelectShopOrderDto> selectShopOrder( SelectShopOrderParam param);
+  //  List<SelectShopOrderDto> selectShopOrder( SelectShopOrderParam param);
     //用户删除订单
     boolean deletedUserOrder(Long orderId);
     //商家同意预约订单
@@ -61,5 +62,7 @@ public interface INewOrderService extends IService<NewOrder> {
     //大后台查询所有订单
     List<SelectAllOrderByBackstageDto> selectAllOrderByBackstage(SelectAllOrderByBackstageParam param);
     //商家根据转态查询订单(包含逻辑删除)
-    List<SelectShopOrderDto> selectShopOrder2(SelectShopOrderParam param);
+    List<SelectShopOrderVo> selectShopOrder2(SelectShopOrderParam param);
+    //商家根据转态查询订单数量(包含逻辑删除)
+    Integer selectShopOrder2Count(SelectShopOrderParam param);
 }

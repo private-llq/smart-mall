@@ -30,7 +30,6 @@ public interface FileClient {
     @PostMapping("/fileInfo/pub/pictureUrl")
     Map<String,String> getPicUrl(@RequestBody List<String> picList);
 
-
     @PostMapping(value = "/fileInfo/uploadFile2",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     CommonResult<String> uploadFile2(MultipartFile file);
 }

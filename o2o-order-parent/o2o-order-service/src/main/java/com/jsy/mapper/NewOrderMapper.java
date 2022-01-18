@@ -24,4 +24,6 @@ public interface NewOrderMapper extends BaseMapper<NewOrder> {
     List<SelectAllOrderByBackstageVo> selectAllOrderByBackstage(@Param("orderParam") SelectAllOrderMapperParam orderParam);
     // 商家根据转态查询订单(包含逻辑删除)
     List<SelectShopOrderDto> selectShopOrder2(@Param("ShopOrderParam") SelectShopOrderParam param);
+
+    Integer selectShopOrder2Conut(@Param("ShopOrderParam") SelectShopOrderParam param);
 }

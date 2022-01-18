@@ -85,8 +85,14 @@ public class NewRefundServiceImpl extends ServiceImpl<NewRefundMapper, NewRefund
         SelectRefundByoderDto dto = new SelectRefundByoderDto();
         //根据店铺id查询imid
         NewOrder newOrder = newOrderMapper.selectById(orderId);
-        String data = newShopClient.getShopImd(newOrder.getShopId()).getData();
-        dto.setImid(data);
+        CommonResult<String> commonResult = newShopClient.getShopImd(newOrder.getShopId());
+        if (commonResult!=null) {
+            String data = commonResult.getData();
+            dto.setImid(data);
+        }
+
+
+
         BeanUtils.copyProperties(newRefund, dto);
         return dto;
     }
@@ -120,10 +126,7 @@ public class NewRefundServiceImpl extends ServiceImpl<NewRefundMapper, NewRefund
             if (i1 > 0) {
                 return true;
             }
-
-
         }
-
         return false;
     }
 
@@ -157,11 +160,7 @@ public class NewRefundServiceImpl extends ServiceImpl<NewRefundMapper, NewRefund
                 //实在真实退款待添加接口
                 return true;
             }
-
         }
         return false;
-
     }
-
-
 }

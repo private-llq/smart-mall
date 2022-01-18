@@ -209,43 +209,91 @@
 
     </select>
 
-<!--——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————-->
-<!--    (0全部（预约已经成功，已经支付）,1超时警告,2售后管理,3已完成,4新的预约，5预约完成,6预约失败-->
+    <!--——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————-->
+    <!--    (0全部（预约已经成功，已经支付）,1超时警告,2售后管理,3已完成,4新的预约，5预约完成,6预约失败-->
 
     <sql id="selectOrderStatusByShop">
         <if test="status == 0">
-            AND ord.pay_status =1 and ord.server_code_status=0 and ord.appointment_status=1
+
+            ord.deleted=1 and ord.shop_id=#{shopId}
+            or(ord.deleted=0 and ord.shop_id=#{shopId})
         </if>
-        <if test="status == 1">
 
-            AND ord.pay_status=1 and ord.server_code_status=1 and ord.appointment_status=1 and ord.comment_status=1
+        <if test="status == 1">/*1超时警告*/
+            ord.pay_status=1
+            and ord.server_code_status=0
+            and ord.appointment_status=1
+            and ord.start_time &lt; (select now())
+            and ord.ent_time &gt; (select now())
+            and(ord.deleted=0 and ord.shop_id=#{shopId})
+            or
+            ord.pay_status=1
+            and ord.server_code_status=0
+            and ord.appointment_status=1
+            and ord.start_time &lt; (select now())
+            and ord.ent_time &gt; (select now())
+            and(ord.deleted=1 and ord.shop_id=#{shopId})
         </if>
-        <if test="status == 2">
+        <if test="status == 2">/*2售后管理*/
 
-            AND ord.pay_status=2 and ord.appointment_status=1 and ord.refund_apply_role=0
-
+            ord.pay_status!=1
+            and ord.pay_status!=0
+            and (ord.deleted=0 and ord.shop_id=#{shopId})
+            or
+            ord.pay_status!=1
+            and ord.pay_status!=0
+            and (ord.deleted=1 and ord.shop_id=#{shopId})
         </if>
-        <if test="status == 3">
-
-            AND ord.pay_status=3 and ord.appointment_status=1 and ord.refund_apply_role=0
+        <if test="status == 3">/*3已完成*/
+            ord.pay_status=1
+            and ord.appointment_status=1
+            and ord.server_code_status=1
+            and (ord.deleted=0 and ord.shop_id=#{shopId})
+            or
+            ord.pay_status=1
+            and ord.appointment_status=1
+            and ord.server_code_status=1
+            and (ord.deleted=1 and ord.shop_id=#{shopId})
         </if>
-        <if test="status == 4">
-
-            AND ord.pay_status=2 and ord.appointment_status=1 and ord.refund_apply_role=1
-
+        <if test="status == 4">/*4新的预约*/
+            ord.appointment_status=0
+            and ord.pay_status=0
+            and ord.server_code_status=0
+            and (ord.deleted=0 and ord.shop_id=#{shopId})
+            or
+            ord.appointment_status=0
+            and ord.pay_status=0
+            and ord.server_code_status=0
+            and (ord.deleted=1 and ord.shop_id=#{shopId})
         </if>
-        <if test="status == 5">
-
-            AND ord.pay_status=3 and ord.appointment_status=1 and ord.refund_apply_role=1
+        <if test="status == 5">/*5预约完成*/
+            ord.appointment_status=1
+            and ord.pay_status=0
+            and ord.server_code_status=0
+            and (ord.deleted=0 and ord.shop_id=#{shopId})
+            or
+            ord.appointment_status=1
+            and ord.pay_status=0
+            and ord.server_code_status=0
+            and (ord.deleted=1 and ord.shop_id=#{shopId})
         </if>
-        <if test="status == 6">
+        <if test="status == 6">/*6预约失败*/
+            ord.appointment_status=2
+            and ord.pay_status=0
+            and ord.server_code_status=0
+            and (ord.deleted=0 and ord.shop_id=#{shopId})
+            or
+            ord.appointment_status=2
+            and ord.pay_status=0
+            and ord.server_code_status=0
+            and (ord.deleted=1 and ord.shop_id=#{shopId})
 
-            AND ord.appointment_status=1 and ord.pay_status!=0
         </if>
     </sql>
     <resultMap id="selectShopOrder2" type="com.jsy.dto.SelectShopOrderDto">
         <id column="id" property="id"/>
         <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
         <result column="user_id" property="userId"/>
         <result column="shop_id" property="shopId"/>
         <result column="order_num" property="orderNum"/>
@@ -259,7 +307,16 @@
         <result column="pay_status" property="payStatus"/>
         <result column="order_status" property="orderStatus"/>
         <result column="refund_apply_role" property="refundApplyRole"/>
-
+        <result column="start_time" property="startTime"/>
+        <result column="ent_time" property="entTime"/>
+        <result column="bill_month" property="billMonth"/>
+        <result column="bill_num" property="billNum"/>
+        <result column="bill_rise" property="billRise"/>
+        <result column="sex" property="sex"/>
+        <result column="telepone" property="telepone"/>
+        <result column="district" property="district"/>
+        <result column="detailed_address" property="detailedAddress"/>
+        <result column="shipping_address" property="shippingAddress"/>
         <collection property="orderGoodsDtos" ofType="com.jsy.dto.SelectUserOrderGoodsDto">
             <id column="gid" property="id"/>
             <result column="gcreate_time" property="createTime"/>
@@ -302,7 +359,6 @@
     <select id="selectShopOrder2" parameterType="com.jsy.query.SelectShopOrderParam" resultMap="selectShopOrder2">
 
 
-
         select o.id,
         o.user_id,
         o.shop_id,
@@ -326,7 +382,9 @@
         o.refund_apply_role,
         o.serve_code,
         o.create_time,
-
+        o.update_time,
+        o.detailed_address,
+        o.telepone,
 
         g.id as gid,
         g.create_time as gcreate_time,
@@ -361,15 +419,30 @@
         s.service_id as sservice_id
 
 
-        from (SELECT * FROM w_new_order as ord  where ord.deleted=0 or ord.deleted=1
-                <include refid="selectOrderStatusByShop"></include>
-               limit #{page},#{size}
-              ) as o
-        LEFT JOIN w_order_goods as g on ( g.order_id = o.id and g.deleted=0 ) or (g.order_id = o.id and  g.deleted=1)
+        from (SELECT * FROM w_new_order as ord
+        <where>
+            <include refid="selectOrderStatusByShop"></include>
+        </where>
+        ORDER BY ord.update_time DESC
+        limit #{page},#{size}
+        ) as o
+        LEFT JOIN w_order_goods as g on ( g.order_id = o.id and g.deleted=0 ) or (g.order_id = o.id and g.deleted=1)
         LEFT JOIN w_order_service as s on (s.order_id = o.id and s.deleted=0) or (s.order_id = o.id and s.deleted=1)
         LEFT JOIN w_order_set_menu as m on (m.order_id = o.id and m.deleted=0) or (m.order_id = o.id and m.deleted=1)
 
     </select>
+
+    <select id="selectShopOrder2Conut" parameterType="com.jsy.query.SelectShopOrderParam" resultType="Integer">
+
+        SELECT count(1) FROM w_new_order as ord
+        <where>
+            <include refid="selectOrderStatusByShop"></include>
+        </where>
+
+
+
+    </select>
+
 
 
 </mapper>
