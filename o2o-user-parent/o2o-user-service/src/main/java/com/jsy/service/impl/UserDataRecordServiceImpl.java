@@ -99,8 +99,12 @@ public class UserDataRecordServiceImpl extends ServiceImpl<UserDataRecordMapper,
     }
 
     @Override
-    public List<UserDataRecord> listUserDataRecord() {
-        List<UserDataRecord> selectList = userDataRecordMapper.selectList(null);
+    public List<UserDataRecord> listUserDataRecord(Integer type) {
+        LoginUser loginUser = ContextHolder.getContext().getLoginUser();
+        if (Objects.isNull(loginUser)){
+            new JSYException(-1,"用户认证失败！");
+        }
+        List<UserDataRecord> selectList = userDataRecordMapper.selectList(new QueryWrapper<UserDataRecord>().eq("type",type).eq("uid",loginUser.getId()));
         return selectList;
     }
 

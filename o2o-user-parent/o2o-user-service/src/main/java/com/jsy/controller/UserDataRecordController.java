@@ -93,8 +93,8 @@ public class UserDataRecordController {
     * @return
     */
     @GetMapping("/listUserDataRecord")
-    public CommonResult<List<UserDataRecord>> listUserDataRecord(){
-        List<UserDataRecord> list=userDataRecordService.listUserDataRecord();
+    public CommonResult<List<UserDataRecord>> listUserDataRecord(@RequestParam("type") Integer type){
+        List<UserDataRecord> list=userDataRecordService.listUserDataRecord(type);
         return CommonResult.ok(list);
     }
 

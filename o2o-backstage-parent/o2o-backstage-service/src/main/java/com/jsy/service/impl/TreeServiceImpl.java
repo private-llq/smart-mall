@@ -151,6 +151,35 @@ public class TreeServiceImpl extends ServiceImpl<TreeMapper, Tree> implements IT
         return collect;
     }
 
+    @Override
+    public List<Tree> selectAllTree2(Long id) {
+        if (Objects.isNull(id)){
+            throw new JSYException(500,"id不能为空！");
+        }
+        Long tempId=null;
+        if (id==1L){
+            tempId=3L;
+        }
+        if (id==2L){
+            tempId=4L;
+        }
+        if (id==3L){
+            tempId=5L;
+        }
+        if (id==4L){
+            tempId=6L;
+        }
+        List<Tree> list = treeMapper.selectList(new QueryWrapper<Tree>().eq("deleted",0));
+        Long finalTempId = tempId;
+        List<Tree> collect = list.stream().filter(x -> x.getParentId() == finalTempId)//过滤出子级父id等于传入的父级id
+                .map(x -> {
+                    x.setChildrens(getChildrens(x, list));//从所有数据中找出N条 符合 子级父id等于传入的父级id 的数据 ，然后再把这N条数据当做参数，找到他们的子级
+                    return x;
+                }).sorted(Comparator.comparing(Tree::getRanks)).collect(Collectors.toList());
+
+        List<Tree> treeList = collect.stream().sorted(Comparator.comparing(Tree::getRanks)).collect(Collectors.toList());
+        return treeList;
+    }
 
 
     /**
@@ -177,6 +206,7 @@ public class TreeServiceImpl extends ServiceImpl<TreeMapper, Tree> implements IT
         Collections.reverse(list);
         return list.toString();
     }
+
 
 
     /**

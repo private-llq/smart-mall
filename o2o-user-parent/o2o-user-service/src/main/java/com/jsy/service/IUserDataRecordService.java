@@ -22,7 +22,7 @@ public interface IUserDataRecordService extends IService<UserDataRecord> {
 
     List<UserDataRecord> getUserDataRecord(String imId);
 
-    List<UserDataRecord> listUserDataRecord();
+    List<UserDataRecord> listUserDataRecord(Integer type);
 
 
     List<UserDataRecord> getUserDataRecordTreeId(Long treeId);

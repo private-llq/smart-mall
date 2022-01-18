@@ -89,4 +89,6 @@ public interface ITreeService extends IService<Tree> {
      * 查询本级上面所有父级菜单（不包含本级）
      */
     String getParentTreeAll(Long id);
+
+    List<Tree> selectAllTree2(Long id);
 }

@@ -6,6 +6,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.Map;
 
@@ -65,7 +66,7 @@ public class TreeController {
     /**
      * 删除该级+以及下面的所有子集
      * @param id
-     * @return
+     * @return0
      */
     @DeleteMapping("removeAllTree")
     public CommonResult removeAllTree(@RequestParam("id") Long id) {
@@ -99,6 +100,16 @@ public class TreeController {
     @GetMapping("selectAllTree")
     public CommonResult<List<Tree>> selectAllTree(@RequestParam("id") Long id){
         List<Tree> list = treeService.selectAllTree(id);
+        return CommonResult.ok(list);
+    }
+
+    /**
+     * (用户定制需求档案下拉框)
+     */
+    @GetMapping("selectAllTree2")
+    public CommonResult<List<Tree>> selectAllTree2(@RequestParam("id") Long id){
+
+        List<Tree> list = treeService.selectAllTree2(id);
         return CommonResult.ok(list);
     }
 
