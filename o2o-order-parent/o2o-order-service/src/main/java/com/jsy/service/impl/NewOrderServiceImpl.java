@@ -961,7 +961,8 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
 
             int update = newOrderMapper.updateById(newOrder);
             if (update > 0) {
-                NewOrder newOrder1 = newOrderMapper.selectById(Long.getLong(busOrderNo));
+                NewOrder newOrder1 = newOrderMapper.selectById(busOrderNo);
+                log.info("查询的订单"+newOrder1.toString());
                 AddShopBillOneParam billOneParam = new AddShopBillOneParam();
                 billOneParam.setMoney(orderAmount);
                 billOneParam.setShopId(newOrder1.getShopId());

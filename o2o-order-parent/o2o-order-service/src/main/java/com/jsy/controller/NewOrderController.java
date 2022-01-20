@@ -51,7 +51,6 @@ public class NewOrderController {
     public FileClient fileClient;
 
     /**********************************************arli***************************************/
-
 //    @ApiOperation("新增订单")
 //    @RequestMapping(value = "/creationOrder", method = RequestMethod.POST)
 //    public CommonResult<Boolean> creationOrder(@RequestBody CreationOrderParam creationOrderParam) {
@@ -89,7 +88,6 @@ public class NewOrderController {
         Long id = ContextHolder.getContext().getLoginUser().getId();//获取用户id
         String token = ContextHolder.getContext().getLoginUser().getToken();
         log.info("token" + token);
-
         System.out.println("用户id" + id);
         List<SelectUserOrderDto> list = newOrderService.selectUserOrder(id, param);
         PagerUtils pagerUtils = new PagerUtils<SelectUserOrderDto>();
@@ -184,7 +182,6 @@ public class NewOrderController {
         CommonResult value = newOrderService.WeChatPay(orderId);
         return value;
     }
-
     @ApiOperation("退款接口")
     @RequestMapping(value = "/allPayRefund", method = RequestMethod.GET)
     public CommonResult<Boolean> allPayRefund(@RequestParam("orderId") Long orderId) {
@@ -194,7 +191,6 @@ public class NewOrderController {
         }
         return new CommonResult<Boolean>(200, "退款失败", value);
     }
-
 //    @LoginIgnore
 //    @ApiOperation("测试支付回调")
 //    @RequestMapping(value = "/replyPay", method = RequestMethod.POST)
@@ -207,8 +203,6 @@ public class NewOrderController {
 //        }
 //        return new CommonResult<>(1, "失败", b);
 //    }
-
-
     @LoginIgnore
     @ApiOperation("测试支付回调")
     @RequestMapping(value = "/replyPay", method = RequestMethod.POST)
@@ -219,32 +213,25 @@ public class NewOrderController {
             return new CommonResult<>(0, "回调成功", b);
         }
         return new CommonResult<>(1, "失败", b);
-
     }
-
-
     @ApiOperation("查询近多少日订单量")
     @RequestMapping(value = "/orderSize", method = RequestMethod.POST)
     public CommonResult<OrderSizeDto> orderSize(@RequestBody OrderSizeParam param) {
         OrderSizeDto dto = newOrderService.orderSize(param);
         return new CommonResult<>(200, "查询成功", dto);
     }
-
-
     //大后台查询所有订单
     @RequestMapping(value = "/selectAllOrderByBackstage", method = RequestMethod.POST)
     public CommonResult<List<SelectAllOrderByBackstageDto>> selectAllOrderByBackstage(@RequestBody SelectAllOrderByBackstageParam param) {
         List<SelectAllOrderByBackstageDto> dto = newOrderService.selectAllOrderByBackstage(param);
         return new CommonResult<>(200, "查询成功", dto);
     }
-
 //    //根据订单号查询订单
 //    @RequestMapping(value = "/selectOrderByBackstageNo", method = RequestMethod.GET)
 //    public CommonResult<PagerUtils> selectOrderByBackstageNum(@RequestParam("orderNumber") String  orderNumber){
 //        PagerUtils   dto= newOrderService.selectOrderByBackstageNum(param);
 //        return new CommonResult<>(200, "查询成功", null);
 //    }
-
     //生成二维码测试接口
     @LoginIgnore
     @RequestMapping(value = "/test1", method = RequestMethod.POST)
@@ -263,13 +250,9 @@ public class NewOrderController {
             MultipartFile multipartFile = new MockMultipartFile("file", "file.jpg", "text/plain", input);
             stringCommonResult = fileClient.uploadFile2(multipartFile);
             String data = stringCommonResult.getData();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return stringCommonResult;
     }
-
-
 }

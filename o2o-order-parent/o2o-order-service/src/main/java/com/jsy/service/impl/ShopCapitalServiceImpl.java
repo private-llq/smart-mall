@@ -7,6 +7,7 @@ import com.jsy.mapper.ShopCapitalMapper;
 import com.jsy.query.AddCapitalParam;
 import com.jsy.service.IShopCapitalService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -21,6 +22,7 @@ import java.math.BigDecimal;
  * @since 2021-12-24
  */
 @Service
+@Slf4j
 public class ShopCapitalServiceImpl extends ServiceImpl<ShopCapitalMapper, ShopCapital> implements IShopCapitalService {
     @Resource
     private ShopCapitalMapper shopCapitalMapper;
@@ -42,9 +44,16 @@ public class ShopCapitalServiceImpl extends ServiceImpl<ShopCapitalMapper, ShopC
     //减少余额
     @Override
     public Boolean subtractCapital(AddCapitalParam param) {
+        log.info("参数"+param.toString());
         QueryWrapper<ShopCapital> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("shop_id", param.getShopId());
         ShopCapital shopCapital = shopCapitalMapper.selectOne(queryWrapper);
+        if(shopCapital==null){
+            Boolean aBoolean = initializeShopCapital(param.getShopId());
+            if (aBoolean) {
+                shopCapital = shopCapitalMapper.selectOne(queryWrapper);
+            }
+        }
         shopCapital.setCapital(shopCapital.getCapital().subtract(param.getMoney()));
         int i = shopCapitalMapper.updateById(shopCapital);
         if (i > 0) {
