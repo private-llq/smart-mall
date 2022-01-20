@@ -2,6 +2,7 @@ package com.jsy.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.jsy.basic.util.MyPageUtils;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.exception.JSYException;
@@ -23,6 +24,7 @@ import com.zhsj.im.chat.api.rpc.IImChatUserInfoRpcService;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -57,6 +59,8 @@ public class UserDataRecordServiceImpl extends ServiceImpl<UserDataRecordMapper,
 
 
     @Override
+    @Transactional
+    @LcnTransaction
     public void saveUserDataRecord(UserDataRecord userDataRecord) {
         LoginUser loginUser = ContextHolder.getContext().getLoginUser();
         if (Objects.isNull(loginUser)){

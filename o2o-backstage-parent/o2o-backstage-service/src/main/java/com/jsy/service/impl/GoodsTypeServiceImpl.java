@@ -9,6 +9,7 @@ import com.jsy.dto.GoodsTypeDto;
 import com.jsy.mapper.GoodsTypeMapper;
 import com.jsy.service.IGoodsTypeService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -50,6 +51,7 @@ public class GoodsTypeServiceImpl extends ServiceImpl<GoodsTypeMapper, GoodsType
     }
 
     @Override
+    @Transactional
     public void deleteById(Long id) {
         //把节点下面的子节点全部查出来
         List<GoodsType> categories = selectCategory(id);

@@ -2,6 +2,8 @@ package com.jsy.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.utils.BeansCopyUtils;
 import com.jsy.basic.util.utils.SnowFlake;
@@ -14,11 +16,11 @@ import com.jsy.mapper.BackstageGoodsMapper;
 import com.jsy.param.BackstageGoodsParam;
 import com.jsy.query.BackstageGoodsQuery;
 import com.jsy.service.IBackstageGoodsService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -46,6 +48,8 @@ public class BackstageGoodsServiceImpl extends ServiceImpl<BackstageGoodsMapper,
     private GoodsTypeClient goodsTypeClient;
 
     @Override
+    @Transactional
+    @LcnTransaction
     public void addBackstageGoods(BackstageGoodsParam backstageGoodsParam) {
         BackstageGoods backstageGoods = new BackstageGoods();
         GoodsTypeDto data = goodsTypeClient.get(backstageGoodsParam.getGoodsTypeId()).getData();
@@ -60,6 +64,8 @@ public class BackstageGoodsServiceImpl extends ServiceImpl<BackstageGoodsMapper,
     }
 
     @Override
+    @Transactional
+    @LcnTransaction
     public void updateBackstageGoods(BackstageGoodsParam backstageGoodsParam) {
         BackstageGoods backstageGoods = new BackstageGoods();
         BeanUtils.copyProperties(backstageGoodsParam,backstageGoods);

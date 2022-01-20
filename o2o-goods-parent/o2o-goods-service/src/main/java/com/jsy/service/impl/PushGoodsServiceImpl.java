@@ -3,6 +3,7 @@ package com.jsy.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.jsy.basic.util.MyPageUtils;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.exception.JSYException;
@@ -49,6 +50,7 @@ public class PushGoodsServiceImpl extends ServiceImpl<PushGoodsMapper, PushGoods
      */
     @Override
     @Transactional
+    @LcnTransaction
     public void pushGoods(PushGoodsParam pushGoodsParam) {
         Long id = pushGoodsParam.getId();
         Integer type = pushGoodsParam.getType();
@@ -191,6 +193,7 @@ public class PushGoodsServiceImpl extends ServiceImpl<PushGoodsMapper, PushGoods
      */
     @Override
     @Transactional
+    @LcnTransaction
     public void outPushGoodsSort(Long goodsId) {
          pushGoodsMapper.outPushGoodsSort(goodsId);//删除数据
          PushGoods pushGoods = pushGoodsMapper.selectOne(new QueryWrapper<PushGoods>().eq("goods_id", goodsId));

@@ -85,6 +85,7 @@ public class TreeServiceImpl extends ServiceImpl<TreeMapper, Tree> implements IT
      * @param id
      */
     @Override
+    @Transactional
     public void delTreeOne(Long id) {
         List<Tree> list = treeMapper.selectList(new QueryWrapper<Tree>().eq("parent_id", id).eq("deleted",0));
         if (list.size()==0){
@@ -104,6 +105,7 @@ public class TreeServiceImpl extends ServiceImpl<TreeMapper, Tree> implements IT
      * 可修改内容：name 、 img_path
      */
     @Override
+    @Transactional
     public void updateTree(Tree tree) {
         if (tree.getId()==null){
             throw new JSYException(-1,"id不能为空！");
@@ -212,6 +214,7 @@ public class TreeServiceImpl extends ServiceImpl<TreeMapper, Tree> implements IT
     /**
      * 递归删除子节点
      */
+    @Transactional
     public boolean removeAllTree(Long id){
         ArrayList<Long> idList = new ArrayList<>();
 

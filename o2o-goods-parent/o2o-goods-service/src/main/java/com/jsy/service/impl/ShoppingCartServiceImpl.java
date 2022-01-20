@@ -1,27 +1,35 @@
 package com.jsy.service.impl;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.jsy.basic.util.MyPageUtils;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.utils.BeansCopyUtils;
 import com.jsy.client.NewShopClient;
-import com.jsy.domain.*;
+import com.jsy.domain.Goods;
+import com.jsy.domain.SetMenu;
+import com.jsy.domain.ShoppingCart;
 import com.jsy.dto.*;
 import com.jsy.mapper.GoodsMapper;
 import com.jsy.mapper.SetMenuMapper;
 import com.jsy.mapper.ShoppingCartMapper;
 import com.jsy.parameter.ShoppingCartParam;
 import com.jsy.service.IShoppingCartService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhsj.baseweb.support.ContextHolder;
 import com.zhsj.baseweb.support.LoginUser;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -55,6 +63,7 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
      */
     @Override
     @Transactional
+    @LcnTransaction
     public void addShoppingCart(ShoppingCartParam shoppingCartParam) {
 
 
@@ -115,6 +124,8 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
      * @return
      */
     @Override
+    @Transactional
+    @LcnTransaction
     public void addSetMenu(ShoppingCartParam shoppingCartParam) {
 
 
@@ -209,6 +220,7 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
      * @param id
      */
     @Override
+    @Transactional
     public void reduceShoppingCart(Long id) {
         ShoppingCart cart = shoppingCartMapper.selectOne(new QueryWrapper<ShoppingCart>().eq("id", id));
         Integer num = cart.getNum();
@@ -224,6 +236,7 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
      * @param id
      */
     @Override
+    @Transactional
     public void additionShoppingCart(Long id) {
         ShoppingCart cart = shoppingCartMapper.selectOne(new QueryWrapper<ShoppingCart>().eq("id", id));
         Integer num = cart.getNum();

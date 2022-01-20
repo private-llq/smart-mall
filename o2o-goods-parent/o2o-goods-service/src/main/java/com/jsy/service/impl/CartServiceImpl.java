@@ -1,7 +1,9 @@
 package com.jsy.service.impl;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -23,6 +25,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -62,6 +65,7 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements IC
      * @param cart
      */
     @Transactional
+    @LcnTransaction
     public void addCart(Cart cart){
         UserEntity userEntity = getUserEntity();
         String userUuid = userEntity.getUid();
@@ -109,6 +113,7 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements IC
      * @return
      */
     @Transactional
+    @LcnTransaction
     public CartDTO queryCart(CartQuery CartQuery) {//CartQuery没作分页
         UserEntity userEntity = getUserEntity();
         String userUuid = userEntity.getUid();
