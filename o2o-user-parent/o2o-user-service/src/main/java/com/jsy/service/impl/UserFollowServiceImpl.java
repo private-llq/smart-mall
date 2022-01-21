@@ -1,13 +1,11 @@
 package com.jsy.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jsy.basic.util.PageList;
 import com.jsy.basic.util.exception.JSYException;
 import com.jsy.basic.util.utils.CurrentUserHolder;
 import com.jsy.basic.util.utils.UUIDUtils;
-import com.jsy.basic.util.vo.UserDto;
 import com.jsy.basic.util.vo.UserEntity;
 import com.jsy.client.ActivityClient;
 import com.jsy.client.FileClient;
@@ -17,12 +15,15 @@ import com.jsy.dto.UserFollowDTO;
 import com.jsy.mapper.UserFollowMapper;
 import com.jsy.query.UserFollowQuery;
 import com.jsy.service.IUserFollowService;
-import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 public class UserFollowServiceImpl extends ServiceImpl<UserFollowMapper, UserFollow> implements IUserFollowService{
