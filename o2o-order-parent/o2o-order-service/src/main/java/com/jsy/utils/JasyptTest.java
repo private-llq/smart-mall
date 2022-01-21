@@ -10,10 +10,10 @@ public class JasyptTest {
         StandardPBEStringEncryptor standardPBEStringEncryptor = new StandardPBEStringEncryptor();
         EnvironmentPBEConfig config = new EnvironmentPBEConfig();
 
-        config.setAlgorithm("PBEWithMD5AndDES");     // 加密的算法，这个算法是默认的
-        config.setPassword("arli");            // 加密的密钥
+        config.setAlgorithm("PBEWithMD5AndDES");  // 加密的算法，这个算法是默认的
+        config.setPassword("arli");               // 加密的密钥
         standardPBEStringEncryptor.setConfig(config);
-        String plainText = "helloworld123";
+        String plainText = "com.alibaba.druid.pool.DruidDataSource";      //加密的数据
         String encryptedText = standardPBEStringEncryptor.encrypt(plainText);
         System.out.println(encryptedText);
     }
