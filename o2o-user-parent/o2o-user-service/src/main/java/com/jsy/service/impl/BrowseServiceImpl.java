@@ -7,6 +7,7 @@ import com.jsy.service.IBrowseService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhsj.baseweb.support.ContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.List;
 public class BrowseServiceImpl extends ServiceImpl<BrowseMapper, Browse> implements IBrowseService {
     @Resource
     private BrowseMapper browseMapper;
+    @Transactional
     @Override
     public void del(Long id) {
     browseMapper.deleteBrowse(id);
@@ -30,6 +32,7 @@ public class BrowseServiceImpl extends ServiceImpl<BrowseMapper, Browse> impleme
     }
 
     @Override
+    @Transactional
     public void delList(List<Long> stringList) {
         Long id = ContextHolder.getContext().getLoginUser().getId();
         browseMapper.delList(id,stringList);

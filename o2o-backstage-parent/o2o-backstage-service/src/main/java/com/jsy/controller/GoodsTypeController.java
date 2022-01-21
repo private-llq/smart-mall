@@ -1,4 +1,5 @@
 package com.jsy.controller;
+import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.jsy.basic.util.vo.CommonResult;
 import com.jsy.domain.GoodsType;
 import com.jsy.dto.GoodsTypeDto;
@@ -8,6 +9,7 @@ import com.zhsj.basecommon.vo.R;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -26,6 +28,7 @@ public class GoodsTypeController {
      */
     @ApiOperation(value = "新增或删除")
     @PostMapping(value="/save")
+    @Transactional
     public CommonResult save(@RequestBody GoodsTypeParam typeParam){
         try {
             if(typeParam.getId()!=null){
@@ -49,6 +52,7 @@ public class GoodsTypeController {
      * @param id
      * @return
      */
+    @Transactional
     @ApiOperation(value = "删除对象信息",httpMethod = "Delete",response = CommonResult.class)
     @DeleteMapping(value="/del")
     public CommonResult delete(@RequestParam("id") Long id){

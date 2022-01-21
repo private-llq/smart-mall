@@ -2,6 +2,7 @@ package com.jsy.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.jsy.basic.util.MyPageUtils;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.domain.NewShop;
@@ -17,6 +18,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -41,6 +43,8 @@ public class HotGoodsServiceImpl extends ServiceImpl<HotGoodsMapper, HotGoods> i
     private StringRedisTemplate stringRedisTemplate;
     @Resource
     private RedisUtils redisUtils;
+
+    @Transactional
     @Override
     public PageInfo<HotGoods> getHot(NewShopQuery newShopQuery) {
 
@@ -81,7 +85,7 @@ public class HotGoodsServiceImpl extends ServiceImpl<HotGoodsMapper, HotGoods> i
             return hotDtoPageInfo;
         }
     }
-
+    @Transactional
     @Override
     public Boolean delHotGoods(Long goodsId) {
         try {
@@ -94,7 +98,7 @@ public class HotGoodsServiceImpl extends ServiceImpl<HotGoodsMapper, HotGoods> i
         }
 
     }
-
+    @Transactional
     @Override
     public Boolean delHotShop(Long shopId) {
         try {
@@ -105,7 +109,7 @@ public class HotGoodsServiceImpl extends ServiceImpl<HotGoodsMapper, HotGoods> i
             return false;
         }
     }
-
+    @Transactional
     @Override
     public HotGoods getHotGoods(Long goodsId) {
         HotGoods hotGoods = hotGoodsMapper.selectOne(new QueryWrapper<HotGoods>().eq("goods_id", goodsId));
@@ -124,7 +128,7 @@ public class HotGoodsServiceImpl extends ServiceImpl<HotGoodsMapper, HotGoods> i
         }
         return hotGoods;
     }
-
+    @Transactional
     @Override
     public HotGoods getHotShop(Long shopId) {
         HotGoods hotGoods = hotGoodsMapper.selectOne(new QueryWrapper<HotGoods>().eq("shop_id", shopId));

@@ -3,6 +3,7 @@ package com.jsy.service.impl;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.jsy.basic.util.MyPageUtils;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.exception.JSYException;
@@ -29,6 +30,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -59,6 +61,7 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
     @Resource
     private StringRedisTemplate stringRedisTemplate;
 
+    @Transactional
     @Override
     public void addSetMenu(SetMenuParam setMenu) {
 
@@ -113,7 +116,8 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
         }
 
     }
-
+    @Transactional
+    @LcnTransaction
     @Override
     public SetMenuDto getSetMenulist(Long id, Integer type) {
         SetMenu setMenu;
@@ -289,7 +293,8 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
         PageInfo<SetMenuDto> setMenuDtoPageInfo = MyPageUtils.pageMap(setMenuQuery.getPage(), setMenuQuery.getRows(), dtoList);
         return setMenuDtoPageInfo;
     }
-
+    @Transactional
+    @LcnTransaction
     @Override
     public void setState(Long id,Integer state) {
         SetMenu setMenu = setMenuMapper.selectOne(new QueryWrapper<SetMenu>().eq("id", id));
@@ -300,7 +305,8 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
         setMenu.setState(state);
         setMenuMapper.updateById(setMenu);
     }
-
+    @Transactional
+    @LcnTransaction
     @Override
     public void updateSetMenu(SetMenuParam setMenu) {
         System.out.println("修改");
@@ -342,6 +348,8 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
 //        BeansCopyUtils.copyListProperties(setMenus,SetMenuDto::new);
         return dtoList;
     }
+    @Transactional
+    @LcnTransaction
 //修改店铺所有商家的商品上下架或禁用
     @Override
     public Boolean setState(SetMenuQuery setMenuQuery) {
@@ -357,6 +365,8 @@ public class SetMenuServiceImpl extends ServiceImpl<SetMenuMapper, SetMenu> impl
         return true;
     }
 //修改单个商品上下架或禁用
+    @Transactional
+    @LcnTransaction
     @Override
     public Boolean setStateById(SetMenuQuery setMenuQuery) {
         SetMenu menu = setMenuMapper.selectById(setMenuQuery.getSetMenuId());

@@ -3,6 +3,7 @@ package com.jsy.service.impl;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.jsy.basic.util.MyPageUtils;
 import com.jsy.basic.util.PageInfo;
 import com.jsy.basic.util.exception.JSYException;
@@ -31,6 +32,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -84,6 +86,8 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
      * @Date: 2021/11/8-11:49
      */
     @Override
+    @Transactional
+    @LcnTransaction
     public Long addNewShop(NewShopParam shopPacketParam) {
         boolean mobile = RegexUtils.isLandline(shopPacketParam.getMobile());//验证电话
         boolean mobile1 = RegexUtils.isMobile(shopPacketParam.getMobile());//验证电话
@@ -177,7 +181,9 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
   * @since 2021/12/1-11:09
   * @description 修改所有店铺的参数
   **/
-    @Override
+ @Transactional
+ @LcnTransaction
+ @Override
         public void update(NewShopModifyParam modifyParam) {
 //        boolean mobile = RegexUtils.isLandline(modifyParam.getMobile());//验证电话
 //        if (!mobile) {
@@ -237,6 +243,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
      * @description 修改店铺设置
      **/
     @Override
+    @Transactional
     public void setSetShop(NewShopSetParam shopSetParam) {
         NewShop newShop = shopMapper.selectById(shopSetParam.getId());
         if (ObjectUtil.isNull(newShop)){
@@ -465,6 +472,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
   * @since 2021/12/1-11:10
   * @description 新增店铺资质认证
   **/
+ @Transactional
  @Override
     public void addQualification(NewShopQualificationParam qualificationParam) {
         if(!RegexUtils.isIDCard(qualificationParam.getIdNumber())){
@@ -520,7 +528,8 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
   * @since 2021/12/1-11:47
   * @description 修改店铺基本信息填写
   **/
-    @Override
+ @Transactional
+ @Override
     public void updateBasic(NewShopParam shopPacketParam) {
 
         if (shopPacketParam.getShopName().length() > 15) {
