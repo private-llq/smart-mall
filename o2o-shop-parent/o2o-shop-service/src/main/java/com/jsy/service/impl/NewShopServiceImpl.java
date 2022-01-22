@@ -732,6 +732,13 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
         map.put("money",0);
         return map;
     }
+    //根据shopid查询userid
+    @Override
+    public Long selectUseridByShopid(Long shopId) {
+        NewShop newShop = shopMapper.selectById(shopId);
+        Long ownerUuid = newShop.getOwnerUuid();
+        return ownerUuid;
+    }
 
 
 }

@@ -116,4 +116,6 @@ public interface INewShopService extends IService<NewShop> {
   * @description 查询的发布数量、订单数量、交易金额
   **/
  Map<String, Object> selectReleaseNumber(Long shopId);
+    //根据shopid查询userid
+    Long selectUseridByShopid(Long shopId);
 }

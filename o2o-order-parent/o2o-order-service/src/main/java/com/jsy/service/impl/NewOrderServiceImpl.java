@@ -30,6 +30,7 @@ import com.zhsj.baseweb.support.ContextHolder;
 import com.zhsj.baseweb.support.LoginUser;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,6 +88,8 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
     public IShopBillService shopBillService;
     @Autowired
     public FileClient fileClient;
+    @Autowired
+    public NewShopClient newShopClient;
     @Value("${pay.urlAliPay}")
     private String urlAliPay;//支付宝支付url
     @Value("${pay.urlWeChatPay}")
@@ -1200,7 +1203,11 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
         aliAppPayQO.setTradeFrom(2);//交易来源 1.充值提现2.商城购物3.水电缴费4.物业管理5.房屋租金6.红包7.红包退回.8停车缴费.9房屋租赁.10临时车辆缴费
         aliAppPayQO.setOrderData(orderData);//订单详情
         aliAppPayQO.setBody(orderData.toString());//订单附加信息
-        aliAppPayQO.setReceiveUid(newOrder.getShopId());//收款方id
+        //获取用户id
+        CommonResult<Long> longCommonResult = newShopClient.selectUseridByShopid(newOrder.getShopId());
+        Long data = longCommonResult.getData();
+        aliAppPayQO.setReceiveUid(data);//收款方id
+
         String urlParam = urlAliPay;//支付宝支付url
         CommonResult commonResult = HttpClientHelper.sendPost(urlParam, aliAppPayQO, token, CommonResult.class);
         log.info(commonResult.toString() + "支付响应");
@@ -1238,7 +1245,10 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
         weChatPayQO.setTradeFrom(2);//商城购物2
         weChatPayQO.setAmount(new BigDecimal(0.01));
         weChatPayQO.setOrderData(orderData);
-        weChatPayQO.setReceiveUid(newOrder.getShopId());//收款方id
+        //获取用户id
+        CommonResult<Long> longCommonResult = newShopClient.selectUseridByShopid(newOrder.getShopId());
+        Long data = longCommonResult.getData();
+        weChatPayQO.setReceiveUid(data);//收款方id
         weChatPayQO.setServiceOrderNo(newOrder.getId().toString());
         log.info(orderData.toString());
         weChatPayQO.setDescriptionStr("商城购物");//支付描述
