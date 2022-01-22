@@ -33,4 +33,8 @@ public interface NewShopClient {
     @ApiOperation("查询商家的imd")
     @RequestMapping(value = "/newShop/getShopImd",method = RequestMethod.POST)
     CommonResult<String> getShopImd(@RequestParam("shopId") Long shopId);
+
+    @ApiOperation("查询商家所有信息")
+    @RequestMapping(value = "/getById",method = RequestMethod.GET)
+    CommonResult<NewShop> getById(@RequestParam("shopId") Long shopId);
 }

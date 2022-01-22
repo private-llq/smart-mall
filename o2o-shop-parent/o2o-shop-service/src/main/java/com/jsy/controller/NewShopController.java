@@ -443,5 +443,15 @@ public class NewShopController {
         Map<String,Object> map = newShopService.selectReleaseNumber(shopId);
             return CommonResult.ok(map);
     }
-
+    /**
+     * @author Tian
+     * @since 2021/12/3-9:57
+     * @description 查询商家所有信息
+     **/
+    @ApiOperation("查询商家所有信息")
+    @RequestMapping(value = "/getById",method = RequestMethod.GET)
+    public CommonResult<NewShop> getById(@RequestParam("shopId") Long shopId){
+        NewShop newShop = newShopService.getById(shopId);
+        return CommonResult.ok(newShop);
+    }
 }
