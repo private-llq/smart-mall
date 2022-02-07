@@ -734,7 +734,7 @@ public class NewShopServiceImpl extends ServiceImpl<NewShopMapper, NewShop> impl
     }
     //根据shopid查询userid
     @Override
-    public Long selectUseridByShopid(Long shopId) {
+    public Long selectUseridByShopId(Long shopId) {
         NewShop newShop = shopMapper.selectById(shopId);
         Long ownerUuid = newShop.getOwnerUuid();
         return ownerUuid;

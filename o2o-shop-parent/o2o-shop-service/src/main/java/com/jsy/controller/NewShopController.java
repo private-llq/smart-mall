@@ -336,8 +336,8 @@ public class NewShopController {
 
     @ApiOperation("根据shopid查询userid")
     @GetMapping("/selectUseridByShopId")
-    public CommonResult<Long> selectUseridByShopid(@RequestParam Long shopId) {
-        Long userId = newShopService.selectUseridByShopid(shopId);
+    public CommonResult<Long> selectUseridByShopId(@RequestParam("shopId") Long shopId) {
+        Long userId = newShopService.selectUseridByShopId(shopId);
         return CommonResult.ok(userId);
     }
 

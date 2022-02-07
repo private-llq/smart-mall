@@ -40,5 +40,5 @@ public interface NewShopClient {
 
     @ApiOperation("根据shopid查询userid")
     @GetMapping("/newShop/selectUseridByShopId")
-    public CommonResult<Long> selectUseridByShopid(@RequestParam Long shopId);
+    public CommonResult<Long> selectUseridByShopId(@RequestParam("shopId") Long shopId);
 }

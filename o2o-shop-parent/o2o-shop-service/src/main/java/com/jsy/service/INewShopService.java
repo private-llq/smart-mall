@@ -117,5 +117,5 @@ public interface INewShopService extends IService<NewShop> {
   **/
  Map<String, Object> selectReleaseNumber(Long shopId);
     //根据shopid查询userid
-    Long selectUseridByShopid(Long shopId);
+    Long selectUseridByShopId(Long shopId);
 }

@@ -60,8 +60,8 @@ import java.util.*;
  * @author arli
  * @since 2021-11-15
  */
-@Service
 @Slf4j
+@Service
 public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> implements INewOrderService {
 
     @Resource
@@ -88,7 +88,7 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
     public IShopBillService shopBillService;
     @Autowired
     public FileClient fileClient;
-    @Autowired
+    @Resource
     public NewShopClient newShopClient;
     @Value("${pay.urlAliPay}")
     private String urlAliPay;//支付宝支付url
@@ -1204,10 +1204,10 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
         aliAppPayQO.setOrderData(orderData);//订单详情
         aliAppPayQO.setBody(orderData.toString());//订单附加信息
         //获取用户id
-        CommonResult<Long> longCommonResult = newShopClient.selectUseridByShopid(newOrder.getShopId());
+        CommonResult<Long> longCommonResult = newShopClient.selectUseridByShopId(newOrder.getShopId());
         Long data = longCommonResult.getData();
+        log.info("收款方id********************"+longCommonResult);
         aliAppPayQO.setReceiveUid(data);//收款方id
-
         String urlParam = urlAliPay;//支付宝支付url
         CommonResult commonResult = HttpClientHelper.sendPost(urlParam, aliAppPayQO, token, CommonResult.class);
         log.info(commonResult.toString() + "支付响应");
@@ -1223,6 +1223,7 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
         if (i < 1) {
             throw new JSYException(501, "系统繁忙");
         }
+
         return commonResult;
     }
 
@@ -1246,7 +1247,7 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
         weChatPayQO.setAmount(new BigDecimal(0.01));
         weChatPayQO.setOrderData(orderData);
         //获取用户id
-        CommonResult<Long> longCommonResult = newShopClient.selectUseridByShopid(newOrder.getShopId());
+        CommonResult<Long> longCommonResult = newShopClient.selectUseridByShopId(newOrder.getShopId());
         Long data = longCommonResult.getData();
         weChatPayQO.setReceiveUid(data);//收款方id
         weChatPayQO.setServiceOrderNo(newOrder.getId().toString());
@@ -1428,8 +1429,6 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
 
         Integer number = param.getNumber();//几天
         LocalDateTime end = LocalDateTime.now();//当前时间
-
-
         LocalDateTime start = LocalDate.now().plusDays(-(number - 1)).atStartOfDay();
         System.out.println(start);
         System.out.println(end);
@@ -1442,8 +1441,6 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
         orderSizeDto.setList(new ArrayList<>());
         for (Integer i = number; i > 0; i--) {
             OrderSizeDayDto orderSizeDayDto = new OrderSizeDayDto();//返回对象
-
-
             LocalDateTime start1 = LocalDate.now().plusDays(-(i - 1)).atStartOfDay();
             LocalDateTime end1 = LocalDate.now().plusDays(-(i - 2)).atStartOfDay();
             System.out.println("_________________________" + start1 + "**" + end1);
@@ -1591,7 +1588,6 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
 //<!--   3商家已退款 （支付状态为退款成功，预约成功,退款角色为商家）-->
 //<!--    4 官方退款中（支付状态为退款中，预约成功,退款角色为官方）-->
 //<!--    5 官方已退款（支付状态为退款成功，预约成功,退款角色为官方）-->
-
 
             if (orderStatus == 1 && appointmentStatus == 1 && serverCodeStatus == 0 && payStatus == 1) {
                 currentStatus = "待消费";
@@ -1861,8 +1857,6 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
        ) {
            return "超时订单";
        }
-
-
        else if (newOrder.getAppointmentStatus()==1 //预约状态（0预约中，1预约成功，2预约失败）
                && newOrder.getPayStatus()==1 //（0未支付，1支付成功,2退款申请中，3退款成功，4拒绝退款）
                && newOrder.getServerCodeStatus()==1//验卷状态0未验卷，1验卷成功
@@ -1886,7 +1880,6 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
        ) {
            return"已消费退款中";
        }
-
 
        else if (newOrder.getAppointmentStatus()==1 //预约状态（0预约中，1预约成功，2预约失败）
                && newOrder.getPayStatus()==3 //（0未支付，1支付成功,2退款申请中，3退款成功，4拒绝退款）
@@ -1931,7 +1924,5 @@ public class NewOrderServiceImpl extends ServiceImpl<NewOrderMapper, NewOrder> i
        }
        return "订单异常";
    }
-
-
 
 }
