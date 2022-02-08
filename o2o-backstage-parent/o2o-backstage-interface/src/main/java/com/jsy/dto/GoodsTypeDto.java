@@ -4,6 +4,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.jsy.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -27,6 +28,7 @@ public class    GoodsTypeDto implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "行业服务分类名称",name = "classifyName")
+    @JsonSerialize(using = com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
     @JSONField(serializeUsing = ToStringSerializer.class)
     private Long id;
     /**
