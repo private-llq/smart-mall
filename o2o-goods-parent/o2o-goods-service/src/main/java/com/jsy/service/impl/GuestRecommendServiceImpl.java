@@ -71,12 +71,12 @@ public class GuestRecommendServiceImpl extends ServiceImpl<GuestRecommendMapper,
         if (Objects.isNull(query.getShopId())){
             throw new JSYException(-1,"shopId不能为空！");
         }
-        //查询店家档案
+        //查询已有数据是否存在
         List<GuestRecommend> recommendList = guestRecommendMapper.selectList(new QueryWrapper<GuestRecommend>().eq("shop_id", query.getShopId()));
         if (recommendList.size()==0){
             return new PageInfo<>();
         }
-
+        //获取imid、shoptreeid、去重
         recommendList.forEach(x -> {
             HashSet<String> set = new HashSet<>();
             List<UserDataRecord> data = userDataRecordClient.getUserDataRecordTreeId(x.getTreeId()).getData();
